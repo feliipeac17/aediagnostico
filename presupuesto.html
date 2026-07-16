@@ -316,13 +316,13 @@
         // Esta línea tenía comillas en tu código original, se corrigió abajo nativamente
     }
 
-    function procesarYDescargarPresupuesto() {
+  function procesarYDescargarPresupuesto() {
         const template = document.getElementById('printable-canvas');
         
-        // Escondemos botones dinámicos para que no ensucien el documento
+        // Ocultar botones de añadir y borrar antes de la captura
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
-        // Reemplazar inputs por textos estáticos antes de capturar para evitar cortes en el borde izquierdo
+        // Convertir dinámicamente los campos a texto plano temporal para el renderizador
         const inputs = template.querySelectorAll('input');
         inputs.forEach(input => {
             const span = document.createElement('span');
@@ -345,17 +345,18 @@
             input.style.display = 'none';
         });
 
-        // 📌 IMPORTANTE: Agregamos márgenes de área física seguros para evitar cortes izquierdos
+        // Configuración de encuadre estricto con márgenes de seguridad físicos [arriba, izquierda, abajo, derecha]
         const opt = {
-            margin: [15, 20, 15, 20], 
+            margin: [15, 25, 15, 20], 
             filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0, windowWidth: 800 },
+            html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0, windowWidth: 820 },
             jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
+        // Capturar y descargar
         html2pdf().from(template).set(opt).save().then(() => {
-            // Regresamos todo a su estado normal para seguir usándolo
+            // Regresar todo a la normalidad interactiva en la pantalla
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
             template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
             inputs.forEach(input => input.style.display = '');
