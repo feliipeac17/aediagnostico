@@ -123,6 +123,25 @@
         .pin-btn { background: #1e1e1e; color: #fff; border: none; font-size: 20pt; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; width: 70px; height: 70px; margin: 0 auto; }
         .pin-btn:active { background: #333; color: #d32f2f; }
         .btn-clear, .btn-backspace { background: transparent; color: #555; font-size: 13pt; }
+
+        /* 📌 CONGELAR BOTONES DE NAVEGACIÓN PRINCIPAL (NUEVO / HISTORIAL) */
+        .sticky-nav-container {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: #f4f6f9; /* Mismo color del fondo para que no se traslape feo */
+            padding: 10px 0;
+            z-index: 1000; /* Asegura que pase por encima de las tarjetas */
+        }
+/* 📌 CONGELAR BARRA DE ACCIONES DEL REPORT VIEW (VOLVER / PDF / WHATSAPP) */
+        .sticky-actions-bar {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: #f4f6f9;
+            padding: 10px 0 15px 0;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -160,9 +179,11 @@
 
     <div id="adminPanel" class="admin-panel">
         
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#d32f2f;" onclick="cambiarPestana('nuevo')">📝 Nuevo Reporte</button>
-            <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial</button>
+<div class="sticky-nav-container">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#d32f2f;" onclick="cambiarPestana('nuevo')">📝 Nuevo Reporte</button>
+                <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial de Reportes</button>
+            </div>
         </div>
 
         <div class="panel-header">
@@ -264,8 +285,8 @@
         </div>
     </div>
 
-    <div id="reportView" class="report-view">
-        <div style="max-width: 780px; margin: 0 auto 15px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+<div id="reportView" class="report-view">
+        <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
             <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF</button>
             <button id="btnEnviarWhatsapp" class="btn-submit" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
