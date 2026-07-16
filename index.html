@@ -359,8 +359,49 @@
         let listaReportesMemoria = [];
         const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('ae_sesion_valida') === 'true') mostrarPanel();
+        // 🚀 DETECTOR DE REPORTES LAUNCH CON DOMINIO PROPIO
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const scanFolio = urlParams.get('scan'); // Detecta si el link tiene la estructura ?scan=AE-1005
+
+            if (scanFolio) {
+                // Indicamos al usuario que se está cargando su reporte
+                document.body.innerHTML = `
+                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; background:#0f172a; color:white;">
+                        <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
+                        <p style="margin-top: 20px; font-size: 16px;">Abriendo reporte de AE Diagnóstico...</p>
+                    </div>
+                    <style>
+                        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                    </style>
+                `;
+
+                // Conectamos a Supabase para traer el enlace original de Launch
+                const { data: reporte, error } = await supabaseClient
+                    .from('reportes_servicio')
+                    .select('link_escaner')
+                    .eq('folio', scanFolio.toUpperCase())
+                    .single();
+
+                if (!error && reporte && reporte.link_escaner) {
+                    // Redirige al cliente instantáneamente al reporte de Launch original sin bloqueos
+                    window.location.href = reporte.link_escaner;
+                    return;
+                } else {
+                    document.body.innerHTML = `
+                        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; background:#0f172a; color:white; padding:20px; text-align:center;">
+                            <h2 style="color:#ef4444;">⚠️ Reporte No Encontrado</h2>
+                            <p>El folio <strong>${scanFolio.toUpperCase()}</strong> no tiene un reporte de escáner registrado o el enlace es inválido.</p>
+                        </div>
+                    `;
+                    return;
+                }
+            }
+
+            // Si no viene ningún ?scan= en la URL, la app carga normal para el staff
+            if (localStorage.getItem('ae_sesion_valida') === 'true') {
+                mostrarPanel();
+            }
         });
 
         function pressNum(num) {
