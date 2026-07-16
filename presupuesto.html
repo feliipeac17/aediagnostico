@@ -311,7 +311,7 @@
         // 1. Ocultar botones de añadir y borrar antes de procesar el canvas
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
-        // 2. Convertir dinámicamente el valor de los inputs a texto plano para el motor de html2pdf
+        // 2. Convertir dinámicamente los campos a texto plano temporal para el renderizador
         const inputs = template.querySelectorAll('input');
         inputs.forEach(input => {
             const span = document.createElement('span');
@@ -334,7 +334,7 @@
             input.style.display = 'none';
         });
 
-        // Opciones matemáticas de escala fija para acoplar en 1 hoja exacta
+        // Configuración de encuadre estricto para hoja A4 (Cero cortes abajo)
         const opt = {
             margin: 0,
             filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
@@ -343,9 +343,9 @@
             jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
-        // Capturar en HD vectorial y descargar
+        // Capturar en HD y descargar
         html2pdf().from(template).set(opt).save().then(() => {
-            // 3. Regresar todo a la normalidad en la pantalla de la PWA
+            // 3. Regresar todo a la normalidad interactiva en la PWA
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
             template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
             inputs.forEach(input => input.style.display = '');
@@ -356,7 +356,7 @@
             inputs.forEach(input => input.style.display = '');
         });
     }
-</script>
+    </script>
     
 </body>
 </html>
