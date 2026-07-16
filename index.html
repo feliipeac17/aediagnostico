@@ -176,8 +176,8 @@
             <div class="form-section">
                 <div class="form-section-title">Datos del Cliente</div>
                 <div class="form-grid">
-                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder="Nombre del cliente"></div>
-                    <div class="form-group"><label>Teléfono Celular (10 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="Ej. 6621002030" maxlength="10"></div>
+                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder=""></div>
+                    <div class="form-group"><label>Teléfono Celular (10-11 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="" maxlength="11"></div>
                 </div>
             </div>
 
@@ -506,7 +506,7 @@
             const telVal = document.getElementById('in_cliente_telefono').value.trim();
             const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
-            if (telVal.length > 0 && telVal.length !== 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
+            if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
             if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NÚMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
 
             const textoOriginal = btnSubmit.innerText;
