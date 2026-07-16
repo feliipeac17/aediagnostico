@@ -30,19 +30,17 @@
         .btn-back { background: #64748b; color: white; border: none; padding: 8px 16px; font-size: 9pt; font-weight: 600; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 
 /* 📄 Lienzo de Impresión Premium Estricto (A4 Fijo) */
-        #printable-canvas {
-            width: 800px !important; 
-            min-width: 800px !important;
-            height: 1050px !important; 
-            min-height: 1050px !important;
-            background: #ffffff; 
-            padding: 30px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            margin: 0 auto;
-            position: relative; 
-            overflow: hidden;
-        }
+#printable-canvas {
+    width: 800px !important; 
+    min-width: 800px !important;
+    height: 1050px !important; 
+    min-height: 1050px !important;
+    background: #ffffff; 
+    padding: 20px; /* Reducido para dar espacio */
+    margin: 0 auto;
+    position: relative; 
+    overflow: hidden;
+}
 
         /* Encabezado Asimétrico */
         .pdf-header-container { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; color: white; gap: 15px; }
@@ -358,59 +356,41 @@
 function procesarYDescargarPresupuesto() {
         const template = document.getElementById('printable-canvas');
         
-        // 1. Sincronizar todos los inputs a texto estático para el PDF
-        // Esto evita que html2pdf falle al renderizar elementos de formulario
+        // Ocultar botones
+        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
+
+        // Sincronizar inputs
         const inputs = template.querySelectorAll('input');
         const snapshots = [];
-        
         inputs.forEach(input => {
             const span = document.createElement('span');
             span.className = 'print-tmp-text';
-            span.style.cssText = "font-size: 9pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
-            
-            // Si es un campo de dinero, formateamos
-            if (input.classList.contains('price-input')) {
-                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-            } else {
-                span.innerText = input.value || '---';
-            }
-            
+            span.style.cssText = "font-size: 8.5pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
+            span.innerText = input.value || '---';
             input.parentNode.insertBefore(span, input);
-            snapshots.push({ input: input, span: span, display: input.style.display });
+            snapshots.push({ input: input, span: span });
             input.style.display = 'none';
         });
 
-        // 2. Llenar las tablas estáticas
-        llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
-        llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
-        llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
-
-        // 3. Ocultar botones interactivos
-        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
-
-        // 4. Captura con configuración de seguridad
+        // 📌 CONFIGURACIÓN ESTRICTA: margin 0 y escala 2
         const opt = {
-            margin: [20, 20, 20, 20], // Margen de seguridad para que nada se corte
+            margin: 0, 
             filename: 'Presupuesto_AE.pdf',
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
                 scale: 2, 
-                useCORS: true, 
-                windowWidth: 800 // Ancho fijo para que no se deforme
+                useCORS: true,
+                width: 800,
+                windowWidth: 800 
             },
-            jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+            jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
         };
 
         html2pdf().from(template).set(opt).save().then(() => {
-            // Restaurar estado original
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
-            snapshots.forEach(s => {
-                s.input.style.display = s.display;
-                s.span.remove();
-            });
+            snapshots.forEach(s => { s.input.style.display = ''; s.span.remove(); });
         });
     }
-
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
