@@ -316,37 +316,26 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-  function procesarYDescargarPresupuesto() {
-        // 1. Sincronizamos los valores escritos en pantalla hacia las variables internas del reporte antes de la captura
-        sincronizarFormularioAPlantillaPDF();
+    function procesarYDescargarPresupuesto() {
+        // 1. Sincronizamos los datos a las etiquetas correspondientes antes de la foto
+        document.getElementById('pdf-val-cliente').innerText = document.getElementById('in_cliente_nombre').value.toUpperCase() || '---';
+        document.getElementById('pdf-val-telefono').innerText = document.getElementById('in_cliente_telefono').value || '---';
+        document.getElementById('pdf-val-vehiculo').innerText = document.getElementById('in_vehiculo_marca').value.toUpperCase() || '---';
+        document.getElementById('pdf-val-placas').innerText = document.getElementById('in_vehiculo_placas').value.toUpperCase() || '---';
+        document.getElementById('pdf-val-color').innerText = document.getElementById('in_vehiculo_color').value.toUpperCase() || '---';
+        document.getElementById('pdf-val-odometro').innerText = document.getElementById('in_vehiculo_km').value.toUpperCase() || '---';
+        document.getElementById('pdf-val-gas').innerText = document.getElementById('in_vehiculo_gas').value.toUpperCase() || '---';
+        document.getElementById('pdf-val-falla').innerText = document.getElementById('in_falla_reportada').value.toUpperCase() || 'SIN SÍNTOMAS REGISTRADOS';
+        document.getElementById('pdf-val-dtc').innerText = document.getElementById('in_codigo_fallas').value.toUpperCase() || 'NINGUNO';
+
+        llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
+        llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
+        llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
 
         const template = document.getElementById('printable-canvas');
         
-        // 2. Ocultar botones de añadir y borrar antes de la captura
+        // Ocultar botones de añadir y borrar antes de la captura
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
-
-        // 3. Convertir dinámicamente los campos a texto plano temporal para el renderizador
-        const inputs = template.querySelectorAll('input');
-        inputs.forEach(input => {
-            const span = document.createElement('span');
-            span.className = 'print-tmp-text';
-            span.style.cssText = "font-size: 8.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase;";
-            
-            if (input.type === 'number' && input.classList.contains('price-input')) {
-                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-                span.style.display = 'block';
-                span.style.width = '100%';
-                span.style.textAlign = 'right';
-            } else if (input.id === 'in_anticipo') {
-                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-                span.style.color = '#fff';
-            } else {
-                span.innerText = input.value || '---';
-            }
-            
-            input.parentNode.insertBefore(span, input);
-            input.style.display = 'none';
-        });
 
         // Configuración de encuadre estricto con márgenes de seguridad físicos [arriba, izquierda, abajo, derecha]
         const opt = {
@@ -361,15 +350,37 @@ window.addEventListener('DOMContentLoaded', () => {
         html2pdf().from(template).set(opt).save().then(() => {
             // Regresar todo a la normalidad interactiva en la pantalla
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
-            template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
-            inputs.forEach(input => input.style.display = '');
         }).catch(err => {
             alert("Error: " + err.message);
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
-            template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
-            inputs.forEach(input => input.style.display = '');
         });
     }
-</script>
+
+    function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
+        const tbody = document.querySelector(`#${targetTblId} tbody`);
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        let suma = 0;
+        const filas = document.querySelectorAll(`#${origListId} .table-row`);
+        filas.forEach(row => {
+            const descInput = row.querySelector('.desc-input');
+            const priceInput = row.querySelector('.price-input');
+            if (descInput && priceInput) {
+                const desc = descInput.value.toUpperCase();
+                const precio = parseFloat(priceInput.value) || 0;
+                if (desc) {
+                    suma += precio;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${desc}</td><td style="text-align:right; font-weight:700;">$${precio.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>`;
+                    tbody.appendChild(tr);
+                }
+            }
+        });
+        if (tbody.children.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" class="pdf-empty-row">- Sin conceptos registrados -</td></tr>';
+        }
+        document.getElementById(targetTotalId).innerText = `$${suma.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+    }
+    </script>
 </body>
 </html>
