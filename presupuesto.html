@@ -240,7 +240,7 @@
     </div>
 
 <script>
-    window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
         const hoy = new Date();
         const fTxt = hoy.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
         const hTxt = hoy.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
@@ -255,11 +255,15 @@
             const info = JSON.parse(transferencia);
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
             if (info.cliente_telefono) document.getElementById('in_cliente_telefono').value = info.cliente_telefono;
-            document.getElementById('in_vehiculo_marca').value = info.vehiculo_marca || '';
-            if (info.vehiculo_modelo) document.getElementById('in_vehiculo_marca').value += ' ' + info.vehiculo_modelo;
+            if (info.vehiculo_marca) document.getElementById('in_vehiculo_marca').value = info.vehiculo_marca;
             if (info.vehiculo_placas) document.getElementById('in_vehiculo_placas').value = info.vehiculo_placas;
             if (info.vehiculo_color) document.getElementById('in_vehiculo_color').value = info.vehiculo_color;
             if (info.vehiculo_km) document.getElementById('in_vehiculo_km').value = info.vehiculo_km;
+            
+            // Si viene el modelo por separado en el objeto, lo agregamos limpiamente al campo de la unidad
+            if (info.vehiculo_modelo && !info.vehiculo_marca.includes(info.vehiculo_modelo)) {
+                document.getElementById('in_vehiculo_marca').value += ' ' + info.vehiculo_modelo;
+            }
 
             localStorage.removeItem('ae_transferencia_presupuesto');
         }
@@ -317,12 +321,15 @@
     }
 
   function procesarYDescargarPresupuesto() {
+        // 1. Sincronizamos los valores escritos en pantalla hacia las variables internas del reporte antes de la captura
+        sincronizarFormularioAPlantillaPDF();
+
         const template = document.getElementById('printable-canvas');
         
-        // Ocultar botones de añadir y borrar antes de la captura
+        // 2. Ocultar botones de añadir y borrar antes de la captura
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
-        // Convertir dinámicamente los campos a texto plano temporal para el renderizador
+        // 3. Convertir dinámicamente los campos a texto plano temporal para el renderizador
         const inputs = template.querySelectorAll('input');
         inputs.forEach(input => {
             const span = document.createElement('span');
@@ -354,7 +361,7 @@
             jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
-        // Capturar y descargar
+        // Capturar y descargar de forma estable
         html2pdf().from(template).set(opt).save().then(() => {
             // Regresar todo a la normalidad interactiva en la pantalla
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
