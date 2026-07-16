@@ -1,1 +1,781 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AE Diagnóstico - Presupuesto Premium</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --primary-hover: #b71c1c;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #334155;
+            --text-light: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-bg);
+            color: var(--text-main);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Barra de Navegación */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .btn-back {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 9pt;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background: var(--dark);
+        }
+
+        /* Encabezado Premium del Taller (Igual a la imagen) */
+        .presupuesto-header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            position: relative;
+        }
+
+        .taller-info h1 {
+            font-size: 17pt;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .taller-info h1 span {
+            color: var(--primary);
+        }
+
+        .taller-details {
+            font-size: 8.5pt;
+            color: #94a3b8;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .folio-box {
+            text-align: right;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 170px;
+        }
+
+        .folio-title {
+            font-size: 7.5pt;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .folio-num {
+            font-size: 14pt;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 2px 0;
+        }
+
+        .folio-date {
+            font-size: 8pt;
+            color: white;
+        }
+
+        /* Estilo de Secciones */
+        .section-title {
+            font-size: 10pt;
+            font-weight: 700;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 25px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 6px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .presupuesto-header {
+                flex-direction: column;
+            }
+            .folio-box {
+                text-align: left;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            font-size: 8.5pt;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .form-group input, .form-group select {
+            background: var(--gray-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            font-size: 9.5pt;
+            border-radius: 8px;
+            color: var(--dark);
+            transition: 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        /* Tabla de Conceptos Dinámica */
+        .conceptos-wrapper {
+            background: var(--gray-bg);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            margin-top: 15px;
+        }
+
+        .conceptos-header {
+            display: grid;
+            grid-template-columns: 3fr 1fr 40px;
+            gap: 10px;
+            font-size: 8pt;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
+
+        .concepto-row {
+            display: grid;
+            grid-template-columns: 3fr 1fr 40px;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .concepto-row input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 9pt;
+            outline: none;
+        }
+
+        .concepto-row input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-add {
+            background: white;
+            color: var(--dark);
+            border: 1px dashed #cbd5e1;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 9pt;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #fef2f2;
+        }
+
+        /* Bloque de Totales */
+        .totales-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-top: 20px;
+            gap: 8px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            width: 260px;
+            font-size: 9.5pt;
+            font-weight: 600;
+            color: var(--text-light);
+            align-items: center;
+        }
+
+        .total-row input {
+            width: 110px;
+            text-align: right;
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .total-row.grand-total {
+            font-size: 11.5pt;
+            color: var(--dark);
+            font-weight: 800;
+            margin-top: 5px;
+        }
+
+        .total-row.grand-total span:last-child {
+            color: var(--primary);
+        }
+
+        /* Botón de Generar PDF */
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 11pt;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(211,47,47,0.25);
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-nav">
+        <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Volver al Historial</a>
+        <div style="font-size: 8.5pt; font-weight: 700; color: var(--primary);">CONEXIÓN CON HISTORIAL ACTIVA</div>
+    </div>
+
+    <div class="presupuesto-header">
+        <div class="taller-info">
+            <h1>AE <span>DIAGNÓSTICO</span></h1>
+            <div class="taller-details">
+                <p><i class="fa-solid fa-location-dot"></i> Calle Periodistas #104, Piedras Negras, Coahuila</p>
+                <p><i class="fa-solid fa-phone"></i> Teléfono: 878-115-4673</p>
+                <p><i class="fa-solid fa-envelope"></i> aediagnostico.pne@gmail.com</p>
+            </div>
+        </div>
+        <div class="folio-box">
+            <div class="folio-title">Presupuesto / Cotización</div>
+            <div class="folio-num" id="lblFolio">AE-PRE00</div>
+            <div class="folio-date" id="lblFecha">--/--/----</div>
+        </div>
+    </div>
+
+    <div class="section-title"><i class="fa-solid fa-user"></i> Datos del Cliente</div>
+    <div class="grid-2">
+        <div class="form-group">
+            <label>Nombre del Cliente</label>
+            <input type="text" id="in_cliente_nombre" placeholder="Nombre Completo">
+        </div>
+        <div class="form-group">
+            <label>Teléfono Celular (10 o 11 dígitos)</label>
+            <input type="tel" id="in_cliente_telefono" placeholder="Ej. 8781123456" maxlength="11">
+        </div>
+    </div>
+
+    <div class="section-title"><i class="fa-solid fa-car"></i> Datos del Vehículo</div>
+    <div class="grid-2">
+        <div class="form-group">
+            <label>Marca</label>
+            <input type="text" id="in_vehiculo_marca" placeholder="Ej. Chevrolet">
+        </div>
+        <div class="form-group">
+            <label>Modelo</label>
+            <input type="text" id="in_vehiculo_modelo" placeholder="Ej. Silverado">
+        </div>
+        <div class="form-group">
+            <label>Año / Modelo</label>
+            <input type="number" id="in_vehiculo_anio" placeholder="Ej. 2015">
+        </div>
+        <div class="form-group">
+            <label>Color</label>
+            <input type="text" id="in_vehiculo_color" placeholder="Ej. Blanco">
+        </div>
+    </div>
+
+    <div class="section-title"><i class="fa-solid fa-stethoscope"></i> Diagnóstico Inicial</div>
+    <div class="grid-2">
+        <div class="form-group">
+            <label>Falla Reportada / Síntomas</label>
+            <input type="text" id="in_falla_reportada" placeholder="Ej. No enciende, tarda en dar marcha">
+        </div>
+        <div class="form-group">
+            <label>Códigos de Falla Escaneados (DTC)</label>
+            <input type="text" id="in_codigo_fallas" placeholder="Ej. P0300, P0171">
+        </div>
+        <div class="form-group">
+            <label>Placas</label>
+            <input type="text" id="in_vehiculo_placas" placeholder="Ej. FED-992-A">
+        </div>
+        <div class="form-group">
+            <label>Nivel de Combustible</label>
+            <select id="in_vehiculo_gas">
+                <option value="100">Lleno (100%)</option>
+                <option value="75">3/4 (75%)</option>
+                <option value="50">1/2 (50%)</option>
+                <option value="25">1/4 (25%)</option>
+                <option value="10">Reserva (10%)</option>
+            </select>
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+            <label>Odómetro / Kilometraje</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="number" id="in_vehiculo_km" placeholder="Ej. 145000" style="flex: 1;">
+                <select id="in_vehiculo_unidad" style="width: 100px;">
+                    <option value="km">KM</option>
+                    <option value="mi">Millas</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title"><i class="fa-solid fa-file-invoice-dollar"></i> Desglose del Presupuesto</div>
+    <div class="conceptos-wrapper">
+        <div class="conceptos-header">
+            <div>Concepto de Reparación / Pieza</div>
+            <div style="text-align: right;">Precio ($)</div>
+            <div></div>
+        </div>
+        <div id="contenedorConceptos">
+            </div>
+        <button class="btn-add" onclick="agregarFilaConcepto()"><i class="fa-solid fa-plus"></i> Agregar Servicio o Refacción</button>
+    </div>
+
+    <div class="totales-container">
+        <div class="total-row">
+            <span>Subtotal estimado:</span>
+            <span id="lblSubtotal">$0.00</span>
+        </div>
+        <div class="total-row">
+            <span>Anticipo solicitado ($):</span>
+            <input type="number" id="in_anticipo" value="0" oninput="calcularGranTotal()">
+        </div>
+        <div class="total-row grand-total">
+            <span>Saldo Restante:</span>
+            <span id="lblSaldoPendiente">$0.00</span>
+        </div>
+    </div>
+
+    <button class="btn-submit" onclick="generarPDFPresupuesto()"><i class="fa-solid fa-file-pdf"></i> Generar PDF de Presupuesto</button>
+</div>
+
+<script>
+    // Al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+        // Poner la fecha de hoy
+        const hoy = new Date();
+        document.getElementById('lblFecha').innerText = hoy.toLocaleDateString('es-MX', {day: '2-digit', month: '2-digit', year: 'numeric'});
+        
+        // Generar un folio aleatorio para el presupuesto actual
+        const randFolio = "PRE-" + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('lblFolio').innerText = randFolio;
+
+        // Recuperar los datos guardados desde el botón "💰 Cotizar"
+        const datosTransferidos = localStorage.getItem('ae_transferencia_presupuesto');
+        if (datosTransferidos) {
+            const info = JSON.parse(datosTransferidos);
+            
+            // Auto-rellenar campos correspondientes
+            if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
+            if (info.cliente_telefono) document.getElementById('in_cliente_telefono').value = info.cliente_telefono;
+            if (info.vehiculo_marca) document.getElementById('in_vehiculo_marca').value = info.vehiculo_marca;
+            if (info.vehiculo_modelo) document.getElementById('in_vehiculo_modelo').value = info.vehiculo_modelo;
+            if (info.vehiculo_placas) document.getElementById('in_vehiculo_placas').value = info.vehiculo_placas;
+            if (info.vehiculo_color) document.getElementById('in_vehiculo_color').value = info.vehiculo_color;
+            
+            // Manejar kilometraje y su unidad
+            if (info.vehiculo_km) {
+                const partes = info.vehiculo_km.split(' ');
+                document.getElementById('in_vehiculo_km').value = partes[0] || '';
+                if (partes[1]) {
+                    document.getElementById('in_vehiculo_unidad').value = partes[1].toLowerCase();
+                }
+            }
+
+            // Limpiamos memoria para que el siguiente cargue limpio si entra normal
+            localStorage.removeItem('ae_transferencia_presupuesto');
+        }
+
+        // Fila inicial de cobro
+        agregarFilaConcepto();
+    });
+
+    // Agregar fila para cotizar conceptos
+    function agregarFilaConcepto() {
+        const contenedor = document.getElementById('contenedorConceptos');
+        const div = document.createElement('div');
+        div.className = 'concepto-row';
+        div.innerHTML = `
+            <input type="text" class="concepto-txt" placeholder="Ej. Sensor de Oxígeno / Mano de obra cambio" required>
+            <input type="number" class="concepto-precio" placeholder="0.00" style="text-align: right;" oninput="calcularGranTotal()" required>
+            <button class="btn-delete" onclick="eliminarFila(this)"><i class="fa-solid fa-trash"></i></button>
+        `;
+        contenedor.appendChild(div);
+    }
+
+    function eliminarFila(btn) {
+        btn.parentElement.remove();
+        calcularGranTotal();
+    }
+
+    // Calcular montos interactivos
+    function calcularGranTotal() {
+        let subtotal = 0;
+        const precios = document.querySelectorAll('.concepto-precio');
+        precios.forEach(input => {
+            const val = parseFloat(input.value);
+            if (!isNaN(val)) subtotal += val;
+        });
+
+        const anticipoVal = parseFloat(document.getElementById('in_anticipo').value) || 0;
+        const saldoPendiente = subtotal - anticipoVal;
+
+        document.getElementById('lblSubtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('lblSaldoPendiente').innerText = `$${saldoPendiente.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+
+    // Generar PDF con jsPDF
+    function generarPDFPresupuesto() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+
+        // Obtener valores de campos
+        const folio = document.getElementById('lblFolio').innerText;
+        const fecha = document.getElementById('lblFecha').innerText;
+        const cliente = document.getElementById('in_cliente_nombre').value || '---';
+        const telefono = document.getElementById('in_cliente_telefono').value || '---';
+        const marca = document.getElementById('in_vehiculo_marca').value || '---';
+        const modelo = document.getElementById('in_vehiculo_modelo').value || '---';
+        const anio = document.getElementById('in_vehiculo_anio').value || '---';
+        const color = document.getElementById('in_vehiculo_color').value || '---';
+        const falla = document.getElementById('in_falla_reportada').value || '---';
+        const dtc = document.getElementById('in_codigo_fallas').value || '---';
+        const placas = document.getElementById('in_vehiculo_placas').value || '---';
+        const combustible = document.getElementById('in_vehiculo_gas').options[document.getElementById('in_vehiculo_gas').selectedIndex].text;
+        
+        const kmVal = document.getElementById('in_vehiculo_km').value;
+        const kmUnidad = document.getElementById('in_vehiculo_unidad').value.toUpperCase();
+        const odometro = kmVal ? `${parseFloat(kmVal).toLocaleString('es-MX')} ${kmUnidad}` : '---';
+
+        // ---- HEADER PREMIUM ASIMÉTRICO (IGUAL A LA IMAGEN) ----
+        doc.setFillColor(15, 23, 42); // Azul Oscuro
+        doc.rect(0, 0, 210, 42, 'F');
+        doc.setFillColor(211, 47, 47); // Línea Roja
+        doc.rect(0, 42, 210, 2, 'F');
+
+        // Datos del Taller
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(22);
+        doc.text("AE DIAGNÓSTICO", 15, 18);
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(148, 163, 184);
+        doc.text("Calle Periodistas #104, Piedras Negras, Coahuila  |  Tel: 878-115-4673", 15, 26);
+        doc.text("Email: aediagnostico.pne@gmail.com", 15, 31);
+
+        // Bloque del Folio / Cotización
+        doc.setFillColor(30, 41, 59);
+        doc.roundedRect(145, 8, 50, 25, 3, 3, 'F');
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(7.5);
+        doc.setTextColor(148, 163, 184);
+        doc.text("COTIZACIÓN", 150, 14);
+        doc.setFontSize(13);
+        doc.setTextColor(211, 47, 47);
+        doc.text(folio, 150, 21);
+        doc.setFontSize(8);
+        doc.setTextColor(255, 255, 255);
+        doc.text("Fecha: " + fecha, 150, 28);
+
+        // ---- INFORMACIÓN GENERAL ----
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(15, 23, 42);
+        doc.text("DATOS DEL CLIENTE Y VEHÍCULO", 15, 56);
+        doc.setDrawColor(226, 232, 240);
+        doc.line(15, 58, 195, 58);
+
+        // Fila 1 de Datos
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text("CLIENTE:", 15, 66);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(cliente, 35, 66);
+
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(100, 116, 139);
+        doc.text("VEHÍCULO / MODELO:", 110, 66);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(`${marca} ${modelo}`, 145, 66);
+
+        // Fila 2 de Datos
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(100, 116, 139);
+        doc.text("TELÉFONO:", 15, 73);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(telefono, 35, 73);
+
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(100, 116, 139);
+        doc.text("AÑO / COLOR:", 110, 73);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(`${anio}  |  ${color}`, 145, 73);
+
+        // ---- DIAGNÓSTICO INICIAL ----
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(15, 23, 42);
+        doc.text("DIAGNÓSTICO INICIAL", 15, 87);
+        doc.line(15, 89, 195, 89);
+
+        // Fila 1 Diagnóstico
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text("FALLA SÍNTOMA:", 15, 97);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(falla, 45, 97);
+
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(100, 116, 139);
+        doc.text("ODÓMETRO:", 120, 97);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(odometro, 145, 97);
+
+        // Fila 2 Diagnóstico
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(100, 116, 139);
+        doc.text("CÓDIGOS DTC:", 15, 104);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(dtc, 45, 104);
+
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(100, 116, 139);
+        doc.text("PLACAS / GAS:", 120, 104);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(15, 23, 42);
+        doc.text(`${placas}  |  ${combustible}`, 145, 104);
+
+        // ---- TABLA DE COSTOS ESTIMADOS ----
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(15, 23, 42);
+        doc.text("DESGLOSE DE SERVICIOS Y REFACCIONES REQUERIDAS", 15, 119);
+        doc.line(15, 121, 195, 121);
+
+        // Dibujar cabecera de la tabla
+        doc.setFillColor(248, 250, 252);
+        doc.rect(15, 125, 180, 8, 'F');
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139);
+        doc.text("CONCEPTO DE TRABAJO / PIEZAS", 18, 130);
+        doc.text("COSTO EST.", 168, 130);
+
+        let y = 139;
+        let subtotal = 0;
+        const filas = document.querySelectorAll('.concepto-row');
+
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(15, 23, 42);
+
+        filas.forEach(row => {
+            const desc = row.querySelector('.concepto-txt').value || 'Trabajo no especificado';
+            const precioVal = parseFloat(row.querySelector('.concepto-precio').value) || 0;
+            subtotal += precioVal;
+
+            doc.text(desc, 18, y);
+            doc.text(`$${precioVal.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 168, y);
+            
+            // Línea divisoria suave
+            doc.setDrawColor(241, 245, 249);
+            doc.line(15, y + 3, 195, y + 3);
+            y += 8;
+        });
+
+        // Totales finales
+        const anticipoVal = parseFloat(document.getElementById('in_anticipo').value) || 0;
+        const pendienteVal = subtotal - anticipoVal;
+
+        y += 5;
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(100, 116, 139);
+        doc.text("Subtotal estimado:", 125, y);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 168, y);
+
+        y += 6;
+        doc.setTextColor(100, 116, 139);
+        doc.text("Anticipo requerido:", 125, y);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`$${anticipoVal.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 168, y);
+
+        y += 8;
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(211, 47, 47);
+        doc.text("Saldo Restante:", 125, y);
+        doc.text(`$${pendienteVal.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 168, y);
+
+        // ---- RECUADROS DE FIRMAS ----
+        doc.setDrawColor(203, 213, 225);
+        doc.setLineDash([1, 1]); // Línea punteada
+        doc.line(15, 245, 80, 245);
+        doc.line(130, 245, 195, 245);
+        doc.setLineDash([]); // Volver a sólida
+
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text("Firma de Autorización del Cliente", 22, 249);
+        doc.text("Firma Encargado de Taller", 145, 249);
+
+        // Notas legales al pie (Términos y condiciones)
+        doc.setFontSize(6.5);
+        doc.text("• Este documento es un presupuesto estimado. Los precios de las refacciones están sujetos a cambios de acuerdo al proveedor.", 15, 268);
+        doc.text("• AE Diagnóstico no realizará ningún trabajo o reemplazo de piezas adicionales sin antes recibir la autorización verbal o escrita del propietario.", 15, 272);
+        doc.text("• Las piezas usadas retiradas del vehículo serán entregadas al cliente al finalizar el servicio si así lo requiere.", 15, 276);
+
+        // Guardar/Descargar PDF
+        doc.save(`PRESUPUESTO_${cliente.replace(/\s+/g, '_')}_${folio}.pdf`);
+    }
+</script>
+
+</body>
+</html>
