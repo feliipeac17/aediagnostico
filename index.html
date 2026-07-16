@@ -433,7 +433,7 @@
                     
                     // Una vez forzada la primera descarga, quitamos el cargador y mostramos el botón de reintento permanente
                     document.getElementById('loading-spinner').style.display = 'none';
-                    document.getElementById('pdf-status-title').innerText = "¡REPORTE COMPILADO!";
+                    document.getElementById('pdf-status-title').innerText = "¡REPORTE CREADO!";
                     document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
                     document.getElementById('btnRetryPDF').style.display = 'inline-block';
                     return;
@@ -783,7 +783,7 @@ function limpiarFormularioCompleto() {
         // ================= MOTOR NATIVO BINARIO IMPRESIÓN ASIMÉTRICA CON JSPDF (2 PÁGINAS FIJAS) =================
         async function generarPDFConJSPDF(autoDownloadAndClose = false) {
             const btn = document.getElementById('btnDescargarPDF'); 
-            if(!autoDownloadAndClose) { btn.innerText = "⏳ COMPILANDO DOCUMENTO PREMIUM..."; btn.disabled = true; }
+            if(!autoDownloadAndClose) { btn.innerText = "⏳ GENERANDO DOCUMENTO..."; btn.disabled = true; }
             
             const rep = reportDataGlobal; const { jsPDF } = window.jspdf; const doc = new jsPDF('p', 'mm', 'a4');
             const f = new Date(rep.created_at); const fechaTxt = `${f.toLocaleDateString('es-MX')}  |  ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
