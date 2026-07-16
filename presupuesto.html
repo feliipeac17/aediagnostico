@@ -354,43 +354,50 @@
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 function procesarYDescargarPresupuesto() {
-        const template = document.getElementById('printable-canvas');
-        
-        // Ocultar botones
-        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
+    const template = document.getElementById('printable-canvas');
+    
+    // 1. Sincronización absoluta: pasamos los valores de los inputs a spans de texto plano
+    // Esto es lo que soluciona que el PDF salga vacío o con "an"
+    template.querySelectorAll('input').forEach(input => {
+        const span = document.createElement('span');
+        span.className = 'print-tmp-text';
+        span.style.cssText = "font-size: 9pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
+        span.innerText = input.value || '---';
+        input.parentNode.insertBefore(span, input);
+        input.style.display = 'none';
+    });
 
-        // Sincronizar inputs
-        const inputs = template.querySelectorAll('input');
-        const snapshots = [];
-        inputs.forEach(input => {
-            const span = document.createElement('span');
-            span.className = 'print-tmp-text';
-            span.style.cssText = "font-size: 8.5pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
-            span.innerText = input.value || '---';
-            input.parentNode.insertBefore(span, input);
-            snapshots.push({ input: input, span: span });
-            input.style.display = 'none';
-        });
+    // 2. Ejecutar la función de tablas antes de procesar
+    llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
+    llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
+    llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
 
-        // 📌 CONFIGURACIÓN ESTRICTA: margin 0 y escala 2
-        const opt = {
-            margin: 0, 
-            filename: 'Presupuesto_AE.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                width: 800,
-                windowWidth: 800 
-            },
-            jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
-        };
+    // 3. Ocultar botones
+    document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'none');
 
-        html2pdf().from(template).set(opt).save().then(() => {
-            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
-            snapshots.forEach(s => { s.input.style.display = ''; s.span.remove(); });
-        });
-    }
+    // 4. Configuración precisa de PDF (Sin márgenes de librería, solo los del lienzo)
+    const opt = {
+        margin: 0,
+        filename: 'Presupuesto_Final.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true,
+            width: 800,
+            windowWidth: 800,
+            x: 0,
+            y: 0
+        },
+        jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
+    };
+
+    html2pdf().from(template).set(opt).save().then(() => {
+        // Restaurar pantalla
+        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'inline-flex');
+        template.querySelectorAll('.print-tmp-text').forEach(s => s.remove());
+        template.querySelectorAll('input').forEach(i => i.style.display = '');
+    });
+}
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
