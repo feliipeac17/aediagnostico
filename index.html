@@ -598,12 +598,13 @@
             finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
         }
 
-        async function cargarHistorialSupabase() {
+       async function cargarHistorialSupabase() {
             const contenedor = document.getElementById('listaReportes');
             contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
             const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false });
             if (error) { contenedor.innerHTML = `<p style="color:red; font-size:10pt;">Error: ${error.message}</p>`; return; }
-            listaReportesMemoria = reportes; inyectarTarjetasHistorial(listaReportesMemoria);
+            listaReportesMemoria = reportes; 
+            inyectarTarjetasHistorial(listaReportesMemoria);
         }
 
         function inyectarTarjetasHistorial(arr) {
@@ -616,6 +617,7 @@
                 const tarjeta = document.createElement('div');
                 tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; text-transform:uppercase; gap: 10px; margin-bottom:10px;";
                 
+                // Estructura HTML con clases únicas para evitar conflictos de eventos
                 tarjeta.innerHTML = `
                     <div style="flex:1;">
                         <strong style="color:#d32f2f;">FOLIO: ${rep.folio}</strong>
@@ -623,31 +625,36 @@
                         <div style="font-size:8.5pt; color:#888;">👤 CLIENTE: ${rep.cliente_nombre || ''}</div>
                     </div>
                     <div style="display:flex; gap:6px; flex-wrap: wrap;">
-                        <button class="btn-act-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">👁️ Ver</button>
-                        <button class="btn-act-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Editar</button>
-                        <button class="btn-act-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">💰 Cotizar</button>
+                        <button class="btn-hist-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">👁️ Ver</button>
+                        <button class="btn-hist-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Editar</button>
+                        <button class="btn-hist-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">💰 Cotizar</button>
                     </div>
                 `;
 
-                // Eventos seguros vinculados directamente en memoria para evitar errores de comillas
-                tarjeta.querySelector('.btn-act-ver').onclick = function() { mostrarVistaPreviaDigital(rep); };
-                tarjeta.querySelector('.btn-act-edit').onclick = function() { cargarRegistroParaEditar(rep); };
-                tarjeta.querySelector('.btn-act-cotizar').onclick = function() {
-                    const datos = {
-                        cliente_nombre: String(rep.cliente_nombre || '').trim(),
-                        cliente_telefono: String(rep.cliente_telefono || '').trim(),
-                        vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
-                        vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
-                        vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
-                        vehiculo_color: String(rep.vehiculo_color || '').trim(),
-                        vehiculo_km: String(rep.vehiculo_km || '').trim()
-                    };
-                    localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
-                    window.location.href = 'presupuesto.html';
-                };
+                // Eventos aislados en memoria independientes (Cero conflictos entre botones)
+                tarjeta.querySelector('.btn-hist-ver').addEventListener('click', (e) => { e.stopPropagation(); mostrarVistaPreviaDigital(rep); });
+                tarjeta.querySelector('.btn-hist-edit').addEventListener('click', (e) => { e.stopPropagation(); cargarRegistroParaEditar(rep); });
+                tarjeta.querySelector('.btn-hist-cotizar').addEventListener('click', (e) => { 
+                    e.stopPropagation(); 
+                    transferirAPresupuesto(rep); 
+                });
 
                 contenedor.appendChild(tarjeta);
             });
+        }
+
+        function transferirAPresupuesto(rep) {
+            const datos = {
+                cliente_nombre: String(rep.cliente_nombre || '').trim(),
+                cliente_telefono: String(rep.cliente_telefono || '').trim(),
+                vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
+                vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
+                vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
+                vehiculo_color: String(rep.vehiculo_color || '').trim(),
+                vehiculo_km: String(rep.vehiculo_km || '').trim()
+            };
+            localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
+            window.location.href = 'presupuesto.html';
         }
 
         function filtrarHistorial() {
