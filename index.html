@@ -673,10 +673,20 @@
             
             document.getElementById('btnDescargarPDF').onclick = () => generarPDFConJSPDF(false);
             
-            // 📞 MOTOR DE ENVÍO POR WHATSAPP AUTOMÁTICO
+            // 📞 MOTOR DE ENVÍO POR WHATSAPP INTELIGENTE (MÉXICO / USA)
             document.getElementById('btnEnviarWhatsapp').onclick = () => {
                 const cleanPhone = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : '';
                 const baseDomain = window.location.origin; // Ej: https://aediagnostico.com
+
+                // Determinamos la lada correcta automáticamente:
+                let finalPhone = '';
+                if (cleanPhone.length === 11 && cleanPhone.startsWith('1')) {
+                    // Es número americano (Ej. 16021002030 -> lada +1)
+                    finalPhone = cleanPhone; 
+                } else {
+                    // Es número mexicano por defecto (Ej. 6621002030 -> le ponemos lada +52)
+                    finalPhone = `52${cleanPhone}`;
+                }
 
                 const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
                 
@@ -689,7 +699,7 @@
                 msg += `📄 *Descargar PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
                 msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
 
-                const whatsappUrl = `https://api.whatsapp.com/send?phone=52${cleanPhone}&text=${encodeURIComponent(msg)}`;
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=${finalPhone}&text=${encodeURIComponent(msg)}`;
                 window.open(whatsappUrl, '_blank');
             };
         }
