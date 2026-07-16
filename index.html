@@ -35,6 +35,7 @@
             .admin-panel { margin: 30px auto; min-height: auto; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         }
         .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a1a1a; padding-bottom: 15px; margin-bottom: 20px; }
+        .panel-header h1, .panel-header h2 { margin: 0; }
         .panel-title { font-size: 15pt; font-weight: bold; color: #1a1a1a; }
         .panel-title span { color: #d32f2f; }
         
@@ -288,7 +289,7 @@
         <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
             <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF</button>
-            <button id="btnEnviarWhatsapp" class="btn-submit" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button id="btnEnviarWhatsApp" class="btn-submit" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <span>💬 Enviar por WhatsApp</span>
             </button>
         </div>
@@ -376,7 +377,7 @@
     </div>
 
     <script>
-// ================= CREDENCIALES DE TU SUPABASE =================
+        // ================= CREDENCIALES DE TU SUPABASE =================
         const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -460,7 +461,7 @@
             document.getElementById('pin-lock-screen').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             document.getElementById('reportView').style.display = 'none';
-            cargarHistorialSupabase(); // 📌 Carga Supabase desde el inicio para evitar que desaparezca el botón azul al volver
+            cargarHistorialSupabase();
         }
         function regresarAlFormulario() { mostrarPanel(); cambiarPestana('historial'); }
         function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
@@ -476,7 +477,7 @@
             }
         }
 
-function cambiarPestana(modo) {
+        function cambiarPestana(modo) {
             document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
             document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
             document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
@@ -490,7 +491,6 @@ function cambiarPestana(modo) {
                 if(document.getElementById('btnCancelarEdicion')) {
                     document.getElementById('btnCancelarEdicion').style.display = 'none';
                 }
-                // 📌 Forzamos la consulta limpia a la nube para reinyectar las tarjetas con el botón azul activo
                 cargarHistorialSupabase(); 
             }
         }
@@ -600,7 +600,7 @@ function cambiarPestana(modo) {
             } catch (err) { alert("❌ ERROR: " + err.message); }
             finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
         }
-// ================= SISTEMA DE HISTORIAL Y TRANSFERENCIA BLINDADO =================
+
         async function cargarHistorialSupabase() {
             const contenedor = document.getElementById('listaReportes');
             if (contenedor) {
@@ -625,7 +625,6 @@ function cambiarPestana(modo) {
                 const tarjeta = document.createElement('div');
                 tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; text-transform:uppercase; gap: 10px; margin-bottom:10px;";
                 
-                // Estructura HTML limpia con clases exclusivas para evitar conflictos de eventos
                 tarjeta.innerHTML = `
                     <div style="flex:1;">
                         <strong style="color:#d32f2f;">FOLIO: ${rep.folio}</strong>
@@ -633,19 +632,15 @@ function cambiarPestana(modo) {
                         <div style="font-size:8.5pt; color:#888;">👤 CLIENTE: ${rep.cliente_nombre || ''}</div>
                     </div>
                     <div style="display:flex; gap:6px; flex-wrap: wrap;">
-                        <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">👁️ Ver</button>
-                        <button class="btn-card-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Editar</button>
-                        <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">💰 Cotizar</button>
+                        <button class="btn-act-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">👁️ Ver</button>
+                        <button class="btn-act-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Editar</button>
+                        <button class="btn-act-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">💰 Cotizar</button>
                     </div>
                 `;
 
-                // Asignación de eventos aislados directamente en memoria nativa (Cero fallas)
-                tarjeta.querySelector('.btn-card-ver').addEventListener('click', (e) => { e.stopPropagation(); mostrarVistaPreviaDigital(rep); });
-                tarjeta.querySelector('.btn-card-edit').addEventListener('click', (e) => { e.stopPropagation(); cargarRegistroParaEditar(rep); });
-                tarjeta.querySelector('.btn-card-cotizar').addEventListener('click', (e) => { 
-                    e.stopPropagation(); 
-                    transferirAPresupuesto(rep); 
-                });
+                tarjeta.querySelector('.btn-act-ver').onclick = function() { mostrarVistaPreviaDigital(rep); };
+                tarjeta.querySelector('.btn-act-edit').onclick = function() { cargarRegistroParaEditar(rep); };
+                tarjeta.querySelector('.btn-act-cotizar').onclick = function() { transferirAPresupuesto(rep); };
 
                 contenedor.appendChild(tarjeta);
             });
@@ -659,7 +654,6 @@ function cambiarPestana(modo) {
                     vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
                     vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
                     vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
-                    --
                     vehiculo_color: String(rep.vehiculo_color || '').trim(),
                     vehiculo_km: String(rep.vehiculo_km || '').trim()
                 };
@@ -678,7 +672,7 @@ function cambiarPestana(modo) {
         }
 
         function alternarSubVista(vista) {
-            const tabRec = document.getElementById('subTabRecepcion'); const tabEsc = document.getElementById('subTabEscaner');
+            const tabRec = document.getElementById('subTabReception'); const tabEsc = document.getElementById('subTabEscaner');
             const secRec = document.getElementById('subVistaContenidoRecepcion'); const secEsc = document.getElementById('subVistaContenidoEscaner');
             if (vista === 'recepcion') { tabRec.classList.add('active'); tabEsc.classList.remove('active'); secRec.style.display = 'block'; secEsc.style.display = 'none'; } 
             else { tabRec.classList.remove('active'); tabEsc.classList.add('active'); secRec.style.display = 'none'; secEsc.style.display = 'block'; }
@@ -696,9 +690,95 @@ function cambiarPestana(modo) {
             if (urlDestino && urlDestino.includes('http')) { window.open(urlDestino, '_blank'); }
         }
 
-        async function convertUrlToImageElement(url) {
-            if (!url) return null;
-            return new Promise((resolve) => { const img = new Image(); img.crossOrigin = "anonymous"; img.onload = () => resolve(img); img.onerror = () => resolve(null); img.src = url; });
+        function mostrarVistaPreviaDigital(rep) {
+            reportDataGlobal = rep; alternarSubVista('recepcion');
+            document.getElementById('web_view_folio').innerText = "FOLIO: " + rep.folio;
+            const f = new Date(rep.created_at); document.getElementById('web_view_fecha').innerText = `📅 ${f.toLocaleDateString('es-MX')}  |  🕒 ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
+            document.getElementById('web_view_cliente').innerText = rep.cliente_nombre; document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'NO REGISTRADO';
+            document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || '--'; document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || '--'; document.getElementById('web_view_color').innerText = rep.vehiculo_color || '--'; document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || '--'; document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || '--';
+            
+            if (rep.vehiculo_km) {
+                const partes = rep.vehiculo_km.split(' ');
+                const numero = parseFloat(partes[0]);
+                const unidad = partes[1] || 'KM';
+                document.getElementById('web_view_km').innerText = !isNaN(numero) ? `${numero.toLocaleString()} ${unidad}` : rep.vehiculo_km;
+            } else {
+                document.getElementById('web_view_km').innerText = '--';
+            }
+            
+            const fillGas = rep.vehiculo_gas_nivel; const barWeb = document.getElementById('web_view_gas_fill'); barWeb.style.width = fillGas + "%";
+            if(fillGas <= 25) barWeb.style.background = '#d32f2f'; else if(fillGas >= 75) barWeb.style.background = '#4caf50'; else barWeb.style.background = '#ff9800';
+
+            const setDotWeb = (id, val) => { document.getElementById(id).style.background = val ? '#4caf50' : '#d32f2f'; };
+            setDotWeb('dot_luces', rep.chk_luces); setDotWeb('dot_elevadores', rep.chk_elevadores); setDotWeb('dot_tablero', rep.chk_tablero);
+            document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.';
+            document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'NINGUNO.'; document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'NINGUNO.';
+
+            const iframe = document.getElementById('iframeEscanerLaunch'); const msgNoLink = document.getElementById('noLinkMsg');
+            if (rep.link_escaner && rep.link_escaner.includes('http')) { iframe.src = rep.link_escaner; iframe.style.display = 'block'; msgNoLink.style.display = 'none'; } 
+            else { iframe.src = ""; iframe.style.display = 'none'; msgNoLink.style.display = 'block'; }
+
+            const cargarImgWeb = (id, url) => { const img = document.getElementById(id); if(url) { img.src = url; img.style.display = 'block'; } else { img.src = ""; img.style.display = 'none'; } };
+            cargarImgWeb('web_img_frente', rep.foto_frente_url); cargarImgWeb('web_img_trasera', rep.foto_trasera_url); cargarImgWeb('web_img_izq', rep.foto_izquierdo_url); cargarImgWeb('web_img_der', rep.foto_derecho_url); cargarImgWeb('web_img_motor', rep.foto_motor_url); cargarImgWeb('web_img_cluster', rep.foto_cluster_url);
+
+            document.getElementById('adminPanel').style.display = 'none'; document.getElementById('reportView').style.display = 'block'; window.scrollTo(0, 0);
+            document.getElementById('btnDescargarPDF').onclick = () => generarPDFConJSPDF(false);
+            
+            document.getElementById('btnEnviarWhatsApp').onclick = () => {
+                const cleanPhone = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : '';
+                const baseDomain = window.location.origin;
+                let finalPhone = cleanPhone.length === 11 && cleanPhone.startsWith('1') ? cleanPhone : `52${cleanPhone}`;
+                const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
+                
+                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el reporte de servicio para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
+                if (hasLaunchLink) msg += `📊 *Reporte de Escáner Launch:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
+                msg += `📄 *Descargar PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
+                msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
+
+                window.open(`https://api.whatsapp.com/send?phone=${finalPhone}&text=${encodeURIComponent(msg)}`, '_blank');
+            };
+        }
+
+        function cargarRegistroParaEditar(rep) {
+            reportDataGlobal = rep;
+            document.getElementById('edit_record_id').value = rep.id;
+            document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
+            document.getElementById('btnGuardarForm').innerText = "Actualizar Reporte Cloud";
+
+            document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
+            document.getElementById('in_cliente_telefono').value = rep.cliente_telefono || '';
+            document.getElementById('in_vehiculo_marca').value = rep.vehiculo_marca || '';
+            document.getElementById('in_vehiculo_modelo').value = rep.vehiculo_modelo || '';
+            document.getElementById('in_vehiculo_color').value = rep.vehiculo_color || '';
+            document.getElementById('in_vehiculo_placas').value = rep.vehiculo_placas || '';
+            document.getElementById('in_vehiculo_vin').value = rep.vehiculo_vin || '';
+            
+            if (rep.vehiculo_km) {
+                const partes = rep.vehiculo_km.split(' ');
+                document.getElementById('in_vehiculo_km').value = partes[0] || '';
+                document.getElementById('in_vehiculo_unidad').value = (partes[1] || 'KM').toLowerCase();
+            } else {
+                document.getElementById('in_vehiculo_km').value = '';
+                document.getElementById('in_vehiculo_unidad').value = 'km';
+            }
+            document.getElementById('in_vehiculo_gas').value = rep.vehiculo_gas_nivel ?? 50;
+            document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || '';
+            document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
+            document.getElementById('chk_luces').checked = !!rep.chk_luces;
+            document.getElementById('chk_elevadores').checked = !!rep.chk_elevadores;
+            document.getElementById('chk_tablero').checked = !!rep.chk_tablero;
+            document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || '';
+            document.getElementById('in_link_escaner').value = rep.link_escaner || '';
+
+            const setFormPrev = (imgId, textId, url) => {
+                const img = document.getElementById(imgId); const txt = document.getElementById(textId);
+                if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; } else { img.src=""; img.style.display='none'; txt.style.display='inline'; }
+            };
+            setFormPrev('prev_frente', 'txt_frente', rep.foto_frente_url); setFormPrev('prev_trasera', 'txt_trasera', rep.foto_trasera_url); setFormPrev('prev_izq', 'txt_izq', rep.foto_izquierdo_url); setFormPrev('prev_der', 'txt_der', rep.foto_derecho_url); setFormPrev('prev_motor', 'txt_motor', rep.foto_motor_url); setFormPrev('prev_cluster', 'txt_cluster', rep.foto_cluster_url);
+
+            document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
+            document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
+            if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
         }
 
         async function generarPDFConJSPDF(autoDownloadAndClose = false) {
