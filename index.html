@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AE Diagnóstico</title>
+    <title>AE Diagnóstico - Sistema de Reportes</title>
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#111111">
+
+    <link rel="manifest" href="manifest.json">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -108,6 +104,10 @@
         .scanner-frame-container { width: 100%; height: 650px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #fff; display: none; }
         .scanner-frame-container iframe { width: 100%; height: 100%; border: none; }
 
+        /* 📱 PANTALLA DE MÁSCARA TOTAL PARA EL CLIENTE (LAUNCH DISFRAZADO) */
+        .mask-fullscreen-view { display: none; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: #fff; z-index: 99999; }
+        .mask-fullscreen-view iframe { width: 100%; height: 100%; border: none; }
+
         /* ================= PANTALLA DE BLOQUEO POR PIN ================= */
         .pin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111111; z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .pin-container { text-align: center; width: 100%; max-width: 290px; padding: 10px; }
@@ -123,6 +123,10 @@
     </style>
 </head>
 <body>
+
+    <div id="maskFullscreenView" class="mask-fullscreen-view">
+        <iframe id="iframeFullscreenEscaner" src=""></iframe>
+    </div>
 
     <div id="pin-lock-screen" class="pin-overlay">
         <div class="pin-container">
@@ -214,7 +218,6 @@
             </div>
 
             <div class="form-section">
-                <div class="form-section-title">Checklist Eléctrico Inicial</div>
                 <div class="checklist-grid">
                     <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores OK</label>
                     <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros OK</label>
@@ -258,9 +261,12 @@
     </div>
 
     <div id="reportView" class="report-view">
-        <div style="max-width: 780px; margin: 0 auto 15px auto; display: flex; gap: 10px;">
-            <button class="btn-submit" style="background:#d32f2f; margin:0; flex:1;" onclick="regresarAlFormulario()">← Volver al Panel</button>
-            <button id="btnDescargarPDF" class="btn-submit" style="background:#2e7d32; margin:0; flex:2;">📥 Descargar PDF Premium</button>
+        <div style="max-width: 780px; margin: 0 auto 15px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
+            <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF Local</button>
+            <button id="btnEnviarWhatsapp" class="btn-submit" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span>💬 Enviar Reporte por WhatsApp</span>
+            </button>
         </div>
         
         <div class="report-scroll-container">
@@ -359,46 +365,42 @@
         let listaReportesMemoria = [];
         const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
-// 🚀 DETECTOR DE REPORTES LAUNCH ENMASCARADO (Mantiene tu dominio visible)
+        // 🎭 DETECTOR DE ENLACES EXTERNOS (MÁSCARA LAUNCH / AUTO-PDF COMPILADOR)
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const scanFolio = urlParams.get('scan'); 
+            const pdfFolio = urlParams.get('pdf');
 
+            // Caso A: Cliente escaneó link de lectura de Launch (?scan=AE-XXXX)
             if (scanFolio) {
-                // Conectamos a Supabase para traer el enlace original de Launch
-                const { data: reporte, error } = await supabaseClient
-                    .from('reportes_servicio')
-                    .select('link_escaner')
-                    .eq('folio', scanFolio.toUpperCase())
-                    .single();
-
+                const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('link_escaner').eq('folio', scanFolio.toUpperCase()).single();
                 if (!error && reporte && reporte.link_escaner) {
-                    // Enmascaramos el reporte metiendo un iframe que cubra el 100% de la pantalla
-                    document.body.innerHTML = `
-                        <div style="margin:0; padding:0; width:100vw; height:100vh; overflow:hidden; background:#0f172a; position:fixed; top:0; left:0; z-index:99999;">
-                            <iframe 
-                                src="${reporte.link_escaner}" 
-                                style="width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden;" 
-                                sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-                                referrerpolicy="no-referrer">
-                            </iframe>
-                        </div>
-                    `;
+                    document.getElementById('iframeFullscreenEscaner').src = reporte.link_escaner;
+                    document.getElementById('maskFullscreenView').style.display = 'block';
+                    document.getElementById('pin-lock-screen').style.display = 'none';
                     return;
                 } else {
-                    document.body.innerHTML = `
-                        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; background:#0f172a; color:white; padding:20px; text-align:center;">
-                            <h2 style="color:#ef4444;">⚠️ Reporte No Encontrado</h2>
-                            <p>El folio <strong>${scanFolio.toUpperCase()}</strong> no tiene un reporte de escáner registrado o es inválido.</p>
-                        </div>
-                    `;
+                    document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTES LAUNCH NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico Launch registrado.</p></div></div>`;
                     return;
                 }
             }
 
-            if (localStorage.getItem('ae_sesion_valida') === 'true') {
-                mostrarPanel();
+            // Caso B: Cliente abrió el enlace de su PDF de recepción (?pdf=AE-XXXX)
+            if (pdfFolio) {
+                document.body.innerHTML = `<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;"><div style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;"></div><p style="margin-top:20px;font-size:11pt;font-weight:bold;letter-spacing:0.5px;">GENERANDO SU ARCHIVO PDF EN TIEMPO REAL...</p></div><style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
+                
+                const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', pdfFolio.toUpperCase()).single();
+                if (!error && reporte) {
+                    reportDataGlobal = reporte;
+                    await generarPDFConJSPDF(true); // Genera y descarga el PDF de forma automática
+                    return;
+                } else {
+                    document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ ERROR</h2><p>El folio ingresado no existe en nuestra base de datos.</p></div></div>`;
+                    return;
+                }
             }
+
+            if (localStorage.getItem('ae_sesion_valida') === 'true') mostrarPanel();
         });
 
         function pressNum(num) {
@@ -480,28 +482,19 @@
             const editId = document.getElementById('edit_record_id').value;
             const isEditing = editId !== "";
 
-            // 📌 SEGURIDAD EXTRA EN PROGRAMACIÓN: Validación redundante de longitudes en guardado
             const telVal = document.getElementById('in_cliente_telefono').value.trim();
             const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
-            if (telVal.length > 0 && telVal.length !== 10) {
-                alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS.");
-                return;
-            }
-            if (vinVal.length > 0 && vinVal.length !== 17) {
-                alert("⚠️ EL NÚMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES.");
-                return;
-            }
+            if (telVal.length > 0 && telVal.length !== 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
+            if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NÚMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
 
             const textoOriginal = btnSubmit.innerText;
             btnSubmit.innerText = "⏳ PROCESANDO Y ALMACENANDO EN LA NUBE..."; btnSubmit.disabled = true;
 
-let folioCalculado = "";
-            if (isEditing) {
-                folioCalculado = reportDataGlobal.folio;
-            } else {
-                // Generador de folio aleatorio seguro (Ej: AE-K8X2)
-                const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Evitamos letras y números confusos
+            let folioCalculado = "";
+            if (isEditing) { folioCalculado = reportDataGlobal.folio; } 
+            else { 
+                const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
                 let parteAleatoria = '';
                 for (let i = 0; i < 4; i++) {
                     parteAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
@@ -546,19 +539,12 @@ let folioCalculado = "";
                 if(urlCluster) payload.foto_cluster_url = urlCluster;
 
                 let error = null;
-                if (isEditing) {
-                    const { error: errUpdate } = await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId);
-                    error = errUpdate;
-                } else {
-                    payload.folio = folioCalculado;
-                    const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]);
-                    error = errInsert;
-                }
+                if (isEditing) { const { error: errUpdate } = await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId); error = errUpdate; } 
+                else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
 
                 if (error) throw error;
                 alert(isEditing ? "✅ REGISTRO ACTUALIZADO CON ÉXITO EN LA NUBE." : "✅ REPORTE ALMACENADO CON ÉXITO.");
-                limpiarFormularioCompleto();
-                cambiarPestana('historial');
+                limpiarFormularioCompleto(); cargarHistorialSupabase(); cambiarPestana('historial');
             } catch (err) { alert("❌ ERROR: " + err.message); }
             finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
         }
@@ -568,15 +554,12 @@ let folioCalculado = "";
             contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
             const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false });
             if (error) { contenedor.innerHTML = `<p style="color:red; font-size:10pt;">Error: ${error.message}</p>`; return; }
-            
-            listaReportesMemoria = reportes;
-            inyectarTarjetasHistorial(listaReportesMemoria);
+            listaReportesMemoria = reportes; inyectarTarjetasHistorial(listaReportesMemoria);
         }
 
         function inyectarTarjetasHistorial(arr) {
             const contenedor = document.getElementById('listaReportes');
             if (arr.length === 0) { contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">Sin reportes que coincidan.</p>'; return; }
-            
             contenedor.innerHTML = "";
             arr.forEach(rep => {
                 const tarjeta = document.createElement('div');
@@ -599,9 +582,7 @@ let folioCalculado = "";
         function filtrarHistorial() {
             const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
             if(!query) { inyectarTarjetasHistorial(listaReportesMemoria); return; }
-            const filtrados = listaReportesMemoria.filter(rep => 
-                rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query))
-            );
+            const filtrados = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
             inyectarTarjetasHistorial(filtrados);
         }
 
@@ -620,10 +601,8 @@ let folioCalculado = "";
             document.getElementById('in_vehiculo_vin').value = rep.vehiculo_vin || '';
             document.getElementById('in_vehiculo_km').value = rep.vehiculo_km || '';
             document.getElementById('in_vehiculo_gas').value = rep.vehiculo_gas_nivel ?? 50;
-
             document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || '';
             document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
-            
             document.getElementById('chk_luces').checked = !!rep.chk_luces;
             document.getElementById('chk_elevadores').checked = !!rep.chk_elevadores;
             document.getElementById('chk_tablero').checked = !!rep.chk_tablero;
@@ -631,99 +610,67 @@ let folioCalculado = "";
             document.getElementById('in_link_escaner').value = rep.link_escaner || '';
 
             const setFormPrev = (imgId, textId, url) => {
-                const img = document.getElementById(imgId);
-                const txt = document.getElementById(textId);
-                if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; }
-                else { img.src=""; img.style.display='none'; txt.style.display='inline'; }
+                const img = document.getElementById(imgId); const txt = document.getElementById(textId);
+                if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; } else { img.src=""; img.style.display='none'; txt.style.display='inline'; }
             };
-            setFormPrev('prev_frente', 'txt_frente', rep.foto_frente_url);
-            setFormPrev('prev_trasera', 'txt_trasera', rep.foto_trasera_url);
-            setFormPrev('prev_izq', 'txt_izq', rep.foto_izquierdo_url);
-            setFormPrev('prev_der', 'txt_der', rep.foto_derecho_url);
-            setFormPrev('prev_motor', 'txt_motor', rep.foto_motor_url);
-            setFormPrev('prev_cluster', 'txt_cluster', rep.foto_cluster_url);
+            setFormPrev('prev_frente', 'txt_frente', rep.foto_frente_url); setFormPrev('prev_trasera', 'txt_trasera', rep.foto_trasera_url); setFormPrev('prev_izq', 'txt_izq', rep.foto_izquierdo_url); setFormPrev('prev_der', 'txt_der', rep.foto_derecho_url); setFormPrev('prev_motor', 'txt_motor', rep.foto_motor_url); setFormPrev('prev_cluster', 'txt_cluster', rep.foto_cluster_url);
 
-            document.getElementById('formularioSection').style.display = 'block';
-            document.getElementById('historialSection').style.display = 'none';
-            document.getElementById('btnTabNuevo').style.background = '#d32f2f';
-            document.getElementById('btnTabHistorial').style.background = '#555';
-            window.scrollTo(0,0);
+            document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
+            document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
         }
 
         function alternarSubVista(vista) {
-            const tabRec = document.getElementById('subTabRecepcion');
-            const tabEsc = document.getElementById('subTabEscaner');
-            const secRec = document.getElementById('subVistaContenidoRecepcion');
-            const secEsc = document.getElementById('subVistaContenidoEscaner');
-
-            if (vista === 'recepcion') {
-                tabRec.classList.add('active'); tabEsc.classList.remove('active');
-                secRec.style.display = 'block'; secEsc.style.display = 'none';
-            } else {
-                tabRec.classList.remove('active'); tabEsc.classList.add('active');
-                secRec.style.display = 'none'; secEsc.style.display = 'block';
-            }
+            const tabRec = document.getElementById('subTabRecepcion'); const tabEsc = document.getElementById('subTabEscaner');
+            const secRec = document.getElementById('subVistaContenidoRecepcion'); const secEsc = document.getElementById('subVistaContenidoEscaner');
+            if (vista === 'recepcion') { tabRec.classList.add('active'); tabEsc.classList.remove('active'); secRec.style.display = 'block'; secEsc.style.display = 'none'; } 
+            else { tabRec.classList.remove('active'); tabEsc.classList.add('active'); secRec.style.display = 'none'; secEsc.style.display = 'block'; }
         }
 
         function mostrarVistaPreviaDigital(rep) {
-            reportDataGlobal = rep;
-            alternarSubVista('recepcion');
-            
+            reportDataGlobal = rep; alternarSubVista('recepcion');
             document.getElementById('web_view_folio').innerText = "FOLIO: " + rep.folio;
-            const f = new Date(rep.created_at);
-            document.getElementById('web_view_fecha').innerText = `📅 ${f.toLocaleDateString('es-MX')}  |  🕒 ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
+            const f = new Date(rep.created_at); document.getElementById('web_view_fecha').innerText = `📅 ${f.toLocaleDateString('es-MX')}  |  🕒 ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
+            document.getElementById('web_view_cliente').innerText = rep.cliente_nombre; document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'NO REGISTRADO';
+            document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || '--'; document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || '--'; document.getElementById('web_view_color').innerText = rep.vehiculo_color || '--'; document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || '--'; document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || '--'; document.getElementById('web_view_km').innerText = rep.vehiculo_km ? `${Number(rep.vehiculo_km).toLocaleString()} KM` : '--';
             
-            document.getElementById('web_view_cliente').innerText = rep.cliente_nombre;
-            document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'NO REGISTRADO';
-            
-            document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || '--';
-            document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || '--';
-            document.getElementById('web_view_color').innerText = rep.vehiculo_color || '--';
-            document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || '--';
-            document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || '--';
-            document.getElementById('web_view_km').innerText = rep.vehiculo_km ? `${Number(rep.vehiculo_km).toLocaleString()} KM` : '--';
-            
-            const fillGas = rep.vehiculo_gas_nivel;
-            const barWeb = document.getElementById('web_view_gas_fill');
-            barWeb.style.width = fillGas + "%";
-            if(fillGas <= 25) barWeb.style.background = '#d32f2f';
-            else if(fillGas >= 75) barWeb.style.background = '#4caf50';
-            else barWeb.style.background = '#ff9800';
+            const fillGas = rep.vehiculo_gas_nivel; const barWeb = document.getElementById('web_view_gas_fill'); barWeb.style.width = fillGas + "%";
+            if(fillGas <= 25) barWeb.style.background = '#d32f2f'; else if(fillGas >= 75) barWeb.style.background = '#4caf50'; else barWeb.style.background = '#ff9800';
 
             const setDotWeb = (id, val) => { document.getElementById(id).style.background = val ? '#4caf50' : '#d32f2f'; };
             setDotWeb('dot_luces', rep.chk_luces); setDotWeb('dot_elevadores', rep.chk_elevadores); setDotWeb('dot_tablero', rep.chk_tablero);
             document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.';
+            document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'NINGUNO.'; document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'NINGUNO.';
 
-            document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'NINGUNO.';
-            document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'NINGUNO.';
+            const iframe = document.getElementById('iframeEscanerLaunch'); const msgNoLink = document.getElementById('noLinkMsg');
+            if (rep.link_escaner && rep.link_escaner.includes('http')) { iframe.src = rep.link_escaner; iframe.style.display = 'block'; msgNoLink.style.display = 'none'; } 
+            else { iframe.src = ""; iframe.style.display = 'none'; msgNoLink.style.display = 'block'; }
 
-            const iframe = document.getElementById('iframeEscanerLaunch');
-            const msgNoLink = document.getElementById('noLinkMsg');
-            if (rep.link_escaner && rep.link_escaner.includes('http')) {
-                iframe.src = rep.link_escaner;
-                iframe.style.display = 'block'; msgNoLink.style.display = 'none';
-            } else {
-                iframe.src = "";
-                iframe.style.display = 'none'; msgNoLink.style.display = 'block';
-            }
+            const cargarImgWeb = (id, url) => { const img = document.getElementById(id); if(url) { img.src = url; img.style.display = 'block'; } else { img.src = ""; img.style.display = 'none'; } };
+            cargarImgWeb('web_img_frente', rep.foto_frente_url); cargarImgWeb('web_img_trasera', rep.foto_trasera_url); cargarImgWeb('web_img_izq', rep.foto_izquierdo_url); cargarImgWeb('web_img_der', rep.foto_derecho_url); cargarImgWeb('web_img_motor', rep.foto_motor_url); cargarImgWeb('web_img_cluster', rep.foto_cluster_url);
 
-            const cargarImgWeb = (id, url) => {
-                const img = document.getElementById(id);
-                if(url) { img.src = url; img.style.display = 'block'; }
-                else { img.src = ""; img.style.display = 'none'; }
-            };
-            cargarImgWeb('web_img_frente', rep.foto_frente_url);
-            cargarImgWeb('web_img_trasera', rep.foto_trasera_url);
-            cargarImgWeb('web_img_izq', rep.foto_izquierdo_url);
-            cargarImgWeb('web_img_der', rep.foto_derecho_url);
-            cargarImgWeb('web_img_motor', rep.foto_motor_url);
-            cargarImgWeb('web_img_cluster', rep.foto_cluster_url);
-
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('reportView').style.display = 'block';
-            window.scrollTo(0, 0);
+            document.getElementById('adminPanel').style.display = 'none'; document.getElementById('reportView').style.display = 'block'; window.scrollTo(0, 0);
             
-            document.getElementById('btnDescargarPDF').onclick = generarPDFConJSPDF;
+            document.getElementById('btnDescargarPDF').onclick = () => generarPDFConJSPDF(false);
+            
+            // 📞 MOTOR DE ENVÍO POR WHATSAPP AUTOMÁTICO
+            document.getElementById('btnEnviarWhatsapp').onclick = () => {
+                const cleanPhone = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : '';
+                const baseDomain = window.location.origin; // Ej: https://aediagnostico.com
+
+                const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
+                
+                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el reporte de servicio para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
+                
+                if (hasLaunchLink) {
+                    msg += `📊 *Reporte de Escáner Launch:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
+                }
+                
+                msg += `📄 *Descargar PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
+                msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
+
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=52${cleanPhone}&text=${encodeURIComponent(msg)}`;
+                window.open(whatsappUrl, '_blank');
+            };
         }
 
         function abrirCalidadOriginal(tipoFoto) {
@@ -735,69 +682,40 @@ let folioCalculado = "";
             else if(tipoFoto === 'der') urlDestino = reportDataGlobal.foto_derecho_url;
             else if(tipoFoto === 'motor') urlDestino = reportDataGlobal.foto_motor_url;
             else if(tipoFoto === 'cluster') urlDestino = reportDataGlobal.foto_cluster_url;
-
-            if (urlDestino && urlDestino.includes('http')) {
-                window.open(urlDestino, '_blank');
-            }
+            if (urlDestino && urlDestino.includes('http')) { window.open(urlDestino, '_blank'); }
         }
 
         async function convertUrlToImageElement(url) {
             if (!url) return null;
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.crossOrigin = "anonymous";
-                img.onload = () => resolve(img);
-                img.onerror = () => resolve(null);
-                img.src = url;
-            });
+            return new Promise((resolve) => { const img = new Image(); img.crossOrigin = "anonymous"; img.onload = () => resolve(img); img.onerror = () => resolve(null); img.src = url; });
         }
 
         // ================= MOTOR NATIVO BINARIO IMPRESIÓN ASIMÉTRICA CON JSPDF (2 PÁGINAS FIJAS) =================
-        async function generarPDFConJSPDF() {
-            const btn = document.getElementById('btnDescargarPDF');
-            btn.innerText = "⏳ COMPILANDO DOCUMENTO PREMIUM..."; btn.disabled = true;
+        async function generarPDFConJSPDF(autoDownloadAndClose = false) {
+            const btn = document.getElementById('btnDescargarPDF'); 
+            if(!autoDownloadAndClose) { btn.innerText = "⏳ COMPILANDO DOCUMENTO PREMIUM..."; btn.disabled = true; }
+            
+            const rep = reportDataGlobal; const { jsPDF } = window.jspdf; const doc = new jsPDF('p', 'mm', 'a4');
+            const f = new Date(rep.created_at); const fechaTxt = `${f.toLocaleDateString('es-MX')}  |  ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
 
-            const rep = reportDataGlobal;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-
-            const f = new Date(rep.created_at);
-            const fechaTxt = `${f.toLocaleDateString('es-MX')}  |  ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
-
-            const pintarFondoBase = () => {
-                doc.setFillColor(211, 47, 47); doc.rect(0, 0, 8, 297, 'F');
-            };
-
-            // 📌 PIE DE PÁGINA REORDENADO A UN MÁXIMO DE 2 PÁGINAS EXACTAS
-            const pintarPiePagina = (num) => {
-                doc.setFillColor(26, 26, 26); doc.rect(8, 289, 202, 8, 'F');
-                doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255);
-                doc.text(`PÁGINA ${num} DE 2`, 110, 294.2, { align: 'center' }); // Modificado el total a 2 hojas
-            };
-
+            const pintarFondoBase = () => { doc.setFillColor(211, 47, 47); doc.rect(0, 0, 8, 297, 'F'); };
+            const pintarPiePagina = (num) => { doc.setFillColor(26, 26, 26); doc.rect(8, 289, 202, 8, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255); doc.text(`PÁGINA ${num} DE 2`, 110, 294.2, { align: 'center' }); };
+            
             const dibujarIconoUsuario = (x, y) => { doc.setFillColor(211, 47, 47); doc.circle(x + 2, y - 1.5, 1.2, 'F'); doc.ellipse(x + 2, y + 1.5, 2.5, 1, 'F'); };
             const dibujarIconoAuto = (x, y) => { doc.setFillColor(211, 47, 47); doc.rect(x, y - 0.5, 5, 2, 'F'); doc.rect(x + 0.8, y - 2, 3.4, 1.8, 'F'); doc.setFillColor(26, 26, 26); doc.circle(x + 1.2, y + 1.8, 0.6, 'F'); doc.circle(x + 3.8, y + 1.8, 0.6, 'F'); };
             const dibujarIconoRayo = (x, y) => { doc.setFillColor(211, 47, 47); doc.triangle(x + 2, y - 3, x, y + 0.5, x + 2.2, y + 0.5, 'F'); doc.triangle(x + 1.2, y + 3, x + 3.4, y - 0.5, x + 1.2, y - 0.5, 'F'); };
             const dibujarIconoLlave = (x, y) => { doc.setDrawColor(211, 47, 47); doc.setLineWidth(1); doc.line(x, y + 2, x + 4, y - 2); doc.setFillColor(211, 47, 47); doc.circle(x + 4, y - 2, 1.2, 'F'); };
 
-            const pintarCheckFila = (txt, val, x, y) => {
-                doc.setFillColor(val ? 76 : 211, val ? 175 : 47, val ? 80 : 47);
-                doc.circle(x + 2, y - 1, 1.5, 'F');
-                doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(val ? 46 : 198, val ? 125 : 40, val ? 50 : 40); doc.text(val ? "OK" : "FALLA", x + 6, y);
-                doc.setFont("helvetica", "normal"); doc.setTextColor(60, 60, 65); doc.text(txt, x + 20, y);
-            };
+            const pintarCheckFila = (txt, val, x, y) => { doc.setFillColor(val ? 76 : 211, val ? 175 : 47, val ? 80 : 47); doc.circle(x + 2, y - 1, 1.5, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(val ? 46 : 198, val ? 125 : 40, val ? 50 : 40); doc.text(val ? "OK" : "FALLA", x + 6, y); doc.setFont("helvetica", "normal"); doc.setTextColor(60, 60, 65); doc.text(txt, x + 20, y); };
 
             let imgLogo = await convertUrlToImageElement('logo.png');
 
-            // ================= HOJA 1: INFORMACIÓN GENERAL Y RECEPCIÓN =================
+            // --- HOJA 1 ---
             pintarFondoBase(); doc.setFillColor(26, 26, 26); doc.rect(8, 0, 202, 28, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(1.5); doc.line(8, 28, 210, 28);
-            doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("REPORTE DE SERVICIO", 20, 11);
-            doc.setFontSize(9.5); doc.setTextColor(211, 47, 47); doc.text(`FOLIO: ${rep.folio}`, 20, 17); doc.setTextColor(200, 200, 200); doc.text(fechaTxt, 20, 22);
-
+            doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("REPORTE DE SERVICIO", 20, 11); doc.setFontSize(9.5); doc.setTextColor(211, 47, 47); doc.text(`FOLIO: ${rep.folio}`, 20, 17); doc.setTextColor(200, 200, 200); doc.text(fechaTxt, 20, 22);
             if (imgLogo) { let maxH = 14; let ratio = imgLogo.width / imgLogo.height; doc.addImage(imgLogo, 'PNG', 200 - (maxH * ratio), 7, maxH * ratio, maxH); }
 
-            dibujarIconoUsuario(20, 40); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL CLIENTE", 28, 42);
-            doc.setDrawColor(230, 232, 235); doc.setLineWidth(0.5); doc.line(20, 45, 200, 45);
+            dibujarIconoUsuario(20, 40); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL CLIENTE", 28, 42); doc.setDrawColor(230, 232, 235); doc.setLineWidth(0.5); doc.line(20, 45, 200, 45);
             doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("NOMBRE COMPLETO", 20, 52); doc.text("TELÉFONO DE CONTACTO", 120, 52);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.cliente_nombre, 20, 57); doc.text(rep.cliente_telefono || '--', 120, 57);
 
@@ -807,44 +725,28 @@ let folioCalculado = "";
             doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("PLACAS", 20, 102); doc.text("NÚMERO DE SERIE (VIN)", 75, 102); doc.text("KILOMETRAJE", 150, 102);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_placas || '--', 20, 107); doc.text(rep.vehiculo_vin || '--', 75, 107); doc.text(`${rep.vehiculo_km ? Number(rep.vehiculo_km).toLocaleString() : '--'} KM`, 150, 107);
 
-            let yGas = 120; doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("NIVEL DE COMBUSTIBLE EN TABLERO", 20, yGas);
-            doc.setFillColor(235, 237, 240); doc.rect(20, yGas + 2, 180, 3.5, 'F');
-            let fillGas = rep.vehiculo_gas_nivel;
-            if (fillGas > 0) {
-                if(fillGas <= 25) doc.setFillColor(211, 47, 47); else if(fillGas >= 75) doc.setFillColor(76, 175, 80); else doc.setFillColor(255, 152, 0);
-                doc.rect(20, yGas + 2, (fillGas / 100) * 180, 3.5, 'F');
-            }
+            let yGas = 120; doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("NIVEL DE COMBUSTIBLE EN TABLERO", 20, yGas); doc.setFillColor(235, 237, 240); doc.rect(20, yGas + 2, 180, 3.5, 'F');
+            let fillGas = rep.vehiculo_gas_nivel; if (fillGas > 0) { if(fillGas <= 25) doc.setFillColor(211, 47, 47); else if(fillGas >= 75) doc.setFillColor(76, 175, 80); else doc.setFillColor(255, 152, 0); doc.rect(20, yGas + 2, (fillGas / 100) * 180, 3.5, 'F'); }
             doc.setFontSize(7.5); doc.setTextColor(140, 140, 145); doc.text("E (VACÍO)", 20, yGas + 9); doc.text("1/2", 108, yGas + 9); doc.text("F (LLENO)", 193, yGas + 9);
 
             dibujarIconoRayo(20, 143); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("CHECKLIST ELÉCTRICO INICIAL", 28, 145); doc.line(20, 148, 200, 148);
             pintarCheckFila("LUCES E INDICADORES", rep.chk_luces, 20, 156); pintarCheckFila("ELEVADORES Y SEGUROS", rep.chk_elevadores, 110, 156); pintarCheckFila("TESTIGOS EN TABLERO", rep.chk_tablero, 20, 164);
 
             let yCheckNotes = 171; doc.setFillColor(248, 249, 251); doc.rect(20, yCheckNotes, 180, 14, 'F'); doc.setDrawColor(180, 180, 185); doc.setLineWidth(0.3); doc.line(20, yCheckNotes, 20, yCheckNotes + 14);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(100, 100, 105); doc.text("NOTAS DEL CHECKLIST SISTEMA ELÉCTRICO:", 24, yCheckNotes + 5);
-            doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.', 24, yCheckNotes + 10);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(100, 100, 105); doc.text("NOTAS DEL CHECKLIST SISTEMA ELÉCTRICO:", 24, yCheckNotes + 5); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.', 24, yCheckNotes + 10);
 
             let yDiagSec = 196; dibujarIconoLlave(20, yDiagSec + 2); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DIAGNÓSTICO TÉCNICO", 28, yDiagSec + 4); doc.setDrawColor(230, 232, 235); doc.line(20, yDiagSec + 6, 200, yDiagSec + 6);
             
-            const pintarBloqueDiagnostico = (titulo, cuerpo, y) => {
-                doc.setFillColor(248, 249, 251); doc.rect(20, y, 180, 21, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(0.8); doc.line(20, y, 20, y + 21);
-                doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 120, 125); doc.text(titulo, 24, y + 5);
-                doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(cuerpo || 'NINGUNO.', 24, y + 11, { maxWidth: 172 });
-            };
-            pintarBloqueDiagnostico("MOTIVO DEL INGRESO / SÍNTOMAS REPORTADOS POR EL CLIENTE", rep.motivo_ingreso, yDiagSec + 11);
-            pintarBloqueDiagnostico("OBSERVACIONES GENERALES DEL DIAGNÓSTICO MECÁNICO", rep.observaciones_diagnostico, yDiagSec + 36);
+            const pintarBloqueDiagnostico = (titulo, cuerpo, y) => { doc.setFillColor(248, 249, 251); doc.rect(20, y, 180, 21, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(0.8); doc.line(20, y, 20, y + 21); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 120, 125); doc.text(titulo, 24, y + 5); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(cuerpo || 'NINGUNO.', 24, y + 11, { maxWidth: 172 }); };
+            pintarBloqueDiagnostico("MOTIVO DEL INGRESO / SÍNTOMAS REPORTADOS POR EL CLIENTE", rep.motivo_ingreso, yDiagSec + 11); pintarBloqueDiagnostico("OBSERVACIONES GENERALES DEL DIAGNÓSTICO MECÁNICO", rep.observaciones_diagnostico, yDiagSec + 36);
             pintarPiePagina(1);
 
-            // ================= HOJA 2: EVIDENCIA FOTOGRÁFICA MÍNIMALISTA =================
+            // --- HOJA 2 ---
             doc.addPage(); pintarFondoBase(); doc.setFillColor(26, 26, 26); doc.rect(8, 0, 202, 28, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(1.5); doc.line(8, 28, 210, 28);
             doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("EVIDENCIA FOTOGRÁFICA", 20, 16);
             if (imgLogo) { let ratio = imgLogo.width / imgLogo.height; doc.addImage(imgLogo, 'PNG', 200 - (14 * ratio), 7, 14 * ratio, 14); }
 
-            const fotosPDF = [
-                { url: rep.foto_frente_url, label: '1. FRENTE DEL VEHÍCULO' }, { url: rep.foto_trasera_url, label: '2. PARTE TRASERA' },
-                { url: rep.foto_izquierdo_url, label: '3. LADO IZQUIERDO' }, { url: rep.foto_derecho_url, label: '4. LADO DERECHO' },
-                { url: rep.foto_motor_url, label: '5. MOTOR' }, { url: rep.foto_cluster_url, label: '6. CLUSTER / TABLERO' }
-            ];
-
+            const fotosPDF = [ { url: rep.foto_frente_url, label: '1. FRENTE DEL VEHÍCULO' }, { url: rep.foto_trasera_url, label: '2. PARTE TRASERA' }, { url: rep.foto_izquierdo_url, label: '3. LADO IZQUIERDO' }, { url: rep.foto_derecho_url, label: '4. LADO DERECHO' }, { url: rep.foto_motor_url, label: '5. MOTOR' }, { url: rep.foto_cluster_url, label: '6. CLUSTER / TABLERO' } ];
             let coords = [{ x: 20, y: 36 }, { x: 115, y: 36 }, { x: 20, y: 115 }, { x: 115, y: 115 }, { x: 20, y: 194 }, { x: 115, y: 194 }];
             for (let i = 0; i < fotosPDF.length; i++) {
                 let imgEl = await convertUrlToImageElement(fotosPDF[i].url); let c = coords[i];
@@ -852,10 +754,16 @@ let folioCalculado = "";
                 else { doc.setFillColor(245, 246, 248); doc.rect(c.x, c.y, 85, 62, 'F'); doc.setFontSize(8); doc.setTextColor(160, 160, 165); doc.text("FOTO NO DISPONIBLE", c.x + 26, c.y + 31); }
                 doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor(90, 90, 95); doc.text(fotosPDF[i].label, c.x + 1, c.y + 67);
             }
-            pintarPiePagina(2); // Cierre final en la página 2
+            pintarPiePagina(2);
 
             doc.save(`REPORTE_SERVICIO_${rep.folio}.pdf`);
-            btn.innerText = "📥 DESCARGAR PDF PREMIUM"; btn.disabled = false;
+            
+            if (autoDownloadAndClose) {
+                // Si es modo cliente con el link ?pdf=, cerramos la pestaña tras forzar la descarga
+                setTimeout(() => { window.close(); }, 1500);
+            } else {
+                btn.innerText = "📥 PDF Local"; btn.disabled = false;
+            }
         }
     </script>
 </body>
