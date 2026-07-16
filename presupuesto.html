@@ -357,33 +357,36 @@
     }
 
 function procesarYDescargarPresupuesto() {
-    const template = document.getElementById('printable-canvas');
-    const inputs = template.querySelectorAll('input');
-    
-    // Convertir inputs a texto plano para que no se corten
-    inputs.forEach(input => {
-        const span = document.createElement('span');
-        span.className = 'print-tmp-text';
-        span.style.cssText = "font-size: 9pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
-        span.innerText = input.value || '---';
-        input.parentNode.insertBefore(span, input);
-        input.style.display = 'none';
-    });
+        const template = document.getElementById('printable-canvas');
+        
+        // 1. Llenamos las tablas estáticas ANTES de procesar
+        llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
+        llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
+        llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
 
-    const opt = {
-        margin: 0,
-        filename: 'Presupuesto_AE_Diagnostico.pdf',
-        image: { type: 'jpeg', quality: 1.0 },
-        html2canvas: { scale: 2, useCORS: true }, // Reduje escala para evitar desbordes
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+        // 2. Ocultamos los botones de control para que no aparezcan en el PDF
+        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'none');
 
-    html2pdf().from(template).set(opt).save().then(() => {
-        // Regresar a la normalidad
-        template.querySelectorAll('.print-tmp-text').forEach(s => s.remove());
-        inputs.forEach(i => i.style.display = '');
-    });
-}
+        // 3. Configuración de captura HD (sin tocar los inputs del DOM)
+        const opt = {
+            margin: 0,
+            filename: 'Presupuesto_AE.pdf',
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                letterRendering: true,
+                width: 800, // Fuerza el ancho exacto del canvas
+                windowWidth: 800 
+            },
+            jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
+        };
+
+        // 4. Generar y restaurar
+        html2pdf().from(template).set(opt).save().then(() => {
+            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'inline-flex');
+        });
+    }
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
