@@ -373,6 +373,42 @@ window.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
         });
     }
+    function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
+        const tbody = document.querySelector(`#${targetTblId} tbody`);
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        let suma = 0;
+        
+        // Buscamos los renglones interactivos que creaste en la pantalla
+        const filas = document.querySelectorAll(`#${origListId} .table-row`);
+        
+        filas.forEach(row => {
+            const descInput = row.querySelector('.desc-input');
+            const priceInput = row.querySelector('.price-input');
+            
+            if (descInput && priceInput) {
+                const desc = descInput.value.toUpperCase().trim();
+                const precio = parseFloat(priceInput.value) || 0;
+                
+                if (desc) {
+                    suma += precio;
+                    const tr = document.createElement('tr');
+                    // Inyectamos el texto limpio a la tabla que se va a fotografiar
+                    tr.innerHTML = `<td style="padding: 6px 10px; font-size: 7.5pt; border-bottom: 1px dashed #e2e8f0; text-transform: uppercase;">${desc}</td><td style="padding: 6px 10px; font-size: 7.5pt; border-bottom: 1px dashed #e2e8f0; text-align: right; font-weight: 700;">$${precio.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>`;
+                    tbody.appendChild(tr);
+                }
+            }
+        });
+
+        // Si la tabla se quedó vacía, le ponemos un indicador elegante
+        if (tbody.children.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #aaa; font-style: italic; font-size: 7.5pt; padding: 15px 0;">- Sin conceptos registrados -</td></tr>';
+        }
+        
+        if(document.getElementById(targetTotalId)) {
+            document.getElementById(targetTotalId).innerText = `$${suma.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+        }
+    }
 </script>
 </body>
 </html>
