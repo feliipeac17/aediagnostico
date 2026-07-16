@@ -684,9 +684,10 @@
                 let msg = `Hola *${rep.cliente_nombre}!* Te compartimos el Reporte de Servicio y Escaneo para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
                 
                 if (hasLaunchLink) {
-                    msg += `📊 *Reporte de Escáner:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
+                    msg += `📊 *Reporte de Escáneo:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
                 }
 
+                msg += `📄 *Reporte de Servicio:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
                 msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
 
                 const whatsappUrl = `https://api.whatsapp.com/send?phone=52${cleanPhone}&text=${encodeURIComponent(msg)}`;
