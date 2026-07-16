@@ -476,7 +476,7 @@
             }
         }
 
-        function cambiarPestana(modo) {
+function cambiarPestana(modo) {
             document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
             document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
             document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
@@ -490,6 +490,7 @@
                 if(document.getElementById('btnCancelarEdicion')) {
                     document.getElementById('btnCancelarEdicion').style.display = 'none';
                 }
+                // 📌 Forzamos la consulta limpia a la nube para reinyectar las tarjetas con el botón azul activo
                 cargarHistorialSupabase(); 
             }
         }
