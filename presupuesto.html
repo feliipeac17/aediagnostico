@@ -306,55 +306,55 @@
         document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-    function "procesarYDescargarPresupuesto"() {
-        const template = document.getElementById('printable-canvas');
+function procesarYDescargarPresupuesto() {
+    const template = document.getElementById('printable-canvas');
+    
+    // 1. Ocultamos los botones de borrar y añadir filas para que el PDF salga limpio
+    document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
+
+    // 2. Convertimos temporalmente los inputs a texto plano para que html2pdf no los desfase a la izquierda
+    const inputs = template.querySelectorAll('input');
+    inputs.forEach(input => {
+        const span = document.createElement('span');
+        span.className = 'print-tmp-text';
+        span.style.cssText = "font-size: 9pt; font-weight: 700; color: #0f172a; text-transform: uppercase;";
         
-        // 1. Ocultar botones de añadir y borrar antes de procesar el canvas
-        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
+        if (input.type === 'number' && input.classList.contains('price-input')) {
+            span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+            span.style.display = 'block';
+            span.style.width = '100%';
+            span.style.textAlign = 'right';
+        } else if (input.id === 'in_anticipo') {
+            span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+            span.style.color = '#fff';
+        } else {
+            span.innerText = input.value || '---';
+        }
+        
+        input.parentNode.insertBefore(span, input);
+        input.style.display = 'none';
+    });
 
-        // 2. Convertir dinámicamente los campos a texto plano temporal para el renderizador
-        const inputs = template.querySelectorAll('input');
-        inputs.forEach(input => {
-            const span = document.createElement('span');
-            span.className = 'print-tmp-text';
-            span.style.cssText = "font-size: 8.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase;";
-            
-            if (input.type === 'number' && input.classList.contains('price-input')) {
-                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-                span.style.display = 'block';
-                span.style.width = '100%';
-                span.style.textAlign = 'right';
-            } else if (input.id === 'in_anticipo') {
-                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-                span.style.color = '#fff';
-            } else {
-                span.innerText = input.value || '---';
-            }
-            
-            input.parentNode.insertBefore(span, input);
-            input.style.display = 'none';
-        });
+    // 3. Configuración estricta con margen de seguridad X/Y (Evita el corte izquierdo)
+    const opt = {
+        margin: [10, 15, 10, 15], // Margen superior, izquierdo, inferior, derecho en puntos
+        filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0, windowWidth: 800 },
+        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+    };
 
-        // Configuración de encuadre estricto para hoja A4 (Cero cortes abajo)
-        const opt = {
-            margin: 0,
-            filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
-            image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0, windowWidth: 820 },
-            jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
-        };
-
-        // Capturar en HD y descargar
-        html2pdf().from(template).set(opt).save().then(() => {
-            // 3. Regresar todo a la normalidad interactiva en la PWA
-            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
-            template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
-            inputs.forEach(input => input.style.display = '');
-        }).catch(err => {
-            alert("Error: " + err.message);
-            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
-            template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
-            inputs.forEach(input => input.style.display = '');
-        });
-    }
+    // Capturar en HD y descargar
+    html2pdf().from(template).set(opt).save().then(() => {
+        // 4. Restaurar los inputs en la pantalla para que puedas seguir editando
+        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
+        template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
+        inputs.forEach(input => input.style.display = '');
+    }).catch(err => {
+        alert("Error: " + err.message);
+        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
+        template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
+        inputs.forEach(input => input.style.display = '');
+    });
+}
 </script>
