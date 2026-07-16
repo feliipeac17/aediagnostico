@@ -173,8 +173,8 @@
             <div class="form-section">
                 <div class="form-section-title">Datos del Cliente</div>
                 <div class="form-grid">
-                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder="Nombre del cliente"></div>
-                    <div class="form-group"><label>Teléfono Celular (10 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="Ej. 6621002030" maxlength="10"></div>
+                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder=""></div>
+                    <div class="form-group"><label>Teléfono Celular (10 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="" maxlength="10"></div>
                 </div>
             </div>
 
@@ -188,14 +188,14 @@
                             <option value="NISSAN">NISSAN</option><option value="CHEVROLET">CHEVROLET</option><option value="FORD">FORD</option><option value="TOYOTA">TOYOTA</option><option value="HONDA">HONDA</option><option value="VOLKSWAGEN">VOLKSWAGEN</option><option value="KIA">KIA</option><option value="HYUNDAI">HYUNDAI</option><option value="MAZDA">MAZDA</option><option value="JEEP">JEEP</option><option value="RAM">RAM</option><option value="DODGE">DODGE</option><option value="CHRYSLER">CHRYSLER</option><option value="GMC">GMC</option><option value="BUICK">BUICK</option><option value="BMW">BMW</option><option value="MERCEDES-BENZ">MERCEDES-BENZ</option><option value="AUDI">AUDI</option><option value="RENAULT">RENAULT</option><option value="SUZUKI">SUZUKI</option><option value="MITSUBISHI">MITSUBISHI</option><option value="FIAT">FIAT</option><option value="PEUGEOT">PEUGEOT</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>Modelo y Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Ej. Versa 2019"></div>
-                    <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Ej. Gris"></div>
+                    <div class="form-group"><label>Modelo y Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Versa 2019"></div>
+                    <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Gris"></div>
                     <div class="form-group"><label>Placas:</label><input type="text" id="in_vehiculo_placas" placeholder="Matrícula"></div>
-                    <div class="form-group"><label>Número de Serie (VIN - 17 dígitos):</label><input type="text" id="in_vehiculo_vin" placeholder="VIN de 17 dígitos" maxlength="17"></div>
+                    <div class="form-group"><label>Número de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 dígitos" maxlength="17"></div>
                     <div class="form-group">
                         <label>Odómetro:</label>
                         <div class="inline-group">
-                            <input type="number" id="in_vehiculo_km" placeholder="Ej. 145000">
+                            <input type="number" id="in_vehiculo_km" placeholder="145000">
                             <select id="in_vehiculo_unidad"><option value="km">KM</option><option value="mi">Millas</option></select>
                         </div>
                     </div>
@@ -212,22 +212,22 @@
             <div class="form-section">
                 <div class="form-section-title">Diagnóstico e Ingreso</div>
                 <div class="form-grid">
-                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Síntomas reportados..."></textarea></div>
-                    <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas del mecánico..."></textarea></div>
+                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Síntomas reportados"></textarea></div>
+                    <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas"></textarea></div>
                 </div>
             </div>
 
             <div class="form-section">
                 <div class="checklist-grid">
-                    <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores OK</label>
-                    <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros OK</label>
+                    <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores</label>
+                    <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros</label>
                     <label class="check-item"><input type="checkbox" id="chk_tablero"> Sin Testigos en Tablero</label>
                 </div>
-                <div class="form-group"><label>Notas del Checklist:</label><textarea id="in_obs_electrico" rows="2" placeholder="Fallas encontradas..."></textarea></div>
+                <div class="form-group"><label>Notas del Checklist:</label><textarea id="in_obs_electrico" rows="2" placeholder="Fallas encontradas"></textarea></div>
             </div>
 
             <div class="form-section">
-                <div class="form-section-title">Evidencia Fotográfica (Nuevas fotos pisan las anteriores)</div>
+                <div class="form-section-title">Evidencia Fotográfica</div>
                 <div class="photo-picker-grid">
                     <div class="photo-picker-card"><label>1. Frente</label><div class="upload-box" onclick="triggerUpload('input_frente')"><img id="prev_frente" style="display:none;"><span id="txt_frente">📸 Capturar</span></div><input type="file" id="input_frente" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;"></div>
                     <div class="photo-picker-card"><label>2. Trasera</label><div class="upload-box" onclick="triggerUpload('input_trasera')"><img id="prev_trasera" style="display:none;"><span id="txt_trasera">📸 Capturar</span></div><input type="file" id="input_trasera" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;"></div>
@@ -239,10 +239,10 @@
             </div>
 
             <div class="form-section" style="border-left-color: #1a1a1a;">
-                <div class="form-section-title">Módulo Escáner (Launch)</div>
+                <div class="form-section-title">Módulo Escáner</div>
                 <div class="form-group">
-                    <label>Enlace del Reporte QR de Launch:</label>
-                    <input type="text" id="in_link_escaner" placeholder="Pegue la URL del reporte de Launch X431 aquí">
+                    <label>Enlace del Reporte QR</label>
+                    <input type="text" id="in_link_escaner" placeholder="URL del reporte">
                 </div>
             </div>
 
@@ -659,13 +659,12 @@
 
                 const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
                 
-                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el reporte de servicio para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
+                let msg = `Hola *${rep.cliente_nombre}!* Te compartimos el Reporte de Servicio y Escaneo para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
                 
                 if (hasLaunchLink) {
-                    msg += `📊 *Reporte de Escáner Launch:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
+                    msg += `📊 *Reporte de Escáner:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
                 }
-                
-                msg += `📄 *Descargar PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
+
                 msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
 
                 const whatsappUrl = `https://api.whatsapp.com/send?phone=52${cleanPhone}&text=${encodeURIComponent(msg)}`;
