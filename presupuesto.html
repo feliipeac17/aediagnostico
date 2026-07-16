@@ -355,38 +355,62 @@
         if(document.getElementById('pdf-val-ganticipo')) document.getElementById('pdf-val-ganticipo').innerText = `$${anticipo.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
-
 function procesarYDescargarPresupuesto() {
         const template = document.getElementById('printable-canvas');
         
-        // 1. Llenamos las tablas estáticas ANTES de procesar
+        // 1. Sincronizar todos los inputs a texto estático para el PDF
+        // Esto evita que html2pdf falle al renderizar elementos de formulario
+        const inputs = template.querySelectorAll('input');
+        const snapshots = [];
+        
+        inputs.forEach(input => {
+            const span = document.createElement('span');
+            span.className = 'print-tmp-text';
+            span.style.cssText = "font-size: 9pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
+            
+            // Si es un campo de dinero, formateamos
+            if (input.classList.contains('price-input')) {
+                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+            } else {
+                span.innerText = input.value || '---';
+            }
+            
+            input.parentNode.insertBefore(span, input);
+            snapshots.push({ input: input, span: span, display: input.style.display });
+            input.style.display = 'none';
+        });
+
+        // 2. Llenar las tablas estáticas
         llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
         llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
         llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
 
-        // 2. Ocultamos los botones de control para que no aparezcan en el PDF
-        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'none');
+        // 3. Ocultar botones interactivos
+        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
-        // 3. Configuración de captura HD (sin tocar los inputs del DOM)
+        // 4. Captura con configuración de seguridad
         const opt = {
-            margin: 0,
+            margin: [20, 20, 20, 20], // Margen de seguridad para que nada se corte
             filename: 'Presupuesto_AE.pdf',
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
                 scale: 2, 
                 useCORS: true, 
-                letterRendering: true,
-                width: 800, // Fuerza el ancho exacto del canvas
-                windowWidth: 800 
+                windowWidth: 800 // Ancho fijo para que no se deforme
             },
-            jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
+            jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
-        // 4. Generar y restaurar
         html2pdf().from(template).set(opt).save().then(() => {
-            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'inline-flex');
+            // Restaurar estado original
+            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
+            snapshots.forEach(s => {
+                s.input.style.display = s.display;
+                s.span.remove();
+            });
         });
     }
+
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
