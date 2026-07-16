@@ -1,6 +1,6 @@
 {
-  "name": "AE Diagnóstico",
-  "short_name": "AE Diagnóstico",
+  "name": "AE Diagno",
+  "short_name": "AEDiagnóstico",
   "description": "Sistema de recepción vehicular y diagnósticos cloud para AE.",
   "start_url": "index.html",
   "display": "standalone",
