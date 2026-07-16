@@ -322,40 +322,42 @@ window.addEventListener('DOMContentLoaded', () => {
         const anticipo = parseFloat(document.getElementById('in_anticipo').value) || 0;
         const restante = subtotal - anticipo;
 
-        document.getElementById('pdf-tot-servicios').innerText = `$${tServicios.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        document.getElementById('pdf-tot-refacciones').innerText = `$${tRefacciones.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        document.getElementById('pdf-tot-manoobra').innerText = `$${tManoObra.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        // Sincronizar los indicadores de los pilares de forma segura
+        if(document.getElementById('pdf-tot-servicios')) document.getElementById('pdf-tot-servicios').innerText = `$${tServicios.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-tot-refacciones')) document.getElementById('pdf-tot-refacciones').innerText = `$${tRefacciones.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-tot-manoobra')) document.getElementById('pdf-tot-manoobra').innerText = `$${tManoObra.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-        document.getElementById('pdf-val-tservicios').innerText = `$${tServicios.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        document.getElementById('pdf-val-trefacciones').innerText = `$${tRefacciones.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        document.getElementById('pdf-val-tmanoobra').innerText = `$${tManoObra.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        document.getElementById('pdf-val-gtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        document.getElementById('pdf-val-ganticipo').innerText = `$${anticipo.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        // Sincronizar el contenedor financiero derecho
+        if(document.getElementById('pdf-val-tservicios')) document.getElementById('pdf-val-tservicios').innerText = `$${tServicios.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-val-trefacciones')) document.getElementById('pdf-val-trefacciones').innerText = `$${tRefacciones.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-val-tmanoobra')) document.getElementById('pdf-val-tmanoobra').innerText = `$${tManoObra.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-val-gtotal')) document.getElementById('pdf-val-gtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-val-ganticipo')) document.getElementById('pdf-val-ganticipo').innerText = `$${anticipo.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
     function procesarYDescargarPresupuesto() {
-        // 1. Sincronizamos los datos a las etiquetas correspondientes antes de la foto
-        document.getElementById('pdf-val-cliente').innerText = document.getElementById('in_cliente_nombre').value.toUpperCase() || '---';
-        document.getElementById('pdf-val-telefono').innerText = document.getElementById('in_cliente_telefono').value || '---';
-        document.getElementById('pdf-val-vehiculo').innerText = document.getElementById('in_vehiculo_marca').value.toUpperCase() || '---';
-        document.getElementById('pdf-val-placas').innerText = document.getElementById('in_vehiculo_placas').value.toUpperCase() || '---';
-        document.getElementById('pdf-val-color').innerText = document.getElementById('in_vehiculo_color').value.toUpperCase() || '---';
-        document.getElementById('pdf-val-odometro').innerText = document.getElementById('in_vehiculo_km').value.toUpperCase() || '---';
-        document.getElementById('pdf-val-gas').innerText = document.getElementById('in_vehiculo_gas').value.toUpperCase() || '---';
-        document.getElementById('pdf-val-falla').innerText = document.getElementById('in_falla_reportada').value.toUpperCase() || 'SIN SÍNTOMAS REGISTRADOS';
-        document.getElementById('pdf-val-dtc').innerText = document.getElementById('in_codigo_fallas').value.toUpperCase() || 'NINGUNO';
+        // Sincronizar textos a la vista de impresión
+        if(document.getElementById('pdf-val-cliente')) document.getElementById('pdf-val-cliente').innerText = document.getElementById('in_cliente_nombre').value.toUpperCase() || '---';
+        if(document.getElementById('pdf-val-telefono')) document.getElementById('pdf-val-telefono').innerText = document.getElementById('in_cliente_telefono').value || '---';
+        if(document.getElementById('pdf-val-vehiculo')) document.getElementById('pdf-val-vehiculo').innerText = document.getElementById('in_vehiculo_marca').value.toUpperCase() || '---';
+        if(document.getElementById('pdf-val-placas')) document.getElementById('pdf-val-placas').innerText = document.getElementById('in_vehiculo_placas').value.toUpperCase() || '---';
+        if(document.getElementById('pdf-val-color')) document.getElementById('pdf-val-color').innerText = document.getElementById('in_vehiculo_color').value.toUpperCase() || '---';
+        if(document.getElementById('pdf-val-odometro')) document.getElementById('pdf-val-odometro').innerText = document.getElementById('in_vehiculo_km').value.toUpperCase() || '---';
+        if(document.getElementById('pdf-val-gas')) document.getElementById('pdf-val-gas').innerText = document.getElementById('in_vehiculo_gas').value.toUpperCase() || '---';
+        if(document.getElementById('pdf-val-falla')) document.getElementById('pdf-val-falla').innerText = document.getElementById('in_falla_reportada').value.toUpperCase() || 'SIN SÍNTOMAS REGISTRADOS';
+        if(document.getElementById('pdf-val-dtc')) document.getElementById('pdf-val-dtc').innerText = document.getElementById('in_codigo_fallas').value.toUpperCase() || 'NINGUNO';
 
+        // Llenar las tablas limpias para el reporte final
         llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
         llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
         llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
 
         const template = document.getElementById('printable-canvas');
         
-        // Ocultar botones de añadir y borrar antes de la captura
+        // Ocultar botones de control interactivo
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
-        // Configuración de encuadre estricto con márgenes de seguridad físicos [arriba, izquierda, abajo, derecha]
         const opt = {
             margin: [15, 25, 15, 20], 
             filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
@@ -364,41 +366,13 @@ window.addEventListener('DOMContentLoaded', () => {
             jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
-        // Capturar y descargar de forma estable
         html2pdf().from(template).set(opt).save().then(() => {
-            // Regresar todo a la normalidad interactiva en la pantalla
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
         }).catch(err => {
-            alert("Error: " + err.message);
+            alert("Error al descargar: " + err.message);
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
         });
     }
-
-    function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
-        const tbody = document.querySelector(`#${targetTblId} tbody`);
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        let suma = 0;
-        const filas = document.querySelectorAll(`#${origListId} .table-row`);
-        filas.forEach(row => {
-            const descInput = row.querySelector('.desc-input');
-            const priceInput = row.querySelector('.price-input');
-            if (descInput && priceInput) {
-                const desc = descInput.value.toUpperCase();
-                const precio = parseFloat(priceInput.value) || 0;
-                if (desc) {
-                    suma += precio;
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${desc}</td><td style="text-align:right; font-weight:700;">$${precio.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>`;
-                    tbody.appendChild(tr);
-                }
-            }
-        });
-        if (tbody.children.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="2" class="pdf-empty-row">- Sin conceptos registrados -</td></tr>';
-        }
-        document.getElementById(targetTotalId).innerText = `$${suma.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-    }
-    </script>
+</script>
 </body>
 </html>
