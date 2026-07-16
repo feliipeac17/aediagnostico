@@ -162,7 +162,7 @@
         
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#d32f2f;" onclick="cambiarPestana('nuevo')">📝 Nuevo Reporte</button>
-            <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial de Reportes</button>
+            <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial</button>
         </div>
 
         <div class="panel-header">
@@ -187,18 +187,18 @@
                     <div class="form-group">
                         <label>Marca:</label>
                         <select id="in_vehiculo_marca" style="text-transform: uppercase;">
-                            <option value="">SELECCIONE MARCA...</option>
+                            <option value="">SELECCIONE MARCA</option>
                             <option value="NISSAN">NISSAN</option><option value="CHEVROLET">CHEVROLET</option><option value="FORD">FORD</option><option value="TOYOTA">TOYOTA</option><option value="HONDA">HONDA</option><option value="VOLKSWAGEN">VOLKSWAGEN</option><option value="KIA">KIA</option><option value="HYUNDAI">HYUNDAI</option><option value="MAZDA">MAZDA</option><option value="JEEP">JEEP</option><option value="RAM">RAM</option><option value="DODGE">DODGE</option><option value="CHRYSLER">CHRYSLER</option><option value="GMC">GMC</option><option value="BUICK">BUICK</option><option value="BMW">BMW</option><option value="MERCEDES-BENZ">MERCEDES-BENZ</option><option value="AUDI">AUDI</option><option value="RENAULT">RENAULT</option><option value="SUZUKI">SUZUKI</option><option value="MITSUBISHI">MITSUBISHI</option><option value="FIAT">FIAT</option><option value="PEUGEOT">PEUGEOT</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>Modelo y Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Ej. Versa 2019"></div>
-                    <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Ej. Gris"></div>
+                    <div class="form-group"><label>Modelo y Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Versa 2019"></div>
+                    <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Gris"></div>
                     <div class="form-group"><label>Placas:</label><input type="text" id="in_vehiculo_placas" placeholder="Matrícula"></div>
-                    <div class="form-group"><label>Número de Serie (VIN - 17 dígitos):</label><input type="text" id="in_vehiculo_vin" placeholder="VIN de 17 dígitos" maxlength="17"></div>
+                    <div class="form-group"><label>Número de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 dígitos" maxlength="17"></div>
                     <div class="form-group">
                         <label>Odómetro:</label>
                         <div class="inline-group">
-                            <input type="number" id="in_vehiculo_km" placeholder="Ej. 145000">
+                            <input type="number" id="in_vehiculo_km" placeholder="145000">
                             <select id="in_vehiculo_unidad"><option value="km">KM</option><option value="mi">Millas</option></select>
                         </div>
                     </div>
@@ -213,24 +213,24 @@
             </div>
 
             <div class="form-section">
-                <div class="form-section-title">Diagnóstico e Ingreso</div>
+                <div class="form-section-title">Diagnostico</div>
                 <div class="form-grid">
-                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Síntomas reportados..."></textarea></div>
-                    <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas del mecánico..."></textarea></div>
+                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Síntomas reportados"></textarea></div>
+                    <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas"></textarea></div>
                 </div>
             </div>
 
             <div class="form-section">
                 <div class="checklist-grid">
-                    <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores OK</label>
-                    <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros OK</label>
+                    <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores</label>
+                    <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros</label>
                     <label class="check-item"><input type="checkbox" id="chk_tablero"> Sin Testigos en Tablero</label>
                 </div>
-                <div class="form-group"><label>Notas del Checklist:</label><textarea id="in_obs_electrico" rows="2" placeholder="Fallas encontradas..."></textarea></div>
+                <div class="form-group"><label>Notas del Checklist:</label><textarea id="in_obs_electrico" rows="2" placeholder="Fallas"></textarea></div>
             </div>
 
             <div class="form-section">
-                <div class="form-section-title">Evidencia Fotográfica (Nuevas fotos pisan las anteriores)</div>
+                <div class="form-section-title">Evidencia Fotográfica</div>
                 <div class="photo-picker-grid">
                     <div class="photo-picker-card"><label>1. Frente</label><div class="upload-box" onclick="triggerUpload('input_frente')"><img id="prev_frente" style="display:none;"><span id="txt_frente">📸 Capturar</span></div><input type="file" id="input_frente" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;"></div>
                     <div class="photo-picker-card"><label>2. Trasera</label><div class="upload-box" onclick="triggerUpload('input_trasera')"><img id="prev_trasera" style="display:none;"><span id="txt_trasera">📸 Capturar</span></div><input type="file" id="input_trasera" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;"></div>
@@ -242,10 +242,10 @@
             </div>
 
             <div class="form-section" style="border-left-color: #1a1a1a;">
-                <div class="form-section-title">Módulo Escáner (Launch)</div>
+                <div class="form-section-title">Módulo Escáner</div>
                 <div class="form-group">
-                    <label>Enlace del Reporte QR de Launch:</label>
-                    <input type="text" id="in_link_escaner" placeholder="Pegue la URL del reporte de Launch X431 aquí">
+                    <label>Enlace del Reporte QR:</label>
+                    <input type="text" id="in_link_escaner" placeholder="URL del reporte">
                 </div>
             </div>
 
@@ -266,9 +266,9 @@
     <div id="reportView" class="report-view">
         <div style="max-width: 780px; margin: 0 auto 15px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
-            <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF Local</button>
+            <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF</button>
             <button id="btnEnviarWhatsapp" class="btn-submit" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span>💬 Enviar Reporte por WhatsApp</span>
+                <span>💬 Enviar por WhatsApp</span>
             </button>
         </div>
         
@@ -276,8 +276,8 @@
             <div class="preview-card-view">
                 
                 <div class="view-sub-tabs">
-                    <button id="subTabRecepcion" class="view-sub-btn active" onclick="alternarSubVista('recepcion')">📋 Recepción Física</button>
-                    <button id="subTabEscaner" class="view-sub-btn" onclick="alternarSubVista('escaner')">📊 Lectura de Escáner</button>
+                    <button id="subTabRecepcion" class="view-sub-btn active" onclick="alternarSubVista('recepcion')">📋 Recepción</button>
+                    <button id="subTabEscaner" class="view-sub-btn" onclick="alternarSubVista('escaner')">📊 Escaneo</button>
                 </div>
 
                 <div id="subVistaContenidoRecepcion">
@@ -506,7 +506,7 @@
             const telVal = document.getElementById('in_cliente_telefono').value.trim();
             const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
-            if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
+            if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10-11 DÍGITOS."); return; }
             if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NÚMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
 
             const textoOriginal = btnSubmit.innerText;
@@ -564,7 +564,7 @@
                 else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
 
                 if (error) throw error;
-                alert(isEditing ? "✅ REGISTRO ACTUALIZADO CON ÉXITO EN LA NUBE." : "✅ REPORTE ALMACENADO CON ÉXITO.");
+                alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE ALMACENADO CON ÉXITO.");
                 limpiarFormularioCompleto(); cargarHistorialSupabase(); cambiarPestana('historial');
             } catch (err) { alert("❌ ERROR: " + err.message); }
             finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
