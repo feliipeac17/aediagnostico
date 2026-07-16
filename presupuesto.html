@@ -232,7 +232,6 @@
     </div>
 
     <button class="btn-submit-app" onclick="procesarYDescargarPresupuesto()"><i class="fa-solid fa-file-pdf"></i> Descargar Presupuesto HD Premium</button>
-
 <script>
     window.addEventListener('DOMContentLoaded', () => {
         const hoy = new Date();
@@ -309,24 +308,55 @@
     function procesarYDescargarPresupuesto() {
         const template = document.getElementById('printable-canvas');
         
+        // 1. Ocultar botones de añadir y borrar antes de procesar el canvas
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
-        // 📌 Configuración matemática de escala estricta para evitar desfases hacia abajo
+        // 2. Convertir dinámicamente el valor de los inputs a texto plano para el motor de html2pdf
+        const inputs = template.querySelectorAll('input');
+        inputs.forEach(input => {
+            const span = document.createElement('span');
+            span.className = 'print-tmp-text';
+            span.style.cssText = "font-size: 8.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase;";
+            
+            if (input.type === 'number' && input.classList.contains('price-input')) {
+                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+                span.style.display = 'block';
+                span.style.width = '100%';
+                span.style.textAlign = 'right';
+            } else if (input.id === 'in_anticipo') {
+                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+                span.style.color = '#fff';
+            } else {
+                span.innerText = input.value || '---';
+            }
+            
+            input.parentNode.insertBefore(span, input);
+            input.style.display = 'none';
+        });
+
+        // Opciones matemáticas de escala fija para acoplar en 1 hoja exacta
         const opt = {
             margin: 0,
-            filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_')}.pdf`,
+            filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
             html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0, windowWidth: 820 },
             jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
+        // Capturar en HD vectorial y descargar
         html2pdf().from(template).set(opt).save().then(() => {
+            // 3. Regresar todo a la normalidad en la pantalla de la PWA
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
+            template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
+            inputs.forEach(input => input.style.display = '');
         }).catch(err => {
             alert("Error: " + err.message);
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
+            template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
+            inputs.forEach(input => input.style.display = '');
         });
     }
 </script>
+    
 </body>
 </html>
