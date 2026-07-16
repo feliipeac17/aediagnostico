@@ -376,7 +376,7 @@
     </div>
 
     <script>
-        // ================= CREDENCIALES DE TU SUPABASE =================
+// ================= CREDENCIALES DE TU SUPABASE =================
         const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -435,7 +435,9 @@
                 }
             }
 
-            if (localStorage.getItem('ae_sesion_valida') === 'true') mostrarPanel();
+            if (localStorage.getItem('ae_sesion_valida') === 'true') {
+                mostrarPanel();
+            }
         });
 
         function pressNum(num) {
@@ -458,6 +460,7 @@
             document.getElementById('pin-lock-screen').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             document.getElementById('reportView').style.display = 'none';
+            cargarHistorialSupabase(); // 📌 Carga Supabase desde el inicio para evitar que desaparezca el botón azul al volver
         }
         function regresarAlFormulario() { mostrarPanel(); cambiarPestana('historial'); }
         function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
@@ -487,7 +490,6 @@
                 if(document.getElementById('btnCancelarEdicion')) {
                     document.getElementById('btnCancelarEdicion').style.display = 'none';
                 }
-                // Forzamos la consulta limpia a la nube para reinyectar las tarjetas con el botón azul
                 cargarHistorialSupabase(); 
             }
         }
@@ -597,7 +599,7 @@
             } catch (err) { alert("❌ ERROR: " + err.message); }
             finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
         }
-// ================= SISTEMA DE HISTORIAL Y TRANSFERENCIA BLINDADO =================
+
         async function cargarHistorialSupabase() {
             const contenedor = document.getElementById('listaReportes');
             if (contenedor) {
@@ -612,7 +614,7 @@
             inyectarTarjetasHistorial(listaReportesMemoria);
         }
 
-function inyectarTarjetasHistorial(arr) {
+        function inyectarTarjetasHistorial(arr) {
             const contenedor = document.getElementById('listaReportes');
             if (!contenedor) return;
             if (arr.length === 0) { contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">Sin reportes que coincidan.</p>'; return; }
@@ -622,7 +624,6 @@ function inyectarTarjetasHistorial(arr) {
                 const tarjeta = document.createElement('div');
                 tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; text-transform:uppercase; gap: 10px; margin-bottom:10px;";
                 
-                // Estructura HTML limpia usando los mismos nombres de funciones que ya tienes en tu archivo
                 tarjeta.innerHTML = `
                     <div style="flex:1;">
                         <strong style="color:#d32f2f;">FOLIO: ${rep.folio}</strong>
@@ -636,22 +637,9 @@ function inyectarTarjetasHistorial(arr) {
                     </div>
                 `;
 
-                // Vinculación directa en memoria nativa (Resuelve el conflicto de clics y no rompe nada)
                 tarjeta.querySelector('.btn-act-ver').onclick = function() { mostrarVistaPreviaDigital(rep); };
                 tarjeta.querySelector('.btn-act-edit').onclick = function() { cargarRegistroParaEditar(rep); };
-                tarjeta.querySelector('.btn-act-cotizar').onclick = function() {
-                    const datos = {
-                        cliente_nombre: String(rep.cliente_nombre || '').trim(),
-                        cliente_telefono: String(rep.cliente_telefono || '').trim(),
-                        vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
-                        vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
-                        vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
-                        vehiculo_color: String(rep.vehiculo_color || '').trim(),
-                        vehiculo_km: String(rep.vehiculo_km || '').trim()
-                    };
-                    localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
-                    window.location.href = 'presupuesto.html';
-                };
+                tarjeta.querySelector('.btn-act-cotizar').onclick = function() { transferirAPresupuesto(rep); };
 
                 contenedor.appendChild(tarjeta);
             });
@@ -701,9 +689,95 @@ function inyectarTarjetasHistorial(arr) {
             if (urlDestino && urlDestino.includes('http')) { window.open(urlDestino, '_blank'); }
         }
 
-        async function convertUrlToImageElement(url) {
-            if (!url) return null;
-            return new Promise((resolve) => { const img = new Image(); img.crossOrigin = "anonymous"; img.onload = () => resolve(img); img.onerror = () => resolve(null); img.src = url; });
+        function mostrarVistaPreviaDigital(rep) {
+            reportDataGlobal = rep; alternarSubVista('recepcion');
+            document.getElementById('web_view_folio').innerText = "FOLIO: " + rep.folio;
+            const f = new Date(rep.created_at); document.getElementById('web_view_fecha').innerText = `📅 ${f.toLocaleDateString('es-MX')}  |  🕒 ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
+            document.getElementById('web_view_cliente').innerText = rep.cliente_nombre; document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'NO REGISTRADO';
+            document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || '--'; document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || '--'; document.getElementById('web_view_color').innerText = rep.vehiculo_color || '--'; document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || '--'; document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || '--';
+            
+            if (rep.vehiculo_km) {
+                const partes = rep.vehiculo_km.split(' ');
+                const numero = parseFloat(partes[0]);
+                const unidad = partes[1] || 'KM';
+                document.getElementById('web_view_km').innerText = !isNaN(numero) ? `${numero.toLocaleString()} ${unidad}` : rep.vehiculo_km;
+            } else {
+                document.getElementById('web_view_km').innerText = '--';
+            }
+            
+            const fillGas = rep.vehiculo_gas_nivel; const barWeb = document.getElementById('web_view_gas_fill'); barWeb.style.width = fillGas + "%";
+            if(fillGas <= 25) barWeb.style.background = '#d32f2f'; else if(fillGas >= 75) barWeb.style.background = '#4caf50'; else barWeb.style.background = '#ff9800';
+
+            const setDotWeb = (id, val) => { document.getElementById(id).style.background = val ? '#4caf50' : '#d32f2f'; };
+            setDotWeb('dot_luces', rep.chk_luces); setDotWeb('dot_elevadores', rep.chk_elevadores); setDotWeb('dot_tablero', rep.chk_tablero);
+            document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.';
+            document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'NINGUNO.'; document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'NINGUNO.';
+
+            const iframe = document.getElementById('iframeEscanerLaunch'); const msgNoLink = document.getElementById('noLinkMsg');
+            if (rep.link_escaner && rep.link_escaner.includes('http')) { iframe.src = rep.link_escaner; iframe.style.display = 'block'; msgNoLink.style.display = 'none'; } 
+            else { iframe.src = ""; iframe.style.display = 'none'; msgNoLink.style.display = 'block'; }
+
+            const cargarImgWeb = (id, url) => { const img = document.getElementById(id); if(url) { img.src = url; img.style.display = 'block'; } else { img.src = ""; img.style.display = 'none'; } };
+            cargarImgWeb('web_img_frente', rep.foto_frente_url); cargarImgWeb('web_img_trasera', rep.foto_trasera_url); cargarImgWeb('web_img_izq', rep.foto_izquierdo_url); cargarImgWeb('web_img_der', rep.foto_derecho_url); cargarImgWeb('web_img_motor', rep.foto_motor_url); cargarImgWeb('web_img_cluster', rep.foto_cluster_url);
+
+            document.getElementById('adminPanel').style.display = 'none'; document.getElementById('reportView').style.display = 'block'; window.scrollTo(0, 0);
+            document.getElementById('btnDescargarPDF').onclick = () => generarPDFConJSPDF(false);
+            
+            document.getElementById('btnEnviarWhatsapp').onclick = () => {
+                const cleanPhone = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : '';
+                const baseDomain = window.location.origin;
+                let finalPhone = cleanPhone.length === 11 && cleanPhone.startsWith('1') ? cleanPhone : `52${cleanPhone}`;
+                const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
+                
+                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el reporte de servicio para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
+                if (hasLaunchLink) msg += `📊 *Reporte de Escáner Launch:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
+                msg += `📄 *Descargar PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
+                msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
+
+                window.open(`https://api.whatsapp.com/send?phone=${finalPhone}&text=${encodeURIComponent(msg)}`, '_blank');
+            };
+        }
+
+        function cargarRegistroParaEditar(rep) {
+            reportDataGlobal = rep;
+            document.getElementById('edit_record_id').value = rep.id;
+            document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
+            document.getElementById('btnGuardarForm').innerText = "Actualizar Reporte Cloud";
+
+            document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
+            document.getElementById('in_cliente_telefono').value = rep.cliente_telefono || '';
+            document.getElementById('in_vehiculo_marca').value = rep.vehiculo_marca || '';
+            document.getElementById('in_vehiculo_modelo').value = rep.vehiculo_modelo || '';
+            document.getElementById('in_vehiculo_color').value = rep.vehiculo_color || '';
+            document.getElementById('in_vehiculo_placas').value = rep.vehiculo_placas || '';
+            document.getElementById('in_vehiculo_vin').value = rep.vehiculo_vin || '';
+            
+            if (rep.vehiculo_km) {
+                const partes = rep.vehiculo_km.split(' ');
+                document.getElementById('in_vehiculo_km').value = partes[0] || '';
+                document.getElementById('in_vehiculo_unidad').value = (partes[1] || 'KM').toLowerCase();
+            } else {
+                document.getElementById('in_vehiculo_km').value = '';
+                document.getElementById('in_vehiculo_unidad').value = 'km';
+            }
+            document.getElementById('in_vehiculo_gas').value = rep.vehiculo_gas_nivel ?? 50;
+            document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || '';
+            document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
+            document.getElementById('chk_luces').checked = !!rep.chk_luces;
+            document.getElementById('chk_elevadores').checked = !!rep.chk_elevadores;
+            document.getElementById('chk_tablero').checked = !!rep.chk_tablero;
+            document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || '';
+            document.getElementById('in_link_escaner').value = rep.link_escaner || '';
+
+            const setFormPrev = (imgId, textId, url) => {
+                const img = document.getElementById(imgId); const txt = document.getElementById(textId);
+                if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; } else { img.src=""; img.style.display='none'; txt.style.display='inline'; }
+            };
+            setFormPrev('prev_frente', 'txt_frente', rep.foto_frente_url); setFormPrev('prev_trasera', 'txt_trasera', rep.foto_trasera_url); setFormPrev('prev_izq', 'txt_izq', rep.foto_izquierdo_url); setFormPrev('prev_der', 'txt_der', rep.foto_derecho_url); setFormPrev('prev_motor', 'txt_motor', rep.foto_motor_url); setFormPrev('prev_cluster', 'txt_cluster', rep.foto_cluster_url);
+
+            document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
+            document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
+            if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
         }
 
         async function generarPDFConJSPDF(autoDownloadAndClose = false) {
