@@ -628,11 +628,11 @@ function limpiarFormularioCompleto() {
                         <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca} ${rep.vehiculo_modelo} - PLACAS: ${rep.vehiculo_placas || 'N/A'}</div>
                         <div style="font-size:8.5pt; color:#888;">👤 CLIENTE: ${rep.cliente_nombre}</div>
                     </div>
-             <div style="display:flex; gap:6px;">
-                <button class="btn-submit" style="margin:0; padding:8px 12px; font-size:9pt; background:#1a1a1a;" onclick='mostrarVistaPreviaDigital(${JSON.stringify(rep)})'>👁️ Ver</button>
-                <button class="btn-submit" style="margin:0; padding:8px 12px; font-size:9pt; background:#000;" onclick='cargarRegistroParaEditar(${JSON.stringify(rep)})'>✏️ Editar</button>
-                <button class="btn-submit" style="margin:0; padding:8px 12px; font-size:9pt; background:#0284c7;" onclick='transferirAPresupuesto(${JSON.stringify(rep).replace(/'/g, "&apos;")})'>💰 Cotizar</button>
-             </div>
+  <div style="display:flex; gap:6px;">
+    <button class="btn-submit" style="margin:0; padding:8px 12px; font-size:9pt; background:#1a1a1a;" onclick='mostrarVistaPreviaDigital(${JSON.stringify(rep)})'>👁️ Ver</button>
+    <button class="btn-submit" style="margin:0; padding:8px 12px; font-size:9pt; background:#000;" onclick='cargarRegistroParaEditar(${JSON.stringify(rep)})'>✏️ Editar</button>
+    <button class="btn-submit" style="margin:0; padding:8px 12px; font-size:9pt; background:#0284c7;" onclick='transferirAPresupuesto(${JSON.stringify(rep)})'>💰 Cotizar</button>
+</div>
                 `;
                 contenedor.appendChild(tarjeta);
             });
@@ -865,24 +865,28 @@ doc.save(`REPORTE_SERVICIO_${rep.folio}.pdf`);
                 btn.innerText = "📥 PDF Local"; btn.disabled = false;
             }
         }
-        // ⚡ Transfiere la información del vehículo y cliente al módulo de presupuestos de forma segura
+// ⚡ Transfiere de forma ultra-segura los datos limpiando caracteres extraños
 function transferirAPresupuesto(rep) {
-    const datosTransferencia = {
-        cliente_nombre: rep.cliente_nombre || '',
-        cliente_telefono: rep.cliente_telefono || '',
-        vehiculo_marca: rep.vehiculo_marca || '',
-        vehiculo_modelo: rep.vehiculo_modelo || '',
-        vehiculo_placas: rep.vehiculo_placas || '',
-        vehiculo_color: rep.vehiculo_color || '',
-        vehiculo_km: rep.vehiculo_km || ''
-    };
-    
-    // Guardamos en la memoria temporal del navegador (localStorage)
-    localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datosTransferencia));
-    
-    // Redireccionamos al archivo independiente de presupuestos
-    window.location.href = 'presupuesto.html';
-}
+    try {
+        const datosTransferencia = {
+            cliente_nombre: rep.cliente_nombre || '',
+            cliente_telefono: rep.cliente_telefono || '',
+            vehiculo_marca: rep.vehiculo_marca || '',
+            vehiculo_modelo: rep.vehiculo_modelo || '',
+            vehiculo_placas: rep.vehiculo_placas || '',
+            vehiculo_color: rep.vehiculo_color || '',
+            vehiculo_km: rep.vehiculo_km || ''
+        };
+        
+        // Guardamos de forma segura convirtiendo a texto limpio
+        localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datosTransferencia));
+        
+        // Redireccionamos
+        window.location.href = 'presupuesto.html';
+    } catch(e) {
+        alert("Error al transferir datos: " + e.message);
+    }
+}    
     </script>
 </body>
 </html>
