@@ -683,11 +683,23 @@ function transferirAPresupuesto(rep) {
             inyectarTarjetasHistorial(filtrados);
         }
 
-        function alternarSubVista(vista) {
-            const tabRec = document.getElementById('subTabReception'); const tabEsc = document.getElementById('subTabEscaner');
-            const secRec = document.getElementById('subVistaContenidoRecepcion'); const secEsc = document.getElementById('subVistaContenidoEscaner');
-            if (vista === 'recepcion') { tabRec.classList.add('active'); tabEsc.classList.remove('active'); secRec.style.display = 'block'; secEsc.style.display = 'none'; } 
-            else { tabRec.classList.remove('active'); tabEsc.classList.add('active'); secRec.style.display = 'none'; secEsc.style.display = 'block'; }
+function alternarSubVista(vista) {
+            const tabRec = document.getElementById('subTabRecepcion'); 
+            const tabEsc = document.getElementById('subTabEscaner');
+            const secRec = document.getElementById('subVistaContenidoRecepcion'); 
+            const secEsc = document.getElementById('subVistaContenidoEscaner');
+            
+            if (vista === 'recepcion') { 
+                if (tabRec) tabRec.classList.add('active'); 
+                if (tabEsc) tabEsc.classList.remove('active'); 
+                if (secRec) secRec.style.display = 'block'; 
+                if (secEsc) secEsc.style.display = 'none'; 
+            } else { 
+                if (tabRec) tabRec.classList.remove('active'); 
+                if (tabEsc) tabEsc.classList.add('active'); 
+                if (secRec) secRec.style.display = 'none'; 
+                if (secEsc) secEsc.style.display = 'block'; 
+            }
         }
 
         function abrirCalidadOriginal(tipoFoto) {
