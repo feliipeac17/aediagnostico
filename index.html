@@ -369,7 +369,7 @@
         let listaReportesMemoria = [];
         const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
-        // 🎭 DETECTOR DE ENLACES EXTERNOS (MÁSCARA LAUNCH / AUTO-PDF COMPILADOR)
+        // 🎭 DETECTOR DE ENLACES EXTERNOS (MÁSCARA LAUNCH / AUTO-PDF COMPILADOR CORREGIDO)
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const scanFolio = urlParams.get('scan'); 
@@ -384,22 +384,40 @@
                     document.getElementById('pin-lock-screen').style.display = 'none';
                     return;
                 } else {
-                    document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTES LAUNCH NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico Launch registrado.</p></div></div>`;
+                    document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE LAUNCH NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico Launch registrado.</p></div></div>`;
                     return;
                 }
             }
 
             // Caso B: Cliente abrió el enlace de su PDF de recepción (?pdf=AE-XXXX)
             if (pdfFolio) {
-                document.body.innerHTML = `<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;"><div style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;"></div><p style="margin-top:20px;font-size:11pt;font-weight:bold;letter-spacing:0.5px;">GENERANDO SU ARCHIVO PDF EN TIEMPO REAL...</p></div><style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
+                // Bloqueamos la pantalla del cliente con una interfaz limpia de descarga (SIN SOLICITAR PIN)
+                document.body.innerHTML = `
+                    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
+                        <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
+                        <div id="loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
+                        <h2 id="pdf-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">GENERANDO REPORTE PDF...</h2>
+                        <p id="pdf-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, acepta la descarga en la alerta de tu celular.</p>
+                        <button id="btnRetryPDF" style="display:none;background:#d32f2f;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">
+                            🔄 Descargar PDF Nuevamente
+                        </button>
+                    </div>
+                    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+                `;
                 
                 const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', pdfFolio.toUpperCase()).single();
                 if (!error && reporte) {
                     reportDataGlobal = reporte;
-                    await generarPDFConJSPDF(true); // Genera y descarga el PDF de forma automática
+                    await generarPDFConJSPDF(true); // Genera y fuerza la descarga de forma automática
+                    
+                    // Una vez forzada la primera descarga, quitamos el cargador y mostramos el botón de reintento permanente
+                    document.getElementById('loading-spinner').style.display = 'none';
+                    document.getElementById('pdf-status-title').innerText = "¡REPORTE COMPILADO!";
+                    document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
+                    document.getElementById('btnRetryPDF').style.display = 'inline-block';
                     return;
                 } else {
-                    document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ ERROR</h2><p>El folio ingresado no existe en nuestra base de datos.</p></div></div>`;
+                    document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ ERROR</h2><p>El folio ingresado no existe o es inválido.</p></div></div>`;
                     return;
                 }
             }
