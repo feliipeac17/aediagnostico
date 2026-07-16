@@ -250,6 +250,7 @@
             </div>
 
             <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">Guardar y Generar Reporte</button>
+            <button class="btn-submit" id="btnCancelarEdicion" style="background:#555; display:none; margin-top:8px;" onclick="cancelarEdicionActiva()">❌ Cancelar Edición</button>
         </div>
 
         <div id="historialSection" style="display: none;">
@@ -459,25 +460,39 @@
             }
         }
 
-        function cambiarPestana(modo) {
+function cambiarPestana(modo) {
             document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
             document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
             document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
             document.getElementById('btnTabHistorial').style.background = modo === 'nuevo' ? '#555' : '#d32f2f';
+            
             if (modo === 'historial') {
                 document.getElementById('buscadorHistorial').value = "";
+                // Si salimos al historial, cancelamos cualquier edición activa en silencio
+                limpiarFormularioCompleto();
                 cargarHistorialSupabase();
             } else {
-                if(document.getElementById('edit_record_id').value === "") {
-                    limpiarFormularioCompleto();
-                }
+                // Si el usuario hace clic en "Nuevo Reporte" de forma voluntaria, limpiamos todo el estado de edición
+                limpiarFormularioCompleto();
             }
         }
 
-        function limpiarFormularioCompleto() {
+        // ❌ FUNCIÓN PARA CANCELAR LA EDICIÓN ACTIVA
+        function cancelarEdicionActiva() {
+            limpiarFormularioCompleto();
+            cambiarPestana('historial');
+        }
+
+function limpiarFormularioCompleto() {
             document.getElementById('edit_record_id').value = "";
             document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
             document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
+            
+            // Ocultamos el botón de cancelar porque ya no estamos editando
+            if(document.getElementById('btnCancelarEdicion')) {
+                document.getElementById('btnCancelarEdicion').style.display = 'none';
+            }
+
             document.querySelectorAll('.admin-panel input, .admin-panel textarea').forEach(el => el.value = "");
             document.querySelectorAll('.admin-panel input[type="checkbox"]').forEach(el => el.checked = false);
             document.querySelectorAll('.upload-box img').forEach(img => { img.src=""; img.style.display = 'none'; });
@@ -638,6 +653,11 @@
 
             document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
             document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
+        // Mostramos el botón de cancelar edición
+            if(document.getElementById('btnCancelarEdicion')) {
+                document.getElementById('btnCancelarEdicion').style.display = 'block';
+            }
+        
         }
 
         function alternarSubVista(vista) {
