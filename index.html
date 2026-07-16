@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AE Diagnostico</title>
+    <title>AE Diagnóstico</title>
     
     <link rel="icon" type="image/png" href="logo2.png">
-    
     <link rel="apple-touch-icon" href="logo2.png">
     
     <meta name="mobile-web-app-capable" content="yes">
@@ -177,8 +176,8 @@
             <div class="form-section">
                 <div class="form-section-title">Datos del Cliente</div>
                 <div class="form-grid">
-                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder=""></div>
-                    <div class="form-group"><label>Teléfono Celular (10-11 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="" maxlength="11"></div>
+                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder="Nombre del cliente"></div>
+                    <div class="form-group"><label>Teléfono Celular (10 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="Ej. 6621002030" maxlength="10"></div>
                 </div>
             </div>
 
@@ -192,14 +191,14 @@
                             <option value="NISSAN">NISSAN</option><option value="CHEVROLET">CHEVROLET</option><option value="FORD">FORD</option><option value="TOYOTA">TOYOTA</option><option value="HONDA">HONDA</option><option value="VOLKSWAGEN">VOLKSWAGEN</option><option value="KIA">KIA</option><option value="HYUNDAI">HYUNDAI</option><option value="MAZDA">MAZDA</option><option value="JEEP">JEEP</option><option value="RAM">RAM</option><option value="DODGE">DODGE</option><option value="CHRYSLER">CHRYSLER</option><option value="GMC">GMC</option><option value="BUICK">BUICK</option><option value="BMW">BMW</option><option value="MERCEDES-BENZ">MERCEDES-BENZ</option><option value="AUDI">AUDI</option><option value="RENAULT">RENAULT</option><option value="SUZUKI">SUZUKI</option><option value="MITSUBISHI">MITSUBISHI</option><option value="FIAT">FIAT</option><option value="PEUGEOT">PEUGEOT</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>Modelo y Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Versa 2019"></div>
-                    <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Gris"></div>
+                    <div class="form-group"><label>Modelo y Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Ej. Versa 2019"></div>
+                    <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Ej. Gris"></div>
                     <div class="form-group"><label>Placas:</label><input type="text" id="in_vehiculo_placas" placeholder="Matrícula"></div>
-                    <div class="form-group"><label>Número de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 dígitos" maxlength="17"></div>
+                    <div class="form-group"><label>Número de Serie (VIN - 17 dígitos):</label><input type="text" id="in_vehiculo_vin" placeholder="VIN de 17 dígitos" maxlength="17"></div>
                     <div class="form-group">
                         <label>Odómetro:</label>
                         <div class="inline-group">
-                            <input type="number" id="in_vehiculo_km" placeholder="145000">
+                            <input type="number" id="in_vehiculo_km" placeholder="Ej. 145000">
                             <select id="in_vehiculo_unidad"><option value="km">KM</option><option value="mi">Millas</option></select>
                         </div>
                     </div>
@@ -216,22 +215,22 @@
             <div class="form-section">
                 <div class="form-section-title">Diagnóstico e Ingreso</div>
                 <div class="form-grid">
-                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Síntomas reportados"></textarea></div>
-                    <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas"></textarea></div>
+                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Síntomas reportados..."></textarea></div>
+                    <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas del mecánico..."></textarea></div>
                 </div>
             </div>
 
             <div class="form-section">
                 <div class="checklist-grid">
-                    <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores</label>
-                    <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros</label>
+                    <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores OK</label>
+                    <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros OK</label>
                     <label class="check-item"><input type="checkbox" id="chk_tablero"> Sin Testigos en Tablero</label>
                 </div>
-                <div class="form-group"><label>Notas del Checklist:</label><textarea id="in_obs_electrico" rows="2" placeholder="Fallas encontradas"></textarea></div>
+                <div class="form-group"><label>Notas del Checklist:</label><textarea id="in_obs_electrico" rows="2" placeholder="Fallas encontradas..."></textarea></div>
             </div>
 
             <div class="form-section">
-                <div class="form-section-title">Evidencia Fotográfica</div>
+                <div class="form-section-title">Evidencia Fotográfica (Nuevas fotos pisan las anteriores)</div>
                 <div class="photo-picker-grid">
                     <div class="photo-picker-card"><label>1. Frente</label><div class="upload-box" onclick="triggerUpload('input_frente')"><img id="prev_frente" style="display:none;"><span id="txt_frente">📸 Capturar</span></div><input type="file" id="input_frente" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;"></div>
                     <div class="photo-picker-card"><label>2. Trasera</label><div class="upload-box" onclick="triggerUpload('input_trasera')"><img id="prev_trasera" style="display:none;"><span id="txt_trasera">📸 Capturar</span></div><input type="file" id="input_trasera" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;"></div>
@@ -243,10 +242,10 @@
             </div>
 
             <div class="form-section" style="border-left-color: #1a1a1a;">
-                <div class="form-section-title">Módulo Escáner</div>
+                <div class="form-section-title">Módulo Escáner (Launch)</div>
                 <div class="form-group">
-                    <label>Enlace del Reporte QR</label>
-                    <input type="text" id="in_link_escaner" placeholder="URL del reporte">
+                    <label>Enlace del Reporte QR de Launch:</label>
+                    <input type="text" id="in_link_escaner" placeholder="Pegue la URL del reporte de Launch X431 aquí">
                 </div>
             </div>
 
@@ -257,7 +256,7 @@
             <div class="form-group" style="margin-bottom: 15px;">
                 <input type="text" id="buscadorHistorial" placeholder="🔍 BUSCAR POR FOLIO, CLIENTE O PLACAS..." onkeyup="filtrarHistorial()" style="padding: 14px; font-size: 15px; border-radius: 6px; border: 1px solid #bbb;">
             </div>
-            <div class="form-section-title">Lista de Reportes Guardados</div>
+            <div class="form-section-title">Lista de Reportes Guardados (Nube)</div>
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
                 <p style="color:#777; font-size:10pt; text-align:center;">Cargando historial...</p>
             </div>
@@ -267,9 +266,9 @@
     <div id="reportView" class="report-view">
         <div style="max-width: 780px; margin: 0 auto 15px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
-            <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF</button>
+            <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF Local</button>
             <button id="btnEnviarWhatsapp" class="btn-submit" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span>💬 WhatsApp</span>
+                <span>💬 Enviar Reporte por WhatsApp</span>
             </button>
         </div>
         
@@ -359,8 +358,8 @@
 
     <script>
         // ================= CREDENCIALES DE TU SUPABASE =================
-        const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
-        const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
+        const SUPABASE_URL = "https://TU_PROYECTO.supabase.co"; 
+        const SUPABASE_KEY = "TU_ANON_KEY_AQUI";
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentPin = "";
@@ -412,7 +411,7 @@
                     
                     // Una vez forzada la primera descarga, quitamos el cargador y mostramos el botón de reintento permanente
                     document.getElementById('loading-spinner').style.display = 'none';
-                    document.getElementById('pdf-status-title').innerText = "¡REPORTE CREADO!";
+                    document.getElementById('pdf-status-title').innerText = "¡REPORTE COMPILADO!";
                     document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
                     document.getElementById('btnRetryPDF').style.display = 'inline-block';
                     return;
@@ -507,7 +506,7 @@
             const telVal = document.getElementById('in_cliente_telefono').value.trim();
             const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
-            if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
+            if (telVal.length > 0 && telVal.length !== 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
             if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NÚMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
 
             const textoOriginal = btnSubmit.innerText;
@@ -674,35 +673,26 @@
             
             document.getElementById('btnDescargarPDF').onclick = () => generarPDFConJSPDF(false);
             
-// 📞 MOTOR DE ENVÍO POR WHATSAPP INTELIGENTE (MÉXICO / USA)
+            // 📞 MOTOR DE ENVÍO POR WHATSAPP AUTOMÁTICO
             document.getElementById('btnEnviarWhatsapp').onclick = () => {
                 const cleanPhone = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : '';
                 const baseDomain = window.location.origin; // Ej: https://aediagnostico.com
 
-                // Determinamos la lada correcta automáticamente:
-                let finalPhone = '';
-                if (cleanPhone.length === 11 && cleanPhone.startsWith('1')) {
-                    // Es número americano (Ej. 16021002030 -> lada +1)
-                    finalPhone = cleanPhone; 
-                } else {
-                    // Es número mexicano por defecto (Ej. 6621002030 -> le ponemos lada +52)
-                    finalPhone = `52${cleanPhone}`;
-                }
-
                 const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
                 
-                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el Reporte de Recepción y Escaneo para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
+                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el reporte de servicio para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
                 
                 if (hasLaunchLink) {
-                    msg += `📊 *Reporte de Escáneo:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
+                    msg += `📊 *Reporte de Escáner Launch:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
                 }
                 
-                msg += `📄 *PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
+                msg += `📄 *Descargar PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
                 msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
 
-                const whatsappUrl = `https://api.whatsapp.com/send?phone=${finalPhone}&text=${encodeURIComponent(msg)}`;
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=52${cleanPhone}&text=${encodeURIComponent(msg)}`;
                 window.open(whatsappUrl, '_blank');
             };
+        }
 
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
