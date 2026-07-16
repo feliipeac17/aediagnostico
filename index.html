@@ -178,7 +178,7 @@
                 <div class="form-section-title">Datos del Cliente</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder=""></div>
-                    <div class="form-group"><label>Teléfono Celular (10 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="" maxlength="10"></div>
+                    <div class="form-group"><label>Teléfono Celular (10-11 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="" maxlength="11"></div>
                 </div>
             </div>
 
@@ -507,7 +507,7 @@
             const telVal = document.getElementById('in_cliente_telefono').value.trim();
             const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
-            if (telVal.length > 0 && telVal.length !== 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
+            if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10 DÍGITOS."); return; }
             if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NÚMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
 
             const textoOriginal = btnSubmit.innerText;
@@ -674,26 +674,35 @@
             
             document.getElementById('btnDescargarPDF').onclick = () => generarPDFConJSPDF(false);
             
-            // 📞 MOTOR DE ENVÍO POR WHATSAPP AUTOMÁTICO
+// 📞 MOTOR DE ENVÍO POR WHATSAPP INTELIGENTE (MÉXICO / USA)
             document.getElementById('btnEnviarWhatsapp').onclick = () => {
                 const cleanPhone = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : '';
                 const baseDomain = window.location.origin; // Ej: https://aediagnostico.com
 
+                // Determinamos la lada correcta automáticamente:
+                let finalPhone = '';
+                if (cleanPhone.length === 11 && cleanPhone.startsWith('1')) {
+                    // Es número americano (Ej. 16021002030 -> lada +1)
+                    finalPhone = cleanPhone; 
+                } else {
+                    // Es número mexicano por defecto (Ej. 6621002030 -> le ponemos lada +52)
+                    finalPhone = `52${cleanPhone}`;
+                }
+
                 const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
                 
-                let msg = `Hola *${rep.cliente_nombre}!* Te compartimos el Reporte de Servicio y Escaneo para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
+                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el Reporte de Recepción y Escaneo para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
                 
                 if (hasLaunchLink) {
                     msg += `📊 *Reporte de Escáneo:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
                 }
-
-                msg += `📄 *Reporte de Servicio:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
+                
+                msg += `📄 *PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
                 msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
 
-                const whatsappUrl = `https://api.whatsapp.com/send?phone=52${cleanPhone}&text=${encodeURIComponent(msg)}`;
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=${finalPhone}&text=${encodeURIComponent(msg)}`;
                 window.open(whatsappUrl, '_blank');
             };
-        }
 
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
