@@ -577,7 +577,8 @@ function limpiarFormularioCompleto() {
                     vehiculo_color: getUpperVal('in_vehiculo_color'),
                     vehiculo_placas: getUpperVal('in_vehiculo_placas'),
                     vehiculo_vin: getUpperVal('in_vehiculo_vin'),
-                    vehiculo_km: document.getElementById('in_vehiculo_km').value,
+                    // 📌 Guardamos el número junto con la unidad (Ej: "145000 KM" o "90000 MI")
+                    vehiculo_km: document.getElementById('in_vehiculo_km').value ? `${document.getElementById('in_vehiculo_km').value} ${document.getElementById('in_vehiculo_unidad').value.toUpperCase()}` : '',
                     vehiculo_gas_nivel: parseInt(document.getElementById('in_vehiculo_gas').value),
                     motivo_ingreso: getUpperVal('in_motivo_ingreso'),
                     observaciones_diagnostico: getUpperVal('in_obs_diagnostico'),
@@ -656,7 +657,15 @@ function limpiarFormularioCompleto() {
             document.getElementById('in_vehiculo_color').value = rep.vehiculo_color || '';
             document.getElementById('in_vehiculo_placas').value = rep.vehiculo_placas || '';
             document.getElementById('in_vehiculo_vin').value = rep.vehiculo_vin || '';
-            document.getElementById('in_vehiculo_km').value = rep.vehiculo_km || '';
+            // 📌 Separamos el número y la unidad para rellenar el formulario de edición
+            if (rep.vehiculo_km) {
+                const partes = rep.vehiculo_km.split(' ');
+                document.getElementById('in_vehiculo_km').value = partes[0] || '';
+                document.getElementById('in_vehiculo_unidad').value = (partes[1] || 'KM').toLowerCase();
+            } else {
+                document.getElementById('in_vehiculo_km').value = '';
+                document.getElementById('in_vehiculo_unidad').value = 'km';
+            }
             document.getElementById('in_vehiculo_gas').value = rep.vehiculo_gas_nivel ?? 50;
             document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || '';
             document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
@@ -693,7 +702,16 @@ function limpiarFormularioCompleto() {
             document.getElementById('web_view_folio').innerText = "FOLIO: " + rep.folio;
             const f = new Date(rep.created_at); document.getElementById('web_view_fecha').innerText = `📅 ${f.toLocaleDateString('es-MX')}  |  🕒 ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
             document.getElementById('web_view_cliente').innerText = rep.cliente_nombre; document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'NO REGISTRADO';
-            document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || '--'; document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || '--'; document.getElementById('web_view_color').innerText = rep.vehiculo_color || '--'; document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || '--'; document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || '--'; document.getElementById('web_view_km').innerText = rep.vehiculo_km ? `${Number(rep.vehiculo_km).toLocaleString()} KM` : '--';
+            document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || '--'; document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || '--'; document.getElementById('web_view_color').innerText = rep.vehiculo_color || '--'; document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || '--'; document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || '--';
+            // 📌 Mostramos el número con formato de miles y su unidad correspondiente (KM o MI)
+            if (rep.vehiculo_km) {
+                const partes = rep.vehiculo_km.split(' '); // Separa el número de la unidad
+                const numero = parseFloat(partes[0]);
+                const unidad = partes[1] || 'KM';
+                document.getElementById('web_view_km').innerText = !isNaN(numero) ? `${numero.toLocaleString()} ${unidad}` : rep.vehiculo_km;
+            } else {
+                document.getElementById('web_view_km').innerText = '--';
+            }
             
             const fillGas = rep.vehiculo_gas_nivel; const barWeb = document.getElementById('web_view_gas_fill'); barWeb.style.width = fillGas + "%";
             if(fillGas <= 25) barWeb.style.background = '#d32f2f'; else if(fillGas >= 75) barWeb.style.background = '#4caf50'; else barWeb.style.background = '#ff9800';
@@ -795,7 +813,16 @@ function limpiarFormularioCompleto() {
             doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("MARCA", 20, 87); doc.text("MODELO Y AÑO", 75, 87); doc.text("COLOR", 150, 87);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_marca || '--', 20, 92); doc.text(rep.vehiculo_modelo || '--', 75, 92); doc.text(rep.vehiculo_color || '--', 150, 92);
             doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("PLACAS", 20, 102); doc.text("NÚMERO DE SERIE (VIN)", 75, 102); doc.text("KILOMETRAJE", 150, 102);
-            doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_placas || '--', 20, 107); doc.text(rep.vehiculo_vin || '--', 75, 107); doc.text(`${rep.vehiculo_km ? Number(rep.vehiculo_km).toLocaleString() : '--'} KM`, 150, 107);
+            doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_placas || '--', 20, 107); doc.text(rep.vehiculo_vin || '--', 75, 107);
+            // 📌 Imprime el formato correcto en el PDF (detecta si es KM o MI automáticamente)
+            let kmPdfTexto = '--';
+            if (rep.vehiculo_km) {
+                const partes = rep.vehiculo_km.split(' ');
+                const numero = parseFloat(partes[0]);
+                const unidad = partes[1] || 'KM';
+                kmPdfTexto = !isNaN(numero) ? `${numero.toLocaleString()} ${unidad}` : rep.vehiculo_km;
+            }
+            doc.text(kmPdfTexto, 150, 107);
 
             let yGas = 120; doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("NIVEL DE COMBUSTIBLE EN TABLERO", 20, yGas); doc.setFillColor(235, 237, 240); doc.rect(20, yGas + 2, 180, 3.5, 'F');
             let fillGas = rep.vehiculo_gas_nivel; if (fillGas > 0) { if(fillGas <= 25) doc.setFillColor(211, 47, 47); else if(fillGas >= 75) doc.setFillColor(76, 175, 80); else doc.setFillColor(255, 152, 0); doc.rect(20, yGas + 2, (fillGas / 100) * 180, 3.5, 'F'); }
