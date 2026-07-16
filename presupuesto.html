@@ -183,31 +183,49 @@
             </div>
 
             <div class="pdf-pillars-grid">
-                <div class="pdf-pillar-card">
-                    <div class="pdf-pillar-header"><div class="pdf-pillar-title"><span class="pdf-pillar-num">1</span> Servicios</div><span class="pdf-pillar-total" id="pdf-tot-servicios">$0.00</span></div>
-                    <div class="table-container">
-                        <table class="pdf-pillar-table"><thead><tr><th>Descripción</th><th style="text-align:right;">Importe</th><th class="btn-ctrl-col"></th></tr></thead></table>
-                        <div id="listServicios"></div>
-                        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listServicios')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
-                    </div>
+            <div class="pdf-pillar-card">
+                <div class="pdf-pillar-header">
+                    <div class="pdf-pillar-title"><span class="pdf-pillar-num">1</span> Servicios</div>
+                    <span class="pdf-pillar-total" id="pdf-tot-servicios">$0.00</span>
                 </div>
-                <div class="pdf-pillar-card">
-                    <div class="pdf-pillar-header"><div class="pdf-pillar-title"><span class="pdf-pillar-num">2</span> Refacciones</div><span class="pdf-pillar-total" id="pdf-tot-refacciones">$0.00</span></div>
-                    <div class="table-container">
-                        <table class="pdf-pillar-table"><thead><tr><th>Descripción</th><th style="text-align:right;">Total</th><th class="btn-ctrl-col"></th></tr></thead></table>
-                        <div id="listRefacciones"></div>
-                        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listRefacciones')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
-                    </div>
-                </div>
-                <div class="pdf-pillar-card">
-                    <div class="pdf-pillar-header"><div class="pdf-pillar-title"><span class="pdf-pillar-num">3</span> Mano de Obra</div><span class="pdf-pillar-total" id="pdf-tot-manoobra">$0.00</span></div>
-                    <div class="table-container">
-                        <table class="pdf-pillar-table"><thead><tr><th>Descripción</th><th style="text-align:right;">Importe</th><th class="btn-ctrl-col"></th></tr></thead></table>
-                        <div id="listManoObra"></div>
-                        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listManoObra')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
-                    </div>
+                <div class="table-container">
+                    <table class="pdf-pillar-table" id="pdf-tbl-servicios">
+                        <thead><tr><th>Descripción</th><th style="text-align:right;">Importe</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="listServicios"></div>
+                    <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listServicios')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
                 </div>
             </div>
+            <div class="pdf-pillar-card">
+                <div class="pdf-pillar-header">
+                    <div class="pdf-pillar-title"><span class="pdf-pillar-num">2</span> Refacciones</div>
+                    <span class="pdf-pillar-total" id="pdf-tot-refacciones">$0.00</span>
+                </div>
+                <div class="table-container">
+                    <table class="pdf-pillar-table" id="pdf-tbl-refacciones">
+                        <thead><tr><th>Descripción</th><th style="text-align:right;">Total</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="listRefacciones"></div>
+                    <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listRefacciones')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
+                </div>
+            </div>
+            <div class="pdf-pillar-card">
+                <div class="pdf-pillar-header">
+                    <div class="pdf-pillar-title"><span class="pdf-pillar-num">3</span> Mano de Obra</div>
+                    <span class="pdf-pillar-total" id="pdf-tot-manoobra">$0.00</span>
+                </div>
+                <div class="table-container">
+                    <table class="pdf-pillar-table" id="pdf-tbl-manoobra">
+                        <thead><tr><th>Descripción</th><th style="text-align:right;">Importe</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="listManoObra"></div>
+                    <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listManoObra')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
+                </div>
+            </div>
+        </div>
 
             <div class="pdf-footer-section">
                 <div class="pdf-terms-card">
