@@ -359,23 +359,12 @@
         let listaReportesMemoria = [];
         const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
-        // 🚀 DETECTOR DE REPORTES LAUNCH CON DOMINIO PROPIO
+// 🚀 DETECTOR DE REPORTES LAUNCH ENMASCARADO (Mantiene tu dominio visible)
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const scanFolio = urlParams.get('scan'); // Detecta si el link tiene la estructura ?scan=AE-1005
+            const scanFolio = urlParams.get('scan'); 
 
             if (scanFolio) {
-                // Indicamos al usuario que se está cargando su reporte
-                document.body.innerHTML = `
-                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; background:#0f172a; color:white;">
-                        <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
-                        <p style="margin-top: 20px; font-size: 16px;">Abriendo reporte de AE Diagnóstico...</p>
-                    </div>
-                    <style>
-                        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-                    </style>
-                `;
-
                 // Conectamos a Supabase para traer el enlace original de Launch
                 const { data: reporte, error } = await supabaseClient
                     .from('reportes_servicio')
@@ -384,21 +373,29 @@
                     .single();
 
                 if (!error && reporte && reporte.link_escaner) {
-                    // Redirige al cliente instantáneamente al reporte de Launch original sin bloqueos
-                    window.location.href = reporte.link_escaner;
+                    // Enmascaramos el reporte metiendo un iframe que cubra el 100% de la pantalla
+                    document.body.innerHTML = `
+                        <div style="margin:0; padding:0; width:100vw; height:100vh; overflow:hidden; background:#0f172a; position:fixed; top:0; left:0; z-index:99999;">
+                            <iframe 
+                                src="${reporte.link_escaner}" 
+                                style="width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden;" 
+                                sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                                referrerpolicy="no-referrer">
+                            </iframe>
+                        </div>
+                    `;
                     return;
                 } else {
                     document.body.innerHTML = `
                         <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; background:#0f172a; color:white; padding:20px; text-align:center;">
                             <h2 style="color:#ef4444;">⚠️ Reporte No Encontrado</h2>
-                            <p>El folio <strong>${scanFolio.toUpperCase()}</strong> no tiene un reporte de escáner registrado o el enlace es inválido.</p>
+                            <p>El folio <strong>${scanFolio.toUpperCase()}</strong> no tiene un reporte de escáner registrado o es inválido.</p>
                         </div>
                     `;
                     return;
                 }
             }
 
-            // Si no viene ningún ?scan= en la URL, la app carga normal para el staff
             if (localStorage.getItem('ae_sesion_valida') === 'true') {
                 mostrarPanel();
             }
@@ -499,12 +496,17 @@
             const textoOriginal = btnSubmit.innerText;
             btnSubmit.innerText = "⏳ PROCESANDO Y ALMACENANDO EN LA NUBE..."; btnSubmit.disabled = true;
 
-            let folioCalculado = "";
+let folioCalculado = "";
             if (isEditing) {
                 folioCalculado = reportDataGlobal.folio;
             } else {
-                const numFolio = Math.floor(100000 + Math.random() * 900000);
-                folioCalculado = "AE-" + numFolio;
+                // Generador de folio aleatorio seguro (Ej: AE-K8X2)
+                const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Evitamos letras y números confusos
+                let parteAleatoria = '';
+                for (let i = 0; i < 4; i++) {
+                    parteAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+                }
+                folioCalculado = "AE-" + parteAleatoria;
             }
 
             try {
