@@ -29,7 +29,7 @@
         .nav-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #fff; padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border-color); }
         .btn-back { background: #64748b; color: white; border: none; padding: 8px 16px; font-size: 9pt; font-weight: 600; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 
-        /* 📄 Lienzo Estricto Proporcional A4 */
+/* 📄 Lienzo de Impresión Premium Estricto (A4 Fijo) */
         #printable-canvas {
             width: 800px !important; 
             min-width: 800px !important;
@@ -39,7 +39,7 @@
             padding: 30px; 
             border-radius: 8px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            margin-bottom: 20px; 
+            margin: 0 auto;
             position: relative; 
             overflow: hidden;
         }
@@ -339,83 +339,49 @@
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-    function procesarYDescargarPresupuesto() {
-        // Llenar las tablas limpias para el reporte final antes de clonar
-        llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
-        llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
-        llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
-
+function procesarYDescargarPresupuesto() {
         const template = document.getElementById('printable-canvas');
         
-        // Ocultar botones de control interactivo para que no salgan en la foto
+        // Ocultar botones de control
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
-        // Ocultar las cajas de entrada dinámicas del taller para que solo se vea la tabla estática e impecable
-        const listServ = document.getElementById('listServicios');
-        const listRef = document.getElementById('listRefacciones');
-        const listMano = document.getElementById('listManoObra');
-        if(listServ) listServ.style.display = 'none';
-        if(listRef) listRef.style.display = 'none';
-        if(listMano) listMano.style.display = 'none';
-
-        // Convertir dinámicamente las cajas de texto de arriba a etiquetas limpias para que no salgan mochas ni desalineadas
+        // Convertir inputs a texto plano para el PDF
         const inputs = template.querySelectorAll('input');
-        const savedValues = [];
         inputs.forEach(input => {
-            savedValues.push({ input: input, display: input.style.display });
             const span = document.createElement('span');
             span.className = 'print-tmp-text';
             span.style.cssText = "font-size: 8.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase;";
-            
-            if (input.type === 'number' && input.classList.contains('price-input')) {
-                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-                span.style.display = 'block';
-                span.style.width = '100%';
-                span.style.textAlign = 'right';
-            } else if (input.id === 'in_anticipo') {
-                span.innerText = `$${(parseFloat(input.value) || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-                span.style.color = '#fff';
-            } else {
-                span.innerText = input.value || '---';
-            }
-            
+            span.innerText = input.value || '---';
             input.parentNode.insertBefore(span, input);
             input.style.display = 'none';
         });
 
-        // 📌 CONFIGURACIÓN DEFINITIVA DE ENCUADRE: Margen 0 estricto para forzar el área completa A4
+        // 📌 CONFIGURACIÓN CRÍTICA PARA EL PDF
+        // windowWidth: 800 fuerza que la librería trabaje como si fuera una computadora, eliminando el recorte
         const opt = {
             margin: 0, 
             filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
             html2canvas: { 
-                scale: 3, 
+                scale: 2, 
                 useCORS: true, 
                 logging: false, 
-                scrollY: 0, 
-                scrollX: 0, 
-                windowWidth: 850 
+                width: 800, 
+                windowWidth: 800 
             },
             jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
-        // Capturar y descargar
         html2pdf().from(template).set(opt).save().then(() => {
-            // Regresar todo a la normalidad interactiva en la pantalla
+            // Restaurar vista
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
             template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
-            savedValues.forEach(item => item.input.style.display = item.display);
-            if(listServ) listServ.style.display = '';
-            if(listRef) listRef.style.display = '';
-            if(listMano) listMano.style.display = '';
+            inputs.forEach(input => input.style.display = '');
         }).catch(err => {
-            alert("Error al descargar: " + err.message);
+            alert("Error: " + err.message);
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
             template.querySelectorAll('.print-tmp-text').forEach(span => span.remove());
-            savedValues.forEach(item => item.input.style.display = item.display);
-            if(listServ) listServ.style.display = '';
-            if(listRef) listRef.style.display = '';
-            if(listMano) listMano.style.display = '';
+            inputs.forEach(input => input.style.display = '');
         });
     }
 
