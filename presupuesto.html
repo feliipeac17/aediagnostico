@@ -32,7 +32,17 @@
 
         /* 📄 Lienzo de Impresión Premium Estricto */
         #printable-canvas {
-            width: 800px; height: 1050px; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; position: relative; overflow: hidden;
+            width: 800px !important; 
+            min-width: 800px !important;
+            height: 1050px !important; 
+            min-height: 1050px !important;
+            background: #ffffff; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            margin-bottom: 20px; 
+            position: relative; 
+            overflow: hidden;
         }
 
         /* Encabezado Asimétrico */
@@ -337,7 +347,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function procesarYDescargarPresupuesto() {
-        // Sincronizar textos a la vista de impresión
+        // 1. Sincronizar textos a la vista del reporte antes de capturar
         if(document.getElementById('pdf-val-cliente')) document.getElementById('pdf-val-cliente').innerText = document.getElementById('in_cliente_nombre').value.toUpperCase() || '---';
         if(document.getElementById('pdf-val-telefono')) document.getElementById('pdf-val-telefono').innerText = document.getElementById('in_cliente_telefono').value || '---';
         if(document.getElementById('pdf-val-vehiculo')) document.getElementById('pdf-val-vehiculo').innerText = document.getElementById('in_vehiculo_marca').value.toUpperCase() || '---';
@@ -355,18 +365,28 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const template = document.getElementById('printable-canvas');
         
-        // Ocultar botones de control interactivo
+        // Ocultar botones de control interactivo para que no salgan en el PDF
         document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
 
+        // 📌 CONFIGURACIÓN CORREGIDA: Forzamos margin 0 y dejamos que el escalado se adapte al ancho virtual de escritorio
         const opt = {
-            margin: [15, 25, 15, 20], 
+            margin: 0, 
             filename: `PRESUPUESTO_${document.getElementById('in_cliente_nombre').value.toUpperCase().replace(/\s+/g, '_') || 'CLIENTE'}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0, windowWidth: 820 },
+            html2canvas: { 
+                scale: 3, 
+                useCORS: true, 
+                logging: false, 
+                scrollY: 0, 
+                scrollX: 0, 
+                windowWidth: 850 // Forzar ancho de escritorio virtual para que el celular no mutile los lados
+            },
             jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
         };
 
+        // Capturar y descargar de forma estable
         html2pdf().from(template).set(opt).save().then(() => {
+            // Regresar todo a la normalidad interactiva en la pantalla
             document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
         }).catch(err => {
             alert("Error al descargar: " + err.message);
