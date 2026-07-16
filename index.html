@@ -777,11 +777,11 @@
             }
             pintarPiePagina(2);
 
-            doc.save(`REPORTE_SERVICIO_${rep.folio}.pdf`);
+doc.save(`REPORTE_SERVICIO_${rep.folio}.pdf`);
             
             if (autoDownloadAndClose) {
-                // Si es modo cliente con el link ?pdf=, cerramos la pestaña tras forzar la descarga
-                setTimeout(() => { window.close(); }, 1500);
+                // Modo cliente: Ya no cerramos la pestaña para asegurar que el celular complete la descarga
+                console.log("PDF generado exitosamente para el cliente.");
             } else {
                 btn.innerText = "📥 PDF Local"; btn.disabled = false;
             }
