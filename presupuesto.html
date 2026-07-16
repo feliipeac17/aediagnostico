@@ -244,7 +244,7 @@
             padding: 15mm 15mm 10mm 15mm;
             background: #ffffff;
             color: #1e293b;
-            display: none; /* Se mantiene oculto en pantalla y solo se activa en la renderización temporal */
+            display: none; /* Se mantiene oculto en pantalla */
             position: absolute;
             left: -9999px;
             top: -9999px;
@@ -368,7 +368,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Contenedores de Cliente y Vehículo (Con bordes gruesos e iconos) */
+        /* Contenedores de Cliente y Vehículo (Con bordes e iconos) */
         .pdf-grid-boxes {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -978,7 +978,7 @@
                 }
             }
 
-            // Limpiamos memoria para que no ensucie futuras cargas limpias
+            // Limpiamos memoria
             localStorage.removeItem('ae_transferencia_presupuesto');
         }
 
@@ -1017,7 +1017,7 @@
 
         const subtotal = tServicios + tRefacciones + tManoObra;
         const anticipo = parseFloat(document.getElementById('in_anticipo').value) || 0;
-        const restante = subtotal - anticipo; // Corregido el error de dedo que bloqueaba la app
+        const restante = subtotal - anticipo; // Corregido error de variable
 
         document.getElementById('lblSubtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         document.getElementById('lblSaldoPendiente').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
