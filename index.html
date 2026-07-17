@@ -667,39 +667,35 @@ function inyectarTarjetasHistorial(arr) {
     
     arr.forEach(rep => {
         const tarjeta = document.createElement('div');
-        tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; text-transform:uppercase; gap: 10px; margin-bottom:10px;";
+        tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
         
+        // AQUÍ ESTAMOS LLAMANDO A LOS CAMPOS CORRECTOS
         tarjeta.innerHTML = `
             <div style="flex:1;">
-                <strong style="color:#d32f2f;">FOLIO: ${rep.folio}</strong>
-                <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca || ''}</div>
+                <strong style="color:#d32f2f;">FOLIO: ${rep.folio || 'N/A'}</strong>
+                <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                <div style="font-size:10pt;">🔢 PLACAS: ${rep.vehiculo_placas || 'S/N'}</div>
+                <div style="font-size:10pt; font-weight:bold;">👤 CLIENTE: ${rep.cliente_nombre || 'S/N'}</div>
             </div>
-            <div style="display:flex; gap:6px; flex-wrap: wrap;">
-                <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer;">👁️ Ver</button>
-                <button class="btn-card-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer;">✏️ Editar</button>
-                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; display:inline-block !important;">💰 Cotizar</button>
+            <div style="display:flex; gap:6px;">
+                <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
+                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">💰 Cotizar</button>
             </div>
         `;
 
-        tarjeta.querySelector('.btn-card-ver').onclick = () => mostrarVistaPreviaDigital(rep);
-        tarjeta.querySelector('.btn-card-edit').onclick = () => cargarRegistroParaEditar(rep);
-        tarjeta.querySelector('.btn-card-cotizar').onclick = () => {
-            const datos = {
-                cliente_nombre: String(rep.cliente_nombre || '').trim(),
-                cliente_telefono: String(rep.cliente_telefono || '').trim(),
-                vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
-                vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
-                vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
-                vehiculo_color: String(rep.vehiculo_color || '').trim(),
-                vehiculo_km: String(rep.vehiculo_km || '').trim()
-            };
-            localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
-            window.location.href = 'presupuesto.html';
+        tarjeta.querySelector('.btn-card-ver').onclick = () => {
+            console.log("Datos enviados a vista:", rep); // Debug para ver si trae datos
+            mostrarVistaPreviaDigital(rep);
         };
+        
+        tarjeta.querySelector('.btn-card-cotizar').onclick = () => {
+            localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(rep));
+            window.location.replace('/presupuesto.html');
+        };
+        
         contenedor.appendChild(tarjeta);
     });
-}
-        
+}        
 function transferirAPresupuesto(rep) {
     const datos = {
         cliente_nombre: String(rep.cliente_nombre || '').trim(),
@@ -756,23 +752,21 @@ function alternarSubVista(vista) {
 
 // 2. CORRECCIÓN: Al mostrar el reporte, aseguramos que los botones de PDF/WhatsApp se vean
 function mostrarVistaPreviaDigital(rep) {
-    reportDataGlobal = rep; 
-    alternarSubVista('recepcion');
+    if (!rep) {
+        console.error("No se recibieron datos para mostrar");
+        return;
+    }
     
-    // [Aquí mantienes toda tu lógica de llenado de campos que ya tenías]
-    // ... (no borres nada de tu llenado de datos) ...
-
-    document.getElementById('adminPanel').style.display = 'none'; 
-    document.getElementById('reportView').style.display = 'block'; 
+    // Aquí es donde asignas los valores a tus campos de HTML
+    // Asegúrate de que los IDs coincidan con tu HTML
+    document.getElementById('displayNombre').innerText = rep.cliente_nombre || 'N/A';
+    document.getElementById('displayPlacas').innerText = rep.vehiculo_placas || 'N/A';
+    document.getElementById('displayVehiculo').innerText = `${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}`;
     
-    // Asegurar botones visibles al entrar al reporte
-    document.getElementById('btnDescargarPDF').style.display = 'block';
-    document.getElementById('btnEnviarWhatsApp').style.display = 'block';
-    
-    window.scrollTo(0, 0);
-    // ... (el resto de tu lógica de botones WhatsApp/PDF)
-}
-        
+    // Cambia la vista
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('reportView').style.display = 'block';
+}        
         function cargarRegistroParaEditar(rep) {
             reportDataGlobal = rep;
             document.getElementById('edit_record_id').value = rep.id;
