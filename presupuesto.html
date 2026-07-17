@@ -354,12 +354,19 @@
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-    function procesarYDescargarPresupuesto() {
-    const template = document.getElementById('printable-canvas');
-    
-    // Ocultar botones
+   function procesarYDescargarPresupuesto() {
+    const element = document.getElementById('printable-canvas');
     const botones = document.querySelectorAll('.btn-ctrl-col');
+    
+    // 1. Ocultar botones
     botones.forEach(b => b.style.display = 'none');
+
+    // 2. Aplicar estilos temporales para forzar el inicio en 0,0
+    // Esto fuerza a que el navegador "vea" el div pegado a la esquina superior izquierda
+    element.style.position = 'fixed';
+    element.style.top = '0';
+    element.style.left = '0';
+    element.style.margin = '0';
 
     const opt = {
         margin: 0,
@@ -367,14 +374,17 @@
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
             scale: 2, 
-            useCORS: true,
-            logging: false
+            width: 800, 
+            windowWidth: 800,
+            useCORS: true
         },
-        // Usamos formato A4 estándar y dejamos que la librería ajuste la escala
-        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
     };
 
-    html2pdf().from(template).set(opt).save().then(() => {
+    html2pdf().from(element).set(opt).save().then(() => {
+        // 3. Restaurar estilos y botones
+        element.style.position = 'relative';
+        element.style.margin = '0 auto';
         botones.forEach(b => b.style.display = 'inline-block');
     });
 }
