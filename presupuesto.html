@@ -353,19 +353,15 @@
         if(document.getElementById('pdf-val-ganticipo')) document.getElementById('pdf-val-ganticipo').innerText = `$${anticipo.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
-function procesarYDescargarPresupuesto() {
-    const template = document.getElementById('printable-canvas');
-    
-    // 1. Sincronizar tablas ANTES de capturar (esto llena las tablas ocultas que sí se ven en el PDF)
-    llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
-    llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
-    llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
-    
-    // 2. Ocultar solo botones de control (los que tienen clase .btn-ctrl-col)
-    const controles = document.querySelectorAll('.btn-ctrl-col');
-    controles.forEach(b => b.style.display = 'none');
 
-    // 3. Captura limpia: NO modificamos el DOM, capturamos el elemento tal cual
+    function procesarYDescargarPresupuesto() {
+    const element = document.getElementById('printable-canvas');
+
+    // 1. Ocultar botones de control para que no aparezcan en la descarga
+    const botones = document.querySelectorAll('.btn-ctrl-col');
+    botones.forEach(b => b.style.display = 'none');
+
+    // 2. Configuración de alta resolución forzada
     const opt = {
         margin: 0,
         filename: 'Presupuesto_AE.pdf',
@@ -374,16 +370,26 @@ function procesarYDescargarPresupuesto() {
             scale: 2, 
             width: 800, 
             windowWidth: 800,
-            useCORS: true
+            x: 0, 
+            y: 0,
+            onclone: (doc) => {
+                const el = doc.getElementById('printable-canvas');
+                el.style.margin = '0';
+                el.style.padding = '30px';
+                el.style.left = '0';
+                el.style.top = '0';
+            }
         },
         jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
     };
 
-    html2pdf().from(template).set(opt).save().then(() => {
-        // Restaurar botones
-        controles.forEach(b => b.style.display = 'inline-block');
+    // 3. Generar y descargar automáticamente
+    html2pdf().from(element).set(opt).save().then(() => {
+        // Restaurar botones tras la descarga
+        botones.forEach(b => b.style.display = 'inline-block');
     });
 }
+                                                                                                                                                  
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
