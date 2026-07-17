@@ -354,27 +354,27 @@
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-   function procesarYDescargarPresupuesto() {
-    const template = document.getElementById('printable-canvas');
-    const botones = document.querySelectorAll('.btn-ctrl-col');
+   // Asegúrate de tener esto al principio de tu script:
+// const { jsPDF } = window.jspdf;
+
+async function procesarYDescargarPresupuesto() {
+    const btn = document.querySelector('.btn-submit-app');
+    btn.innerText = "⏳ GENERANDO PDF..."; 
+    btn.disabled = true;
+
+    const doc = new jsPDF('p', 'mm', 'a4');
     
-    // 1. Ocultar botones
-    botones.forEach(b => b.style.display = 'none');
+    // Aquí puedes poner el mismo diseño que tienes en tu index.html
+    // Por ejemplo:
+    doc.setFont("helvetica", "bold");
+    doc.text("PRESUPUESTO AE DIAGNÓSTICO", 20, 20);
+    
+    // ... agrega aquí el resto de tus líneas doc.text y doc.rect ...
 
-    // 2. Usamos el motor nativo de PDF de la librería (jsPDF directo)
-    // Esto es mucho más ligero y no depende de capturar una imagen del div
-    const opt = {
-        margin: [10, 10, 10, 10], // Margen en puntos
-        filename: 'Presupuesto_AE.pdf',
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'pt', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(template).save().then(() => {
-        // Restaurar botones
-        botones.forEach(b => b.style.display = 'inline-block');
-    });
+    doc.save('Presupuesto_AE.pdf');
+    
+    btn.innerText = "📥 Descargar Presupuesto HD Premium"; 
+    btn.disabled = false;
 }
                                                                                                                                                   
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
