@@ -477,23 +477,29 @@
             }
         }
 
-        function cambiarPestana(modo) {
-            document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
-            document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
-            document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
-            document.getElementById('btnTabHistorial').style.background = modo === 'nuevo' ? '#555' : '#d32f2f';
-            
-            if (modo === 'historial') {
-                document.getElementById('buscadorHistorial').value = "";
-                document.getElementById('edit_record_id').value = "";
-                document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
-                document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
-                if(document.getElementById('btnCancelarEdicion')) {
-                    document.getElementById('btnCancelarEdicion').style.display = 'none';
-                }
-                cargarHistorialSupabase(); 
-            }
+function cambiarPestana(modo) {
+    document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
+    document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
+    document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
+    document.getElementById('btnTabHistorial').style.background = modo === 'nuevo' ? '#555' : '#d32f2f';
+    
+    // --- ESTA ES LA CORRECCIÓN ---
+    if (modo === 'nuevo') {
+        limpiarFormularioCompleto(); // Esto limpia los datos de ediciones anteriores
+    }
+    // -----------------------------
+    
+    if (modo === 'historial') {
+        document.getElementById('buscadorHistorial').value = "";
+        document.getElementById('edit_record_id').value = "";
+        document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
+        document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
+        if(document.getElementById('btnCancelarEdicion')) {
+            document.getElementById('btnCancelarEdicion').style.display = 'none';
         }
+        cargarHistorialSupabase(); 
+    }
+}
 
         function cancelarEdicionActiva() {
             limpiarFormularioCompleto();
