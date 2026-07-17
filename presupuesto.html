@@ -354,43 +354,36 @@
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 function procesarYDescargarPresupuesto() {
-        const template = document.getElementById('printable-canvas');
-        
-        // Ocultar botones
-        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'none', 'important'));
+    const template = document.getElementById('printable-canvas');
+    
+    // 1. Sincronizar tablas ANTES de capturar (esto llena las tablas ocultas que sí se ven en el PDF)
+    llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
+    llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
+    llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
+    
+    // 2. Ocultar solo botones de control (los que tienen clase .btn-ctrl-col)
+    const controles = document.querySelectorAll('.btn-ctrl-col');
+    controles.forEach(b => b.style.display = 'none');
 
-        // Sincronizar inputs
-        const inputs = template.querySelectorAll('input');
-        const snapshots = [];
-        inputs.forEach(input => {
-            const span = document.createElement('span');
-            span.className = 'print-tmp-text';
-            span.style.cssText = "font-size: 8.5pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
-            span.innerText = input.value || '---';
-            input.parentNode.insertBefore(span, input);
-            snapshots.push({ input: input, span: span });
-            input.style.display = 'none';
-        });
+    // 3. Captura limpia: NO modificamos el DOM, capturamos el elemento tal cual
+    const opt = {
+        margin: 0,
+        filename: 'Presupuesto_AE.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { 
+            scale: 2, 
+            width: 800, 
+            windowWidth: 800,
+            useCORS: true
+        },
+        jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
+    };
 
-        // 📌 CONFIGURACIÓN ESTRICTA: margin 0 y escala 2
-        const opt = {
-            margin: 0, 
-            filename: 'Presupuesto_AE.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                width: 800,
-                windowWidth: 800 
-            },
-            jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
-        };
-
-        html2pdf().from(template).set(opt).save().then(() => {
-            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.setProperty('display', 'inline-flex', 'important'));
-            snapshots.forEach(s => { s.input.style.display = ''; s.span.remove(); });
-        });
-    }
+    html2pdf().from(template).set(opt).save().then(() => {
+        // Restaurar botones
+        controles.forEach(b => b.style.display = 'inline-block');
+    });
+}
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
