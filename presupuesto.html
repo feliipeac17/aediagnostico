@@ -361,8 +361,7 @@
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
-    // 2. Configuración de alta resolución forzada
-// 3. Configuración técnica para forzar el inicio en 0,0
+// 3. Configuración técnica para forzar el inicio en 0,0 y limpiar márgenes padres
     const opt = {
         margin: 0,
         filename: 'Presupuesto_AE.pdf',
@@ -371,8 +370,25 @@
             scale: 2, 
             width: 800, 
             windowWidth: 800,
-            y: 0, // 👈 FUERZA EL INICIO EN LA PARTE SUPERIOR (Y=0)
-            useCORS: true
+            useCORS: true,
+            // Esta función limpia el CSS de los padres justo antes de la foto
+            onclone: function(clonedDoc) {
+                const canvas = clonedDoc.getElementById('printable-canvas');
+                const wrapper = clonedDoc.querySelector('.wrapper-page');
+                
+                // Forzamos al lienzo a ignorar cualquier centrado del padre
+                canvas.style.margin = '0';
+                canvas.style.position = 'absolute';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                
+                // Forzamos al padre a no empujar el lienzo
+                if(wrapper) {
+                    wrapper.style.margin = '0';
+                    wrapper.style.padding = '0';
+                    wrapper.style.width = '800px';
+                }
+            }
         },
         jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
     };
