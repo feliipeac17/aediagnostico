@@ -471,14 +471,9 @@
         }
 // 1. CORRECCIÓN: Al regresar al formulario, ocultamos los botones de PDF/WhatsApp
 function regresarAlFormulario() {
-    document.getElementById('reportView').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
-    
-    // Ocultar botones de reporte al volver al panel
-    document.getElementById('btnDescargarPDF').style.display = 'none';
-    document.getElementById('btnEnviarWhatsApp').style.display = 'none';
-    
-    cambiarPestana('historial');
+    // En lugar de intentar ocultar/mostrar elementos, 
+    // recargamos la página desde cero para limpiar cualquier error de estado.
+    window.location.href = 'index.html';
 }
         function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
 
