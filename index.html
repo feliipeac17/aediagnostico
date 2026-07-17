@@ -463,7 +463,17 @@
             document.getElementById('reportView').style.display = 'none';
             cargarHistorialSupabase();
         }
-        function regresarAlFormulario() { mostrarPanel(); cambiarPestana('historial'); }
+// 1. CORRECCIÓN: Al regresar al formulario, ocultamos los botones de PDF/WhatsApp
+function regresarAlFormulario() {
+    document.getElementById('reportView').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    
+    // Ocultar botones de reporte al volver al panel
+    document.getElementById('btnDescargarPDF').style.display = 'none';
+    document.getElementById('btnEnviarWhatsApp').style.display = 'none';
+    
+    cambiarPestana('historial');
+}
         function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
 
         function triggerUpload(inputId) { document.getElementById(inputId).click(); }
@@ -621,10 +631,10 @@ function cambiarPestana(modo) {
             inyectarTarjetasHistorial(listaReportesMemoria);
         }
 
-        function inyectarTarjetasHistorial(arr) {
+        // 3. CORRECCIÓN: En la inyección, aseguramos que el botón COTIZAR siempre se renderice
+function inyectarTarjetasHistorial(arr) {
     const contenedor = document.getElementById('listaReportes');
     if (!contenedor) return;
-    if (arr.length === 0) { contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">Sin reportes que coincidan.</p>'; return; }
     contenedor.innerHTML = "";
     
     arr.forEach(rep => {
@@ -634,32 +644,19 @@ function cambiarPestana(modo) {
         tarjeta.innerHTML = `
             <div style="flex:1;">
                 <strong style="color:#d32f2f;">FOLIO: ${rep.folio}</strong>
-                <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''} - PLACAS: ${rep.vehiculo_placas || 'N/A'}</div>
+                <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
                 <div style="font-size:8.5pt; color:#888;">👤 CLIENTE: ${rep.cliente_nombre || ''}</div>
             </div>
             <div style="display:flex; gap:6px; flex-wrap: wrap;">
                 <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">👁️ Ver</button>
                 <button class="btn-card-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Editar</button>
-                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">💰 Cotizar</button>
+                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold; display:inline-block !important;">💰 Cotizar</button>
             </div>
         `;
 
-        tarjeta.querySelector('.btn-card-ver').addEventListener('click', (e) => { e.stopPropagation(); mostrarVistaPreviaDigital(rep); });
-        tarjeta.querySelector('.btn-card-edit').addEventListener('click', (e) => { e.stopPropagation(); cargarRegistroParaEditar(rep); });
-        tarjeta.querySelector('.btn-card-cotizar').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const datos = {
-                cliente_nombre: String(rep.cliente_nombre || '').trim(),
-                cliente_telefono: String(rep.cliente_telefono || '').trim(),
-                vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
-                vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
-                vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
-                vehiculo_color: String(rep.vehiculo_color || '').trim(),
-                vehiculo_km: String(rep.vehiculo_km || '').trim()
-            };
-            localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
-            window.location.href = 'presupuesto.html';
-        });
+        tarjeta.querySelector('.btn-card-ver').onclick = () => mostrarVistaPreviaDigital(rep);
+        tarjeta.querySelector('.btn-card-edit').onclick = () => cargarRegistroParaEditar(rep);
+        tarjeta.querySelector('.btn-card-cotizar').onclick = () => transferirAPresupuesto(rep);
 
         contenedor.appendChild(tarjeta);
     });
@@ -720,55 +717,25 @@ function alternarSubVista(vista) {
             if (urlDestino && urlDestino.includes('http')) { window.open(urlDestino, '_blank'); }
         }
 
-        function mostrarVistaPreviaDigital(rep) {
-            reportDataGlobal = rep; alternarSubVista('recepcion');
-            document.getElementById('web_view_folio').innerText = "FOLIO: " + rep.folio;
-            const f = new Date(rep.created_at); document.getElementById('web_view_fecha').innerText = `📅 ${f.toLocaleDateString('es-MX')}  |  🕒 ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
-            document.getElementById('web_view_cliente').innerText = rep.cliente_nombre; document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'NO REGISTRADO';
-            document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || '--'; document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || '--'; document.getElementById('web_view_color').innerText = rep.vehiculo_color || '--'; document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || '--'; document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || '--';
-            
-            if (rep.vehiculo_km) {
-                const partes = rep.vehiculo_km.split(' ');
-                const numero = parseFloat(partes[0]);
-                const unidad = partes[1] || 'KM';
-                document.getElementById('web_view_km').innerText = !isNaN(numero) ? `${numero.toLocaleString()} ${unidad}` : rep.vehiculo_km;
-            } else {
-                document.getElementById('web_view_km').innerText = '--';
-            }
-            
-            const fillGas = rep.vehiculo_gas_nivel; const barWeb = document.getElementById('web_view_gas_fill'); barWeb.style.width = fillGas + "%";
-            if(fillGas <= 25) barWeb.style.background = '#d32f2f'; else if(fillGas >= 75) barWeb.style.background = '#4caf50'; else barWeb.style.background = '#ff9800';
+// 2. CORRECCIÓN: Al mostrar el reporte, aseguramos que los botones de PDF/WhatsApp se vean
+function mostrarVistaPreviaDigital(rep) {
+    reportDataGlobal = rep; 
+    alternarSubVista('recepcion');
+    
+    // [Aquí mantienes toda tu lógica de llenado de campos que ya tenías]
+    // ... (no borres nada de tu llenado de datos) ...
 
-            const setDotWeb = (id, val) => { document.getElementById(id).style.background = val ? '#4caf50' : '#d32f2f'; };
-            setDotWeb('dot_luces', rep.chk_luces); setDotWeb('dot_elevadores', rep.chk_elevadores); setDotWeb('dot_tablero', rep.chk_tablero);
-            document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.';
-            document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'NINGUNO.'; document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'NINGUNO.';
-
-            const iframe = document.getElementById('iframeEscanerLaunch'); const msgNoLink = document.getElementById('noLinkMsg');
-            if (rep.link_escaner && rep.link_escaner.includes('http')) { iframe.src = rep.link_escaner; iframe.style.display = 'block'; msgNoLink.style.display = 'none'; } 
-            else { iframe.src = ""; iframe.style.display = 'none'; msgNoLink.style.display = 'block'; }
-
-            const cargarImgWeb = (id, url) => { const img = document.getElementById(id); if(url) { img.src = url; img.style.display = 'block'; } else { img.src = ""; img.style.display = 'none'; } };
-            cargarImgWeb('web_img_frente', rep.foto_frente_url); cargarImgWeb('web_img_trasera', rep.foto_trasera_url); cargarImgWeb('web_img_izq', rep.foto_izquierdo_url); cargarImgWeb('web_img_der', rep.foto_derecho_url); cargarImgWeb('web_img_motor', rep.foto_motor_url); cargarImgWeb('web_img_cluster', rep.foto_cluster_url);
-
-            document.getElementById('adminPanel').style.display = 'none'; document.getElementById('reportView').style.display = 'block'; window.scrollTo(0, 0);
-            document.getElementById('btnDescargarPDF').onclick = () => generarPDFConJSPDF(false);
-            
-            document.getElementById('btnEnviarWhatsApp').onclick = () => {
-                const cleanPhone = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : '';
-                const baseDomain = window.location.origin;
-                let finalPhone = cleanPhone.length === 11 && cleanPhone.startsWith('1') ? cleanPhone : `52${cleanPhone}`;
-                const hasLaunchLink = rep.link_escaner && rep.link_escaner.includes('http');
-                
-                let msg = `*Hola ${rep.cliente_nombre}!* Te compartimos el reporte de servicio para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n`;
-                if (hasLaunchLink) msg += `📊 *Reporte de Escáner Launch:* \n${baseDomain}/?scan=${rep.folio}\n\n`;
-                msg += `📄 *Descargar PDF de Recepción:* \n${baseDomain}/?pdf=${rep.folio}\n\n`;
-                msg += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
-
-                window.open(`https://api.whatsapp.com/send?phone=${finalPhone}&text=${encodeURIComponent(msg)}`, '_blank');
-            };
-        }
-
+    document.getElementById('adminPanel').style.display = 'none'; 
+    document.getElementById('reportView').style.display = 'block'; 
+    
+    // Asegurar botones visibles al entrar al reporte
+    document.getElementById('btnDescargarPDF').style.display = 'block';
+    document.getElementById('btnEnviarWhatsApp').style.display = 'block';
+    
+    window.scrollTo(0, 0);
+    // ... (el resto de tu lógica de botones WhatsApp/PDF)
+}
+        
         function cargarRegistroParaEditar(rep) {
             reportDataGlobal = rep;
             document.getElementById('edit_record_id').value = rep.id;
