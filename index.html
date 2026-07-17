@@ -468,12 +468,7 @@ function mostrarPanel() {
     document.getElementById('adminPanel').style.display = 'block';
     document.getElementById('reportView').style.display = 'none';
     
-    // OCULTAR botones de reporte al volver al panel
-    document.getElementById('btnDescargarPDF').style.display = 'none';
-    document.getElementById('btnEnviarWhatsApp').style.display = 'none';
-    
-    // --- ESTO ES LO QUE ESTABA FALTANDO ---
-    // Forzamos a que las tarjetas se redibujen siempre que el panel aparezca
+    // NO ocultes nada aquí. Si necesitas limpiar, hazlo solo en cambiarPestana
     cargarHistorialSupabase();
 }
 // 1. CORRECCIÓN: Al regresar al formulario, ocultamos los botones de PDF/WhatsApp
@@ -692,23 +687,21 @@ function inyectarTarjetasHistorial(arr) {
     });
 }
         
-        function transferirAPresupuesto(rep) {
-            try {
-                const datos = {
-                    cliente_nombre: String(rep.cliente_nombre || '').trim(),
-                    cliente_telefono: String(rep.cliente_telefono || '').trim(),
-                    vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
-                    vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
-                    vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
-                    vehiculo_color: String(rep.vehiculo_color || '').trim(),
-                    vehiculo_km: String(rep.vehiculo_km || '').trim()
-                };
-                localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
-                window.location.href = 'presupuesto.html';
-            } catch (error) {
-                alert("Error al transferir datos: " + error.message);
-            }
-        }
+function transferirAPresupuesto(rep) {
+    const datos = {
+        cliente_nombre: String(rep.cliente_nombre || '').trim(),
+        cliente_telefono: String(rep.cliente_telefono || '').trim(),
+        vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
+        vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
+        vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
+        vehiculo_color: String(rep.vehiculo_color || '').trim(),
+        vehiculo_km: String(rep.vehiculo_km || '').trim()
+    };
+    localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
+    
+    // CAMBIO AQUÍ: Forzamos la ruta completa para evitar el error de "index.html" a lado
+    window.location.href = window.location.origin + '/presupuesto.html';
+}
 
         function filtrarHistorial() {
             const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
