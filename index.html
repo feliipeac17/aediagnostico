@@ -478,9 +478,21 @@ function mostrarPanel() {
 }
 // 1. CORRECCIÓN: Al regresar al formulario, ocultamos los botones de PDF/WhatsApp
 function regresarAlFormulario() {
-    // En lugar de intentar ocultar/mostrar elementos, 
-    // recargamos la página desde cero para limpiar cualquier error de estado.
-    window.location.href = 'index.html';
+    // 1. Ocultar la vista de reporte
+    document.getElementById('reportView').style.display = 'none';
+    
+    // 2. Mostrar el panel
+    document.getElementById('adminPanel').style.display = 'block';
+    
+    // 3. Ocultar los botones específicos del PDF/WhatsApp
+    document.getElementById('btnDescargarPDF').style.display = 'none';
+    document.getElementById('btnEnviarWhatsApp').style.display = 'none';
+    
+    // 4. Cambiar a la pestaña de historial
+    cambiarPestana('historial');
+    
+    // 5. ¡FORZAR REDIBUJO! Esto obliga a que el botón Cotizar aparezca de nuevo
+    cargarHistorialSupabase();
 }
         function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
 
@@ -652,20 +664,18 @@ function inyectarTarjetasHistorial(arr) {
         tarjeta.innerHTML = `
             <div style="flex:1;">
                 <strong style="color:#d32f2f;">FOLIO: ${rep.folio}</strong>
-                <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''} - PLACAS: ${rep.vehiculo_placas || 'N/A'}</div>
-                <div style="font-size:8.5pt; color:#888;">👤 CLIENTE: ${rep.cliente_nombre || ''}</div>
+                <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca || ''}</div>
             </div>
             <div style="display:flex; gap:6px; flex-wrap: wrap;">
-                <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">👁️ Ver</button>
-                <button class="btn-card-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Editar</button>
-                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold; display:inline-block !important;">💰 Cotizar</button>
+                <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer;">👁️ Ver</button>
+                <button class="btn-card-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer;">✏️ Editar</button>
+                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; display:inline-block !important;">💰 Cotizar</button>
             </div>
         `;
 
-        tarjeta.querySelector('.btn-card-ver').addEventListener('click', (e) => { e.stopPropagation(); mostrarVistaPreviaDigital(rep); });
-        tarjeta.querySelector('.btn-card-edit').addEventListener('click', (e) => { e.stopPropagation(); cargarRegistroParaEditar(rep); });
-        tarjeta.querySelector('.btn-card-cotizar').addEventListener('click', (e) => {
-            e.stopPropagation();
+        tarjeta.querySelector('.btn-card-ver').onclick = () => mostrarVistaPreviaDigital(rep);
+        tarjeta.querySelector('.btn-card-edit').onclick = () => cargarRegistroParaEditar(rep);
+        tarjeta.querySelector('.btn-card-cotizar').onclick = () => {
             const datos = {
                 cliente_nombre: String(rep.cliente_nombre || '').trim(),
                 cliente_telefono: String(rep.cliente_telefono || '').trim(),
@@ -677,12 +687,12 @@ function inyectarTarjetasHistorial(arr) {
             };
             localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
             window.location.href = 'presupuesto.html';
-        });
-
+        };
         contenedor.appendChild(tarjeta);
     });
 }
-function transferirAPresupuesto(rep) {
+        
+        function transferirAPresupuesto(rep) {
             try {
                 const datos = {
                     cliente_nombre: String(rep.cliente_nombre || '').trim(),
