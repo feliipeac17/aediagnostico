@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script>
-    // Si la URL contiene "index.html", redirigir limpiamente a la raíz
-    if (window.location.href.indexOf("index.html") > -1) {
-        window.history.replaceState({}, document.title, "/");
-    }
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AE Diagnostico</title>
@@ -158,6 +152,13 @@
     </style>
 </head>
 <body>
+    <script>
+    // ESTO SE EJECUTA ANTES DE QUE EL DOM ESTÉ COMPLETAMENTE LISTO
+    // Forzamos que, si la URL tiene index.html, el navegador cargue la raíz internamente
+    if (window.location.pathname.endsWith('index.html')) {
+        window.history.replaceState(null, '', '/');
+    }
+</script>
 
     <div id="maskFullscreenView" class="mask-fullscreen-view">
         <iframe id="iframeFullscreenEscaner" src=""></iframe>
