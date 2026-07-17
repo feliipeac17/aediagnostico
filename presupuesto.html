@@ -357,26 +357,36 @@
    // Asegúrate de tener esto al principio de tu script:
 // const { jsPDF } = window.jspdf;
 
-async function procesarYDescargarPresupuesto() {
-    const btn = document.querySelector('.btn-submit-app');
-    btn.innerText = "⏳ GENERANDO PDF..."; 
-    btn.disabled = true;
+function procesarYDescargarPresupuesto() {
+    const element = document.getElementById('printable-canvas');
+    const botones = document.querySelectorAll('.btn-ctrl-col');
+    botones.forEach(b => b.style.display = 'none');
 
-    const doc = new jsPDF('p', 'mm', 'a4');
-    
-    // Aquí puedes poner el mismo diseño que tienes en tu index.html
-    // Por ejemplo:
-    doc.setFont("helvetica", "bold");
-    doc.text("PRESUPUESTO AE DIAGNÓSTICO", 20, 20);
-    
-    // ... agrega aquí el resto de tus líneas doc.text y doc.rect ...
+    // Esta configuración es la más agresiva para forzar el formato
+    const opt = {
+        margin: 0,
+        filename: 'Presupuesto_AE.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { 
+            scale: 2, 
+            width: 800, 
+            windowWidth: 800,
+            useCORS: true,
+            onclone: (doc) => {
+                const el = doc.getElementById('printable-canvas');
+                // Forzamos el CSS directamente en el clon para la descarga
+                el.style.margin = '0 auto';
+                el.style.padding = '20px';
+                el.style.width = '800px';
+            }
+        },
+        jsPDF: { unit: 'pt', format: 'letter', orientation: 'portrait' }
+    };
 
-    doc.save('Presupuesto_AE.pdf');
-    
-    btn.innerText = "📥 Descargar Presupuesto HD Premium"; 
-    btn.disabled = false;
-}
-                                                                                                                                                  
+    html2pdf().from(element).set(opt).save().then(() => {
+        botones.forEach(b => b.style.display = 'inline-block');
+    });
+}                                                                                                                                                  
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
