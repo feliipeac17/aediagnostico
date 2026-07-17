@@ -383,6 +383,12 @@
     </div>
 
     <script>
+        // Añade esto al puro principio de tus etiquetas <script>
+window.onload = function() {
+    if (localStorage.getItem('ae_sesion_valida') === 'true') {
+        cargarHistorialSupabase();
+    }
+};
         // ================= CREDENCIALES DE TU SUPABASE =================
         const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
