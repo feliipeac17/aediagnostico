@@ -650,19 +650,32 @@ function inyectarTarjetasHistorial(arr) {
         tarjeta.innerHTML = `
             <div style="flex:1;">
                 <strong style="color:#d32f2f;">FOLIO: ${rep.folio}</strong>
-                <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                <div style="font-size:9.5pt; color:#555; margin-top:4px;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''} - PLACAS: ${rep.vehiculo_placas || 'N/A'}</div>
                 <div style="font-size:8.5pt; color:#888;">👤 CLIENTE: ${rep.cliente_nombre || ''}</div>
             </div>
             <div style="display:flex; gap:6px; flex-wrap: wrap;">
                 <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">👁️ Ver</button>
                 <button class="btn-card-edit" style="background:#000; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Editar</button>
-                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold; display: inline-block !important; visibility: visible !important;">💰 Cotizar</button>
+                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px 12px; font-size:9pt; border-radius:4px; cursor:pointer; font-weight:bold; display:inline-block !important;">💰 Cotizar</button>
             </div>
         `;
 
-        tarjeta.querySelector('.btn-card-ver').onclick = () => mostrarVistaPreviaDigital(rep);
-        tarjeta.querySelector('.btn-card-edit').onclick = () => cargarRegistroParaEditar(rep);
-        tarjeta.querySelector('.btn-card-cotizar').onclick = () => transferirAPresupuesto(rep);
+        tarjeta.querySelector('.btn-card-ver').addEventListener('click', (e) => { e.stopPropagation(); mostrarVistaPreviaDigital(rep); });
+        tarjeta.querySelector('.btn-card-edit').addEventListener('click', (e) => { e.stopPropagation(); cargarRegistroParaEditar(rep); });
+        tarjeta.querySelector('.btn-card-cotizar').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const datos = {
+                cliente_nombre: String(rep.cliente_nombre || '').trim(),
+                cliente_telefono: String(rep.cliente_telefono || '').trim(),
+                vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
+                vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
+                vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
+                vehiculo_color: String(rep.vehiculo_color || '').trim(),
+                vehiculo_km: String(rep.vehiculo_km || '').trim()
+            };
+            localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
+            window.location.href = 'presupuesto.html';
+        });
 
         contenedor.appendChild(tarjeta);
     });
