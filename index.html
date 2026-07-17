@@ -463,12 +463,19 @@
             if (currentPin === CORRECT_PIN) { localStorage.setItem('ae_sesion_valida', 'true'); mostrarPanel(); }
             else { document.getElementById('pin-error-msg').style.visibility = 'visible'; currentPin = ""; updateDots(); }
         }
-        function mostrarPanel() {
-            document.getElementById('pin-lock-screen').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('reportView').style.display = 'none';
-            cargarHistorialSupabase();
-        }
+function mostrarPanel() {
+    document.getElementById('pin-lock-screen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('reportView').style.display = 'none';
+    
+    // OCULTAR botones de reporte al volver al panel
+    document.getElementById('btnDescargarPDF').style.display = 'none';
+    document.getElementById('btnEnviarWhatsApp').style.display = 'none';
+    
+    // --- ESTO ES LO QUE ESTABA FALTANDO ---
+    // Forzamos a que las tarjetas se redibujen siempre que el panel aparezca
+    cargarHistorialSupabase();
+}
 // 1. CORRECCIÓN: Al regresar al formulario, ocultamos los botones de PDF/WhatsApp
 function regresarAlFormulario() {
     // En lugar de intentar ocultar/mostrar elementos, 
