@@ -2,87 +2,62 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AE Diagnóstico - Presupuesto Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Presupuesto AE Diagnóstico</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Open Sans', sans-serif; }
-        body { background-color: #f1f5f9; padding: 20px; }
-        #printable-canvas { width: 800px; background: #fff; padding: 30px; margin: 0 auto; }
-        .table-row { display: grid; grid-template-columns: 3fr 1fr 30px; gap: 10px; margin-bottom: 5px; }
-        .btn-ctrl-col { cursor: pointer; }
-        .btn-submit-app { width: 100%; max-width: 800px; display: block; margin: 20px auto; padding: 15px; background: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
+        /* Estilos base para mantener tu formato profesional */
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #printable-canvas { width: 800px; padding: 20px; margin: 0 auto; background: white; }
+        .btn-ctrl-col { margin: 10px 0; padding: 10px; cursor: pointer; }
+        .table-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        input { padding: 5px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
+
     <div id="printable-canvas">
-        <div style="background:#0f172a; color:#fff; padding:20px; border-radius:10px;">
-            <h1 style="font-family:Montserrat;">AE DIAGNÓSTICO</h1>
-            <p id="pdf-lbl-folio">FOLIO PRES-0000</p>
+        <h1>AE DIAGNÓSTICO</h1>
+        <div id="listServicios">
+            <h3>Servicios</h3>
+            <div class="table-row">
+                <input type="text" placeholder="Descripción">
+                <input type="number" placeholder="Precio">
+            </div>
         </div>
-        
-        <div style="margin:20px 0;">
-            <input type="text" id="in_cliente_nombre" placeholder="Nombre Cliente" style="width:100%; padding:10px; border:1px solid #ccc;">
-            <input type="text" id="in_vehiculo_marca" placeholder="Vehículo" style="width:100%; padding:10px; border:1px solid #ccc; margin-top:5px;">
-        </div>
-
-        <h3>Servicios</h3>
-        <div id="listServicios"></div>
-        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listServicios')">Añadir Servicio</button>
-
-        <h3>Refacciones</h3>
-        <div id="listRefacciones"></div>
-        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listRefacciones')">Añadir Refacción</button>
+        <button class="btn-ctrl-col" onclick="agregarRenglon('listServicios')">Agregar Servicio</button>
     </div>
 
-    <button class="btn-submit-app" onclick="descargarPDF()">📥 Descargar PDF</button>
+    <button style="display:block; margin: 20px auto; padding: 15px; background: red; color: white;" 
+            onclick="descargarPDF()">📥 DESCARGAR PDF</button>
 
     <script>
-        function agregarRenglon(listaId) {
+        function agregarRenglon(id) {
             const div = document.createElement('div');
             div.className = 'table-row';
-            div.innerHTML = `
-                <input type="text" class="desc-input" placeholder="Descripción">
-                <input type="number" class="price-input" placeholder="0">
-                <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove()">X</button>
-            `;
-            document.getElementById(listaId).appendChild(div);
+            div.innerHTML = `<input type="text" placeholder="Desc"> <input type="number" placeholder="Precio">`;
+            document.getElementById(id).appendChild(div);
         }
 
         function descargarPDF() {
             const element = document.getElementById('printable-canvas');
             
-            // Ocultamos botones
-            document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'none');
+            // 1. Ocultar botones de control antes de capturar
+            const botones = document.querySelectorAll('.btn-ctrl-col');
+            botones.forEach(b => b.style.display = 'none');
 
+            // 2. Configuración estricta para evitar duplicidad y cortes
             const opt = {
                 margin: 0,
-                filename: 'Presupuesto_AE.pdf',
+                filename: 'Presupuesto_Final.pdf',
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
-                    scale: 2, 
-                    width: 800, 
-                    windowWidth: 800 
-                },
+                html2canvas: { scale: 2, width: 800, windowWidth: 800 },
                 jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
             };
 
-            html2pdf().from(element).set(opt).save().then(() => {
-                document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'inline-block');
+            // 3. Generar y restaurar
+            html2pdf().set(opt).from(element).save().then(() => {
+                botones.forEach(b => b.style.display = 'block');
             });
-        }
-
-        // Cargar datos al abrir
-        window.onload = () => {
-            const data = JSON.parse(localStorage.getItem('ae_transferencia_presupuesto'));
-            if(data) {
-                document.getElementById('in_cliente_nombre').value = data.cliente_nombre || '';
-                document.getElementById('in_vehiculo_marca').value = (data.vehiculo_marca || '') + ' ' + (data.vehiculo_modelo || '');
-            }
-            agregarRenglon('listServicios');
-            agregarRenglon('listRefacciones');
         }
     </script>
 </body>
