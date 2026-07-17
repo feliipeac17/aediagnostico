@@ -358,35 +358,19 @@
 // const { jsPDF } = window.jspdf;
 
 function procesarYDescargarPresupuesto() {
-    const element = document.getElementById('printable-canvas');
+    // 1. Ocultamos los botones de control para que no salgan en el PDF
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
-    // Esta configuración es la más agresiva para forzar el formato
-    const opt = {
-        margin: 0,
-        filename: 'Presupuesto_AE.pdf',
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { 
-            scale: 2, 
-            width: 800, 
-            windowWidth: 800,
-            useCORS: true,
-            onclone: (doc) => {
-                const el = doc.getElementById('printable-canvas');
-                // Forzamos el CSS directamente en el clon para la descarga
-                el.style.margin = '0 auto';
-                el.style.padding = '20px';
-                el.style.width = '800px';
-            }
-        },
-        jsPDF: { unit: 'pt', format: 'letter', orientation: 'portrait' }
-    };
+    // 2. Imprimimos usando el motor nativo del navegador.
+    // Esto abrirá el menú de impresión que ya viste que sí respeta tu diseño.
+    window.print();
 
-    html2pdf().from(element).set(opt).save().then(() => {
+    // 3. Volvemos a mostrar los botones tras un segundo
+    setTimeout(() => {
         botones.forEach(b => b.style.display = 'inline-block');
-    });
-}                                                                                                                                                  
+    }, 1000);
+}                                                                                                                           
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
