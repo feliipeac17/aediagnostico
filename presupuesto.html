@@ -356,6 +356,8 @@
 
     function procesarYDescargarPresupuesto() {
     const template = document.getElementById('printable-canvas');
+    
+    // Ocultar botones
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
@@ -364,13 +366,12 @@
         filename: 'Presupuesto_AE.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-            scale: 1, // Bajamos la escala a 1 para que quepa todo sin que se dispare el tamaño
-            width: 800, 
-            windowWidth: 800,
-            useCORS: true
+            scale: 2, 
+            useCORS: true,
+            logging: false
         },
-        // 👈 CAMBIAMOS EL FORMATO A LETTER, ES MÁS ANCHO QUE A4
-        jsPDF: { unit: 'px', format: 'letter', orientation: 'portrait' } 
+        // Usamos formato A4 estándar y dejamos que la librería ajuste la escala
+        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
 
     html2pdf().from(template).set(opt).save().then(() => {
