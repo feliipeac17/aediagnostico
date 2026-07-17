@@ -164,9 +164,21 @@
 
 <div class="wrapper-page">
     <div class="nav-bar">
-        <a href="/" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Volver al Panel</a>
+        <button onclick="volverAlInicio()" class="btn-back" style="background:none; border:none; cursor:pointer; font-size: 14px; color: inherit; display: flex; align-items: center; gap: 5px;">
+            <i class="fa-solid fa-arrow-left"></i> Volver al Panel
+        </button>
+        
         <div style="font-size: 8.5pt; font-weight: 700; color: var(--primary-red);">CONEXIÓN DIRECTA PREMIUM</div>
     </div>
+</div>
+
+<script>
+    function volverAlInicio() {
+        // window.location.replace limpia el historial de navegación 
+        // evitando que el navegador confunda "index.html" con "/"
+        window.location.replace('/');
+    }
+</script>
 
         <div id="printable-canvas">
             <div class="pdf-header-container">
