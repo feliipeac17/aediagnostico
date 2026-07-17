@@ -355,47 +355,25 @@
     }
 
     function procesarYDescargarPresupuesto() {
-    const element = document.getElementById('printable-canvas');
-
-    // 1. Ocultar botones de control para que no aparezcan en la descarga
+    const template = document.getElementById('printable-canvas');
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
-// 3. Configuración técnica para forzar el inicio en 0,0 y limpiar márgenes padres
     const opt = {
         margin: 0,
         filename: 'Presupuesto_AE.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-            scale: 2, 
+            scale: 1, // Bajamos la escala a 1 para que quepa todo sin que se dispare el tamaño
             width: 800, 
             windowWidth: 800,
-            useCORS: true,
-            // Esta función limpia el CSS de los padres justo antes de la foto
-            onclone: function(clonedDoc) {
-                const canvas = clonedDoc.getElementById('printable-canvas');
-                const wrapper = clonedDoc.querySelector('.wrapper-page');
-                
-                // Forzamos al lienzo a ignorar cualquier centrado del padre
-                canvas.style.margin = '0';
-                canvas.style.position = 'absolute';
-                canvas.style.top = '0';
-                canvas.style.left = '0';
-                
-                // Forzamos al padre a no empujar el lienzo
-                if(wrapper) {
-                    wrapper.style.margin = '0';
-                    wrapper.style.padding = '0';
-                    wrapper.style.width = '800px';
-                }
-            }
+            useCORS: true
         },
-        jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
+        // 👈 CAMBIAMOS EL FORMATO A LETTER, ES MÁS ANCHO QUE A4
+        jsPDF: { unit: 'px', format: 'letter', orientation: 'portrait' } 
     };
 
-    // 3. Generar y descargar automáticamente
-    html2pdf().from(element).set(opt).save().then(() => {
-        // Restaurar botones tras la descarga
+    html2pdf().from(template).set(opt).save().then(() => {
         botones.forEach(b => b.style.display = 'inline-block');
     });
 }
