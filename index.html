@@ -755,23 +755,65 @@ function mostrarVistaPreviaDigital(rep) {
     reportDataGlobal = rep; 
     alternarSubVista('recepcion');
 
-    // Mapeo corregido con los IDs reales de tu HTML
+    // 1. Datos básicos
+    document.getElementById('web_view_folio').innerText = "FOLIO: " + (rep.folio || 'N/A');
     document.getElementById('web_view_cliente').innerText = rep.cliente_nombre || 'N/A';
-    document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || 'N/A';
+    document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'N/A';
     document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || 'N/A';
     document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || 'N/A';
-    document.getElementById('web_view_folio').innerText = "FOLIO: " + (rep.folio || 'N/A');
+    document.getElementById('web_view_color').innerText = rep.vehiculo_color || 'N/A';
+    document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || 'N/A';
+    document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || 'N/A';
+    document.getElementById('web_view_km').innerText = rep.vehiculo_km || 'N/A';
 
-    // Cambiar vista
+    // 2. Gasolina (Ajusta la barra)
+    const fillGas = rep.vehiculo_gas_nivel || 0;
+    const barWeb = document.getElementById('web_view_gas_fill');
+    if(barWeb) {
+        barWeb.style.width = fillGas + "%";
+        barWeb.style.background = fillGas <= 25 ? '#d32f2f' : (fillGas >= 75 ? '#4caf50' : '#ff9800');
+    }
+
+    // 3. Diagnóstico
+    document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'SIN MOTIVO.';
+    document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'SIN OBSERVACIONES.';
+    document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES.';
+
+    // 4. Checklist (Puntos de color)
+    const setDotWeb = (id, val) => {
+        const dot = document.getElementById(id);
+        if(dot) dot.style.background = val ? '#4caf50' : '#d32f2f';
+    };
+    setDotWeb('dot_luces', rep.chk_luces);
+    setDotWeb('dot_elevadores', rep.chk_elevadores);
+    setDotWeb('dot_tablero', rep.chk_tablero);
+
+    // 5. Fotos (Carga las URLs de las fotos)
+    const fotos = [
+        {id: 'web_img_frente', url: rep.foto_frente_url},
+        {id: 'web_img_trasera', url: rep.foto_trasera_url},
+        {id: 'web_img_izq', url: rep.foto_izquierdo_url},
+        {id: 'web_img_der', url: rep.foto_derecho_url},
+        {id: 'web_img_motor', url: rep.foto_motor_url},
+        {id: 'web_img_cluster', url: rep.foto_cluster_url}
+    ];
+
+    fotos.forEach(f => {
+        const img = document.getElementById(f.id);
+        if(img) {
+            if(f.url) { img.src = f.url; img.style.display = 'block'; }
+            else { img.style.display = 'none'; }
+        }
+    });
+
+    // 6. Visibilidad final
     document.getElementById('adminPanel').style.display = 'none'; 
     document.getElementById('reportView').style.display = 'block'; 
-    
-    // Forzar botones de reporte
     document.getElementById('btnDescargarPDF').style.display = 'block';
     document.getElementById('btnEnviarWhatsApp').style.display = 'block';
     
     window.scrollTo(0, 0);
-}    
+}
         function cargarRegistroParaEditar(rep) {
             reportDataGlobal = rep;
             document.getElementById('edit_record_id').value = rep.id;
