@@ -129,20 +129,24 @@
         
         .btn-ctrl-col { display: inline-flex; }
 
-      @media print {
+@media print {
     @page {
         size: letter portrait;
         margin: 5mm;
     }
     
+    /* ESTA ES LA LÍNEA MÁGICA QUE FORZA LOS COLORES EN CELULAR */
+    * {
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important;
+    }
+
     body { background: white !important; }
     
-    /* Ocultamos lo que no debe salir en el PDF */
     .nav-bar, .btn-submit-app, .btn-add-item, .btn-del-item, .fa-trash { 
         display: none !important; 
     }
     
-    /* Forzamos el lienzo al tamaño de la hoja sin recortes */
     #printable-canvas {
         width: 100% !important;
         margin: 0 !important;
