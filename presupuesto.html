@@ -354,50 +354,66 @@
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 function procesarYDescargarPresupuesto() {
-    const template = document.getElementById('printable-canvas');
+    // 1. Clonar el lienzo para no alterar la pantalla del usuario
+    const canvas = document.getElementById('printable-canvas');
+    const clone = canvas.cloneNode(true);
     
-    // 1. Sincronización absoluta: pasamos los valores de los inputs a spans de texto plano
-    // Esto es lo que soluciona que el PDF salga vacío o con "an"
-    template.querySelectorAll('input').forEach(input => {
+    // 2. Preparar el clon: inyectar valores reales a los inputs convertidos
+    clone.querySelectorAll('input').forEach(input => {
         const span = document.createElement('span');
-        span.className = 'print-tmp-text';
         span.style.cssText = "font-size: 9pt; font-weight: 700; color: #1e293b; text-transform: uppercase;";
         span.innerText = input.value || '---';
-        input.parentNode.insertBefore(span, input);
-        input.style.display = 'none';
+        input.parentNode.replaceChild(span, input);
     });
 
-    // 2. Ejecutar la función de tablas antes de procesar
-    llenarTablaPillar('listServicios', 'pdf-tbl-servicios', 'pdf-tot-servicios');
-    llenarTablaPillar('listRefacciones', 'pdf-tbl-refacciones', 'pdf-tot-refacciones');
-    llenarTablaPillar('listManoObra', 'pdf-tbl-manoobra', 'pdf-tot-manoobra');
+    // 3. Ejecutar inyección de tablas en el clon
+    // (Aseguramos que las tablas tengan datos antes de procesar)
+    const lists = [
+        {orig: 'listServicios', tbl: 'pdf-tbl-servicios', tot: 'pdf-tot-servicios'},
+        {orig: 'listRefacciones', tbl: 'pdf-tbl-refacciones', tot: 'pdf-tot-refacciones'},
+        {orig: 'listManoObra', tbl: 'pdf-tbl-manoobra', tot: 'pdf-tot-manoobra'}
+    ];
+    
+    lists.forEach(item => {
+        const tbody = clone.querySelector(`#${item.tbl} tbody`);
+        const rows = document.querySelectorAll(`#${item.orig} .table-row`);
+        let suma = 0;
+        rows.forEach(row => {
+            const desc = row.querySelector('.desc-input').value.toUpperCase();
+            const precio = parseFloat(row.querySelector('.price-input').value) || 0;
+            if(desc) {
+                suma += precio;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="padding: 6px 10px; font-size: 7.5pt; border-bottom: 1px dashed #e2e8f0;">${desc}</td><td style="text-align:right; font-weight:700; font-size: 7.5pt;">$${precio.toLocaleString()}</td>`;
+                tbody.appendChild(tr);
+            }
+        });
+        clone.querySelector(`#${item.tot}`).innerText = `$${suma.toLocaleString()}`;
+    });
 
-    // 3. Ocultar botones
-    document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'none');
-
-    // 4. Configuración precisa de PDF (Sin márgenes de librería, solo los del lienzo)
+    // 4. Procesar PDF con escala 1:1 forzada
     const opt = {
         margin: 0,
         filename: 'Presupuesto_Final.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
             scale: 2, 
-            useCORS: true,
-            width: 800,
+            width: 800, 
             windowWidth: 800,
-            x: 0,
-            y: 0
+            onclone: (clonedDoc) => {
+                // Forzar que el lienzo clonado esté alineado a la izquierda sin márgenes
+                const c = clonedDoc.getElementById('printable-canvas');
+                c.style.margin = '0';
+                c.style.left = '0';
+                c.style.top = '0';
+            }
         },
         jsPDF: { unit: 'px', format: [800, 1050], orientation: 'portrait' }
     };
 
-    html2pdf().from(template).set(opt).save().then(() => {
-        // Restaurar pantalla
-        document.querySelectorAll('.btn-ctrl-col').forEach(btn => btn.style.display = 'inline-flex');
-        template.querySelectorAll('.print-tmp-text').forEach(s => s.remove());
-        template.querySelectorAll('input').forEach(i => i.style.display = '');
-    });
+    html2pdf().from(clone).set(opt).save();
 }
+    
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
