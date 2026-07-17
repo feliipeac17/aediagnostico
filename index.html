@@ -667,36 +667,36 @@ function inyectarTarjetasHistorial(arr) {
     
     arr.forEach(rep => {
         const tarjeta = document.createElement('div');
+        // Estilo de la tarjeta
         tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
         
-        // AQUÍ ESTAMOS LLAMANDO A LOS CAMPOS CORRECTOS
         tarjeta.innerHTML = `
             <div style="flex:1;">
                 <strong style="color:#d32f2f;">FOLIO: ${rep.folio || 'N/A'}</strong>
-                <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''}</div>
                 <div style="font-size:10pt;">🔢 PLACAS: ${rep.vehiculo_placas || 'S/N'}</div>
                 <div style="font-size:10pt; font-weight:bold;">👤 CLIENTE: ${rep.cliente_nombre || 'S/N'}</div>
             </div>
             <div style="display:flex; gap:6px;">
-                <button class="btn-card-ver" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
-                <button class="btn-card-cotizar" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">💰 Cotizar</button>
+                <button id="btn-ver-${rep.folio}" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
+                <button id="btn-edit-${rep.folio}" style="background:#000; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
+                <button id="btn-cotizar-${rep.folio}" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">💰 Cotizar</button>
             </div>
         `;
-
-        tarjeta.querySelector('.btn-card-ver').onclick = () => {
-            console.log("Datos enviados a vista:", rep); // Debug para ver si trae datos
-            mostrarVistaPreviaDigital(rep);
-        };
         
-        tarjeta.querySelector('.btn-card-cotizar').onclick = () => {
+        contenedor.appendChild(tarjeta);
+
+        // ASIGNACIÓN DIRECTA DE EVENTOS (Aquí estaba el fallo de "no funciona")
+        document.getElementById(`btn-ver-${rep.folio}`).onclick = () => mostrarVistaPreviaDigital(rep);
+        document.getElementById(`btn-edit-${rep.folio}`).onclick = () => cargarRegistroParaEditar(rep);
+        document.getElementById(`btn-cotizar-${rep.folio}`).onclick = () => {
             localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(rep));
             window.location.replace('/presupuesto.html');
         };
-        
-        contenedor.appendChild(tarjeta);
     });
-}        
-function transferirAPresupuesto(rep) {
+}
+        
+        function transferirAPresupuesto(rep) {
     const datos = {
         cliente_nombre: String(rep.cliente_nombre || '').trim(),
         cliente_telefono: String(rep.cliente_telefono || '').trim(),
