@@ -129,20 +129,29 @@
         
         .btn-ctrl-col { display: inline-flex; }
 
-        /* Borra cualquier intento de margen anterior y usa esto al final de tu <style> */
-@media print {
-    body { background: #fff !important; padding: 0 !important; }
-    .nav-bar, .btn-submit-app, .btn-add-item, .btn-del-item { display: none !important; }
+      @media print {
+    @page {
+        size: letter portrait;
+        margin: 5mm;
+    }
     
+    body { background: white !important; }
+    
+    /* Ocultamos lo que no debe salir en el PDF */
+    .nav-bar, .btn-submit-app, .btn-add-item, .btn-del-item, .fa-trash { 
+        display: none !important; 
+    }
+    
+    /* Forzamos el lienzo al tamaño de la hoja sin recortes */
     #printable-canvas {
-        width: 210mm !important; /* Ancho exacto de A4 */
-        height: 297mm !important; /* Alto exacto de A4 */
-        padding: 10mm !important; /* Margen interno fijo */
+        width: 100% !important;
         margin: 0 !important;
+        padding: 5mm !important;
+        display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
         box-shadow: none !important;
-        position: absolute;
-        top: 0;
-        left: 0;
     }
 }
     </style>
