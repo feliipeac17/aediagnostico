@@ -752,21 +752,26 @@ function alternarSubVista(vista) {
 
 // 2. CORRECCIÓN: Al mostrar el reporte, aseguramos que los botones de PDF/WhatsApp se vean
 function mostrarVistaPreviaDigital(rep) {
-    if (!rep) {
-        console.error("No se recibieron datos para mostrar");
-        return;
-    }
+    reportDataGlobal = rep; 
+    alternarSubVista('recepcion');
+
+    // Mapeo corregido con los IDs reales de tu HTML
+    document.getElementById('web_view_cliente').innerText = rep.cliente_nombre || 'N/A';
+    document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || 'N/A';
+    document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || 'N/A';
+    document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || 'N/A';
+    document.getElementById('web_view_folio').innerText = "FOLIO: " + (rep.folio || 'N/A');
+
+    // Cambiar vista
+    document.getElementById('adminPanel').style.display = 'none'; 
+    document.getElementById('reportView').style.display = 'block'; 
     
-    // Aquí es donde asignas los valores a tus campos de HTML
-    // Asegúrate de que los IDs coincidan con tu HTML
-    document.getElementById('displayNombre').innerText = rep.cliente_nombre || 'N/A';
-    document.getElementById('displayPlacas').innerText = rep.vehiculo_placas || 'N/A';
-    document.getElementById('displayVehiculo').innerText = `${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}`;
+    // Forzar botones de reporte
+    document.getElementById('btnDescargarPDF').style.display = 'block';
+    document.getElementById('btnEnviarWhatsApp').style.display = 'block';
     
-    // Cambia la vista
-    document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('reportView').style.display = 'block';
-}        
+    window.scrollTo(0, 0);
+}    
         function cargarRegistroParaEditar(rep) {
             reportDataGlobal = rep;
             document.getElementById('edit_record_id').value = rep.id;
