@@ -152,10 +152,10 @@
     </style>
 </head>
 <body>
-    <script>
-    // ESTO SE EJECUTA ANTES DE QUE EL DOM ESTÉ COMPLETAMENTE LISTO
-    // Forzamos que, si la URL tiene index.html, el navegador cargue la raíz internamente
-    if (window.location.pathname.endsWith('index.html')) {
+    
+<script>
+    // Solo limpiamos si NO hay parámetros de búsqueda (como ?scan=)
+    if (window.location.pathname.endsWith('index.html') && !window.location.search) {
         window.history.replaceState(null, '', '/');
     }
 </script>
