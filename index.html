@@ -720,23 +720,36 @@ function inyectarTarjetasHistorial(arr) {
         }
 
 function alternarSubVista(vista) {
-            const tabRec = document.getElementById('subTabRecepcion'); 
-            const tabEsc = document.getElementById('subTabEscaner');
-            const secRec = document.getElementById('subVistaContenidoRecepcion'); 
-            const secEsc = document.getElementById('subVistaContenidoEscaner');
-            
-            if (vista === 'recepcion') { 
-                if (tabRec) tabRec.classList.add('active'); 
-                if (tabEsc) tabEsc.classList.remove('active'); 
-                if (secRec) secRec.style.display = 'block'; 
-                if (secEsc) secEsc.style.display = 'none'; 
-            } else { 
-                if (tabRec) tabRec.classList.remove('active'); 
-                if (tabEsc) tabEsc.classList.add('active'); 
-                if (secRec) secRec.style.display = 'none'; 
-                if (secEsc) secEsc.style.display = 'block'; 
-            }
+    const tabRec = document.getElementById('subTabRecepcion'); 
+    const tabEsc = document.getElementById('subTabEscaner');
+    const secRec = document.getElementById('subVistaContenidoRecepcion'); 
+    const secEsc = document.getElementById('subVistaContenidoEscaner'); // Este es tu contenedor padre
+    
+    if (vista === 'recepcion') { 
+        // Activar Pestaña Recepción
+        if (tabRec) tabRec.classList.add('active'); 
+        if (tabEsc) tabEsc.classList.remove('active'); 
+        
+        // Mostrar Recepción, Ocultar Escáner
+        if (secRec) secRec.style.display = 'block'; 
+        if (secEsc) {
+            secEsc.style.display = 'none'; // FORZAR OCULTAR
+            secEsc.style.visibility = 'hidden'; // SEGURIDAD EXTRA
         }
+    } else { 
+        // Activar Pestaña Escáner
+        if (tabRec) tabRec.classList.remove('active'); 
+        if (tabEsc) tabEsc.classList.add('active'); 
+        
+        // Ocultar Recepción, Mostrar Escáner
+        if (secRec) secRec.style.display = 'none'; 
+        if (secEsc) {
+            secEsc.style.display = 'block'; // MOSTRAR
+            secEsc.style.visibility = 'visible'; // SEGURIDAD EXTRA
+        }
+    }
+}
+
 
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
