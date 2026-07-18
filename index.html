@@ -723,34 +723,28 @@ function alternarSubVista(vista) {
     const tabRec = document.getElementById('subTabRecepcion'); 
     const tabEsc = document.getElementById('subTabEscaner');
     const secRec = document.getElementById('subVistaContenidoRecepcion'); 
-    const secEsc = document.getElementById('subVistaContenidoEscaner'); // Este es tu contenedor padre
+    const secEsc = document.getElementById('subVistaContenidoEscaner');
+    const iframe = document.getElementById('iframeEscanerLaunch');
     
     if (vista === 'recepcion') { 
-        // Activar Pestaña Recepción
         if (tabRec) tabRec.classList.add('active'); 
         if (tabEsc) tabEsc.classList.remove('active'); 
-        
-        // Mostrar Recepción, Ocultar Escáner
         if (secRec) secRec.style.display = 'block'; 
-        if (secEsc) {
-            secEsc.style.display = 'none'; // FORZAR OCULTAR
-            secEsc.style.visibility = 'hidden'; // SEGURIDAD EXTRA
-        }
+        if (secEsc) secEsc.style.display = 'none'; 
     } else { 
-        // Activar Pestaña Escáner
         if (tabRec) tabRec.classList.remove('active'); 
         if (tabEsc) tabEsc.classList.add('active'); 
-        
-        // Ocultar Recepción, Mostrar Escáner
         if (secRec) secRec.style.display = 'none'; 
-        if (secEsc) {
-            secEsc.style.display = 'block'; // MOSTRAR
-            secEsc.style.visibility = 'visible'; // SEGURIDAD EXTRA
+        if (secEsc) secEsc.style.display = 'block'; 
+        
+        // AQUÍ ES DONDE CARGA EL REPORTE SOLO CUANDO SE ABRE LA PESTAÑA
+        if (reportDataGlobal && reportDataGlobal.link_escaner && iframe.src === "") {
+            iframe.src = reportDataGlobal.link_escaner;
         }
     }
 }
 
-
+        
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
             let urlDestino = "";
@@ -765,9 +759,11 @@ function alternarSubVista(vista) {
 
 function mostrarVistaPreviaDigital(rep) {
     reportDataGlobal = rep; 
+    
+    // 1. Iniciamos siempre en la pestaña de Recepción
     alternarSubVista('recepcion');
 
-    // 1. Datos básicos
+    // 2. Datos básicos
     document.getElementById('web_view_folio').innerText = "FOLIO: " + (rep.folio || 'N/A');
     document.getElementById('web_view_cliente').innerText = rep.cliente_nombre || 'N/A';
     document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'N/A';
@@ -778,7 +774,7 @@ function mostrarVistaPreviaDigital(rep) {
     document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || 'N/A';
     document.getElementById('web_view_km').innerText = rep.vehiculo_km || 'N/A';
 
-    // 2. Gasolina
+    // 3. Gasolina
     const fillGas = rep.vehiculo_gas_nivel || 0;
     const barWeb = document.getElementById('web_view_gas_fill');
     if(barWeb) {
@@ -786,12 +782,12 @@ function mostrarVistaPreviaDigital(rep) {
         barWeb.style.background = fillGas <= 25 ? '#d32f2f' : (fillGas >= 75 ? '#4caf50' : '#ff9800');
     }
 
-    // 3. Diagnóstico
+    // 4. Diagnóstico
     document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'SIN MOTIVO.';
     document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'SIN OBSERVACIONES.';
     document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES.';
 
-    // 4. Checklist
+    // 5. Checklist
     const setDotWeb = (id, val) => {
         const dot = document.getElementById(id);
         if(dot) dot.style.background = val ? '#4caf50' : '#d32f2f';
@@ -800,7 +796,7 @@ function mostrarVistaPreviaDigital(rep) {
     setDotWeb('dot_elevadores', rep.chk_elevadores);
     setDotWeb('dot_tablero', rep.chk_tablero);
 
-    // 5. Fotos
+    // 6. Fotos
     const fotos = [
         {id: 'web_img_frente', url: rep.foto_frente_url},
         {id: 'web_img_trasera', url: rep.foto_trasera_url},
@@ -817,21 +813,20 @@ function mostrarVistaPreviaDigital(rep) {
         }
     });
 
-    // --- AQUÍ INTEGRAMOS EL ESCÁNER CORRECTAMENTE ---
+    // 7. CONFIGURACIÓN DEL ESCÁNER (Lazy Loading)
+    // Limpiamos el src al abrir para no cargar nada hasta que el usuario toque la pestaña
     const iframeEscaner = document.getElementById('iframeEscanerLaunch');
     const msgEscaner = document.getElementById('noLinkMsg');
     
+    iframeEscaner.src = ""; // <-- Esto elimina el espacio en blanco al inicio
+    
     if (rep.link_escaner && rep.link_escaner.trim() !== "") {
-        iframeEscaner.src = rep.link_escaner;
-        iframeEscaner.parentElement.style.display = 'block';
         msgEscaner.style.display = 'none';
     } else {
-        iframeEscaner.src = "";
-        iframeEscaner.parentElement.style.display = 'none';
         msgEscaner.style.display = 'block';
     }
 
-    // 6. Visibilidad final
+    // 8. Visibilidad final
     document.getElementById('adminPanel').style.display = 'none'; 
     document.getElementById('reportView').style.display = 'block'; 
     document.getElementById('btnDescargarPDF').style.display = 'block';
