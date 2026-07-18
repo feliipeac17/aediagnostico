@@ -814,6 +814,19 @@ function mostrarVistaPreviaDigital(rep) {
     
     window.scrollTo(0, 0);
 }
+
+const iframeEscaner = document.getElementById('iframeEscanerLaunch');
+    const msgEscaner = document.getElementById('noLinkMsg');
+    
+    if (rep.link_escaner) {
+        iframeEscaner.src = rep.link_escaner;
+        iframeEscaner.parentElement.style.display = 'block'; // Asegura que se vea
+        msgEscaner.style.display = 'none';
+    } else {
+        iframeEscaner.src = "";
+        msgEscaner.style.display = 'block';
+    }
+        
         function cargarRegistroParaEditar(rep) {
             reportDataGlobal = rep;
             document.getElementById('edit_record_id').value = rep.id;
