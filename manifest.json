@@ -2,19 +2,20 @@
   "name": "AEDiag",
   "short_name": "AEDiag",
   "description": "Sistema de recepción vehicular y diagnósticos cloud para AE.",
-  "start_url": "index.html",
+  "start_url": "/", 
+  "scope": "/",
   "display": "standalone",
   "background_color": "#111111",
   "theme_color": "#111111",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "logo2.png",
+      "src": "/logo2.png", 
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "logo2.png",
+      "src": "/logo2.png",
       "sizes": "512x512",
       "type": "image/png"
     }
