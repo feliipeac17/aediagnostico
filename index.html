@@ -737,12 +737,18 @@ function alternarSubVista(vista) {
         if (secRec) secRec.style.display = 'none'; 
         if (secEsc) secEsc.style.display = 'block'; 
         
-        // AQUÍ ES DONDE CARGA EL REPORTE SOLO CUANDO SE ABRE LA PESTAÑA
-        if (reportDataGlobal && reportDataGlobal.link_escaner && iframe.src === "") {
-            iframe.src = reportDataGlobal.link_escaner;
+        // --- AQUÍ OBTENEMOS EL LINK DIRECTAMENTE DEL DOM ---
+        // Como el formulario guarda el link en 'in_link_escaner', lo leemos de ahí
+        // o del objeto global si existe
+        const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
+        
+        if (link && link.trim() !== "" && iframe.src !== link) {
+            iframe.src = link;
+            console.log("Cargando reporte desde DOM:", link);
         }
     }
 }
+
 
         
         function abrirCalidadOriginal(tipoFoto) {
