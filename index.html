@@ -302,8 +302,10 @@
         <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
             <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF</button>
-            <button id="btnEnviarWhatsApp" class="btn-submit" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span>💬 Enviar por WhatsApp</span>
+            <button id="btnEnviarWhatsApp" class="btn-submit" onclick="enviarWhatsApp()">
+    💬 Enviar por WhatsApp
+</button>
+
             </button>
         </div>
         
@@ -974,6 +976,40 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
         btn.innerText = "📥 PDF Local"; btn.disabled = false;
     }
 }
+        <script>
+    // Pega esto justo después de tus otras funciones
+    function enviarWhatsApp() {
+        let rep = reportDataGlobal || JSON.parse(localStorage.getItem('ae_reporte_activo'));
+        
+        if (!rep) {
+            alert("⚠️ No hay reporte cargado. Por favor, abre el reporte nuevamente.");
+            return;
+        }
+
+        let telLimpio = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : "";
+        
+        if (telLimpio.length < 10 || telLimpio.length > 11) {
+            alert("El número de teléfono parece inválido: " + rep.cliente_telefono);
+            return;
+        }
+
+        let telefonoFinal = telLimpio;
+        if (telLimpio.length === 10) {
+            telefonoFinal = "52" + telLimpio;
+        }
+
+        const mensaje = `Hola *${rep.cliente_nombre.toUpperCase()}!* Te compartimos el Reporte de Servicio y Escaneo para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n` +
+                        `📊 *Reporte de Escáneo:* \n` +
+                        `https://aediagnostico.com/?scan=${rep.folio}\n\n` +
+                        `📄 *Reporte de Servicio:* \n` +
+                        `https://aediagnostico.com/?pdf=${rep.folio}\n\n` +
+                        `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
+        
+        const urlWpp = `https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`;
+        window.open(urlWpp, '_blank');
+    }
+</script>
+
 
     </script>
 
