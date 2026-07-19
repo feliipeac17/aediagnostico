@@ -301,11 +301,8 @@
     <div id="reportView" class="report-view">
         <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
-            <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF</button>
-            <button id="btnEnviarWhatsApp" class="btn-submit" onclick="enviarWhatsApp()">
-    💬 Enviar por WhatsApp
-</button>
-
+            <button id="btnDescargarPDF" onclick="generarPDFConJSPDF()">📥 Descargar PDF</button>
+            <button id="btnEnviarWhatsApp" class="btn-submit" onclick="enviarWhatsApp()">💬 Enviar por WhatsApp</button>
             </button>
         </div>
         
