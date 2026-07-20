@@ -164,6 +164,14 @@
     visibility: visible !important;
     opacity: 1 !important;
 }
+
+    #contenedorVisorDinamico {
+        display: block !important;
+        width: 100% !important;
+        height: 600px !important; /* Altura fija para que no sea invisible */
+        border: 2px dashed #007bff !important; /* Borde azul para que sepas dónde está */
+        margin-top: 10px;
+    }
     </style>
 </head>
 <body>
@@ -795,12 +803,18 @@ function alternarSubVista(vista) {
         if (tabEsc) tabEsc.classList.remove('active'); 
         if (secRec) secRec.style.display = 'block'; 
         if (secEsc) secEsc.style.display = 'none'; 
-    } else { 
+ } else { 
         // Lógica de Pestaña Escáner
         if (tabRec) tabRec.classList.remove('active'); 
         if (tabEsc) tabEsc.classList.add('active'); 
+        
+        // --- AQUÍ PONES LA CIRUGÍA DE FUERZA ---
         if (secRec) secRec.style.display = 'none'; 
-        if (secEsc) secEsc.style.display = 'block'; 
+        if (secEsc) {
+            secEsc.style.display = 'block'; 
+            secEsc.style.visibility = 'visible';
+            secEsc.style.position = 'relative';
+        }
         
         // 1. Buscamos el valor en el input en tiempo real
         const inputLink = document.getElementById('in_link_escaner');
