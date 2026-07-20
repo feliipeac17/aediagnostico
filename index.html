@@ -390,7 +390,6 @@
 
     <script>
 window.convertUrlToImageElement = async function(url) {
-    console.log("🟢 La función convertUrlToImageElement ha sido cargada correctamente");
     return new Promise((resolve) => {
         if (!url || url === "" || url === "undefined") { resolve(null); return; }
         const img = new Image();
@@ -921,7 +920,7 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
 
     const pintarCheckFila = (txt, val, x, y) => { doc.setFillColor(val ? 76 : 211, val ? 175 : 47, val ? 80 : 47); doc.circle(x + 2, y - 1, 1.5, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(val ? 46 : 198, val ? 125 : 40, val ? 50 : 40); doc.text(val ? "OK" : "FALLA", x + 6, y); doc.setFont("helvetica", "normal"); doc.setTextColor(60, 60, 65); doc.text(txt, x + 20, y); };
 
-    let imgLogo = await convertUrlToImageElement('logo.png');
+   let imgLogo = await window.convertUrlToImageElement('logo.png');
 
     pintarFondoBase(); doc.setFillColor(26, 26, 26); doc.rect(8, 0, 202, 28, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(1.5); doc.line(8, 28, 210, 28);
     doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("REPORTE DE SERVICIO", 20, 11); doc.setFontSize(9.5); doc.setTextColor(211, 47, 47); doc.text(`FOLIO: ${rep.folio}`, 20, 17); doc.setTextColor(200, 200, 200); doc.text(fechaTxt, 20, 22);
@@ -969,7 +968,7 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
     const fotosPDF = [ { url: rep.foto_frente_url, label: '1. FRENTE DEL VEHÍCULO' }, { url: rep.foto_trasera_url, label: '2. PARTE TRASERA' }, { url: rep.foto_izquierdo_url, label: '3. LADO IZQUIERDO' }, { url: rep.foto_derecho_url, label: '4. LADO DERECHO' }, { url: rep.foto_motor_url, label: '5. MOTOR' }, { url: rep.foto_cluster_url, label: '6. CLUSTER / TABLERO' } ];
     let coords = [{ x: 20, y: 36 }, { x: 115, y: 36 }, { x: 20, y: 115 }, { x: 115, y: 115 }, { x: 20, y: 194 }, { x: 115, y: 194 }];
     for (let i = 0; i < fotosPDF.length; i++) {
-        let imgEl = await convertUrlToImageElement(fotosPDF[i].url); let c = coords[i];
+        let imgEl = await window.convertUrlToImageElement(fotosPDF[i].url);
         if (imgEl) doc.addImage(imgEl, 'JPEG', c.x, c.y, 85, 62, undefined, 'FAST');
         else { doc.setFillColor(245, 246, 248); doc.rect(c.x, c.y, 85, 62, 'F'); doc.setFontSize(8); doc.setTextColor(160, 160, 165); doc.text("FOTO NO DISPONIBLE", c.x + 26, c.y + 31); }
         doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor(90, 90, 95); doc.text(fotosPDF[i].label, c.x + 1, c.y + 67);
