@@ -762,17 +762,24 @@ function alternarSubVista(vista) {
         if (link && link.trim() !== "") {
             const PROXY_URL = "https://hgffyhbnsbripdomidyz.supabase.co/functions/v1/proxy-reporte?url=";
             
-            fetch(PROXY_URL + encodeURIComponent(link))
-                .then(response => response.text())
-                .then(html => {
-                    iframe.srcdoc = html;
-                    document.getElementById('subVistaContenidoEscaner').style.display = 'block';
-                    document.getElementById('noLinkMsg').style.display = 'none';
-                })
-                .catch(err => {
-                    console.error("Error al cargar proxy:", err);
-                    iframe.srcdoc = "<h3>Error al cargar reporte.</h3>";
-                });
+fetch(PROXY_URL + encodeURIComponent(link))
+    .then(response => response.text())
+    .then(html => {
+        // --- AQUÍ VA EL BLOQUE QUE ME PREGUNTAS ---
+        // Esto le dice al iframe: "busca las imágenes y estilos en la web oficial de Golo"
+        const htmlConBase = html.replace('<head>', '<head><base href="http://ait.golo365.com/">');
+        
+        // Ahora asignamos el HTML modificado al iframe
+        iframe.srcdoc = htmlConBase;
+        
+        document.getElementById('subVistaContenidoEscaner').style.display = 'block';
+        document.getElementById('noLinkMsg').style.display = 'none';
+        // ------------------------------------------
+    })
+    .catch(err => {
+        console.error("Error al cargar proxy:", err);
+        iframe.srcdoc = "<h3>Error al cargar reporte.</h3>";
+    });
         }
     }
 }
