@@ -120,7 +120,16 @@
         .view-sub-btn { background: none; border: none; padding: 10px 15px; font-size: 10pt; font-weight: bold; color: #666; cursor: pointer; border-radius: 4px 4px 0 0; text-transform: uppercase; }
         .view-sub-btn.active { color: #d32f2f; border-bottom: 3px solid #d32f2f; background: #f8fafc; }
 
-        .scanner-frame-container { width: 100%; height: 650px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #fff; display: none; }
+        /* CAMBIA ESTO */
+.scanner-frame-container { 
+    width: 100%; 
+    height: 700px; /* Asegura altura */
+    border: 1px solid #ddd; 
+    border-radius: 6px; 
+    overflow: hidden; 
+    background: #fff; 
+    display: block; /* IMPORTANTE: Cambiado a block */
+}
         .scanner-frame-container iframe { width: 100%; height: 100%; border: none; }
 
         /* 📱 PANTALLA DE MÁSCARA TOTAL PARA EL CLIENTE (LAUNCH DISFRAZADO) */
@@ -165,13 +174,12 @@
     opacity: 1 !important;
 }
 
-    #contenedorVisorDinamico {
-        display: block !important;
-        width: 100% !important;
-        height: 600px !important; /* Altura fija para que no sea invisible */
-        border: 2px dashed #007bff !important; /* Borde azul para que sepas dónde está */
-        margin-top: 10px;
-    }
+#contenedorVisorDinamico {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important; 
+    overflow: hidden;
+}
     </style>
 </head>
 <body>
