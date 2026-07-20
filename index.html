@@ -451,55 +451,83 @@ window.addEventListener('DOMContentLoaded', async () => {
     const scanFolio = urlParams.get('scan'); 
     const pdfFolio = urlParams.get('pdf');
 
-    if (scanFolio) {
-        const { data: reporte, error } = await supabaseClient
-            .from('reportes_servicio')
-            .select('link_escaner')
-            .eq('folio', scanFolio.toUpperCase())
-            .single();
+if (scanFolio) {
+            // 1. Pintamos la pantalla de carga idéntica a la del PDF
+            document.body.innerHTML = `
+                <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
+                    <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
+                    <div id="loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
+                    <h2 id="pdf-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">DESCARGANDO REPORTE DE ESCÁNER...</h2>
+                    <p id="pdf-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, acepta la descarga en la alerta de tu celular.</p>
+                    <button id="btnRetryPDF" style="display:none;background:#d32f2f;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">
+                        🔄 Descargar PDF Nuevamente
+                    </button>
+                </div>
+                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+            `;
 
-        if (!error && reporte && reporte.link_escaner) {
-            const url = reporte.link_escaner;
+            // 2. Buscamos el link en Supabase
+            const { data: reporte, error } = await supabaseClient
+                .from('reportes_servicio')
+                .select('link_escaner')
+                .eq('folio', scanFolio.toUpperCase())
+                .single();
 
-            // Si es un PDF, forzamos la descarga vía Blob
-            if (url.toLowerCase().endsWith('.pdf')) {
-                fetch(url)
-                    .then(response => response.blob())
-                    .then(blob => {
+            if (!error && reporte && reporte.link_escaner) {
+                const url = reporte.link_escaner;
+
+                if (url.toLowerCase().endsWith('.pdf')) {
+                    try {
+                        // Intentamos la descarga por Blob para forzar el nombre personalizado
+                        const response = await fetch(url);
+                        const blob = await response.blob();
                         const urlBlob = window.URL.createObjectURL(blob);
                         const link = document.createElement('a');
                         link.style.display = 'none';
                         link.href = urlBlob;
-                        link.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
+                        link.download = `Reporte_Escaner_${scanFolio}.pdf`;
                         document.body.appendChild(link);
                         link.click();
                         window.URL.revokeObjectURL(urlBlob);
                         document.body.removeChild(link);
+                    } catch (e) {
+                        // Si hay bloqueo de CORS, abrimos como respaldo directo
+                        const linkFallback = document.createElement('a');
+                        linkFallback.href = url;
+                        linkFallback.download = `Reporte_Escaner_${scanFolio}.pdf`;
+                        linkFallback.target = '_blank';
+                        linkFallback.click();
+                    }
 
-                        document.body.innerHTML = `
-                            <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
-                                <div>
-                                    <h2 style="color:#4caf50;">✅ DESCARGA LISTA</h2>
-                                    <p>Tu reporte de Escaneo ${scanFolio} se está descargando.</p>
-                                </div>
-                            </div>`;
-                    })
-                    .catch(() => {
-                        // Respaldo: si falla el fetch por CORS, abrimos en pestaña nueva
-                        window.open(url, '_blank');
-                    });
+                    // 3. Actualizamos la pantalla al estado de éxito (igual a la imagen)
+                    document.getElementById('loading-spinner').style.display = 'none';
+                    document.getElementById('pdf-status-title').innerText = "¡REPORTE CREADO!";
+                    document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
+                    
+                    const btnRetry = document.getElementById('btnRetryPDF');
+                    btnRetry.style.display = 'inline-block';
+                    // Hacemos que el botón reintente la descarga directa si lo presionan
+                    btnRetry.onclick = () => {
+                        const directLink = document.createElement('a');
+                        directLink.href = url;
+                        directLink.download = `Reporte_Escaner_${scanFolio}.pdf`;
+                        directLink.target = '_blank';
+                        directLink.click();
+                    };
+
+                } else {
+                    // Si no es un PDF, mostramos el iframe clásico en pantalla completa
+                    document.body.innerHTML = `
+                        <div id="maskFullscreenView" class="mask-fullscreen-view" style="display:block; width:100vw; height:100vh; position:fixed; top:0; left:0; background:#fff; z-index:99999;">
+                            <iframe src="${url}" style="width:100%; height:100%; border:none;"></iframe>
+                        </div>`;
+                }
+                return;
             } else {
-                // Comportamiento original (iframe) para links que no son PDF
-                document.getElementById('iframeFullscreenEscaner').src = url;
-                document.getElementById('maskFullscreenView').style.display = 'block';
-                document.getElementById('pin-lock-screen').style.display = 'none';
+                document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE LAUNCH NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico registrado.</p></div></div>`;
+                return;
             }
-            return;
-        } else {
-            document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE LAUNCH NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico registrado.</p></div></div>`;
-            return;
         }
-    }
 
     if (pdfFolio) {
         // ... (tu lógica original de pdfFolio se mantiene igual)
