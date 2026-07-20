@@ -772,8 +772,8 @@ function alternarSubVista(vista) {
     const tabEsc = document.getElementById('subTabEscaner');
     const secRec = document.getElementById('subVistaContenidoRecepcion'); 
     const secEsc = document.getElementById('subVistaContenidoEscaner');
-    const iframe = document.getElementById('iframeEscanerLaunch');
 
+    // 1. Limpieza inicial: Solo limpiar si estamos creando algo nuevo
     const modoEdicionActiva = typeof reportDataGlobal !== 'undefined' && reportDataGlobal !== null;
     const estaEnCrearNuevo = document.getElementById('edit_record_id').value === "";
     
@@ -782,52 +782,52 @@ function alternarSubVista(vista) {
         if (contenedor) contenedor.innerHTML = ""; 
     }
     
+    // 2. Cambiar visibilidad de pestañas
     if (vista === 'recepcion') { 
         if (tabRec) tabRec.classList.add('active'); 
         if (tabEsc) tabEsc.classList.remove('active'); 
         if (secRec) secRec.style.display = 'block'; 
         if (secEsc) secEsc.style.display = 'none'; 
-} else { 
-    // Lógica de Pestaña Escáner
-    if (tabRec) tabRec.classList.remove('active'); 
-    if (tabEsc) tabEsc.classList.add('active'); 
-    if (secRec) secRec.style.display = 'none'; 
-    if (secEsc) secEsc.style.display = 'block'; 
-    
-    // Obtenemos el link
-    const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
-    
-    console.log("DEBUG: Link detectado:", link); // <-- ¡MIRA ESTO EN LA CONSOLA (F12)!
-    
-    let contenedor = document.getElementById('contenedorVisorDinamico');
-    if (!contenedor) {
-        contenedor = document.createElement('div');
-        contenedor.id = 'contenedorVisorDinamico';
-        secEsc.appendChild(contenedor);
-    }
-    
-    // Si el link existe, lo renderizamos
-    if (link && link.trim() !== "") {
-        if (link.toLowerCase().endsWith('.pdf')) {
-            contenedor.innerHTML = `
-                <div style="width:100%; height:80vh;">
-                    <embed src="${link}" type="application/pdf" width="100%" height="100%">
-                </div>
-            `;
-        } else {
-            contenedor.innerHTML = `
-                <div style="text-align:center; padding:50px;">
-                    <button onclick="window.open('${link}', '_blank')" class="btn-submit">
-                        ABRIR REPORTE OFICIAL
-                    </button>
-                </div>
-            `;
+    } else { 
+        if (tabRec) tabRec.classList.remove('active'); 
+        if (tabEsc) tabEsc.classList.add('active'); 
+        if (secRec) secRec.style.display = 'none'; 
+        if (secEsc) secEsc.style.display = 'block'; 
+        
+        // 3. Obtener el link
+        const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
+        
+        // 4. Crear o buscar el visor
+        let contenedor = document.getElementById('contenedorVisorDinamico');
+        if (!contenedor) {
+            contenedor = document.createElement('div');
+            contenedor.id = 'contenedorVisorDinamico';
+            secEsc.appendChild(contenedor);
         }
-    } else {
-        // Si no hay link, avisamos al usuario
-        contenedor.innerHTML = "<p style='text-align:center; padding:20px;'>No hay reporte cargado.</p>";
+        
+        // 5. Mostrar contenido
+        if (link && link.trim() !== "") {
+            if (link.toLowerCase().endsWith('.pdf')) {
+                // Aquí forzamos una altura mínima y un borde para que sea visible
+                contenedor.innerHTML = `
+                    <div style="width:100%; height:700px; border:2px solid #ccc; background:#fff;">
+                        <embed src="${link}" type="application/pdf" width="100%" height="100%">
+                    </div>
+                `;
+            } else {
+                contenedor.innerHTML = `
+                    <div style="text-align:center; padding:40px;">
+                        <button onclick="window.open('${link}', '_blank')" style="background:#0284c7; color:white; padding:15px 30px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">
+                            ABRIR REPORTE OFICIAL
+                        </button>
+                    </div>
+                `;
+            }
+        } else {
+            contenedor.innerHTML = "<p style='text-align:center; padding:20px;'>No hay reporte cargado.</p>";
+        }
     }
-}}        
+}
     
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
