@@ -504,15 +504,33 @@ if (scanFolio) {
                     document.getElementById('pdf-status-title').innerText = "¡REPORTE CREADO!";
                     document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
                     
-                    const btnRetry = document.getElementById('btnRetryPDF');
+                   const btnRetry = document.getElementById('btnRetryPDF');
                     btnRetry.style.display = 'inline-block';
-                    // Hacemos que el botón reintente la descarga directa si lo presionan
-                    btnRetry.onclick = () => {
-                        const directLink = document.createElement('a');
-                        directLink.href = url;
-                        directLink.download = `Reporte_Escaner_${scanFolio}.pdf`;
-                        directLink.target = '_blank';
-                        directLink.click();
+
+                    // AQUÍ VA LA LÓGICA CORREGIDA DEL BOTÓN
+                    btnRetry.onclick = async () => {
+                        try {
+                            const response = await fetch(url);
+                            const blob = await response.blob();
+                            const urlBlob = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.style.display = 'none';
+                            link.href = urlBlob;
+                            link.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
+                            document.body.appendChild(link);
+                            link.click();
+                            window.URL.revokeObjectURL(urlBlob);
+                            document.body.removeChild(link);
+                        } catch (e) {
+                            // Respaldo simple si el fetch falla
+                            const fallbackLink = document.createElement('a');
+                            fallbackLink.href = url;
+                            fallbackLink.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
+                            fallbackLink.target = '_blank';
+                            document.body.appendChild(fallbackLink);
+                            fallbackLink.click();
+                            document.body.removeChild(fallbackLink);
+                        }
                     };
 
                 } else {
