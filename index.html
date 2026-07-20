@@ -470,7 +470,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                         const link = document.createElement('a');
                         link.style.display = 'none';
                         link.href = urlBlob;
-                        link.download = `Reporte_Servicio_${scanFolio}.pdf`;
+                        link.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
                         document.body.appendChild(link);
                         link.click();
                         window.URL.revokeObjectURL(urlBlob);
