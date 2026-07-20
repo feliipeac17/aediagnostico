@@ -658,10 +658,12 @@ async function guardarYProcesarReporte() {
     try {
 // --- PROCESAR PDF SI EXISTE ---
         if (file) {
-            const fileName = `pdf_${folioCalculado}_${Date.now()}.pdf`;
+            const fileName = `REPORTE_ESCANER_${folioCalculado}.pdf`;
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
                 .from('reportes')
-                .upload(fileName, file);
+                .upload(fileName, file, {
+            upsert: true // IMPORTANTE: Pon esto en true si quieres reemplazar el PDF anterior al editar
+        });
 
             if (uploadError) throw uploadError;
 
