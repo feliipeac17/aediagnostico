@@ -903,17 +903,23 @@ function mostrarVistaPreviaDigital(rep) {
         }
     });
 
-    // 7. CONFIGURACIÓN DEL ESCÁNER (Lazy Loading)
-    // Limpiamos el src al abrir para no cargar nada hasta que el usuario toque la pestaña
-    const iframeEscaner = document.getElementById('iframeEscanerLaunch');
+// 7. CONFIGURACIÓN DEL ESCÁNER (Actualizada para visor dinámico)
     const msgEscaner = document.getElementById('noLinkMsg');
+    const secEsc = document.getElementById('subVistaContenidoEscaner');
     
-    iframeEscaner.src = ""; // <-- Esto elimina el espacio en blanco al inicio
+    // Limpiamos cualquier rastro anterior
+    if (msgEscaner) msgEscaner.style.display = 'none';
     
     if (rep.link_escaner && rep.link_escaner.trim() !== "") {
-        msgEscaner.style.display = 'none';
+        // Inyectamos el PDF directamente en el contenedor padre
+        secEsc.innerHTML = `
+            <div style="width:100%; height:700px; background:#fff;">
+                <embed src="${rep.link_escaner}" type="application/pdf" width="100%" height="100%">
+            </div>
+        `;
     } else {
-        msgEscaner.style.display = 'block';
+        // Si no hay link, mostramos el mensaje de aviso
+        if (msgEscaner) msgEscaner.style.display = 'block';
     }
 
     // 8. Visibilidad final
