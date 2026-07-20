@@ -242,7 +242,7 @@
                     <div class="form-group"><label>Modelo / Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Versa 2019"></div>
                     <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Gris"></div>
                     <div class="form-group"><label>Placas:</label><input type="text" id="in_vehiculo_placas" placeholder="Matrícula"></div>
-                    <div class="form-group"><label>Número de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 dígitos" maxlength="17"></div>
+                    <div class="form-group"><label>Numero de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 dígitos" maxlength="17"></div>
                     <div class="form-group">
                         <label>Odómetro:</label>
                         <div class="inline-group">
@@ -353,7 +353,7 @@
                             <div class="preview-item"><strong>Color</strong><span id="web_view_color">--</span></div>
                             <div class="preview-item"><strong>Placas</strong><span id="web_view_placas">--</span></div>
                             <div class="preview-item"><strong>Kilometraje</strong><span id="web_view_km">--</span></div>
-                            <div class="preview-item"><strong>Número de Serie (VIN)</strong><span id="web_view_vin">--</span></div>
+                            <div class="preview-item"><strong>Numero de Serie (VIN)</strong><span id="web_view_vin">--</span></div>
                         </div>
                         <div style="margin-top: 15px;">
                             <div class="web-gas-bar"><div id="web_view_gas_fill" class="web-gas-fill"></div></div>
@@ -595,7 +595,7 @@ function cambiarPestana(modo) {
             const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
             if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10-11 DÍGITOS."); return; }
-            if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NÚMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
+            if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NUMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
 
             const textoOriginal = btnSubmit.innerText;
             btnSubmit.innerText = "⏳ PROCESANDO Y ALMACENANDO EN LA NUBE..."; btnSubmit.disabled = true;
@@ -928,7 +928,7 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
             dibujarIconoAuto(20, 75); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL VEHICULO", 28, 77); doc.line(20, 80, 200, 80);
             doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("MARCA", 20, 87); doc.text("MODELO / AÑO", 75, 87); doc.text("COLOR", 150, 87);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_marca || '--', 20, 92); doc.text(rep.vehiculo_modelo || '--', 75, 92); doc.text(rep.vehiculo_color || '--', 150, 92);
-            doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("PLACAS", 20, 102); doc.text("NÚMERO DE SERIE (VIN)", 75, 102); doc.text("KILOMETRAJE", 150, 102);
+            doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("PLACAS", 20, 102); doc.text("NUMERO DE SERIE (VIN)", 75, 102); doc.text("KILOMETRAJE", 150, 102);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_placas || '--', 20, 107); doc.text(rep.vehiculo_vin || '--', 75, 107);
             
             let kmPdfTexto = '--';
