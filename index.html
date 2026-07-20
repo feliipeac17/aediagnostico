@@ -811,57 +811,29 @@ function alternarSubVista(vista) {
         if (tabEsc) tabEsc.classList.remove('active'); 
         if (secRec) secRec.style.display = 'block'; 
         if (secEsc) secEsc.style.display = 'none'; 
- } else { 
-        // Lógica de Pestaña Escáner
-        if (tabRec) tabRec.classList.remove('active'); 
-        if (tabEsc) tabEsc.classList.add('active'); 
-        
-        // --- AQUÍ PONES LA CIRUGÍA DE FUERZA ---
-        if (secRec) secRec.style.display = 'none'; 
-        if (secEsc) {
-            secEsc.style.display = 'block'; 
-            secEsc.style.visibility = 'visible';
-            secEsc.style.position = 'relative';
-        }
-        
-        // 1. Buscamos el valor en el input en tiempo real
-        const inputLink = document.getElementById('in_link_escaner');
-        const link = inputLink ? inputLink.value : "";
-        
-        console.log("DEBUG: Escaneando pestaña, link encontrado:", link);
-        
-        // 2. Buscamos o creamos el contenedor
-        let contenedor = document.getElementById('contenedorVisorDinamico');
-        if (!contenedor) {
-            contenedor = document.createElement('div');
-            contenedor.id = 'contenedorVisorDinamico';
-            secEsc.appendChild(contenedor);
-        }
-        
-        // 3. Limpiamos y redibujamos SIEMPRE al abrir la pestaña
-        contenedor.innerHTML = ""; 
-        
-        if (link && link.trim() !== "") {
-            if (link.toLowerCase().endsWith('.pdf')) {
-                contenedor.innerHTML = `
-                    <div style="width:100%; height:700px; border:1px solid #ccc; background:#f9f9f9;">
-                        <embed src="${link}" type="application/pdf" width="100%" height="100%">
-                    </div>
-                `;
-            } else {
-                contenedor.innerHTML = `
-                    <div style="text-align:center; padding:40px;">
-                        <button onclick="window.open('${link}', '_blank')" class="btn-submit" style="cursor:pointer;">
-                            ABRIR REPORTE OFICIAL
-                        </button>
-                    </div>
-                `;
-            }
-        } else {
-            contenedor.innerHTML = "<p style='text-align:center; padding:20px;'>No hay reporte cargado. Por favor, selecciona un PDF o ingresa un link.</p>";
-        }
+} else { 
+    // Lógica de Pestaña Escáner
+    if (tabRec) tabRec.classList.remove('active'); 
+    if (tabEsc) tabEsc.classList.add('active'); 
+    if (secRec) secRec.style.display = 'none'; 
+    if (secEsc) secEsc.style.display = 'block'; 
+    
+    const link = document.getElementById('in_link_escaner').value;
+    const iframeFijo = document.getElementById('iframeEscanerLaunch');
+    const msg = document.getElementById('noLinkMsg');
+    
+    // Ocultamos el iframe fijo y el mensaje de error
+    if (iframeFijo) iframeFijo.style.display = 'none';
+    if (msg) msg.style.display = 'none';
+    
+    // Usamos el mismo contenedor que ya tienes en el HTML (subVistaContenidoEscaner)
+    // No necesitamos crear otro div si ya existe secEsc
+    if (link && link.trim() !== "") {
+        secEsc.innerHTML = `<embed src="${link}" type="application/pdf" width="100%" height="100%">`;
+    } else {
+        if (msg) msg.style.display = 'block';
     }
-}
+}}
     
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
