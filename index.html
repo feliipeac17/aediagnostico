@@ -756,18 +756,21 @@ function alternarSubVista(vista) {
         if (secRec) secRec.style.display = 'none'; 
         if (secEsc) secEsc.style.display = 'block'; 
         
-        // --- AQUÍ OBTENEMOS EL LINK DIRECTAMENTE DEL DOM ---
-        // Como el formulario guarda el link en 'in_link_escaner', lo leemos de ahí
-        // o del objeto global si existe
-        const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
+const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
         
-        if (link && link.trim() !== "" && iframe.src !== link) {
-            iframe.src = link;
-            console.log("Cargando reporte desde DOM:", link);
+        if (link && link.trim() !== "") {
+            // AQUÍ FORZAMOS EL HTTPS PARA EL IFRAME
+            const linkSeguro = link.replace("http://", "https://");
+            
+            if (iframe.src !== linkSeguro) {
+                iframe.src = linkSeguro;
+                console.log("Cargando reporte seguro:", linkSeguro);
+            }
+        } else {
+            iframe.src = ""; // Si no hay link, limpiamos el iframe
         }
     }
 }
-
 
         
         function abrirCalidadOriginal(tipoFoto) {
