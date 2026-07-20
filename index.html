@@ -16,6 +16,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
     // ESTO ES UNA DEFINICIÓN DE EMERGENCIA GLOBAL
     // Al ser lo primero que se carga, no habrá forma de que no esté definida
@@ -289,13 +290,17 @@
                 </div>
             </div>
 
-            <div class="form-section" style="border-left-color: #1a1a1a;">
-                <div class="form-section-title">Modulo Escaner</div>
-                <div class="form-group">
-                    <label>Enlace del Reporte QR:</label>
-                    <input type="text" id="in_link_escaner" placeholder="URL del reporte">
-                </div>
-            </div>
+<div class="form-section" style="border-left-color: #1a1a1a;">
+    <div class="form-section-title">Modulo Escaner</div>
+    <div class="form-group">
+        <label>Enlace del Reporte QR:</label>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="in_link_escaner" placeholder="URL del reporte o escanea QR">
+            <button type="button" onclick="iniciarEscaneoQR()" style="background:#1a1a1a; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer;">📸</button>
+        </div>
+    </div>
+    <div id="reader" style="width: 100%; display:none; margin-top:10px;"></div>
+</div>
 
             <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">Generar Reporte</button>
             <button class="btn-submit" id="btnCancelarEdicion" style="background:#555; display:none; margin-top:8px;" onclick="cancelarEdicionActiva()">❌ Cancelar Edición</button>
@@ -1030,6 +1035,29 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+        // ... al final de tus scripts actuales ...
+
+function iniciarEscaneoQR() {
+    const readerDiv = document.getElementById('reader');
+    readerDiv.style.display = 'block';
+
+    const html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
+        fps: 10, 
+        qrbox: 250 
+    });
+    
+    html5QrcodeScanner.render((decodedText) => {
+        // Al detectar el QR, lo ponemos en el input
+        document.getElementById('in_link_escaner').value = decodedText;
+        
+        // Cerramos la cámara
+        html5QrcodeScanner.clear();
+        readerDiv.style.display = 'none';
+        alert("¡Código QR escaneado con éxito!");
+    }, (errorMessage) => {
+        // Aquí no hacemos nada para evitar que el usuario vea errores constantes
+    });
+}
 </script>
 </body>
 </html>
