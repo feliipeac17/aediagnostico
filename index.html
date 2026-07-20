@@ -389,7 +389,6 @@
     </div>
 
     <script>
-        // Añade esto al puro principio de tus etiquetas <script>
 window.onload = function() {
     if (localStorage.getItem('ae_sesion_valida') === 'true') {
         cargarHistorialSupabase();
@@ -883,19 +882,17 @@ function mostrarVistaPreviaDigital(rep) {
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
         }
 
-async function convertUrlToImageElement(url) {
+// FORZAMOS LA DECLARACIÓN GLOBAL
+window.convertUrlToImageElement = async function(url) {
     return new Promise((resolve) => {
         if (!url || url === "" || url === "undefined") { resolve(null); return; }
         const img = new Image();
         img.crossOrigin = "Anonymous";
         img.onload = () => resolve(img);
-        img.onerror = () => { 
-            console.warn("No se pudo cargar la imagen:", url);
-            resolve(null); 
-        };
+        img.onerror = () => { resolve(null); };
         img.src = url;
     });
-}
+};
             
 async function generarPDFConJSPDF(autoDownloadAndClose = false) {
     // CAPA DE SEGURIDAD: Recuperamos el reporte si la variable global falló
