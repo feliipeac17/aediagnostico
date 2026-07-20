@@ -132,8 +132,30 @@
         .pdf-signature-box { background-color: #ffffff; border-radius: 8px; height: 55px; position: relative; border: 1px solid var(--border-color); margin-top: 10px; }
         .pdf-signature-box::after { content: 'FIRMA • AUTORIZACIÓN DEL TALLER'; position: absolute; bottom: 4px; left: 0; width: 100%; text-align: center; font-size: 5.5pt; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px; }
 
-        .btn-submit-app { background: var(--primary-red); color: white; border: none; width: 100%; max-width: 800px; padding: 15px; font-size: 11pt; font-weight: 700; border-radius: 8px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(211,47,47,0.2); margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-submit-app:hover { background: #b71c1c; }
+.btn-submit-app { 
+    background: var(--primary-red); 
+    color: white; 
+    border: none; 
+    width: 100%; 
+    max-width: 800px; 
+    padding: 15px; 
+    font-size: 11pt; 
+    font-weight: 700; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    text-transform: uppercase; 
+    box-shadow: 0 4px 12px rgba(211,47,47,0.2); 
+    
+    /* CAMBIO AQUÍ: Esto centra el botón */
+    margin: 20px auto 30px auto; 
+    
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 10px; 
+}
+
+.btn-submit-app:hover { background: #b71c1c; }
         
         .btn-ctrl-col { display: inline-flex; }
 
@@ -240,7 +262,7 @@
                     <i class="fa-solid fa-car-rear pdf-card-icon"></i>
                     <div class="pdf-card-title">Vehículo</div>
                     <div class="pdf-card-data">
-                        <div class="pdf-data-item" style="grid-column: span 2;"><span>Unidad / Modelo</span><input type="text" id="in_vehiculo_marca" class="card-input" placeholder="..."></div>
+                        <div class="pdf-data-item" style="grid-column: span 2;"><span>Marca / Modelo</span><input type="text" id="in_vehiculo_marca" class="card-input" placeholder="..."></div>
                         <div class="pdf-data-item"><span>Placas</span><input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..."></div>
                         <div class="pdf-data-item"><span>Color</span><input type="text" id="in_vehiculo_color" class="card-input" placeholder="..."></div>
                     </div>
@@ -282,7 +304,7 @@
     <thead>
         <tr style="display: grid; grid-template-columns: 1fr 80px;">
             <th style="text-align:left;">Descripción</th>
-            <th style="text-align:right;">Total</th>
+            <th style="text-align:right;">Importe</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -338,7 +360,7 @@
             </div>
         </div>
 
-        <button class="btn-submit-app" onclick="procesarYDescargarPresupuesto()"><i class="fa-solid fa-file-pdf"></i> Descargar Presupuesto HD Premium</button>
+        <button class="btn-submit-app" onclick="procesarYDescargarPresupuesto()"><i class="fa-solid fa-file-pdf"></i> Descargar</button>
     </div>
 
 <script>
