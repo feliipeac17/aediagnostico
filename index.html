@@ -537,13 +537,14 @@ function cambiarPestana(modo) {
     // --- ESTA ES LA CORRECCIÓN ---
     if (modo === 'nuevo') {
         limpiarFormularioCompleto(); // Esto limpia los datos de ediciones anteriores
+        document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
     }
     // -----------------------------
     
     if (modo === 'historial') {
         document.getElementById('buscadorHistorial').value = "";
         document.getElementById('edit_record_id').value = "";
-        document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
+        document.getElementById('formPanelTitle').innerHTML = "Historial de <span>Reportes</span>";
         document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
         if(document.getElementById('btnCancelarEdicion')) {
             document.getElementById('btnCancelarEdicion').style.display = 'none';
