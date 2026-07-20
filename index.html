@@ -906,7 +906,7 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
             const f = new Date(rep.created_at); const fechaTxt = `${f.toLocaleDateString('es-MX')}  |  ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
 
             const pintarFondoBase = () => { doc.setFillColor(211, 47, 47); doc.rect(0, 0, 8, 297, 'F'); };
-            const pintarPiePagina = (num) => { doc.setFillColor(26, 26, 26); doc.rect(8, 289, 202, 8, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255); doc.text(`PÁGINA ${num} DE 2`, 110, 294.2, { align: 'center' }); };
+            const pintarPiePagina = (num) => { doc.setFillColor(26, 26, 26); doc.rect(8, 289, 202, 8, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255); doc.text(`PAGINA ${num} DE 2`, 110, 294.2, { align: 'center' }); };
             
             const dibujarIconoUsuario = (x, y) => { doc.setFillColor(211, 47, 47); doc.circle(x + 2, y - 1.5, 1.2, 'F'); doc.ellipse(x + 2, y + 1.5, 2.5, 1, 'F'); };
             const dibujarIconoAuto = (x, y) => { doc.setFillColor(211, 47, 47); doc.rect(x, y - 0.5, 5, 2, 'F'); doc.rect(x + 0.8, y - 2, 3.4, 1.8, 'F'); doc.setFillColor(26, 26, 26); doc.circle(x + 1.2, y + 1.8, 0.6, 'F'); doc.circle(x + 3.8, y + 1.8, 0.6, 'F'); };
@@ -1000,7 +1000,7 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
             telefonoFinal = "52" + telLimpio;
         }
 
-        const mensaje = `Hola *${rep.cliente_nombre.toUpperCase()}!* Te compartimos el Reporte de Servicio y Escaneo para tu vehículo *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}* de *AE Diagnóstico* 🚗.\n\n` +
+        const mensaje = `Hola *${rep.cliente_nombre.toUpperCase()}!* Te compartimos el Reporte de Servicio y Escaneo de tu vehículo 🚗 *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}*. \n\n` +
                         `📊 *Reporte de Escáneo:* \n` +
                         `https://aediagnostico.com/?scan=${rep.folio}\n\n` +
                         `📄 *Reporte de Servicio:* \n` +
