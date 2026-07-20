@@ -897,8 +897,14 @@ function mostrarVistaPreviaDigital(rep) {
         }
             
 async function generarPDFConJSPDF(autoDownloadAndClose = false) {
+    console.log("🚀 Iniciando generación de PDF...");
     let rep = reportDataGlobal || JSON.parse(localStorage.getItem('ae_reporte_activo'));
-    if (!rep) { alert("⚠️ Error: No se pudo cargar el reporte."); return; }
+    
+    if (!rep) {
+        alert("⚠️ Error: No se pudo cargar el reporte.");
+        return;
+    }
+    console.log("✅ Reporte cargado:", rep.folio);
 
     const btn = document.getElementById('btnDescargarPDF'); 
     if(!autoDownloadAndClose) { btn.innerText = "⏳ GENERANDO..."; btn.disabled = true; }
