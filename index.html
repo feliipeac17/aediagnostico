@@ -315,7 +315,7 @@
     <div id="reportView" class="report-view">
         <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
-            <button id="btnDescargarPDF" class="btn-submit" style="background:#1a1a1a; margin:0;">📥 PDF</button>
+            <button id="btnDescargarPDF" class="btn-submit" style="background:#0284c7; margin:0;">📥 PDF</button>
             <button id="btnEnviarWhatsApp" class="btn-submit" onclick="enviarWhatsApp()" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <span>💬 Enviar por WhatsApp</span>
             </button>
@@ -324,7 +324,7 @@
         <div class="report-scroll-container">
             <div class="preview-card-view">
                 <div class="view-sub-tabs">
-                    <button id="subTabRecepcion" class="view-sub-btn active" onclick="alternarSubVista('recepcion')">📋 Recepción</button>
+                    <button id="subTabRecepcion" class="view-sub-btn active" onclick="alternarSubVista('recepcion')">📋 Recepcion</button>
                     <button id="subTabEscaner" class="view-sub-btn" onclick="alternarSubVista('escaner')">📊 Escaneo</button>
                 </div>
 
@@ -341,12 +341,12 @@
                         <div class="preview-section-title">Datos del Cliente</div>
                         <div class="preview-data-grid">
                             <div class="preview-item"><strong>Nombre Completo</strong><span id="web_view_cliente">--</span></div>
-                            <div class="preview-item"><strong>Teléfono</strong><span id="web_view_telefono">--</span></div>
+                            <div class="preview-item"><strong>Telefono</strong><span id="web_view_telefono">--</span></div>
                         </div>
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title">Ficha del Vehículo</div>
+                        <div class="preview-section-title">Ficha del Vehiculo</div>
                         <div class="preview-data-grid">
                             <div class="preview-item"><strong>Marca</strong><span id="web_view_marca">--</span></div>
                             <div class="preview-item"><strong>Modelo y Año</strong><span id="web_view_modelo">--</span></div>
@@ -362,7 +362,7 @@
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title">Checklist Eléctrico</div>
+                        <div class="preview-section-title">Checklist Electrico</div>
                         <div class="web-check-list">
                             <div class="web-check-item"><div id="dot_luces" class="web-check-dot"></div> Luces e Indicadores</div>
                             <div class="web-check-item"><div id="dot_elevadores" class="web-check-dot"></div> Elevadores y Seguros</div>
@@ -375,9 +375,9 @@
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title">Diagnóstico Técnico</div>
-                        <div class="preview-item" style="margin-bottom: 12px;"><strong>Motivo de Ingreso / Síntomas</strong><span id="web_view_motivo">--</span></div>
-                        <div class="preview-item"><strong>Observaciones General de Diagnóstico</strong><span id="web_view_diagnostico">--</span></div>
+                        <div class="preview-section-title">Diagnostico Tecnico</div>
+                        <div class="preview-item" style="margin-bottom: 12px;"><strong>Motivo de Ingreso / Sintomas</strong><span id="web_view_motivo">--</span></div>
+                        <div class="preview-item"><strong>Observaciones General de Diagnostico</strong><span id="web_view_diagnostico">--</span></div>
                     </div>
 
                     <div class="preview-section" style="border-bottom: none;">
@@ -687,8 +687,8 @@ function inyectarTarjetasHistorial(arr) {
             <div style="flex:1;">
                 <strong style="color:#d32f2f;">FOLIO: ${rep.folio || 'N/A'}</strong>
                 <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''}</div>
-                <div style="font-size:10pt;">🔢 PLACAS: ${rep.vehiculo_placas || 'S/N'}</div>
-                <div style="font-size:10pt; font-weight:bold;">👤 CLIENTE: ${rep.cliente_nombre || 'S/N'}</div>
+                <div style="font-size:10pt;">🔢 ${rep.vehiculo_placas || 'S/N'}</div>
+                <div style="font-size:10pt; font-weight:bold;">👤 ${rep.cliente_nombre || 'S/N'}</div>
             </div>
             <div style="display:flex; gap:6px;">
                 <button id="btn-ver-${rep.folio}" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
@@ -926,7 +926,7 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.cliente_nombre, 20, 57); doc.text(rep.cliente_telefono || '--', 120, 57);
 
             dibujarIconoAuto(20, 75); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL VEHÍCULO", 28, 77); doc.line(20, 80, 200, 80);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("MARCA", 20, 87); doc.text("MODELO Y AÑO", 75, 87); doc.text("COLOR", 150, 87);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("MARCA", 20, 87); doc.text("MODELO / AÑO", 75, 87); doc.text("COLOR", 150, 87);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_marca || '--', 20, 92); doc.text(rep.vehiculo_modelo || '--', 75, 92); doc.text(rep.vehiculo_color || '--', 150, 92);
             doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("PLACAS", 20, 102); doc.text("NÚMERO DE SERIE (VIN)", 75, 102); doc.text("KILOMETRAJE", 150, 102);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_placas || '--', 20, 107); doc.text(rep.vehiculo_vin || '--', 75, 107);
