@@ -751,32 +751,29 @@ function alternarSubVista(vista) {
         if (secRec) secRec.style.display = 'block'; 
         if (secEsc) secEsc.style.display = 'none'; 
     } else { 
+        // Lógica de Pestaña Escáner
         if (tabRec) tabRec.classList.remove('active'); 
         if (tabEsc) tabEsc.classList.add('active'); 
         if (secRec) secRec.style.display = 'none'; 
         if (secEsc) secEsc.style.display = 'block'; 
         
-} else { 
-    
-    const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
-    
-    if (link && link.trim() !== "") {
-        const PROXY_URL = "https://hgffyhbnsbripdomidyz.supabase.co/functions/v1/proxy-reporte?url=";
+        const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
         
-        // 1. Llamamos a la función de Supabase para obtener el HTML
-        fetch(PROXY_URL + encodeURIComponent(link))
-            .then(response => response.text())
-            .then(html => {
-                // 2. En lugar de .src, usamos .srcdoc
-                // Esto fuerza al navegador a renderizar el HTML recibido
-                iframe.srcdoc = html;
-                document.getElementById('subVistaContenidoEscaner').style.display = 'block';
-                document.getElementById('noLinkMsg').style.display = 'none';
-            })
-            .catch(err => {
-                console.error("Error al cargar proxy:", err);
-                iframe.srcdoc = "<h3>Error al cargar reporte.</h3>";
-            });
+        if (link && link.trim() !== "") {
+            const PROXY_URL = "https://hgffyhbnsbripdomidyz.supabase.co/functions/v1/proxy-reporte?url=";
+            
+            fetch(PROXY_URL + encodeURIComponent(link))
+                .then(response => response.text())
+                .then(html => {
+                    iframe.srcdoc = html;
+                    document.getElementById('subVistaContenidoEscaner').style.display = 'block';
+                    document.getElementById('noLinkMsg').style.display = 'none';
+                })
+                .catch(err => {
+                    console.error("Error al cargar proxy:", err);
+                    iframe.srcdoc = "<h3>Error al cargar reporte.</h3>";
+                });
+        }
     }
 }
         
