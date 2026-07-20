@@ -300,6 +300,10 @@
         </div>
     </div>
     <div id="reader" style="width: 100%; display:none; margin-top:10px;"></div>
+    <div class="form-group" style="margin-top: 15px;">
+        <label>Adjuntar Reporte PDF (Opcional):</label>
+        <input type="file" id="pdfUploader" accept="application/pdf" style="width: 100%; padding: 8px; border: 1px dashed #ccc; border-radius: 6px;">
+    </div>
 </div>
 
             <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">Generar Reporte</button>
@@ -592,77 +596,102 @@ function cambiarPestana(modo) {
             return supabaseClient.storage.from('fotos_reportes').getPublicUrl(filePath).data.publicUrl;
         }
 
-        async function guardarYProcesarReporte() {
-            const btnSubmit = document.getElementById('btnGuardarForm');
-            const editId = document.getElementById('edit_record_id').value;
-            const isEditing = editId !== "";
+async function guardarYProcesarReporte() {
+    const btnSubmit = document.getElementById('btnGuardarForm');
+    const editId = document.getElementById('edit_record_id').value;
+    const isEditing = editId !== "";
 
-            const telVal = document.getElementById('in_cliente_telefono').value.trim();
-            const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
+    // --- NUEVO: Lógica de subida de PDF ---
+    const fileInput = document.getElementById('pdfUploader');
+    const file = fileInput ? fileInput.files[0] : null;
+    let linkEscanerFinal = document.getElementById('in_link_escaner').value;
 
-            if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEL CLIENTE DEBE CONTENER EXACTAMENTE 10-11 DÍGITOS."); return; }
-            if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL NUMERO DE SERIE (VIN) DEBE CONTENER EXACTAMENTE 17 CARACTERES."); return; }
+    const telVal = document.getElementById('in_cliente_telefono').value.trim();
+    const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
-            const textoOriginal = btnSubmit.innerText;
-            btnSubmit.innerText = "⏳ PROCESANDO Y ALMACENANDO EN LA NUBE..."; btnSubmit.disabled = true;
+    if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEBE TENER 10-11 DÍGITOS."); return; }
+    if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL VIN DEBE TENER 17 CARACTERES."); return; }
 
-            let folioCalculado = "";
-            if (isEditing) { folioCalculado = reportDataGlobal.folio; } 
-            else { 
-                const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-                let parteAleatoria = '';
-                for (let i = 0; i < 4; i++) {
-                    parteAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-                }
-                folioCalculado = "AE-" + parteAleatoria;
-            }
+    const textoOriginal = btnSubmit.innerText;
+    btnSubmit.innerText = "⏳ PROCESANDO Y ALMACENANDO EN LA NUBE..."; 
+    btnSubmit.disabled = true;
 
-            try {
-                const urlFrente = await subirFotoOriginal(inputsFotos.frente, folioCalculado);
-                const urlTrasera = await subirFotoOriginal(inputsFotos.trasera, folioCalculado);
-                const urlIzq = await subirFotoOriginal(inputsFotos.izq, folioCalculado);
-                const urlDer = await subirFotoOriginal(inputsFotos.der, folioCalculado);
-                const urlMotor = await subirFotoOriginal(inputsFotos.motor, folioCalculado);
-                const urlCluster = await subirFotoOriginal(inputsFotos.cluster, folioCalculado);
-
-                const getUpperVal = (id) => (document.getElementById(id).value || '').toUpperCase();
-
-                const payload = {
-                    cliente_nombre: getUpperVal('in_cliente_nombre'),
-                    cliente_telefono: getUpperVal('in_cliente_telefono'),
-                    vehiculo_marca: document.getElementById('in_vehiculo_marca').value,
-                    vehiculo_modelo: getUpperVal('in_vehiculo_modelo'),
-                    vehiculo_color: getUpperVal('in_vehiculo_color'),
-                    vehiculo_placas: getUpperVal('in_vehiculo_placas'),
-                    vehiculo_vin: getUpperVal('in_vehiculo_vin'),
-                    vehiculo_km: document.getElementById('in_vehiculo_km').value ? `${document.getElementById('in_vehiculo_km').value} ${document.getElementById('in_vehiculo_unidad').value.toUpperCase()}` : '',
-                    vehiculo_gas_nivel: parseInt(document.getElementById('in_vehiculo_gas').value),
-                    motivo_ingreso: getUpperVal('in_motivo_ingreso'),
-                    observaciones_diagnostico: getUpperVal('in_obs_diagnostico'),
-                    chk_luces: document.getElementById('chk_luces').checked,
-                    chk_elevadores: document.getElementById('chk_elevadores').checked,
-                    chk_tablero: document.getElementById('chk_tablero').checked,
-                    observaciones_electrico: getUpperVal('in_obs_electrico'),
-                    link_escaner: document.getElementById('in_link_escaner').value
-                };
-
-                if(urlFrente) payload.foto_frente_url = urlFrente;
-                if(urlTrasera) payload.foto_trasera_url = urlTrasera;
-                if(urlIzq) payload.foto_izquierdo_url = urlIzq;
-                if(urlDer) payload.foto_derecho_url = urlDer;
-                if(urlMotor) payload.foto_motor_url = urlMotor;
-                if(urlCluster) payload.foto_cluster_url = urlCluster;
-
-                let error = null;
-                if (isEditing) { const { error: errUpdate } = await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId); error = errUpdate; } 
-                else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
-
-                if (error) throw error;
-                alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE ALMACENADO CON ÉXITO.");
-                limpiarFormularioCompleto(); cargarHistorialSupabase(); cambiarPestana('historial');
-            } catch (err) { alert("❌ ERROR: " + err.message); }
-            finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
+    let folioCalculado = "";
+    if (isEditing) { folioCalculado = reportDataGlobal.folio; } 
+    else { 
+        const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let parteAleatoria = '';
+        for (let i = 0; i < 4; i++) {
+            parteAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
         }
+        folioCalculado = "AE-" + parteAleatoria;
+    }
+
+    try {
+        // --- PROCESAR PDF SI EXISTE ---
+        if (file) {
+            const fileName = `pdf_${folioCalculado}_${Date.now()}.pdf`;
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                .from('reportes')
+                .upload(fileName, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: urlData } = supabaseClient.storage
+                .from('reportes')
+                .getPublicUrl(fileName);
+            
+            linkEscanerFinal = urlData.publicUrl;
+        }
+
+        // --- SUBIR FOTOS (Tu lógica actual) ---
+        const urlFrente = await subirFotoOriginal(inputsFotos.frente, folioCalculado);
+        const urlTrasera = await subirFotoOriginal(inputsFotos.trasera, folioCalculado);
+        const urlIzq = await subirFotoOriginal(inputsFotos.izq, folioCalculado);
+        const urlDer = await subirFotoOriginal(inputsFotos.der, folioCalculado);
+        const urlMotor = await subirFotoOriginal(inputsFotos.motor, folioCalculado);
+        const urlCluster = await subirFotoOriginal(inputsFotos.cluster, folioCalculado);
+
+        const getUpperVal = (id) => (document.getElementById(id).value || '').toUpperCase();
+
+        const payload = {
+            cliente_nombre: getUpperVal('in_cliente_nombre'),
+            cliente_telefono: getUpperVal('in_cliente_telefono'),
+            vehiculo_marca: document.getElementById('in_vehiculo_marca').value,
+            vehiculo_modelo: getUpperVal('in_vehiculo_modelo'),
+            vehiculo_color: getUpperVal('in_vehiculo_color'),
+            vehiculo_placas: getUpperVal('in_vehiculo_placas'),
+            vehiculo_vin: getUpperVal('in_vehiculo_vin'),
+            vehiculo_km: document.getElementById('in_vehiculo_km').value ? `${document.getElementById('in_vehiculo_km').value} ${document.getElementById('in_vehiculo_unidad').value.toUpperCase()}` : '',
+            vehiculo_gas_nivel: parseInt(document.getElementById('in_vehiculo_gas').value),
+            motivo_ingreso: getUpperVal('in_motivo_ingreso'),
+            observaciones_diagnostico: getUpperVal('in_obs_diagnostico'),
+            chk_luces: document.getElementById('chk_luces').checked,
+            chk_elevadores: document.getElementById('chk_elevadores').checked,
+            chk_tablero: document.getElementById('chk_tablero').checked,
+            observaciones_electrico: getUpperVal('in_obs_electrico'),
+            link_escaner: linkEscanerFinal // Usamos la URL del PDF si se subió, o el link del QR
+        };
+
+        if(urlFrente) payload.foto_frente_url = urlFrente;
+        if(urlTrasera) payload.foto_trasera_url = urlTrasera;
+        if(urlIzq) payload.foto_izquierdo_url = urlIzq;
+        if(urlDer) payload.foto_derecho_url = urlDer;
+        if(urlMotor) payload.foto_motor_url = urlMotor;
+        if(urlCluster) payload.foto_cluster_url = urlCluster;
+
+        let error = null;
+        if (isEditing) { const { error: errUpdate } = await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId); error = errUpdate; } 
+        else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
+
+        if (error) throw error;
+        alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE ALMACENADO CON ÉXITO.");
+        limpiarFormularioCompleto(); 
+        cargarHistorialSupabase(); 
+        cambiarPestana('historial');
+    } catch (err) { alert("❌ ERROR: " + err.message); }
+    finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
+}
 
         async function cargarHistorialSupabase() {
             const contenedor = document.getElementById('listaReportes');
@@ -757,12 +786,32 @@ function alternarSubVista(vista) {
         if (secRec) secRec.style.display = 'none'; 
         if (secEsc) secEsc.style.display = 'block'; 
         
-        // --- CÓDIGO ORIGINAL ---
         const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
         
-        if (link && link.trim() !== "" && iframe.src !== link) {
-            iframe.src = link;
-            console.log("Cargando reporte desde DOM:", link);
+        if (link && link.trim() !== "") {
+            // Verificamos si es un PDF para mostrarlo integrado o si es web para el botón
+            if (link.toLowerCase().endsWith('.pdf')) {
+                // Muestra el PDF integrado
+                secEsc.innerHTML = `
+                    <div style="width:100%; height:80vh; border:none; text-align:center;">
+                        <embed src="${link}" type="application/pdf" width="100%" height="100%">
+                    </div>
+                `;
+            } else {
+                // Muestra el botón para abrir el reporte web en otra pestaña
+                secEsc.innerHTML = `
+                    <div style="text-align:center; padding:50px;">
+                        <p>Reporte de diagnóstico listo:</p>
+                        <button onclick="window.open('${link}', '_blank')" 
+                                style="background:#0284c7; color:white; padding:15px 30px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">
+                            ABRIR REPORTE OFICIAL
+                        </button>
+                    </div>
+                `;
+            }
+        } else {
+            // Opcional: limpiar si no hay link
+            secEsc.innerHTML = "<p>No hay reporte disponible.</p>";
         }
     }
 }
