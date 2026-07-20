@@ -461,22 +461,33 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (!error && reporte && reporte.link_escaner) {
             const url = reporte.link_escaner;
 
-            // Si es un PDF, forzamos la descarga automática
+            // Si es un PDF, forzamos la descarga vía Blob
             if (url.toLowerCase().endsWith('.pdf')) {
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `Reporte_Servicio_${scanFolio}.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const urlBlob = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.style.display = 'none';
+                        link.href = urlBlob;
+                        link.download = `Reporte_Servicio_${scanFolio}.pdf`;
+                        document.body.appendChild(link);
+                        link.click();
+                        window.URL.revokeObjectURL(urlBlob);
+                        document.body.removeChild(link);
 
-                document.body.innerHTML = `
-                    <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
-                        <div>
-                            <h2 style="color:#4caf50;">✅ DESCARGA INICIADA</h2>
-                            <p>Tu reporte AE-${scanFolio} se está descargando.</p>
-                        </div>
-                    </div>`;
+                        document.body.innerHTML = `
+                            <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
+                                <div>
+                                    <h2 style="color:#4caf50;">✅ DESCARGA LISTA</h2>
+                                    <p>Tu reporte AE-${scanFolio} se está descargando.</p>
+                                </div>
+                            </div>`;
+                    })
+                    .catch(() => {
+                        // Respaldo: si falla el fetch por CORS, abrimos en pestaña nueva
+                        window.open(url, '_blank');
+                    });
             } else {
                 // Comportamiento original (iframe) para links que no son PDF
                 document.getElementById('iframeFullscreenEscaner').src = url;
