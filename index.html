@@ -209,7 +209,7 @@
         <div class="sticky-nav-container">
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#d32f2f;" onclick="cambiarPestana('nuevo')">📝 Nuevo Reporte</button>
-                <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial de Reportes</button>
+                <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial</button>
             </div>
         </div>
 
@@ -224,8 +224,8 @@
             <div class="form-section">
                 <div class="form-section-title">Datos del Cliente</div>
                 <div class="form-grid">
-                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder=""></div>
-                    <div class="form-group"><label>Teléfono Celular (10-11 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="" maxlength="11"></div>
+                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder="JUAN PEREZ HERNANDEZ"></div>
+                    <div class="form-group"><label>Teléfono Celular (10-11 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="8781234567" maxlength="11"></div>
                 </div>
             </div>
 
@@ -241,13 +241,13 @@
                     </div>
                     <div class="form-group"><label>Modelo / Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Versa 2019"></div>
                     <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Gris"></div>
-                    <div class="form-group"><label>Placas:</label><input type="text" id="in_vehiculo_placas" placeholder="Matrícula"></div>
-                    <div class="form-group"><label>Numero de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 dígitos" maxlength="17"></div>
+                    <div class="form-group"><label>Placas:</label><input type="text" id="in_vehiculo_placas" placeholder="Matricula"></div>
+                    <div class="form-group"><label>Numero de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 digitos" maxlength="17"></div>
                     <div class="form-group">
                         <label>Odómetro:</label>
                         <div class="inline-group">
-                            <input type="number" id="in_vehiculo_km" placeholder="145000">
-                            <select id="in_vehiculo_unidad"><option value="km">KM</option><option value="mi">Millas</option></select>
+                            <input type="number" id="in_vehiculo_km" placeholder="58000">
+                            <select id="in_vehiculo_unidad"><option value="km">Km</option><option value="mi">Millas</option></select>
                         </div>
                     </div>
                     <div class="form-group full-width">
@@ -263,7 +263,7 @@
             <div class="form-section">
                 <div class="form-section-title">Diagnostico</div>
                 <div class="form-grid">
-                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Síntomas reportados"></textarea></div>
+                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Sintomas reportados"></textarea></div>
                     <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas"></textarea></div>
                 </div>
             </div>
@@ -290,14 +290,14 @@
             </div>
 
             <div class="form-section" style="border-left-color: #1a1a1a;">
-                <div class="form-section-title">Módulo Escáner</div>
+                <div class="form-section-title">Modulo Escaner</div>
                 <div class="form-group">
                     <label>Enlace del Reporte QR:</label>
                     <input type="text" id="in_link_escaner" placeholder="URL del reporte">
                 </div>
             </div>
 
-            <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">Guardar y Generar Reporte</button>
+            <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">Generar Reporte</button>
             <button class="btn-submit" id="btnCancelarEdicion" style="background:#555; display:none; margin-top:8px;" onclick="cancelarEdicionActiva()">❌ Cancelar Edición</button>
         </div>
 
@@ -305,7 +305,7 @@
             <div class="form-group" style="margin-bottom: 15px;">
                 <input type="text" id="buscadorHistorial" placeholder="🔍 BUSCAR POR FOLIO, CLIENTE O PLACAS..." onkeyup="filtrarHistorial()" style="padding: 14px; font-size: 15px; border-radius: 6px; border: 1px solid #bbb;">
             </div>
-            <div class="form-section-title">Lista de Reportes Guardados (Nube)</div>
+            <div class="form-section-title">Lista de Reportes</div>
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
                 <p style="color:#777; font-size:10pt; text-align:center;">Cargando historial...</p>
             </div>
