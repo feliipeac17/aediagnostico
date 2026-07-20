@@ -779,42 +779,42 @@ function alternarSubVista(vista) {
         if (tabEsc) tabEsc.classList.remove('active'); 
         if (secRec) secRec.style.display = 'block'; 
         if (secEsc) secEsc.style.display = 'none'; 
-    } else { 
-        // Lógica de Pestaña Escáner
-        if (tabRec) tabRec.classList.remove('active'); 
-        if (tabEsc) tabEsc.classList.add('active'); 
-        if (secRec) secRec.style.display = 'none'; 
-        if (secEsc) secEsc.style.display = 'block'; 
-        
-        const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
-        
-        if (link && link.trim() !== "") {
-            // Verificamos si es un PDF para mostrarlo integrado o si es web para el botón
-            if (link.toLowerCase().endsWith('.pdf')) {
-                // Muestra el PDF integrado
-                secEsc.innerHTML = `
-                    <div style="width:100%; height:80vh; border:none; text-align:center;">
-                        <embed src="${link}" type="application/pdf" width="100%" height="100%">
-                    </div>
-                `;
-            } else {
-                // Muestra el botón para abrir el reporte web en otra pestaña
-                secEsc.innerHTML = `
-                    <div style="text-align:center; padding:50px;">
-                        <p>Reporte de diagnóstico listo:</p>
-                        <button onclick="window.open('${link}', '_blank')" 
-                                style="background:#0284c7; color:white; padding:15px 30px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">
-                            ABRIR REPORTE OFICIAL
-                        </button>
-                    </div>
-                `;
-            }
+ } else { 
+    // Lógica de Pestaña Escáner
+    if (tabRec) tabRec.classList.remove('active'); 
+    if (tabEsc) tabEsc.classList.add('active'); 
+    if (secRec) secRec.style.display = 'none'; 
+    if (secEsc) secEsc.style.display = 'block'; 
+    
+    const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
+    
+    // En lugar de innerHTML directo, vamos a buscar o crear un "sub-contenedor"
+    let contenedor = document.getElementById('contenedorVisorDinamico');
+    if (!contenedor) {
+        contenedor = document.createElement('div');
+        contenedor.id = 'contenedorVisorDinamico';
+        secEsc.appendChild(contenedor);
+    }
+    
+    if (link && link.trim() !== "") {
+        if (link.toLowerCase().endsWith('.pdf')) {
+            contenedor.innerHTML = `
+                <div style="width:100%; height:80vh;">
+                    <embed src="${link}" type="application/pdf" width="100%" height="100%">
+                </div>
+            `;
         } else {
-            // Opcional: limpiar si no hay link
-            secEsc.innerHTML = "<p>No hay reporte disponible.</p>";
+            contenedor.innerHTML = `
+                <div style="text-align:center; padding:50px;">
+                    <button onclick="window.open('${link}', '_blank')" class="btn-submit">
+                        ABRIR REPORTE OFICIAL
+                    </button>
+                </div>
+            `;
         }
     }
 }
+    }
         
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
