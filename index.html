@@ -390,6 +390,7 @@
 
     <script>
 window.convertUrlToImageElement = async function(url) {
+    console.log("🟢 La función convertUrlToImageElement ha sido cargada correctamente");
     return new Promise((resolve) => {
         if (!url || url === "" || url === "undefined") { resolve(null); return; }
         const img = new Image();
