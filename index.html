@@ -757,7 +757,6 @@ function alternarSubVista(vista) {
         if (secEsc) secEsc.style.display = 'block'; 
         
 } else { 
-    // ... (resto de tu lógica de pestañas) ...
     
     const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
     
@@ -779,7 +778,6 @@ function alternarSubVista(vista) {
                 iframe.srcdoc = "<h3>Error al cargar reporte.</h3>";
             });
     }
-}
 }
         
         function abrirCalidadOriginal(tipoFoto) {
