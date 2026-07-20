@@ -757,22 +757,15 @@ function alternarSubVista(vista) {
         if (secRec) secRec.style.display = 'none'; 
         if (secEsc) secEsc.style.display = 'block'; 
         
+        // --- CÓDIGO ORIGINAL ---
         const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
-    
-if (link && link.trim() !== "") {
-            // Limpiamos el contenedor y ponemos el botón profesional
-            document.getElementById('subVistaContenidoEscaner').innerHTML = `
-                <div style="text-align:center; padding:50px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Launch_Tech_Logo.png" style="width:100px; margin-bottom:20px;">
-                    <p style="font-size:18px; color:#333;">El reporte ha sido procesado correctamente.</p>
-                    <button onclick="window.open('${link}', '_blank')" 
-                            style="background:#0284c7; color:white; padding:15px 30px; border:none; border-radius:8px; cursor:pointer; font-size:16px; margin-top:10px;">
-                        ABRIR REPORTE OFICIAL
-                    </button>
-                </div>
-            `;
+        
+        if (link && link.trim() !== "" && iframe.src !== link) {
+            iframe.src = link;
+            console.log("Cargando reporte desde DOM:", link);
         }
-}}
+    }
+}
         
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
