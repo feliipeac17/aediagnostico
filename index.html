@@ -16,6 +16,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    // ESTO ES UNA DEFINICIÓN DE EMERGENCIA GLOBAL
+    // Al ser lo primero que se carga, no habrá forma de que no esté definida
+    window.convertUrlToImageElement = async function(url) {
+        return new Promise((resolve) => {
+            if (!url || url === "" || url === "undefined") { resolve(null); return; }
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => resolve(img);
+            img.onerror = () => { resolve(null); };
+            img.src = url;
+        });
+    };
+</script>
 
     <style>
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
