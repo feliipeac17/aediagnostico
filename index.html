@@ -567,23 +567,35 @@ function cambiarPestana(modo) {
             cambiarPestana('historial');
         }
 
-        function limpiarFormularioCompleto() {
-            document.getElementById('edit_record_id').value = "";
-            document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
-            document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
-            
-            if(document.getElementById('btnCancelarEdicion')) {
-                document.getElementById('btnCancelarEdicion').style.display = 'none';
-            }
+function limpiarFormularioCompleto() {
+    document.getElementById('edit_record_id').value = "";
+    document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
+    document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
+    
+    if(document.getElementById('btnCancelarEdicion')) {
+        document.getElementById('btnCancelarEdicion').style.display = 'none';
+    }
 
-            document.querySelectorAll('.admin-panel input, .admin-panel textarea').forEach(el => el.value = "");
-            document.querySelectorAll('.admin-panel input[type="checkbox"]').forEach(el => el.checked = false);
-            document.querySelectorAll('.upload-box img').forEach(img => { img.src=""; img.style.display = 'none'; });
-            document.querySelectorAll('.upload-box span').forEach(sp => sp.style.display = 'inline');
-            document.getElementById('in_vehiculo_gas').value = 50;
-            document.getElementById('in_vehiculo_marca').value = "";
-            document.getElementById('in_vehiculo_unidad').value = "km";
-        }
+    document.querySelectorAll('.admin-panel input, .admin-panel textarea').forEach(el => el.value = "");
+    document.querySelectorAll('.admin-panel input[type="checkbox"]').forEach(el => el.checked = false);
+    document.querySelectorAll('.upload-box img').forEach(img => { img.src=""; img.style.display = 'none'; });
+    document.querySelectorAll('.upload-box span').forEach(sp => sp.style.display = 'inline');
+    document.getElementById('in_vehiculo_gas').value = 50;
+    document.getElementById('in_vehiculo_marca').value = "";
+    document.getElementById('in_vehiculo_unidad').value = "km";
+
+    // --- NUEVAS LÍNEAS PARA LIMPIEZA TOTAL ---
+    // 1. Limpiar el selector de archivos
+    const pdfUploader = document.getElementById('pdfUploader');
+    if (pdfUploader) pdfUploader.value = ""; 
+
+    // 2. Limpiar el visor del PDF para que no se quede el anterior
+    const contenedor = document.getElementById('contenedorVisorDinamico');
+    if (contenedor) contenedor.innerHTML = "";
+
+    // 3. Limpiar la variable global
+    reportDataGlobal = null;
+}
 
         async function subirFotoOriginal(inputId, folioUnico) {
             const input = document.getElementById(inputId);
@@ -628,7 +640,7 @@ async function guardarYProcesarReporte() {
     }
 
     try {
-        // --- PROCESAR PDF SI EXISTE ---
+// --- PROCESAR PDF SI EXISTE ---
         if (file) {
             const fileName = `pdf_${folioCalculado}_${Date.now()}.pdf`;
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
@@ -642,6 +654,10 @@ async function guardarYProcesarReporte() {
                 .getPublicUrl(fileName);
             
             linkEscanerFinal = urlData.publicUrl;
+            
+            // ¡ESTA LÍNEA ES LA QUE TE FALTA!
+            // Esto actualiza el campo visual para que el sistema vea el nuevo link
+            document.getElementById('in_link_escaner').value = linkEscanerFinal;
         }
 
         // --- SUBIR FOTOS (Tu lógica actual) ---
