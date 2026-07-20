@@ -787,16 +787,18 @@ function alternarSubVista(vista) {
         if (tabEsc) tabEsc.classList.remove('active'); 
         if (secRec) secRec.style.display = 'block'; 
         if (secEsc) secEsc.style.display = 'none'; 
- } else { 
+} else { 
     // Lógica de Pestaña Escáner
     if (tabRec) tabRec.classList.remove('active'); 
     if (tabEsc) tabEsc.classList.add('active'); 
     if (secRec) secRec.style.display = 'none'; 
     if (secEsc) secEsc.style.display = 'block'; 
     
+    // Obtenemos el link
     const link = reportDataGlobal ? reportDataGlobal.link_escaner : document.getElementById('in_link_escaner').value;
     
-    // En lugar de innerHTML directo, vamos a buscar o crear un "sub-contenedor"
+    console.log("DEBUG: Link detectado:", link); // <-- ¡MIRA ESTO EN LA CONSOLA (F12)!
+    
     let contenedor = document.getElementById('contenedorVisorDinamico');
     if (!contenedor) {
         contenedor = document.createElement('div');
@@ -804,6 +806,7 @@ function alternarSubVista(vista) {
         secEsc.appendChild(contenedor);
     }
     
+    // Si el link existe, lo renderizamos
     if (link && link.trim() !== "") {
         if (link.toLowerCase().endsWith('.pdf')) {
             contenedor.innerHTML = `
@@ -820,10 +823,12 @@ function alternarSubVista(vista) {
                 </div>
             `;
         }
+    } else {
+        // Si no hay link, avisamos al usuario
+        contenedor.innerHTML = "<p style='text-align:center; padding:20px;'>No hay reporte cargado.</p>";
     }
-}
-    }
-        
+}}        
+    
         function abrirCalidadOriginal(tipoFoto) {
             if(!reportDataGlobal) return;
             let urlDestino = "";
