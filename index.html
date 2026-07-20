@@ -230,7 +230,7 @@
             </div>
 
             <div class="form-section">
-                <div class="form-section-title">Datos del Vehículo</div>
+                <div class="form-section-title">Datos del Vehiculo</div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Marca:</label>
@@ -278,7 +278,7 @@
             </div>
 
             <div class="form-section">
-                <div class="form-section-title">Evidencia Fotográfica</div>
+                <div class="form-section-title">Evidencia Fotografica</div>
                 <div class="photo-picker-grid">
                     <div class="photo-picker-card"><label>1. Frente</label><div class="upload-box" onclick="triggerUpload('input_frente')"><img id="prev_frente" style="display:none;"><span id="txt_frente">📸 Capturar</span></div><input type="file" id="input_frente" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;"></div>
                     <div class="photo-picker-card"><label>2. Trasera</label><div class="upload-box" onclick="triggerUpload('input_trasera')"><img id="prev_trasera" style="display:none;"><span id="txt_trasera">📸 Capturar</span></div><input type="file" id="input_trasera" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;"></div>
@@ -381,7 +381,7 @@
                     </div>
 
                     <div class="preview-section" style="border-bottom: none;">
-                        <div class="preview-section-title">Evidencia Fotográfica (Toca para ver calidad original)</div>
+                        <div class="preview-section-title">Evidencia Fotografica (Toca para ver calidad original)</div>
                         <div class="web-photo-grid">
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('frente')"><img id="web_img_frente" src=""></div><div class="web-photo-title">1. Frente</div></div>
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('trasera')"><img id="web_img_trasera" src=""></div><div class="web-photo-title">2. Trasera</div></div>
@@ -922,10 +922,10 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
             if (imgLogo) { let maxH = 14; let ratio = imgLogo.width / imgLogo.height; doc.addImage(imgLogo, 'PNG', 200 - (maxH * ratio), 7, maxH * ratio, maxH); }
 
             dibujarIconoUsuario(20, 40); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL CLIENTE", 28, 42); doc.setDrawColor(230, 232, 235); doc.setLineWidth(0.5); doc.line(20, 45, 200, 45);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("NOMBRE COMPLETO", 20, 52); doc.text("TELÉFONO DE CONTACTO", 120, 52);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("NOMBRE COMPLETO", 20, 52); doc.text("TELEFONO DE CONTACTO", 120, 52);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.cliente_nombre, 20, 57); doc.text(rep.cliente_telefono || '--', 120, 57);
 
-            dibujarIconoAuto(20, 75); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL VEHÍCULO", 28, 77); doc.line(20, 80, 200, 80);
+            dibujarIconoAuto(20, 75); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL VEHICULO", 28, 77); doc.line(20, 80, 200, 80);
             doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("MARCA", 20, 87); doc.text("MODELO / AÑO", 75, 87); doc.text("COLOR", 150, 87);
             doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_marca || '--', 20, 92); doc.text(rep.vehiculo_modelo || '--', 75, 92); doc.text(rep.vehiculo_color || '--', 150, 92);
             doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("PLACAS", 20, 102); doc.text("NÚMERO DE SERIE (VIN)", 75, 102); doc.text("KILOMETRAJE", 150, 102);
@@ -944,20 +944,20 @@ async function generarPDFConJSPDF(autoDownloadAndClose = false) {
             let fillGas = rep.vehiculo_gas_nivel; if (fillGas > 0) { if(fillGas <= 25) doc.setFillColor(211, 47, 47); else if(fillGas >= 75) doc.setFillColor(76, 175, 80); else doc.setFillColor(255, 152, 0); doc.rect(20, yGas + 2, (fillGas / 100) * 180, 3.5, 'F'); }
             doc.setFontSize(7.5); doc.setTextColor(140, 140, 145); doc.text("E (VACÍO)", 20, yGas + 9); doc.text("1/2", 108, yGas + 9); doc.text("F (LLENO)", 193, yGas + 9);
 
-            dibujarIconoRayo(20, 143); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("CHECKLIST ELÉCTRICO INICIAL", 28, 145); doc.line(20, 148, 200, 148);
+            dibujarIconoRayo(20, 143); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("CHECKLIST ELECTRICO INICIAL", 28, 145); doc.line(20, 148, 200, 148);
             pintarCheckFila("LUCES E INDICADORES", rep.chk_luces, 20, 156); pintarCheckFila("ELEVADORES Y SEGUROS", rep.chk_elevadores, 110, 156); pintarCheckFila("TESTIGOS EN TABLERO", rep.chk_tablero, 20, 164);
 
             let yCheckNotes = 171; doc.setFillColor(248, 249, 251); doc.rect(20, yCheckNotes, 180, 14, 'F'); doc.setDrawColor(180, 180, 185); doc.setLineWidth(0.3); doc.line(20, yCheckNotes, 20, yCheckNotes + 14);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(100, 100, 105); doc.text("NOTAS DEL CHECKLIST SISTEMA ELÉCTRICO:", 24, yCheckNotes + 5); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.', 24, yCheckNotes + 10);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(100, 100, 105); doc.text("NOTAS DEL CHECKLIST SISTEMA ELECTRICO:", 24, yCheckNotes + 5); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.', 24, yCheckNotes + 10);
 
-            let yDiagSec = 196; dibujarIconoLlave(20, yDiagSec + 2); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DIAGNÓSTICO TÉCNICO", 28, yDiagSec + 4); doc.setDrawColor(230, 232, 235); doc.line(20, yDiagSec + 6, 200, yDiagSec + 6);
+            let yDiagSec = 196; dibujarIconoLlave(20, yDiagSec + 2); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DIAGNOSTICO TECNICO", 28, yDiagSec + 4); doc.setDrawColor(230, 232, 235); doc.line(20, yDiagSec + 6, 200, yDiagSec + 6);
             
             const pintarBloqueDiagnostico = (titulo, cuerpo, y) => { doc.setFillColor(248, 249, 251); doc.rect(20, y, 180, 21, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(0.8); doc.line(20, y, 20, y + 21); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 120, 125); doc.text(titulo, 24, y + 5); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(cuerpo || 'NINGUNO.', 24, y + 11, { maxWidth: 172 }); };
-            pintarBloqueDiagnostico("MOTIVO DEL INGRESO / SÍNTOMAS REPORTADOS POR EL CLIENTE", rep.motivo_ingreso, yDiagSec + 11); pintarBloqueDiagnostico("OBSERVACIONES GENERALES DEL DIAGNÓSTICO MECÁNICO", rep.observaciones_diagnostico, yDiagSec + 36);
+            pintarBloqueDiagnostico("MOTIVO DEL INGRESO / SINTOMAS REPORTADOS POR EL CLIENTE", rep.motivo_ingreso, yDiagSec + 11); pintarBloqueDiagnostico("OBSERVACIONES GENERALES DEL DIAGNOSTICO MECANICO", rep.observaciones_diagnostico, yDiagSec + 36);
             pintarPiePagina(1);
 
             doc.addPage(); pintarFondoBase(); doc.setFillColor(26, 26, 26); doc.rect(8, 0, 202, 28, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(1.5); doc.line(8, 28, 210, 28);
-            doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("EVIDENCIA FOTOGRÁFICA", 20, 16);
+            doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("EVIDENCIA FOTOGRAFICA", 20, 16);
             if (imgLogo) { let ratio = imgLogo.width / imgLogo.height; doc.addImage(imgLogo, 'PNG', 200 - (14 * ratio), 7, 14 * ratio, 14); }
 
             const fotosPDF = [ { url: rep.foto_frente_url, label: '1. FRENTE DEL VEHÍCULO' }, { url: rep.foto_trasera_url, label: '2. PARTE TRASERA' }, { url: rep.foto_izquierdo_url, label: '3. LADO IZQUIERDO' }, { url: rep.foto_derecho_url, label: '4. LADO DERECHO' }, { url: rep.foto_motor_url, label: '5. MOTOR' }, { url: rep.foto_cluster_url, label: '6. CLUSTER / TABLERO' } ];
