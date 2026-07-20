@@ -702,6 +702,7 @@ async function guardarYProcesarReporte() {
 
         if (error) throw error;
         alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE ALMACENADO CON ÉXITO.");
+        alternarSubVista('escaner');
         limpiarFormularioCompleto(); 
         cargarHistorialSupabase(); 
         cambiarPestana('historial');
