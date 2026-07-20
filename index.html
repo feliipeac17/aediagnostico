@@ -402,18 +402,7 @@
         </div>
     </div>
 
-    <script>
-window.convertUrlToImageElement = async function(url) {
-    return new Promise((resolve) => {
-        if (!url || url === "" || url === "undefined") { resolve(null); return; }
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.onload = () => resolve(img);
-        img.onerror = () => { resolve(null); };
-        img.src = url;
-    });
-};
-        
+    <script>        
 window.onload = function() {
     if (localStorage.getItem('ae_sesion_valida') === 'true') {
         cargarHistorialSupabase();
