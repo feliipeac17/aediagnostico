@@ -127,10 +127,11 @@
 }        
 .table-container { 
         padding: 5px; 
-        flex-grow: 1;                  /* Estira el espacio interior para llenar la tarjeta */
+        flex-grow: 1;                  
         display: flex;
         flex-direction: column;
-        justify-content: space-between; /* Empuja el botón de "Añadir fila" abajo para mantener orden */
+        justify-content: center;      /* <--- CAMBIAMOS ESTO: Centra verticalmente las filas y el botón */
+        gap: 15px;                    /* Espacio ordenado entre la tabla y el botón */
     }
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
