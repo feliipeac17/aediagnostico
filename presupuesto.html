@@ -263,6 +263,14 @@
         flex-grow: 1;            /* Ocupa el espacio sobrante de la tarjeta de forma equilibrada */
         gap: 6px;                /* Espacio elegante entre cada fila si hay varias */
     }
+
+        .pdf-data-item textarea.card-input {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.3;
+        padding-top: 4px;
+    }
     </style>
 </head>
 <body>
@@ -369,15 +377,15 @@
 
 <div class="pdf-info-card diagnostico" style="margin-bottom: 15px;">
                 <i class="fa-solid fa-notes-medical pdf-card-icon"></i>
-                <div class="pdf-card-title">Diagnóstico y Notas</div>
+                <div class="pdf-card-title">Diagnostico</div>
                 <div class="pdf-card-data" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div class="pdf-data-item">
                         <span>Falla o Síntomas Reportados por el Cliente</span>
-                        <input type="text" id="in_falla_reportada" class="card-input" placeholder="...">
+                        <textarea id="in_falla_reportada" class="card-input auto-expand" placeholder="..." rows="2" style="resize: none; width: 100%; font-family: inherit;"></textarea>
                     </div>
                     <div class="pdf-data-item">
                         <span>Notas adicionales</span>
-                        <input type="text" id="in_codigo_fallas" class="card-input" placeholder="...">
+                        <textarea id="in_codigo_fallas" class="card-input auto-expand" placeholder="..." rows="2" style="resize: none; width: 100%; font-family: inherit;"></textarea>
                     </div>
                 </div>
             </div>
