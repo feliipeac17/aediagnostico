@@ -105,7 +105,15 @@
 
         /* 3 Columnas */
         .pdf-pillars-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .pdf-pillar-card { border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; background-color: #ffffff; display: flex; flex-direction: column; min-height: 180px; }
+.pdf-pillar-card { 
+        border: 1px solid var(--border-color); 
+        border-radius: 10px; 
+        overflow: hidden; 
+        background-color: #ffffff; 
+        display: flex; 
+        flex-direction: column; 
+        height: 100%; /* <--- Fuerza a que todas midan lo mismo en esa fila */
+    }
         .pdf-pillar-header { background-color: #0f172a; color: #ffffff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
         .pdf-pillar-title { display: flex; align-items: center; gap: 6px; font-family: 'Montserrat', sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; }
         .pdf-pillar-num { background-color: #0284c7; color: white; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; font-weight: 800; }
@@ -117,7 +125,13 @@
     padding: 2px 8px; 
     border-radius: 4px; 
 }        
-        .table-container { padding: 5px; flex-grow: 1; }
+.table-container { 
+        padding: 5px; 
+        flex-grow: 1;                  /* Estira el espacio interior para llenar la tarjeta */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Empuja el botón de "Añadir fila" abajo para mantener orden */
+    }
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
         
@@ -305,7 +319,7 @@
                     <div class="pdf-card-title">Vehículo</div>
                     <div class="pdf-card-data" style="gap: 10px;">
                         <div class="pdf-data-item" style="grid-column: span 2;">
-                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo..." style="font-size: 10pt; font-weight: 700 !important;">
+                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo..." style="font-size: 12pt; font-weight: 700 !important;">
                         </div>
                         <div class="pdf-data-item">
                             <span>Placas</span>
