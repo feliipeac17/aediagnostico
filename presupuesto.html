@@ -238,6 +238,20 @@
     display: block;
     margin-bottom: 10px;
 }
+
+        .table-header-row {
+        display: grid;
+        grid-template-columns: 1fr 80px;
+        gap: 4px;
+        font-size: 6.5pt;
+        text-transform: uppercase;
+        color: #0284c7;
+        padding: 6px 4px;
+        border-bottom: 2px solid #e2e8f0;
+        background: #f8fafc;
+        font-weight: 700;
+        margin-bottom: 0px;
+    }
     </style>
 </head>
 <body>
@@ -348,24 +362,17 @@
             </div>
 
 <div class="pdf-pillars-grid">
-                <div class="pdf-pillar-card">
+<div class="pdf-pillar-card">
                     <div class="pdf-pillar-header">
-                        <div class="pdf-pillar-title">
-                            <span class="pdf-pillar-num">1</span> 
-                            <i class="fa-solid fa-screwdriver-wrench" style="margin-right: 4px;"></i> Servicios
-                        </div>
+                        <div class="pdf-pillar-title"><span class="pdf-pillar-num">1</span> <i class="fa-solid fa-screwdriver-wrench" style="margin-right: 4px;"></i> Servicios</div>
                         <span class="pdf-pillar-total" id="pdf-tot-servicios">$0.00</span>
                     </div>
                     <div class="table-container">
-                        <table class="pdf-pillar-table" id="pdf-tbl-servicios">
-                            <thead>
-                                <tr style="display: grid; grid-template-columns: 1fr 80px;">
-                                    <th style="text-align:left;">Descripción</th>
-                                    <th style="text-align:right;">Importe</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <div class="table-header-row">
+                            <span>Descripción</span>
+                            <span style="text-align: right;">Importe</span>
+                        </div>
+                        
                         <div id="listServicios"></div>
                         <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listServicios')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
                     </div>
