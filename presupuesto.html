@@ -130,8 +130,7 @@
         flex-grow: 1;                  
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;  /* <--- Alinea todo desde arriba hacia abajo */
-        gap: 8px;                     /* Espacio compacto y uniforme entre elementos */
+        justify-content: space-between; /* Mantiene la tabla arriba y el botón abajo, creando espacio en medio */
     }
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
@@ -251,6 +250,15 @@
         background: #f8fafc;
         font-weight: 700;
         margin-bottom: 0px;
+    }
+
+        /* Hacemos que la lista interna ocupe el espacio y centre sus renglones si son pocos */
+    #listServicios, #listRefacciones, #listManoObra {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centra los renglones verticalmente en el espacio libre */
+        flex-grow: 1;            /* Ocupa el espacio sobrante de la tarjeta de forma equilibrada */
+        gap: 6px;                /* Espacio elegante entre cada fila si hay varias */
     }
     </style>
 </head>
