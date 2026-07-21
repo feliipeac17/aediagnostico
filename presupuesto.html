@@ -504,11 +504,13 @@ function agregarRenglon(listaId) {
         contenedor.appendChild(div);
     }
 
-    function calcularSumaColumna(listaId) {
+   function calcularSumaColumna(listaId) {
         let total = 0;
         const inputs = document.querySelectorAll(`#${listaId} .price-input`);
         inputs.forEach(input => {
-            const val = parseFloat(input.value);
+            // Limpiamos el texto: quitamos el $, comas y letras, dejando solo números y el punto
+            const valorLimpio = input.value.replace(/[^0-9.]/g, '');
+            const val = parseFloat(valorLimpio);
             if (!isNaN(val)) total += val;
         });
         return total;
@@ -520,7 +522,7 @@ function agregarRenglon(listaId) {
         const tManoObra = calcularSumaColumna('listManoObra');
 
         const subtotal = tServicios + tRefacciones + tManoObra;
-        const anticipo = parseFloat(document.getElementById('in_anticipo').value) || 0;
+        const anticipo = parseFloat(document.getElementById('in_anticipo')?.value) || 0;
         const restante = subtotal - anticipo;
 
         if(document.getElementById('pdf-tot-servicios')) document.getElementById('pdf-tot-servicios').innerText = `$${tServicios.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
@@ -534,9 +536,6 @@ function agregarRenglon(listaId) {
         if(document.getElementById('pdf-val-ganticipo')) document.getElementById('pdf-val-ganticipo').innerText = `$${anticipo.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
-
-   // Asegúrate de tener esto al principio de tu script:
-// const { jsPDF } = window.jspdf;
 
 function procesarYDescargarPresupuesto() {
     // 1. Ocultamos los botones de control para que no salgan en el PDF
