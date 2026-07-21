@@ -281,22 +281,36 @@
                 <div class="pdf-badge-informativo">Documento Informativo</div>
             </div>
 
-            <div class="pdf-grid-boxes">
+<div class="pdf-grid-boxes">
                 <div class="pdf-info-card cliente">
                     <i class="fa-solid fa-user-gear pdf-card-icon"></i>
                     <div class="pdf-card-title">Cliente</div>
-                    <div class="pdf-card-data">
-                        <div class="pdf-data-item" style="grid-column: span 2;"><span>Contacto</span><input type="text" id="in_cliente_nombre" class="card-input" placeholder="..."></div>
-                        <div class="pdf-data-item"><span>Teléfono</span><input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="11"></div>
+                    <div class="pdf-card-data" style="gap: 10px;">
+                        <div class="pdf-data-item" style="grid-column: span 2;">
+                            <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente..." style="font-size: 9.5pt; font-weight: 700;">
+                        </div>
+                        <div class="pdf-data-item">
+                            <span>Teléfono</span>
+                            <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="11">
+                        </div>
                     </div>
                 </div>
+
                 <div class="pdf-info-card vehiculo">
                     <i class="fa-solid fa-car-rear pdf-card-icon"></i>
                     <div class="pdf-card-title">Vehículo</div>
-                    <div class="pdf-card-data">
-                        <div class="pdf-data-item" style="grid-column: span 2;"><span>Marca / Modelo</span><input type="text" id="in_vehiculo_marca" class="card-input" placeholder="..."></div>
-                        <div class="pdf-data-item"><span>Placas</span><input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..."></div>
-                        <div class="pdf-data-item"><span>Color</span><input type="text" id="in_vehiculo_color" class="card-input" placeholder="..."></div>
+                    <div class="pdf-card-data" style="gap: 10px;">
+                        <div class="pdf-data-item" style="grid-column: span 2;">
+                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo..." style="font-size: 9.5pt; font-weight: 700;">
+                        </div>
+                        <div class="pdf-data-item">
+                            <span>Placas</span>
+                            <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
+                        </div>
+                        <div class="pdf-data-item">
+                            <span>Color</span>
+                            <input type="text" id="in_vehiculo_color" class="card-input" placeholder="...">
+                        </div>
                     </div>
                 </div>
             </div>
