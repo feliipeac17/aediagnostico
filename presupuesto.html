@@ -280,7 +280,7 @@
             <i class="fa-solid fa-arrow-left"></i> Volver al Panel
         </button>
         
-        <div style="font-size: 8.5pt; font-weight: 700; color: var(--primary-red);">CONEXIÓN DIRECTA PREMIUM</div>
+<div id="pdf-lbl-reporte" style="font-size: 8.5pt; font-weight: 700; color: var(--primary-red);">REPORTE AE-000</div>
     </div>
 </div>
 
@@ -505,6 +505,12 @@
         const transferencia = localStorage.getItem('ae_transferencia_presupuesto');
         if (transferencia) {
             const info = JSON.parse(transferencia);
+            
+            // ---> LÍNEA NUEVA PARA EL NÚMERO DE REPORTE <---
+            if (info.numero_reporte || info.reporte) {
+                document.getElementById('pdf-lbl-reporte').innerText = info.numero_reporte || info.reporte;
+            }
+            
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
             if (info.cliente_telefono) document.getElementById('in_cliente_telefono').value = info.cliente_telefono;
             document.getElementById('in_vehiculo_marca').value = info.vehiculo_marca || '';
