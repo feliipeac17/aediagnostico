@@ -280,7 +280,7 @@
             <i class="fa-solid fa-arrow-left"></i> Volver al Panel
         </button>
         
-<div id="pdf-lbl-reporte" style="font-size: 8.5pt; font-weight: 700; color: var(--primary-red);">REPORTE AE-000</div>
+<div id="pdf-lbl-reporte" style="font-size: 12pt; font-weight: 700; color: var(--primary-red);">REPORTE</div>
     </div>
 </div>
 
@@ -509,9 +509,8 @@
             // AGREGA ESTA LÍNEA PARA VER LOS DATOS EN LA CONSOLA (F12 > Console)
             console.log("Datos recibidos:", info);
             
-// ---> AQUÍ USAMOS 'info.folio' QUE ES EL DATO REAL QUE VIENE DE TU BASE DE DATOS <---
-            if (info.folio) {
-                document.getElementById('pdf-lbl-reporte').innerText = info.folio;
+if (info.folio) {
+                document.getElementById('pdf-lbl-reporte').innerText = "REPORTE " + info.folio;
             }
             
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
