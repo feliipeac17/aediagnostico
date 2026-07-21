@@ -505,6 +505,9 @@
         const transferencia = localStorage.getItem('ae_transferencia_presupuesto');
         if (transferencia) {
             const info = JSON.parse(transferencia);
+
+            // AGREGA ESTA LÍNEA PARA VER LOS DATOS EN LA CONSOLA (F12 > Console)
+            console.log("Datos recibidos:", info);
             
             // ---> LÍNEA NUEVA PARA EL NÚMERO DE REPORTE <---
             if (info.numero_reporte || info.reporte) {
