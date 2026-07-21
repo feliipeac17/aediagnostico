@@ -456,6 +456,7 @@
             if (info.vehiculo_modelo) document.getElementById('in_vehiculo_marca').value += ' ' + info.vehiculo_modelo;
             if (info.vehiculo_placas) document.getElementById('in_vehiculo_placas').value = info.vehiculo_placas;
             if (info.vehiculo_color) document.getElementById('in_vehiculo_color').value = info.vehiculo_color;
+            if (info.vehiculo_vin) document.getElementById('in_vehiculo_vin').value = info.vehiculo_vin;     // <--- LÍNEA NUEVA PARA EL VIN
             if (info.vehiculo_km) document.getElementById('in_vehiculo_km').value = info.vehiculo_km;
 
             localStorage.removeItem('ae_transferencia_presupuesto');
