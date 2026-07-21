@@ -365,9 +365,19 @@
                 </div>
             </div>
 
-            <div class="pdf-diag-box">
-                <div><span>Falla o Síntomas Reportados por el Cliente</span><input type="text" id="in_falla_reportada" class="card-input" placeholder="..."></div>
-                <div><span>Códigos de Falla Escaneados (DTC)</span><input type="text" id="in_codigo_fallas" class="card-input" placeholder="..."></div>
+<div class="pdf-info-card">
+                <i class="fa-solid fa-notes-medical pdf-card-icon"></i>
+                <div class="pdf-card-title">Diagnostico</div>
+                <div class="pdf-card-data" style="gap: 10px;">
+                    <div class="pdf-data-item" style="grid-column: span 2;">
+                        <span>Falla o Síntomas Reportados por el Cliente</span>
+                        <input type="text" id="in_falla_reportada" class="card-input" placeholder="...">
+                    </div>
+                    <div class="pdf-data-item" style="grid-column: span 2;">
+                        <span>Notas adicionales</span>
+                        <input type="text" id="in_codigo_fallas" class="card-input" placeholder="...">
+                    </div>
+                </div>
             </div>
 
 <div class="pdf-pillars-grid">
@@ -489,6 +499,11 @@
             if (info.vehiculo_color) document.getElementById('in_vehiculo_color').value = info.vehiculo_color;
             if (info.vehiculo_vin) document.getElementById('in_vehiculo_vin').value = info.vehiculo_vin;     // <--- LÍNEA NUEVA PARA EL VIN
             if (info.vehiculo_km) document.getElementById('in_vehiculo_km').value = info.vehiculo_km;
+
+    // ---> LÍNEA NUEVA PARA ARRASTRAR EL MOTIVO DE INGRESO / SÍNTOMAS <---
+            if (info.motivo_ingreso || info.sintomas) {
+                document.getElementById('in_falla_reportada').value = info.motivo_ingreso || info.sintomas;
+            }
 
             localStorage.removeItem('ae_transferencia_presupuesto');
         }
