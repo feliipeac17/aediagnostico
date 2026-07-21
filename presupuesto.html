@@ -509,9 +509,9 @@
             // AGREGA ESTA LÍNEA PARA VER LOS DATOS EN LA CONSOLA (F12 > Console)
             console.log("Datos recibidos:", info);
             
-            // ---> LÍNEA NUEVA PARA EL NÚMERO DE REPORTE <---
-            if (info.numero_reporte || info.reporte) {
-                document.getElementById('pdf-lbl-reporte').innerText = info.numero_reporte || info.reporte;
+// ---> AQUÍ USAMOS 'info.folio' QUE ES EL DATO REAL QUE VIENE DE TU BASE DE DATOS <---
+            if (info.folio) {
+                document.getElementById('pdf-lbl-reporte').innerText = info.folio;
             }
             
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
