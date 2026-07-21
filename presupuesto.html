@@ -489,13 +489,16 @@
         agregarRenglon('listManoObra');
     });
 
-    function agregarRenglon(listaId) {
+function agregarRenglon(listaId) {
         const contenedor = document.getElementById(listaId);
         const div = document.createElement('div');
         div.className = 'table-row';
         div.innerHTML = `
             <input type="text" class="desc-input" placeholder="..." required style="width:100%;">
-            <input type="number" class="price-input" placeholder="0" style="text-align: right; width:100%;" oninput="actualizarTotales()" required>
+            <input type="text" class="price-input" placeholder="$0.00" style="text-align: right; width:100%;" 
+                onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
+                onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();"
+                required>
             <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove(); actualizarTotales();"><i class="fa-solid fa-trash"></i></button>
         `;
         contenedor.appendChild(div);
@@ -548,7 +551,24 @@ function procesarYDescargarPresupuesto() {
     setTimeout(() => {
         botones.forEach(b => b.style.display = 'inline-block');
     }, 1000);
-}                                                                                                                           
+}           
+
+    function formatearMonedaInput(input) {
+    let valor = input.value.replace(/[^0-9.]/g, ''); // Solo números y punto
+    if (valor !== '') {
+        let numero = parseFloat(valor);
+        if (!isNaN(numero)) {
+            // Formatea con comas y 2 decimales exactos, agregando el signo $
+            input.value = '$ ' + numero.toFixed(2);
+        }
+    }
+}
+
+function limpiarFormatoMoneda(input) {
+    // Al hacer clic para editar, le quitamos el símbolo y los espacios para que escribas libremente
+    input.value = input.value.replace(/[^0-9.]/g, '');
+}
+    
     function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
         const tbody = document.querySelector(`#${targetTblId} tbody`);
         if (!tbody) return;
