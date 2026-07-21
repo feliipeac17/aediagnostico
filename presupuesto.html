@@ -33,12 +33,13 @@
 
 /* 📄 Lienzo de Impresión Premium */
 #printable-canvas {
-    width: 100% !important;
-    max-width: 100% !important; /* Permitimos que se expanda por completo */
+    width: 100% !important;        
+    max-width: 100% !important;   
+    height: auto !important;       
     margin: 0 auto;
-    padding: 10px 0; /* Quitamos padding lateral para que los bordes del encabezado toquen los extremos */
+    padding: 10px 0;               /* Quitamos padding lateral para que llegue a las orillas */
     background: #ffffff;
-    overflow: hidden;
+    overflow: hidden;             
 }
 
 /* Forzamos que las columnas se apilen en celular */
@@ -49,17 +50,17 @@
 }
         /* Encabezado Asimétrico */
 /* Encabezado Estirado (Ancho completo y mayor altura) */
-    .pdf-header-container { 
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-        border-radius: 8px; 
-        padding: 30px 35px; /* Aumentamos el padding para darle más altura vertical */
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        color: white; 
-        gap: 20px; 
-        width: 100%; /* Forzamos que ocupe todo el ancho disponible */
-    }
+.pdf-header-container { 
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+    border-radius: 8px; 
+    padding: 30px 35px; /* Aumentamos la altura vertical */
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    color: white; 
+    gap: 20px; 
+    width: 100%; /* Forzamos ancho completo */
+}
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
         .pdf-brand-block h1 span { color: var(--primary-red); }
         .pdf-brand-block p { font-size: 8.5pt; color: #94a3b8; margin-top: 6px; line-height: 1.4; }
@@ -177,7 +178,6 @@
         margin: 5mm;
     }
     
-    /* ESTA ES LA LÍNEA MÁGICA QUE FORZA LOS COLORES EN CELULAR */
     * {
         -webkit-print-color-adjust: exact !important; 
         print-color-adjust: exact !important;
@@ -188,17 +188,22 @@
     .nav-bar, .btn-submit-app, .btn-add-item, .btn-del-item, .fa-trash { 
         display: none !important; 
     }
-    
-#printable-canvas {
-        width: 800px !important;    /* ESTO MANTIENE TU PDF CON TAMAÑO FIJO */
+      
+    #printable-canvas {
+        width: 100% !important;        /* Quitamos el límite de 800px al imprimir */
+        max-width: 100% !important;
         margin: 0 !important;
-        padding: 20px !important;
+        padding: 5mm 0 !important;     /* Cero espacio a los lados para que toque los bordes del papel */
         display: block !important;
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
     }
-    /* Restauramos las columnas para el PDF */
+
+    .pdf-header-container {
+        width: 100% !important;
+    }
+
     .pdf-grid-boxes { grid-template-columns: 1fr 1fr !important; }
     .pdf-pillars-grid { grid-template-columns: 1fr 1fr 1fr !important; }
 }
