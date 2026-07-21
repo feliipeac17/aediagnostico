@@ -89,7 +89,7 @@
         .pdf-info-card.diagnostico { border-left: 5px solid #64748b; }
         .pdf-info-card.diagnostico .pdf-card-title { color: #64748b !important; }
         .pdf-card-icon { position: absolute; top: 12px; right: 15px; color: #cbd5e1; font-size: 14pt; }
-        .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 12pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; }
+        .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; }
         
 .pdf-card-data { 
         display: grid; 
@@ -338,7 +338,7 @@
                     <div class="pdf-card-title">Cliente</div>
                     <div class="pdf-card-data" style="gap: 10px;">
                         <div class="pdf-data-item" style="grid-column: span 2;">
-                            <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente..." style="font-size: 12pt; font-weight: 700 !important;">
+                            <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente..." style="font-size: 10pt; font-weight: 700 !important;">
                         </div>
                         <div class="pdf-data-item">
                             <span>Teléfono</span>
@@ -349,10 +349,10 @@
 
 <div class="pdf-info-card vehiculo">
                     <i class="fa-solid fa-car-rear pdf-card-icon"></i>
-                    <div class="pdf-card-title">Vehículo</div>
+                    <div class="pdf-card-title">Vehiculo</div>
                     <div class="pdf-card-data" style="gap: 10px;">
                         <div class="pdf-data-item" style="grid-column: span 2;">
-                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo..." style="font-size: 12pt; font-weight: 700 !important;">
+                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo..." style="font-size: 10pt; font-weight: 700 !important;">
                         </div>
                         <div class="pdf-data-item">
                             <span>Placas</span>
@@ -379,7 +379,7 @@
                 <div class="pdf-card-title">Diagnostico</div>
                 <div class="pdf-card-data" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div class="pdf-data-item">
-                        <span>Falla o Síntomas Reportados por el Cliente</span>
+                        <span>Falla o Sintomas Reportados por el Cliente</span>
                         <textarea id="in_falla_reportada" class="card-input" placeholder="..." 
                             oninput="autoExpandir(this)" 
                             style="resize: none; width: 100%; overflow: hidden; min-height: 38px; font-family: inherit;"></textarea>
@@ -404,7 +404,7 @@
                     </div>
                     <div class="table-container">
                         <div class="table-header-row">
-                            <span>Descripción</span>
+                            <span>Descripcion</span>
                             <span style="text-align: right;">Importe</span>
                         </div>
                         <div id="listServicios"></div>
@@ -422,7 +422,7 @@
                     </div>
                     <div class="table-container">
                         <div class="table-header-row">
-                            <span>Descripción</span>
+                            <span>Descripcion</span>
                             <span style="text-align: right;">Importe</span>
                         </div>
                         <div id="listRefacciones"></div>
@@ -440,7 +440,7 @@
                     </div>
                     <div class="table-container">
                         <div class="table-header-row">
-                            <span>Descripción</span>
+                            <span>Descripcion</span>
                             <span style="text-align: right;">Importe</span>
                         </div>
                         <div id="listManoObra"></div>
