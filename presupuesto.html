@@ -264,12 +264,11 @@
         gap: 6px;                /* Espacio elegante entre cada fila si hay varias */
     }
 
-        .pdf-data-item textarea.card-input {
+.pdf-info-card textarea.card-input {
         white-space: pre-wrap;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        line-height: 1.3;
-        padding-top: 4px;
+        line-height: 1.4;
     }
     </style>
 </head>
@@ -381,11 +380,15 @@
                 <div class="pdf-card-data" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div class="pdf-data-item">
                         <span>Falla o Síntomas Reportados por el Cliente</span>
-                        <textarea id="in_falla_reportada" class="card-input auto-expand" placeholder="..." rows="2" style="resize: none; width: 100%; font-family: inherit;"></textarea>
+                        <textarea id="in_falla_reportada" class="card-input" placeholder="..." 
+                            oninput="autoExpandir(this)" 
+                            style="resize: none; width: 100%; overflow: hidden; min-height: 38px; font-family: inherit;"></textarea>
                     </div>
                     <div class="pdf-data-item">
                         <span>Notas adicionales</span>
-                        <textarea id="in_codigo_fallas" class="card-input auto-expand" placeholder="..." rows="2" style="resize: none; width: 100%; font-family: inherit;"></textarea>
+                        <textarea id="in_codigo_fallas" class="card-input" placeholder="..." 
+                            oninput="autoExpandir(this)" 
+                            style="resize: none; width: 100%; overflow: hidden; min-height: 38px; font-family: inherit;"></textarea>
                     </div>
                 </div>
             </div>
@@ -631,6 +634,12 @@ function limpiarFormatoMoneda(input) {
         if(document.getElementById(targetTotalId)) {
             document.getElementById(targetTotalId).innerText = `$${suma.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
         }
+    }
+    function autoExpandir(textarea) {
+        // Resetea temporalmente la altura para medir el contenido real
+        textarea.style.height = 'auto';
+        // Ajusta la altura del cuadro al tamaño exacto del texto escrito
+        textarea.style.height = textarea.scrollHeight + 'px';
     }
 </script>
 </body>
