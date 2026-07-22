@@ -60,7 +60,8 @@
 /* Encabezado Estirado (Ancho completo y mayor altura) */
 .pdf-header-container { 
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-    padding: 30px 35px 8px 35px !important; /* <--- El tercer valor (8px) es el padding inferior, ajústalo o ponlo en 0px para sellarlo */
+    border-radius: 8px 8px 0 0 !important; 
+    padding: 30px 35px 20px 35px !important; /* <--- Devolvemos un padding inferior seguro (20px) para que el texto del teléfono se vea completo */
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
