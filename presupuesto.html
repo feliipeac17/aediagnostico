@@ -608,76 +608,50 @@ function agregarRenglon(listaId) {
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-function forzarDescargaPNG() { // <--- Nuevo nombre de la función
-    // 1. Sincronizamos los inputs
+function forzarDescargaPNG() {
+    // 1. Sincronizamos los inputs para que el texto escrito no se pierda
     const inputs = document.querySelectorAll('input, textarea');
     inputs.forEach(input => {
         if (input.value) input.setAttribute('value', input.value);
     });
 
-    // 2. Ocultamos los botones de control
+    // 2. Ocultamos los botones de control para que no salgan en la captura
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
     // 3. Obtenemos el nombre del archivo
     let nombreArchivo = document.title || "Presupuesto";
 
-    // 4. Seleccionamos el contenedor principal
+    // 4. Seleccionamos el contenedor principal que contiene todo tu formato
     const elemento = document.querySelector('.wrapper-page');
 
-    // 🔥 SOLUCIÓN MEJORADA: Forzamos estilos temporales para asegurar la captura completa
-    // Guardamos los estilos originales para restaurarlos luego
-    const originalWidth = elemento.style.width;
-    const originalMaxWidth = elemento.style.maxWidth;
-    const originalOverflow = elemento.style.overflow;
-    const originalPosition = elemento.style.position;
-    const originalParentOverflow = elemento.parentElement.style.overflow;
-
-    // Forzamos el ancho total del formato (820px) e ignoramos el responsive para la captura
-    elemento.style.width = '820px';
-    elemento.style.maxWidth = 'none';
-    elemento.style.overflow = 'visible';
-    // Aseguramos que el padre no corte el contenido forzado
-    elemento.parentElement.style.overflow = 'visible';
-
-    // 5. Capturamos el diseño completo en alta resolución
+    // 5. Configuramos html2canvas para que renderice todo el bloque completo sin recortes
     html2canvas(elemento, {
-        scale: 2,           // Alta resolución (nítido)
-        useCORS: true,      // Permite imágenes externas
-        scrollY: 0,
-        // Forzamos el tamaño del canvas al tamaño completo del elemento
-        width: 820,
-        windowWidth: 820,
-        // IMPORTANTE: Aseguramos que capture el scrollHeight por si es muy largo
-        height: elemento.scrollHeight,
-        windowHeight: elemento.scrollHeight
+        scale: 2,               // Alta resolución (súper nítido)
+        useCORS: true,          // Permite imágenes locales/externas
+        logging: false,
+        x: 0,                   // Inicia desde la esquina superior izquierda exacta
+        y: 0,
+        width: elemento.offsetWidth,   // Toma todo el ancho real del contenedor
+        height: elemento.scrollHeight, // 🚀 MAGIA: Captura toda la altura real del documento (evita el corte)
+        windowWidth: 820        // Fuerza el motor a calcularlo como una pantalla de escritorio completa
     }).then(canvas => {
-        // 6. Restauramos los estilos originales inmediatamente
-        elemento.style.width = originalWidth;
-        elemento.style.maxWidth = originalMaxWidth;
-        elemento.style.overflow = originalOverflow;
-        elemento.style.position = originalPosition;
-        elemento.parentElement.style.overflow = originalParentOverflow;
-
-        // 7. Generamos el archivo descargable
+        // 6. Generamos el archivo PNG descargable automático
         const enlace = document.createElement('a');
-        enlace.download = nombreArchivo + "_Completo.png"; // Agregamos "_Completo" para verificar que es la nueva versión
+        enlace.download = nombreArchivo + ".png";
         enlace.href = canvas.toDataURL('image/png');
         
-        // 8. Simulamos el clic
+        // 7. Simulamos el clic de descarga inmediata
         document.body.appendChild(enlace);
         enlace.click();
         document.body.removeChild(enlace);
 
-        // 9. Restauramos los botones
+        // 8. Restauramos los botones en pantalla
         setTimeout(() => {
             botones.forEach(b => b.style.display = 'inline-block');
         }, 500);
     }).catch(err => {
-        console.error("Error en la captura:", err);
-        // Restauramos estilos si falla
-        elemento.style.width = originalWidth;
-        elemento.style.maxWidth = originalMaxWidth;
+        console.error("Error en la captura completa:", err);
         botones.forEach(b => b.style.display = 'inline-block');
     });
 }
