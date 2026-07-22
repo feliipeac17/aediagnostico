@@ -656,66 +656,111 @@ textarea.card-input {
     }
 
 function forzarDescargaPNG() {
-        // 1. Sincronizamos correctamente inputs y textareas
-        const inputs = document.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            if (input.tagName.toLowerCase() === 'textarea') {
-                // Para textos largos (fallas), fijamos el texto para que respete los saltos de línea
-                input.innerHTML = input.value;
-            } else {
-                // Para inputs cortos, fijamos el atributo
-                if (input.value) input.setAttribute('value', input.value);
-            }
-        });
-
+        // 1. Ocultamos los elementos que no deben salir en la foto
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .btn-submit-app');
         elementosAOcultar.forEach(el => el.style.display = 'none');
+
+        // 2. TRUCO MAESTRO: Cambiamos todos los inputs y textareas por etiquetas de texto normal 
+        // para que html2canvas pueda leer los saltos de línea perfectos y no aviente el texto a los lados.
+        const inputs = document.querySelectorAll('input, textarea');
+        const reemplazos = []; // Guardamos los originales para regresarlos después
+
+        inputs.forEach(input => {
+            const esArea = input.tagName.toLowerCase() === 'textarea';
+            const span = document.createElement('div');
+            
+            // Si es un text area (Fallas), respetamos los saltos de línea y el alto automático
+            if (esArea) {
+                span.innerText = input.value || '';
+                span.style.whiteSpace = 'pre-wrap';
+                span.style.wordWrap = 'break-word';
+                span.style.width = '100%';
+                span.style.fontSize = '8.5pt';
+                span.style.fontWeight = '700';
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.lineHeight = '1.4';
+                span.style.minHeight = '38px';
+                span.style.paddingBottom = '5px';
+            } else {
+                // Si es un input corto, le damos el mismo estilo de la cajita
+                span.innerText = input.value || '';
+                span.style.width = '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize;
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.display = 'inline-block';
+                span.style.padding = '2px 0';
+                // Para las tablas, lo alineamos a la derecha si es precio
+                if(input.classList.contains('price-input')) span.style.textAlign = 'right';
+            }
+
+            // Hacemos el cambio en la página visible
+            input.parentNode.insertBefore(span, input);
+            input.style.display = 'none'; // Ocultamos el input original
+            
+            // Guardamos el par para revertirlo después
+            reemplazos.push({ original: input, falso: span });
+        });
 
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
+        // Ajustamos los anchos para la captura
         const anchoOriginal = elemento.style.width;
         const maxWOriginal = elemento.style.maxWidth;
-        
-        // Damos un pequeño margen extra de holgura (840px en lugar de 820px) para que ningún borde o texto quede volando al tomar la foto
         elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
 
+        // 3. Tomamos la foto
         html2canvas(elemento, {
             scale: 2,           
             useCORS: true,      
             logging: false,
-            width: 840,         // Ancho ampliado para capturar todo el margen derecho
+            width: 840,         
             windowWidth: 840
         }).then(canvas => {
+            // Restauramos tamaños
             elemento.style.width = anchoOriginal;
             elemento.style.maxWidth = maxWOriginal;
 
+            // 4. Descargamos la imagen
             const enlace = document.createElement('a');
             enlace.download = nombreArchivo + ".png";
             enlace.href = canvas.toDataURL('image/png');
-            
             document.body.appendChild(enlace);
             enlace.click();
             document.body.removeChild(enlace);
 
+            // 5. RESTAURAMOS TODO A LA NORMALIDAD (Regresamos los inputs y botones)
             setTimeout(() => {
                 elementosAOcultar.forEach(el => {
-                    if (el.classList.contains('nav-bar')) {
-                        el.style.display = 'flex';
-                    } else if (el.classList.contains('btn-submit-app')) {
+                    if (el.classList.contains('nav-bar') || el.classList.contains('btn-submit-app')) {
                         el.style.display = 'flex';
                     } else {
                         el.style.display = 'inline-flex';
                     }
                 });
+                
+                // Quitamos los textos falsos y volvemos a mostrar los inputs reales
+                reemplazos.forEach(par => {
+                    par.falso.remove();
+                    par.original.style.display = ''; 
+                });
             }, 500);
+
         }).catch(err => {
-            console.error("Error en la captura completa:", err);
+            console.error("Error en la captura:", err);
+            // Si hay error, de todos modos restauramos todo
             elemento.style.width = anchoOriginal;
             elemento.style.maxWidth = maxWOriginal;
             elementosAOcultar.forEach(el => {
                 el.style.display = el.classList.contains('nav-bar') || el.classList.contains('btn-submit-app') ? 'flex' : 'inline-flex';
+            });
+            reemplazos.forEach(par => {
+                par.falso.remove();
+                par.original.style.display = ''; 
             });
         });
     }
