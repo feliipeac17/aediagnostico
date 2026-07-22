@@ -56,22 +56,23 @@
     grid-template-columns: 1fr !important; 
     gap: 15px; 
 }
-        /* Encabezado Asimétrico */
+
 /* Encabezado Estirado (Ancho completo y mayor altura) */
 .pdf-header-container { 
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
     border-radius: 8px 8px 0 0 !important; 
-    padding: 22px 35px 0 35px !important; /* Padding inferior en 0 para que la línea toque el suelo del contenedor */
+    padding: 25px 35px 25px 35px !important; /* <--- Padding perfectamente igual arriba y abajo para que el teléfono respire y no quede al ras */
     display: flex; 
     justify-content: space-between; 
-    align-items: flex-start; /* Alinea los elementos arriba para dejar espacio abajo */
+    align-items: center; 
     color: white; 
     gap: 20px; 
     width: 100% !important;
     max-width: 100% !important;
     margin-bottom: 0 !important;
-    position: relative !important;
+    position: static !important; /* Quitamos absolute para que fluya natural */
 }
+        
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
         .pdf-brand-block h1 span { color: var(--primary-red); }
         .pdf-brand-block p { font-size: 8.5pt; color: #94a3b8; margin-top: 6px; line-height: 1.4; }
@@ -87,11 +88,12 @@
     height: 6px !important; 
     background: linear-gradient(90deg, #0284c7 0%, var(--primary-red) 100%) !important; 
     width: 100% !important; 
-    position: absolute !important; /* Se pega de forma absoluta al piso del encabezado */
-    bottom: 0 !important;          /* Justo en la orilla de abajo */
-    left: 0 !important;            /* De esquina a esquina */
+    display: block !important;
     margin: 0 !important; 
+    margin-top: -1px !important; /* <--- Un micro-margen negativo de solo 1px para besar el borde del encabezado sin invadirlo */
     border-radius: 0 !important; 
+    position: relative !important;
+    z-index: 10 !important;
 }
         
         .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -304,41 +306,40 @@
     }
 </script>
 
-            <div class="pdf-header-container">
-<div class="pdf-brand-block">
-    <img src="logo3.png" alt="AE Diagnóstico" class="logo-header">
-    
-    <p style="color: #94a3b8;">
-        <i class="fa-solid fa-location-dot" style="color:var(--primary-red);"></i> 
-        Jalisco #729, Colonia San Joaquin, Piedras Negras, COAH<br>
-        <i class="fa-solid fa-phone" style="color:var(--primary-red);"></i> 
-        Tel: 878-116-5910  |  
-        <i class="fa-solid fa-envelope" style="color:var(--primary-red);"></i> 
-        aediagnostico@gmail.com
-    </p>
+<div class="pdf-header-container">
+    <div class="pdf-brand-block">
+        <img src="logo3.png" alt="AE Diagnóstico" class="logo-header">
+        <p style="color: #94a3b8; margin: 0;">
+            <i class="fa-solid fa-location-dot" style="color:var(--primary-red);"></i> 
+            Jalisco #729, Colonia San Joaquin, Piedras Negras, COAH<br>
+            <i class="fa-solid fa-phone" style="color:var(--primary-red);"></i> 
+            Tel: 878-116-5910  |  
+            <i class="fa-solid fa-envelope" style="color:var(--primary-red);"></i> 
+            aediagnostico@gmail.com
+        </p>
+    </div>
+    <div class="pdf-folio-container">
+        <div class="pdf-folio-badge" id="pdf-lbl-folio">FOLIO PRES-0000</div>
+        <table class="pdf-meta-table">
+            <tr>
+                <td style="font-weight: 700; color: #94a3b8;">Fecha</td>
+                <td id="pdf-lbl-fecha" style="font-weight: 400; color: #94a3b8;">--/--/----</td>
+            </tr>
+            <tr>
+                <td style="font-weight: 700; color: #94a3b8;">Hora</td>
+                <td id="pdf-lbl-hora" style="font-weight: 400; color: #94a3b8;">00:00 a.m.</td>
+            </tr>
+            <tr>
+                <td style="font-weight: 700; color: #94a3b8;">Vigencia</td>
+                <td style="font-weight: 400; color: #94a3b8;">15 Días</td>
+            </tr>
+        </table>
+    </div>
 </div>
-                <div class="pdf-folio-container">
-    <div class="pdf-folio-badge" id="pdf-lbl-folio">FOLIO PRES-0000</div>
-    <table class="pdf-meta-table">
-        <tr>
-            <td style="font-weight: 700; color: #94a3b8;">Fecha</td>
-            <td id="pdf-lbl-fecha" style="font-weight: 400; color: #94a3b8;">--/--/----</td>
-        </tr>
-        <tr>
-            <td style="font-weight: 700; color: #94a3b8;">Hora</td>
-            <td id="pdf-lbl-hora" style="font-weight: 400; color: #94a3b8;">00:00 a.m.</td>
-        </tr>
-        <tr>
-            <td style="font-weight: 700; color: #94a3b8;">Vigencia</td>
-            <td style="font-weight: 400; color: #94a3b8;">15 Días</td>
-        </tr>
-    </table>
-</div>
-                <div class="pdf-divider"></div>
-            </div>
+
+<div class="pdf-divider"></div>
 
 <div id="printable-canvas" style="padding: 15px 20px !important;">
-
             <div class="pdf-title-row">
                 <h2>Presupuesto</h2>
                 <div class="pdf-badge-informativo">Documento Informativo</div>
