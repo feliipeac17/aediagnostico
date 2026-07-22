@@ -332,6 +332,37 @@ textarea.card-input {
             /* El lienzo se pega a las orillas del celular para aprovechar espacio */
             #printable-canvas { padding: 10px !important; }
         }
+
+        /* 🎨 Estilo unificado para el botón de Imagen (Azul / Celeste) */
+        .btn-download-image {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #0284c7; /* Celeste / Azul institucional */
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 11pt;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-download-image:hover {
+            background-color: #0369a1; /* Azul un poco más oscuro al pasar el mouse */
+        }
+        .btn-download-image:active {
+            transform: scale(0.98);
+        }
+
+        /* 🔥 Convierte visualmente todo lo que se escriba a MAYÚSCULAS en tiempo real */
+        input[type="text"], 
+        textarea, 
+        select {
+            text-transform: uppercase !important;
+        }
     </style>
 </head>
 <body>
@@ -537,12 +568,12 @@ textarea.card-input {
 
 <div class="pdf-actions-bar" style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">
             
-            <button onclick="forzarDescargaPNG()" class="btn-accion btn-png">
+            <button onclick="forzarDescargaPNG()" class="btn-download-image">
                 📥 Descargar Imagen (PNG)
             </button>
             
             <button onclick="forzarDescargaPDF()" class="btn-accion btn-pdf" style="background: #dc2626; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                📄 Descargar PDF
+                📄 Descargar Documento (PDF)
             </button>
             
         </div>
@@ -551,6 +582,16 @@ textarea.card-input {
 </div>
 
 <script>
+    // 🔄 Convierte automáticamente cualquier texto a MAYÚSCULAS mientras escribes
+        document.addEventListener('input', function (e) {
+            if (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.toUpperCase();
+                e.target.setSelectionRange(start, end); // Mantiene el cursor en su sitio exacto
+            }
+        });
+    
     function volverAlInicio() {
         window.location.replace('/');
     }
