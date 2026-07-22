@@ -60,8 +60,7 @@
 /* Encabezado Estirado (Ancho completo y mayor altura) */
 .pdf-header-container { 
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-    border-radius: 8px 8px 0 0 !important; /* <--- Solo esquinas superiores redondeadas, planas abajo */
-    padding: 30px 35px; 
+    padding: 30px 35px 8px 35px !important; /* <--- El tercer valor (8px) es el padding inferior, ajústalo o ponlo en 0px para sellarlo */
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
@@ -69,8 +68,7 @@
     gap: 20px; 
     width: 100% !important;
     max-width: 100% !important;
-    margin-bottom: 0 !important; /* <--- Asegura que no deje espacio libre abajo */
-    border-bottom: none !important;
+    margin-bottom: 0 !important;
 }
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
         .pdf-brand-block h1 span { color: var(--primary-red); }
