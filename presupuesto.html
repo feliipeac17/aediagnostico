@@ -81,8 +81,13 @@
         .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; text-transform: uppercase; }
         .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }
 
-        .pdf-divider { height: 4px; background: linear-gradient(90deg, #0284c7 0%, var(--primary-red) 100%); margin: 0px 0 15px 0; border-radius: 2px; }
-
+.pdf-divider { 
+    height: 4px; 
+    background: linear-gradient(90deg, #0284c7 0%, var(--primary-red) 100%); 
+    margin: 0 !important; /* Cero margen arriba y abajo para que quede unida */
+    width: 100% !important; /* Abarca de orilla a orilla */
+    border-radius: 0 !important; /* Bordes rectos para que coincida con el diseño formal */
+}
         .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; text-transform: uppercase; }
         .pdf-title-row h2 span { color: #0284c7; }
@@ -325,8 +330,9 @@
 </div>
             </div>
 
+    <div class="pdf-divider"></div>
+
 <div id="printable-canvas" style="padding: 15px 20px !important;">
-            <div class="pdf-divider"></div>
 
             <div class="pdf-title-row">
                 <h2>Presupuesto</h2>
