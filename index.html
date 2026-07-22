@@ -94,10 +94,8 @@
         .check-icon.active { color: #16a34a; }
 
         .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-        .photo-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; }
-        .photo-box:hover { border-color: #0284c7; background: #e0f2fe; }
-        .photo-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: none; z-index: 2; }
-        .photo-placeholder { color: #94a3b8; font-size: 8pt; font-weight: 700; text-align: center; z-index: 1; }
+        .photo-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; }        .photo-box:hover { border-color: #0284c7; background: #e0f2fe; }
+        .photo-box img { width: 100%; height: 100%; object-fit: contain; background: #e2e8f0; position: absolute; top: 0; left: 0; display: none; z-index: 2; }        .photo-placeholder { color: #94a3b8; font-size: 8pt; font-weight: 700; text-align: center; z-index: 1; }
         .photo-placeholder i { font-size: 18pt; margin-bottom: 5px; color: #cbd5e1; }
         .btn-del-photo { position: absolute; top: 5px; right: 5px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 10pt; cursor: pointer; z-index: 10; display: none; align-items: center; justify-content: center; }
         
@@ -235,7 +233,19 @@
                         <table class="pdf-meta-table">
                             <tr><td>FECHA</td><td id="pdf-lbl-fecha">--/--/----</td></tr>
                             <tr><td>HORA</td><td id="pdf-lbl-hora">00:00</td></tr>
-                            <tr><td>ESTADO</td><td style="color: #10b981;">EN REVISIÓN</td></tr>
+                            <tr>
+                                <td>ESTADO</td>
+                                <td style="text-align: right;">
+                                    <select id="in_estado" class="pdf-ctrl" style="background: transparent; border: none; font-weight: 800; font-size: 8.5pt; text-align: right; outline: none; cursor: pointer; color: #10b981; padding: 0;">
+                                        <option value="EN REVISIÓN" style="color: black;">EN REVISIÓN</option>
+                                        <option value="EN TALLER" style="color: black;">EN TALLER</option>
+                                        <option value="ESPERANDO PIEZAS" style="color: black;">ESPERANDO PIEZAS</option>
+                                        <option value="TERMINADO" style="color: black;">TERMINADO</option>
+                                        <option value="ENTREGADO" style="color: black;">ENTREGADO</option>
+                                    </select>
+                                    <span id="pdf-lbl-estado" style="display:none; font-weight: 800; font-size: 8.5pt;"></span>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -622,7 +632,7 @@
         event.target.closest('.btn-del-photo').style.display = 'none';
     }
 
-    function prepararCaptura() {
+function prepararCaptura() {
         const inputs = document.querySelectorAll('#printable-canvas input.card-input, #printable-canvas textarea.card-input, #printable-canvas select.card-input');
         const reemplazos = [];
 
@@ -682,6 +692,17 @@
             txtGas.style.display = 'inline-block';
         }
 
+        // 🔥 ESTO ES LO NUEVO: Lógica Visual del Estado en PDF
+        const selEstado = document.getElementById('in_estado');
+        const lblEstado = document.getElementById('pdf-lbl-estado');
+        if (selEstado && lblEstado) {
+            lblEstado.innerText = selEstado.value;
+            if(selEstado.value === 'TERMINADO' || selEstado.value === 'ENTREGADO') lblEstado.style.color = '#3b82f6';
+            else if(selEstado.value === 'ESPERANDO PIEZAS') lblEstado.style.color = '#f59e0b';
+            else lblEstado.style.color = '#10b981';
+            lblEstado.style.display = 'inline';
+        }
+
         const elemento = document.querySelector('.wrapper-page');
         const anchoOriginal = elemento.style.width;
         const maxWOriginal = elemento.style.maxWidth;
@@ -704,7 +725,7 @@
         return { elementosAOcultar, reemplazos, elemento, anchoOriginal, maxWOriginal, borderOriginal, radiusOriginal, marginOriginal, posOriginal, topOriginal, leftOriginal };
     }
 
-    function restaurarPantalla(estado) {
+function restaurarPantalla(estado) {
         estado.elemento.style.width = estado.anchoOriginal;
         estado.elemento.style.maxWidth = estado.maxWOriginal;
         estado.elemento.style.border = estado.borderOriginal;
@@ -728,6 +749,10 @@
         
         const txtGas = document.getElementById('pdf_visual_gas_text');
         if(txtGas) txtGas.style.display = 'none';
+
+        // 🔥 ESTO ES LO NUEVO: Apaga el texto de estado para devolverte el selector
+        const lblEstado = document.getElementById('pdf-lbl-estado');
+        if(lblEstado) lblEstado.style.display = 'none';
         
         estado.reemplazos.forEach(par => {
             par.falso.remove();
@@ -924,7 +949,7 @@
         return supabaseClient.storage.from('fotos_reportes').getPublicUrl(filePath).data.publicUrl;
     }
 
-    async function guardarYProcesarReporte() {
+async function guardarYProcesarReporte() {
         const btnSubmit = document.getElementById('btnGuardarForm');
         const editId = document.getElementById('edit_record_id').value;
         const isEditing = editId !== "";
@@ -967,7 +992,7 @@
             const payload = {
                 cliente_nombre: getUpperVal('in_cliente_nombre'),
                 cliente_telefono: getUpperVal('in_cliente_telefono'),
-                vehiculo_marca: getUpperVal('in_vehiculo_marca'),
+                vehiculo_marca: document.getElementById('in_vehiculo_marca').value,
                 vehiculo_modelo: getUpperVal('in_vehiculo_modelo'),
                 vehiculo_color: getUpperVal('in_vehiculo_color'),
                 vehiculo_placas: getUpperVal('in_vehiculo_placas'),
@@ -980,7 +1005,8 @@
                 chk_elevadores: document.getElementById('chk_elevadores').checked,
                 chk_tablero: document.getElementById('chk_tablero').checked,
                 observaciones_electrico: getUpperVal('in_obs_electrico'),
-                link_escaner: linkEscanerFinal 
+                link_escaner: linkEscanerFinal,
+                estado: document.getElementById('in_estado') ? document.getElementById('in_estado').value : 'EN REVISIÓN' // 🔥 ESTO ES LO NUEVO
             };
 
             if(urlFrente) payload.foto_frente_url = urlFrente;
@@ -1066,7 +1092,7 @@
         inyectarTarjetasHistorial(filtrados);
     }
 
-    function cargarRegistroParaEditar(rep) {
+function cargarRegistroParaEditar(rep) {
         reportDataGlobal = rep;
         document.getElementById('edit_record_id').value = rep.id;
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
@@ -1109,6 +1135,15 @@
 
         document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || '';
         document.getElementById('in_link_escaner').value = rep.link_escaner || '';
+
+        // 🔥 ESTO ES LO NUEVO: Cargamos el estado desde Supabase y le damos color
+        const selectorEstado = document.getElementById('in_estado');
+        if(selectorEstado) {
+            selectorEstado.value = rep.estado || 'EN REVISIÓN';
+            if(selectorEstado.value === 'TERMINADO' || selectorEstado.value === 'ENTREGADO') selectorEstado.style.color = '#3b82f6';
+            else if(selectorEstado.value === 'ESPERANDO PIEZAS') selectorEstado.style.color = '#f59e0b';
+            else selectorEstado.style.color = '#10b981';
+        }
 
         const setFormPrev = (imgId, textId, inputId, url) => {
             const img = document.getElementById(imgId); const txt = document.getElementById(textId); const inputElem = document.getElementById(inputId);
