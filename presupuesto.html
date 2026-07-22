@@ -12,6 +12,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         :root {
@@ -834,45 +835,48 @@ function forzarDescargaPNG() {
             });
         });
     }
-    function forzarDescargaPDF() {
+    
+async function forzarDescargaPDF() {
             const elemento = document.getElementById('printable-canvas');
             
-            // 1. Indicamos al usuario que se está generando
-            console.log("Generando PDF...");
-            
-            html2canvas(elemento, {
-                scale: 3,           // Mantenemos la máxima calidad Ultra HD
-                useCORS: true,      
-                logging: false,
-                width: 840,         
-                windowWidth: 840,
-                scrollY: 0,         
-                y: 0                
-            }).then(canvas => {
+            // Verificamos que jsPDF esté cargado
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert("La librería de PDF no está lista. Verifica tu conexión a internet.");
+                return;
+            }
+
+            console.log("Generando PDF para descarga directa...");
+
+            try {
+                // 1. Tomamos la foto en alta resolución (Escala 3 para máxima nitidez)
+                const canvas = await html2canvas(elemento, {
+                    scale: 3,
+                    useCORS: true,
+                    logging: false,
+                    width: 840,
+                    windowWidth: 840,
+                    scrollY: 0,
+                    y: 0
+                });
+
                 const imgData = canvas.toDataURL('image/png');
-                
-                // 2. Creamos una ventana emergente oculta para imprimir o generar el PDF nativo
-                const ventanaPdf = window.open('', '_blank');
-                ventanaPdf.document.write(`
-                    <html>
-                        <head>
-                            <title>Presupuesto_AE</title>
-                            <style>
-                                body { margin: 0; padding: 0; background: #ffffff; display: flex; justify-content: center; align-items: flex-start; }
-                                img { width: 100%; max-width: 840px; height: auto; display: block; }
-                                @media print {
-                                    body { margin: 0; }
-                                    img { width: 100%; page-break-inside: avoid; }
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <img src="${imgData}" onload="window.print(); window.close();" />
-                        </body>
-                    </html>
-                `);
-                ventanaPdf.document.close();
-            });
+
+                // 2. Creamos el documento PDF en formato Carta (Letter) vertical
+                const pdf = new jsPDF('p', 'mm', 'letter');
+                const pdfWidth = pdf.internal.pageSize.getWidth();     // Ancho de la hoja carta en mm (~215.9mm)
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Alto proporcional exacto
+
+                // 3. Insertamos la imagen en el PDF
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+                // 4. 🔥 DESCARGA DIRECTA AUTOMÁTICA al dispositivo
+                pdf.save('Presupuesto_AE.pdf');
+
+            } catch (error) {
+                console.error("Error al generar el PDF:", error);
+                alert("Ocurrió un error al generar el PDF.");
+            }
         }
 </script>
 </body>
