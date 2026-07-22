@@ -66,13 +66,14 @@
             margin-bottom: 0 !important;
         }
 
-        /* 🚀 LÍNEA TRICOLOR */
+/* 🚀 LÍNEA TRICOLOR (Corregida la rendija blanca) */
         .pdf-divider { 
             height: 6px !important; 
             background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; 
             width: 100% !important; 
             display: block !important;
             margin: 0 !important; 
+            margin-top: -1px !important; /* 🔥 TRUCO: Sube la línea 1px para comerse el espacio blanco */
             padding: 0 !important;
             border: none !important;
             position: relative !important;
@@ -110,9 +111,22 @@
             display: grid; 
             grid-template-columns: 1fr 1fr; 
             gap: 8px 12px; 
+            align-items: start; /* 🔥 TRUCO: Obliga a que todo se alinee exactamente arriba */
         }
-        .pdf-data-item { font-size: 10pt; }
-        .pdf-data-item span { display: block; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 6.5pt; margin-bottom: 1px; }
+        .pdf-data-item { 
+            font-size: 10pt; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; /* 🔥 Mantiene el título y el texto pegados arriba */
+        }
+        .pdf-data-item span { 
+            display: block; 
+            color: #64748b; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            font-size: 6.5pt; 
+            margin-bottom: 2px; 
+        } 
         
 /* 🔥 SOLO INPUTS CORTOS (Teléfono, Placas, VIN, etc) */
         input.card-input { 
@@ -669,7 +683,7 @@ function forzarDescargaPNG() {
             const esArea = input.tagName.toLowerCase() === 'textarea';
             const span = document.createElement('div');
             
-            // Si es un text area (Fallas), respetamos los saltos de línea y el alto automático
+// Si es un text area (Fallas), respetamos los saltos de línea y el alto automático
             if (esArea) {
                 span.innerText = input.value || '';
                 span.style.whiteSpace = 'pre-wrap';
@@ -682,6 +696,8 @@ function forzarDescargaPNG() {
                 span.style.lineHeight = '1.4';
                 span.style.minHeight = '38px';
                 span.style.paddingBottom = '5px';
+                span.style.display = 'block'; // <--- NUEVO
+                span.style.marginTop = '0';   // <--- NUEVO
             } else {
                 // Si es un input corto, le damos el mismo estilo de la cajita
                 span.innerText = input.value || '';
