@@ -221,16 +221,29 @@
         print-color-adjust: exact !important;
     }
 
-    body { background: white !important; }
+    body { 
+        background: white !important; 
+        margin: 0 !important;
+        padding: 0 !important;
+    }
     
+    /* Ocultamos elementos de navegación, botones y cualquier ícono de basura */
     .nav-bar, .btn-submit-app, .btn-add-item, .btn-del-item, .fa-trash { 
         display: none !important; 
     }
     
+    /* Forzamos que el contenedor principal cubra todo el ancho sin márgenes laterales */
+    .wrapper-page {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     .pdf-header-container {
         width: 100% !important;
         max-width: 100% !important;
-        border-radius: 0 !important; /* Quita las esquinas redondeadas al imprimir para un acabado de documento formal */
+        border-radius: 0 !important; /* Quita las esquinas redondeadas al imprimir para un acabado formal */
         margin: 0 !important;
     }
     
@@ -611,61 +624,17 @@ function agregarRenglon(listaId) {
     }
 
 function procesarYDescargarPresupuesto() {
-    // 1. Ocultamos los botones de control
+    // 1. Ocultamos los botones de control para que no salgan en la impresión/PDF
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
-    // 2. Obtenemos el nombre del archivo
-    let nombreArchivo = document.title || "Presupuesto";
-    nombreArchivo += ".pdf";
+    // 2. Disparamos la impresión nativa limpia (en móviles y PCs abre directamente el selector para guardar como PDF)
+    window.print();
 
-    // 3. Clonamos el contenedor principal para transformar inputs en texto visible
-    const elementoOriginal = document.querySelector('.wrapper-page');
-    const elementoClon = elementoOriginal.cloneNode(true);
-
-    // Transformamos todos los inputs y textareas del clon en texto plano para que html2pdf los lea perfectamente
-    const inputsClon = elementoClon.querySelectorAll('input, textarea');
-    inputsClon.forEach(input => {
-        const span = document.createElement('span');
-        span.innerText = input.value || input.placeholder || '';
-        span.style.cssText = window.getComputedStyle(input).cssText;
-        span.style.display = 'inline-block';
-        span.style.border = 'none';
-        span.style.background = 'transparent';
-        span.style.width = '100%';
-        input.parentNode.replaceChild(span, input);
-    });
-
-    // Ocultamos el clon fuera de la pantalla mientras se procesa
-    elementoClon.style.position = 'absolute';
-    elementoClon.style.left = '-9999px';
-    document.body.appendChild(elementoClon);
-
-    const opciones = {
-        margin:       0,
-        filename:     nombreArchivo,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-            scale: 2,           
-            useCORS: true,      
-            letterRendering: true,
-            scrollY: 0          
-        },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // 4. Generamos el PDF usando el clon limpio
+    // 3. Restauramos los botones en pantalla tras un momento
     setTimeout(() => {
-        html2pdf().from(elementoClon).set(opciones).save().then(() => {
-            // Limpiamos y restauramos la pantalla original
-            document.body.removeChild(elementoClon);
-            botones.forEach(b => b.style.display = 'inline-block');
-        }).catch(err => {
-            console.error("Error al generar PDF:", err);
-            if(document.body.contains(elementoClon)) document.body.removeChild(elementoClon);
-            botones.forEach(b => b.style.display = 'inline-block');
-        });
-    }, 400);
+        botones.forEach(b => b.style.display = 'inline-block');
+    }, 1000);
 }
     
     function formatearMonedaInput(input) {
