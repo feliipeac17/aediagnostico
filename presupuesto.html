@@ -643,27 +643,26 @@
             if (input.value) input.setAttribute('value', input.value);
         });
 
-        // 1. Ocultamos los botones de control, la barra de navegación superior y el botón de descarga
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .btn-submit-app');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
-        // Truco para conservar las 3 columnas juntas hacia los lados en la captura
         const anchoOriginal = elemento.style.width;
         const maxWOriginal = elemento.style.maxWidth;
-        elemento.style.width = '820px';
+        
+        // Damos un pequeño margen extra de holgura (840px en lugar de 820px) para que ningún borde o texto quede volando al tomar la foto
+        elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
 
         html2canvas(elemento, {
             scale: 2,           
             useCORS: true,      
             logging: false,
-            width: 820,
-            windowWidth: 820
+            width: 840,         // Ancho ampliado para capturar todo el margen derecho
+            windowWidth: 840
         }).then(canvas => {
-            // Restauramos los estilos de ancho
             elemento.style.width = anchoOriginal;
             elemento.style.maxWidth = maxWOriginal;
 
@@ -675,10 +674,8 @@
             enlace.click();
             document.body.removeChild(enlace);
 
-            // 2. Volvemos a mostrar la barra de navegación, botones y el botón de descarga tras un momento
             setTimeout(() => {
                 elementosAOcultar.forEach(el => {
-                    // Restauramos su despliegue original (flex para las barras/botones principales, inline-flex para los de control)
                     if (el.classList.contains('nav-bar')) {
                         el.style.display = 'flex';
                     } else if (el.classList.contains('btn-submit-app')) {
