@@ -66,14 +66,22 @@
     justify-content: space-between !important; 
     align-items: center !important; 
     color: white !important; 
-    gap: 20px !important; 
     width: 100% !important;
     max-width: 100% !important;
     margin-bottom: 0 !important;
-    
-    /* 🚀 LA SOLUCIÓN DEFINITIVA: Borde inferior con degradado integrado */
-    border-bottom: 6px solid #0284c7 !important; /* Respaldo en color sólido */
-    border-image: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) 1 !important; 
+}
+
+/* 🚀 LÍNEA BLINDADA Y VISIBLE */
+.pdf-divider { 
+    height: 6px !important; 
+    background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; 
+    width: 100% !important; 
+    display: block !important;
+    margin: 0 !important; 
+    padding: 0 !important;
+    border: none !important;
+    position: relative !important;
+    z-index: 999 !important;
 }
         
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
@@ -326,6 +334,8 @@
         </table>
     </div>
 </div>
+
+    <div class="pdf-divider"></div>
 
 <div id="printable-canvas" style="padding: 15px 20px !important;">
             <div class="pdf-title-row">
