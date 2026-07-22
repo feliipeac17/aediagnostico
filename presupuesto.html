@@ -837,19 +837,38 @@ function forzarDescargaPNG() {
     }
     
 async function forzarDescargaPDF() {
-            const elemento = document.getElementById('printable-canvas');
-            
-            // Verificamos que jsPDF esté cargado
             const { jsPDF } = window.jspdf;
             if (!jsPDF) {
                 alert("La librería de PDF no está lista. Verifica tu conexión a internet.");
                 return;
             }
 
-            console.log("Generando PDF para descarga directa...");
+            console.log("Generando PDF profesional limpio...");
+
+            // 1. Sincronizamos textos por seguridad
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                if (input.tagName.toLowerCase() === 'textarea') {
+                    input.innerHTML = input.value;
+                } else {
+                    if (input.value) input.setAttribute('value', input.value);
+                }
+            });
+
+            // 2. 🔥 Ocultamos TODOS los botones (los de control, basura, y los botones principales de descarga)
+            const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
+            elementosAOcultar.forEach(el => el.style.display = 'none');
+
+            // 3. Seleccionamos el contenedor .wrapper-page para que SÍ salga el encabezado oscuro completo
+            const elemento = document.querySelector('.wrapper-page');
+
+            const anchoOriginal = elemento.style.width;
+            const maxWOriginal = elemento.style.maxWidth;
+            elemento.style.width = '840px';
+            elemento.style.maxWidth = 'none';
 
             try {
-                // 1. Tomamos la foto en alta resolución (Escala 3 para máxima nitidez)
+                // 4. Tomamos la foto en Ultra HD (Escala 3) sin rastro de resplandor blanco
                 const canvas = await html2canvas(elemento, {
                     scale: 3,
                     useCORS: true,
@@ -862,20 +881,31 @@ async function forzarDescargaPDF() {
 
                 const imgData = canvas.toDataURL('image/png');
 
-                // 2. Creamos el documento PDF en formato Carta (Letter) vertical
+                // 5. Creamos el PDF formato Carta (Letter)
                 const pdf = new jsPDF('p', 'mm', 'letter');
-                const pdfWidth = pdf.internal.pageSize.getWidth();     // Ancho de la hoja carta en mm (~215.9mm)
+                const pdfWidth = pdf.internal.pageSize.getWidth();     // Ancho exacto de página carta (~215.9mm)
                 const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Alto proporcional exacto
 
-                // 3. Insertamos la imagen en el PDF
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                // 6. Insertamos la imagen en máxima calidad conservando nitidez tipográfica
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
 
-                // 4. 🔥 DESCARGA DIRECTA AUTOMÁTICA al dispositivo
+                // 7. 🔥 Descarga directa del archivo PDF
                 pdf.save('Presupuesto_AE.pdf');
 
             } catch (error) {
                 console.error("Error al generar el PDF:", error);
                 alert("Ocurrió un error al generar el PDF.");
+            } finally {
+                // 8. Restauramos los anchos y volvemos a mostrar los botones en pantalla
+                elemento.style.width = anchoOriginal;
+                elemento.style.maxWidth = maxWOriginal;
+                elementosAOcultar.forEach(el => {
+                    if (el.classList.contains('nav-bar') || el.classList.contains('pdf-actions-bar')) {
+                        el.style.display = 'flex';
+                    } else {
+                        el.style.display = 'inline-flex';
+                    }
+                });
             }
         }
 </script>
