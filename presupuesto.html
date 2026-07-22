@@ -677,7 +677,7 @@ textarea.card-input {
             codigoLimpio = "AE-" + Math.floor(1000 + Math.random() * 9000);
         }
 
-        document.title = "Presupuesto_" + codigoLimpio;
+        document.title = "PRES_" + codigoLimpio;
     });
     
     function agregarRenglon(listaId) {
@@ -936,7 +936,7 @@ textarea.card-input {
         elemento.style.maxWidth = 'none';
 
         // 🚀 AÑADIDO: Obtenemos el nombre dinámico igual que en el PNG
-        let nombreArchivoPDF = (document.title || "Presupuesto_AE") + ".pdf";
+        let nombreArchivoPDF = (document.title || "PRES_AE") + ".pdf";
 
         try {
             const canvas = await html2canvas(elemento, {
