@@ -39,7 +39,6 @@
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { margin: 0; padding: 0; background-color: #f4f6f9; color: #333; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
         
-        /* ================= MÓVIL / FORMULARIO CAPTURA (ESTRUCTURA BASE) ================= */
         .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 20px 15px; min-height: 100vh; display: none; }
         @media (min-width: 768px) { .admin-panel { margin: 30px auto; min-height: auto; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); } }
         
@@ -51,12 +50,9 @@
         .btn-submit { background: #1a1a1a; color: #fff; border: none; padding: 16px; font-size: 12pt; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-submit:hover { background: #d32f2f; }
 
-        /* 📌 CONGELAR BOTONES DE NAVEGACIÓN PRINCIPAL */
         .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 10px 0; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; }
         
-        /* ================= NUEVO DISEÑO WYSIWYG PARA EL REPORTE ================= */
         .wrapper-page { width: 100%; max-width: 840px; margin: 0 auto; box-sizing: border-box; background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 20px;}
-        
         #printable-canvas { width: 100% !important; max-width: 100% !important; height: auto !important; margin: 0 !important; background: #ffffff !important; overflow: hidden !important; display: block !important; position: relative !important; padding: 5px 20px 15px 20px !important; }
         
         .pdf-header-container { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; padding: 25px 35px !important; display: flex !important; justify-content: space-between !important; align-items: center !important; color: white !important; }
@@ -70,9 +66,8 @@
         .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; }
         .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }
         
-        .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0px !important; margin-bottom: 12px; }
+        .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px !important; margin-bottom: 12px; }
         .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; margin: 0;}
-        .pdf-badge-oficial { background-color: #10b981; color: white; font-size: 7.5pt; font-weight: 800; padding: 4px 12px; border-radius: 6px; font-family: 'Montserrat', sans-serif; }
 
         .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .pdf-info-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 15px; position: relative; }
@@ -86,12 +81,10 @@
         .pdf-data-item { font-size: 10pt; display: flex; flex-direction: column; justify-content: flex-start; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; font-size: 6.5pt; margin-bottom: 2px; }
 
-        /* Inputs WYSIWYG */
-        input[type="text"], input[type="tel"], textarea { text-transform: uppercase !important; }
-        input.card-input { width: 100%; border: none; border-bottom: 1px dashed #cbd5e1; background: transparent; font-size: 8.5pt; font-weight: 700; color: #0f172a; outline: none; height: 24px !important; line-height: 22px !important; padding: 0 0 2px 0 !important; }
+        input[type="text"], input[type="tel"], textarea, select { text-transform: uppercase !important; }
+        input.card-input, select.card-input { width: 100%; border: none; border-bottom: 1px dashed #cbd5e1; background: transparent; font-size: 8.5pt; font-weight: 700; color: #0f172a; outline: none; height: 24px !important; line-height: 22px !important; padding: 0 !important; }
         textarea.card-input { width: 100%; border: none; border-bottom: 1px dashed #cbd5e1; background: transparent; font-size: 8.5pt; font-weight: 700; color: #0f172a; outline: none; height: auto !important; white-space: pre-wrap !important; word-wrap: break-word !important; line-height: 1.4 !important; }
 
-        /* Elementos Interactivos Checklist */
         .fuel-selector { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; margin-bottom: 15px; background: #e2e8f0; padding: 4px; border-radius: 6px; }
         .fuel-btn { flex: 1; text-align: center; font-size: 8pt; font-weight: 700; padding: 4px 0; cursor: pointer; color: #64748b; border-radius: 4px; transition: 0.2s; }
         .fuel-btn.active { background: #0284c7; color: white; }
@@ -100,7 +93,6 @@
         .check-icon { font-size: 12pt; color: #cbd5e1; transition: 0.2s; }
         .check-icon.active { color: #16a34a; }
 
-        /* Evidencia Fotografica */
         .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
         .photo-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; }
         .photo-box:hover { border-color: #0284c7; background: #e0f2fe; }
@@ -111,7 +103,6 @@
         
         .logo-header { max-height: 70px; width: auto; display: block; margin-bottom: 10px; }
 
-        /* ================= VISTA PREVIA INTERNA EN DIGITAL (HISTORIAL) ================= */
         .report-view { display: none; padding: 15px 10px; background-color: #f4f6f9; min-height: 100vh; }
         .preview-card-view { width: 100%; max-width: 780px; margin: 0 auto; background: #fff; padding: 30px 25px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .preview-header-block { background: #1a1a1a; color:#fff; border-left: 6px solid #d32f2f; padding: 18px; margin-bottom: 25px; border-radius: 0 4px 4px 0; display: flex; justify-content: space-between; align-items: center; }
@@ -143,7 +134,6 @@
         .scanner-frame-container { width: 100%; height: 700px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #fff; display: block; }
         .scanner-frame-container iframe { width: 100%; height: 100%; border: none; }
 
-        /* PANTALLAS DE BLOQUEO Y CLIENTE */
         .mask-fullscreen-view { display: none; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: #fff; z-index: 99999; }
         .mask-fullscreen-view iframe { width: 100%; height: 100%; border: none; }
         
@@ -162,7 +152,6 @@
         .sticky-actions-bar { position: -webkit-sticky; position: sticky; top: 0; background-color: #f4f6f9; padding: 10px 0 15px 0; z-index: 1000; }
         .btn-card-cotizar { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
 
-        /* Botones de Descarga en Formulario */
         .pdf-actions-bar { display: flex; gap: 10px; margin-top: 15px; }
         .btn-download-image { flex: 1; background: #0284c7; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(2,132,199,0.2); text-transform: uppercase;}
         .btn-download-pdf { flex: 1; background: #d32f2f; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); text-transform: uppercase;}
@@ -256,7 +245,6 @@
                 <div id="printable-canvas">
                     <div class="pdf-title-row">
                         <h2>REPORTE DE SERVICIO</h2>
-                        <div class="pdf-badge-oficial">DOCUMENTO DE INGRESO</div>
                     </div>
 
                     <div class="pdf-grid-boxes">
@@ -279,7 +267,32 @@
                             <div class="pdf-card-data">
                                 <div class="pdf-data-item">
                                     <span>MARCA</span>
-                                    <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="...">
+                                    <select id="in_vehiculo_marca" class="card-input">
+                                        <option value="">SELECCIONE...</option>
+                                        <option value="NISSAN">NISSAN</option>
+                                        <option value="CHEVROLET">CHEVROLET</option>
+                                        <option value="FORD">FORD</option>
+                                        <option value="TOYOTA">TOYOTA</option>
+                                        <option value="HONDA">HONDA</option>
+                                        <option value="VOLKSWAGEN">VOLKSWAGEN</option>
+                                        <option value="KIA">KIA</option>
+                                        <option value="HYUNDAI">HYUNDAI</option>
+                                        <option value="MAZDA">MAZDA</option>
+                                        <option value="JEEP">JEEP</option>
+                                        <option value="RAM">RAM</option>
+                                        <option value="DODGE">DODGE</option>
+                                        <option value="CHRYSLER">CHRYSLER</option>
+                                        <option value="GMC">GMC</option>
+                                        <option value="BUICK">BUICK</option>
+                                        <option value="BMW">BMW</option>
+                                        <option value="MERCEDES-BENZ">MERCEDES-BENZ</option>
+                                        <option value="AUDI">AUDI</option>
+                                        <option value="RENAULT">RENAULT</option>
+                                        <option value="SUZUKI">SUZUKI</option>
+                                        <option value="MITSUBISHI">MITSUBISHI</option>
+                                        <option value="FIAT">FIAT</option>
+                                        <option value="PEUGEOT">PEUGEOT</option>
+                                    </select>
                                 </div>
                                 <div class="pdf-data-item">
                                     <span>MODELO / AÑO</span>
@@ -302,7 +315,7 @@
                                         <span>ODÓMETRO</span>
                                         <input type="number" id="in_vehiculo_km" class="card-input" placeholder="...">
                                     </div>
-                                    <select id="in_vehiculo_unidad" class="card-input" style="width: 60px; height: 24px; padding: 0; border-bottom: 1px dashed #cbd5e1; outline:none; font-weight:700; color:#0f172a; cursor:pointer;">
+                                    <select id="in_vehiculo_unidad" class="card-input" style="width: 55px; height: 24px; font-size: 8.5pt; font-weight: 700; color: #0f172a; border-bottom: 1px dashed #cbd5e1; background: transparent; outline: none;">
                                         <option value="KM">KM</option>
                                         <option value="MI">MI</option>
                                     </select>
@@ -326,6 +339,7 @@
                                 <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(75)">3/4</div>
                                 <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(100)">F</div>
                             </div>
+                            
                             <input type="hidden" id="in_vehiculo_gas" value="50">
                             <div id="pdf_visual_gas" style="display:none; width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-bottom:15px; position: relative;">
                                 <div id="pdf_visual_gas_fill" style="height: 100%; width: 50%; background: #ff9800; border-radius: 3px;"></div>
@@ -541,7 +555,6 @@
     </div>
 
 <script>
-    // ================= CREDENCIALES SUPABASE =================
     const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -552,7 +565,6 @@
     let listaReportesMemoria = [];
     const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
-    // 🔄 Auto-Mayúsculas
     document.addEventListener('input', function (e) {
         if (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
             const start = e.target.selectionStart;
@@ -562,24 +574,21 @@
         }
     });
 
-    // 📐 Textarea expansible
     function autoExpandir(textarea) {
         textarea.style.height = 'auto';
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
-    // ⛽ Lógica Visual Combustible
     function seleccionarCombustible(valor) {
         document.getElementById('in_vehiculo_gas').value = valor;
         const botones = document.querySelectorAll('.fuel-btn');
         botones.forEach(b => b.classList.remove('active'));
         
-        let index = 2; // Default 1/2
+        let index = 2;
         if(valor === 0) index = 0; else if(valor <= 25) index = 1; else if(valor <= 50) index = 2; else if(valor <= 75) index = 3; else index = 4;
         botones[index].classList.add('active');
     }
 
-    // ☑️ Lógica Visual Checklist
     function toggleCheck(inputId, divElement) {
         const checkbox = document.getElementById(inputId);
         checkbox.checked = !checkbox.checked;
@@ -594,14 +603,13 @@
         }
     }
 
-    // 📸 Lógica Fotos Visual
     function previewImage(input, imgId, textId) {
         if (input.files && input.files[0]) {
             const objectURL = URL.createObjectURL(input.files[0]);
             document.getElementById(imgId).src = objectURL; 
             document.getElementById(imgId).style.display = 'block';
             document.getElementById(textId).style.display = 'none';
-            input.nextElementSibling.style.display = 'flex'; // Muestra botón borrar
+            input.nextElementSibling.style.display = 'flex';
         }
     }
 
@@ -614,9 +622,7 @@
         event.target.closest('.btn-del-photo').style.display = 'none';
     }
 
-    // 🛠️ PREPARACIÓN DE CAPTURA HTML2CANVAS (Oculta botones visuales de control)
-function prepararCaptura() {
-        // 🔥 AÑADIDO: También buscamos los selectores (select.card-input) para capturar KM/MI
+    function prepararCaptura() {
         const inputs = document.querySelectorAll('#printable-canvas input.card-input, #printable-canvas textarea.card-input, #printable-canvas select.card-input');
         const reemplazos = [];
 
@@ -637,14 +643,13 @@ function prepararCaptura() {
                 span.style.lineHeight = '1.4';
                 span.style.paddingBottom = '5px';
             } else {
-                // 🔥 AÑADIDO: Si es un selector (KM/MI), sacamos su texto activo
                 span.innerText = esSelect ? input.options[input.selectedIndex].text : (input.value || '');
                 span.style.width = '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.color = '#0f172a';
                 span.style.display = 'inline-block';
-                span.style.padding = '2px 0';
+                span.style.padding = '0';
             }
 
             input.parentNode.insertBefore(span, input);
@@ -655,7 +660,6 @@ function prepararCaptura() {
         const elementosAOcultar = document.querySelectorAll('.pdf-ctrl');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-        // 🔥 AÑADIDO: Lógica Visual Combustible en PDF (Barra + Texto)
         document.getElementById('fuel-container').style.display = 'none';
         const pdfGas = document.getElementById('pdf_visual_gas');
         const pdfGasFill = document.getElementById('pdf_visual_gas_fill');
@@ -666,7 +670,6 @@ function prepararCaptura() {
         pdfGasFill.style.width = valGas + "%";
         pdfGasFill.style.background = valGas <= 25 ? '#d32f2f' : (valGas >= 75 ? '#4caf50' : '#ff9800');
         
-        // Convertimos el porcentaje en un texto de fracción exacto para el PDF
         let stringGas = "1/2";
         if(valGas === 0) stringGas = "E (VACÍO)";
         else if(valGas <= 25) stringGas = "1/4";
@@ -676,12 +679,10 @@ function prepararCaptura() {
         
         if(txtGas) {
             txtGas.innerText = stringGas;
-            txtGas.style.display = 'inline-block'; // Mostramos el texto temporalmente
+            txtGas.style.display = 'inline-block';
         }
 
         const elemento = document.querySelector('.wrapper-page');
-        
-        // Guardamos los estilos originales
         const anchoOriginal = elemento.style.width;
         const maxWOriginal = elemento.style.maxWidth;
         const borderOriginal = elemento.style.border;
@@ -691,7 +692,6 @@ function prepararCaptura() {
         const topOriginal = elemento.style.top;
         const leftOriginal = elemento.style.left;
 
-        // 🔥 CORRECCIÓN FINAL: Forzamos posiciones absolutas en 0,0 para destruir márgenes blancos
         elemento.style.position = 'absolute';
         elemento.style.top = '0px';
         elemento.style.left = '0px';
@@ -705,7 +705,6 @@ function prepararCaptura() {
     }
 
     function restaurarPantalla(estado) {
-        // Restauramos estilos y posiciones exactas
         estado.elemento.style.width = estado.anchoOriginal;
         estado.elemento.style.maxWidth = estado.maxWOriginal;
         estado.elemento.style.border = estado.borderOriginal;
@@ -727,7 +726,6 @@ function prepararCaptura() {
         document.getElementById('fuel-container').style.display = 'flex';
         document.getElementById('pdf_visual_gas').style.display = 'none';
         
-        // Ocultamos el texto exacto de la gasolina para volver al editor
         const txtGas = document.getElementById('pdf_visual_gas_text');
         if(txtGas) txtGas.style.display = 'none';
         
@@ -737,7 +735,6 @@ function prepararCaptura() {
         });
     }
 
-    // 🖼️ DESCARGA PNG
     async function forzarDescargaPNG() {
         const estado = prepararCaptura();
         let nombreArchivo = (document.title || "Reporte_AE");
@@ -754,7 +751,6 @@ function prepararCaptura() {
         finally { restaurarPantalla(estado); }
     }
 
-    // 📄 DESCARGA PDF (WYSIWYG ULTRA DEFINIDO)
     async function forzarDescargaPDF() {
         const { jsPDF } = window.jspdf;
         if (!jsPDF) { alert("Librería PDF no lista."); return; }
@@ -775,11 +771,8 @@ function prepararCaptura() {
         finally { restaurarPantalla(estado); }
     }
 
-    // ================= FUNCIONES CORE DE SUPABASE Y LOGICA =================
-
     window.onload = function() {
         if (localStorage.getItem('ae_sesion_valida') === 'true') { cargarHistorialSupabase(); }
-        // Inicializar fecha
         const hoy = new Date();
         document.getElementById('pdf-lbl-fecha').innerText = hoy.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
         document.getElementById('pdf-lbl-hora').innerText = hoy.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
@@ -791,19 +784,15 @@ function prepararCaptura() {
         const pdfFolio = urlParams.get('pdf');
 
         if (scanFolio) {
-            // Lógica intacta para visor de Escáner cliente
             document.body.innerHTML = `
                 <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
-                    <div style="margin-bottom: 40px;">
-                        <span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📊 REPORTE DE ESCANER</span>
-                    </div>
+                    <div style="margin-bottom: 40px;"><span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📊 REPORTE DE ESCANER</span></div>
                     <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
                     <div id="loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
                     <h2 id="pdf-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">DESCARGANDO REPORTE DE ESCÁNER...</h2>
                     <p id="pdf-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, acepta la descarga en la alerta de tu celular.</p>
                     <button id="btnRetryPDF" style="display:none;background:#d32f2f;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">🔄 Descargar PDF Nuevamente</button>
-                </div>
-                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
+                </div><style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
 
             const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('link_escaner').eq('folio', scanFolio.toUpperCase()).single();
             if (!error && reporte && reporte.link_escaner) {
@@ -827,7 +816,6 @@ function prepararCaptura() {
         }
 
         if (pdfFolio) {
-            // Lógica adaptada para generar el WYSIWYG desde enlace público
             document.body.innerHTML = `
                 <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
                     <div style="margin-bottom: 40px;"><span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📋 REPORTE DE SERVICIO</span></div>
@@ -839,13 +827,12 @@ function prepararCaptura() {
             
             const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', pdfFolio.toUpperCase()).single();
             if (!error && reporte) {
-                // Truco: Restauramos el DOM original oculto para renderizar
                 const tempDiv = document.createElement('div');
                 tempDiv.style.position = 'absolute'; tempDiv.style.left = '-9999px'; tempDiv.innerHTML = document.getElementById('adminPanel').outerHTML;
                 document.body.appendChild(tempDiv);
                 
-                cargarRegistroParaEditar(reporte); // Llena el form
-                await forzarDescargaPDF(); // Genera
+                cargarRegistroParaEditar(reporte); 
+                await forzarDescargaPDF(); 
                 
                 document.getElementById('loading-spinner').style.display = 'none';
                 document.getElementById('pdf-status-title').innerText = "¡REPORTE DESCARGADO!";
@@ -857,7 +844,6 @@ function prepararCaptura() {
         if (localStorage.getItem('ae_sesion_valida') === 'true') { mostrarPanel(); }
     });
 
-    // --- BLOQUEO POR PIN ---
     function pressNum(num) { if (currentPin.length >= 4) return; document.getElementById('pin-error-msg').style.visibility = 'hidden'; currentPin += num; updateDots(); if (currentPin.length === 4) setTimeout(validatePin, 200); }
     function clearPin() { currentPin = ""; updateDots(); }
     function backspacePin() { currentPin = currentPin.slice(0, -1); updateDots(); }
@@ -917,6 +903,7 @@ function prepararCaptura() {
         document.querySelectorAll('.btn-del-photo').forEach(btn => btn.style.display = 'none');
         
         seleccionarCombustible(50);
+        document.getElementById('in_vehiculo_marca').value = "";
         document.getElementById('in_vehiculo_unidad').value = "KM";
         const pdfUploader = document.getElementById('pdfUploader'); if (pdfUploader) pdfUploader.value = ""; 
         
@@ -1010,7 +997,6 @@ function prepararCaptura() {
             if (error) throw error;
             alert(isEditing ? "✅ REGISTRO ACTUALIZADO EN LA NUBE" : "✅ REPORTE GUARDADO EN LA NUBE CON ÉXITO.");
             
-            // Pasar a vista digital
             const { data: reporteGuardado } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', folioCalculado).single();
             if(reporteGuardado) mostrarVistaPreviaDigital(reporteGuardado);
             
@@ -1080,7 +1066,7 @@ function prepararCaptura() {
         inyectarTarjetasHistorial(filtrados);
     }
 
-function cargarRegistroParaEditar(rep) {
+    function cargarRegistroParaEditar(rep) {
         reportDataGlobal = rep;
         document.getElementById('edit_record_id').value = rep.id;
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
@@ -1107,25 +1093,16 @@ function cargarRegistroParaEditar(rep) {
         document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || '';
         document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
         
-        // 🔥 CORRECCIÓN 1: Búsqueda infalible de los íconos del checklist
         const setChkVisual = (id, val) => {
             const chk = document.getElementById(id); 
             if(chk) chk.checked = !!val;
-            
-            // Buscamos el contenedor exacto basándonos en el onclick
             const divItem = document.querySelector(`.check-item[onclick*="${id}"]`);
             if (divItem) {
                 const icon = divItem.querySelector('.check-icon');
-                if(val) { 
-                    icon.classList.remove('fa-square'); 
-                    icon.classList.add('fa-square-check', 'active'); 
-                } else { 
-                    icon.classList.add('fa-square'); 
-                    icon.classList.remove('fa-square-check', 'active'); 
-                }
+                if(val) { icon.classList.remove('fa-square'); icon.classList.add('fa-square-check', 'active'); } 
+                else { icon.classList.add('fa-square'); icon.classList.remove('fa-square-check', 'active'); }
             }
         };
-        
         setChkVisual('chk_luces', rep.chk_luces);
         setChkVisual('chk_elevadores', rep.chk_elevadores);
         setChkVisual('chk_tablero', rep.chk_tablero);
@@ -1133,28 +1110,12 @@ function cargarRegistroParaEditar(rep) {
         document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || '';
         document.getElementById('in_link_escaner').value = rep.link_escaner || '';
 
-        // 🔥 CORRECCIÓN 2: Búsqueda segura del botón de borrar fotos
         const setFormPrev = (imgId, textId, inputId, url) => {
-            const img = document.getElementById(imgId); 
-            const txt = document.getElementById(textId); 
-            const inputElem = document.getElementById(inputId);
-            
-            // Buscamos el botón de borrar dentro de la misma caja padre
+            const img = document.getElementById(imgId); const txt = document.getElementById(textId); const inputElem = document.getElementById(inputId);
             const btn = inputElem ? inputElem.parentElement.querySelector('.btn-del-photo') : null;
-            
-            if(url) { 
-                img.src = url; 
-                img.style.display='block'; 
-                txt.style.display='none'; 
-                if(btn) btn.style.display='flex'; 
-            } else { 
-                img.src=""; 
-                img.style.display='none'; 
-                txt.style.display='block'; 
-                if(btn) btn.style.display='none';
-            }
+            if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; if(btn) btn.style.display='flex'; } 
+            else { img.src=""; img.style.display='none'; txt.style.display='block'; if(btn) btn.style.display='none'; }
         };
-        
         setFormPrev('prev_frente', 'txt_frente', 'input_frente', rep.foto_frente_url); 
         setFormPrev('prev_trasera', 'txt_trasera', 'input_trasera', rep.foto_trasera_url); 
         setFormPrev('prev_izq', 'txt_izq', 'input_izq', rep.foto_izquierdo_url); 
@@ -1162,15 +1123,9 @@ function cargarRegistroParaEditar(rep) {
         setFormPrev('prev_motor', 'txt_motor', 'input_motor', rep.foto_motor_url); 
         setFormPrev('prev_cluster', 'txt_cluster', 'input_cluster', rep.foto_cluster_url);
 
-        document.getElementById('formularioSection').style.display = 'block'; 
-        document.getElementById('historialSection').style.display = 'none';
-        document.getElementById('btnTabNuevo').style.background = '#d32f2f'; 
-        document.getElementById('btnTabHistorial').style.background = '#555'; 
-        window.scrollTo(0,0);
-        
-        if(document.getElementById('btnCancelarEdicion')) {
-            document.getElementById('btnCancelarEdicion').style.display = 'block';
-        }
+        document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
+        document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
+        if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
     }
 
     function mostrarVistaPreviaDigital(rep) {
@@ -1260,7 +1215,6 @@ function cargarRegistroParaEditar(rep) {
         }, () => {});
     }
     
-// Conexión del botón de PDF en la vista digital al nuevo WYSIWYG
     document.addEventListener('DOMContentLoaded', () => {
         const btnPdfHistorial = document.getElementById('btnDescargarPDF');
         if (btnPdfHistorial) {
@@ -1269,10 +1223,7 @@ function cargarRegistroParaEditar(rep) {
                 btnPdfHistorial.innerHTML = "⏳ GENERANDO...";
                 btnPdfHistorial.disabled = true;
                 
-                // Cargamos la info en el form
                 cargarRegistroParaEditar(reportDataGlobal);
-                
-                // 🔥 CORRECCIÓN: Movemos TODO el panel completo fuera de la pantalla, no solo el formulario
                 const panelCompleto = document.getElementById('adminPanel');
                 panelCompleto.style.display = 'block';
                 panelCompleto.style.position = 'absolute';
@@ -1281,12 +1232,11 @@ function cargarRegistroParaEditar(rep) {
                 
                 await forzarDescargaPDF();
                 
-                // Restauramos el panel a su lugar
                 panelCompleto.style.position = 'relative';
                 panelCompleto.style.left = '0';
                 panelCompleto.style.top = 'auto';
                 
-                regresarAlFormulario(); // Nos devuelve al historial
+                regresarAlFormulario(); 
                 btnPdfHistorial.innerHTML = btnOriginalText;
                 btnPdfHistorial.disabled = false;
             };
