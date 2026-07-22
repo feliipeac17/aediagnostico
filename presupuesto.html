@@ -114,8 +114,20 @@
         .pdf-data-item { font-size: 10pt; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 6.5pt; margin-bottom: 1px; }
         
-        .card-input { width: 100%; border: none; border-bottom: 1px dashed var(--border-color); background: transparent; font-size: 8pt; font-weight: 700; color: #0f172a; outline: none; padding: 2px 0; text-transform: uppercase; }
-
+.card-input { 
+            width: 100%; 
+            border: none; 
+            border-bottom: 1px dashed var(--border-color); 
+            background: transparent; 
+            font-size: 8pt; 
+            font-weight: 700; 
+            color: #0f172a; 
+            outline: none; 
+            padding: 4px 0 6px 0 !important; /* <--- Añade espacio vertical para que no se corte el texto */
+            text-transform: uppercase; 
+            line-height: 1.5;
+        }
+        
         /* 3 Columnas hacia los lados (Originales) */
         .pdf-pillars-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .pdf-pillar-card { 
@@ -147,7 +159,16 @@
         }
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
-        .table-row input { border: none; background: transparent; font-size: 8pt; outline: none; padding: 2px; color: #000000 !important; font-weight: 500;}
+        .table-row input { 
+            border: none; 
+            background: transparent; 
+            font-size: 8pt; 
+            outline: none; 
+            padding: 4px 2px !important; 
+            color: #000000 !important; 
+            font-weight: 500;
+            line-height: 1.4;
+        }
         .pdf-pillar-table thead tr { display: grid; grid-template-columns: 1fr 80px; gap: 4px; }
         .table-row { display: grid; grid-template-columns: 1fr 80px; gap: 4px; align-items: center; padding: 4px 0; border-bottom: 1px dashed #e2e8f0; }
         .table-row input.desc-input { width: 100%; text-align: left; }
@@ -622,8 +643,9 @@
             if (input.value) input.setAttribute('value', input.value);
         });
 
-        const botones = document.querySelectorAll('.btn-ctrl-col');
-        botones.forEach(b => b.style.display = 'none');
+        // 1. Ocultamos los botones de control, la barra de navegación superior y el botón de descarga
+        const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .btn-submit-app');
+        elementosAOcultar.forEach(el => el.style.display = 'none');
 
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
@@ -641,6 +663,7 @@
             width: 820,
             windowWidth: 820
         }).then(canvas => {
+            // Restauramos los estilos de ancho
             elemento.style.width = anchoOriginal;
             elemento.style.maxWidth = maxWOriginal;
 
@@ -652,14 +675,26 @@
             enlace.click();
             document.body.removeChild(enlace);
 
+            // 2. Volvemos a mostrar la barra de navegación, botones y el botón de descarga tras un momento
             setTimeout(() => {
-                botones.forEach(b => b.style.display = 'inline-block');
+                elementosAOcultar.forEach(el => {
+                    // Restauramos su despliegue original (flex para las barras/botones principales, inline-flex para los de control)
+                    if (el.classList.contains('nav-bar')) {
+                        el.style.display = 'flex';
+                    } else if (el.classList.contains('btn-submit-app')) {
+                        el.style.display = 'flex';
+                    } else {
+                        el.style.display = 'inline-flex';
+                    }
+                });
             }, 500);
         }).catch(err => {
             console.error("Error en la captura completa:", err);
             elemento.style.width = anchoOriginal;
             elemento.style.maxWidth = maxWOriginal;
-            botones.forEach(b => b.style.display = 'inline-block');
+            elementosAOcultar.forEach(el => {
+                el.style.display = el.classList.contains('nav-bar') || el.classList.contains('btn-submit-app') ? 'flex' : 'inline-flex';
+            });
         });
     }
 </script>
