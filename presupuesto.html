@@ -768,13 +768,15 @@ function forzarDescargaPNG() {
         elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
 
-        // 3. Tomamos la foto
+// 3. Tomamos la foto
         html2canvas(elemento, {
             scale: 2,           
             useCORS: true,      
             logging: false,
             width: 840,         
-            windowWidth: 840
+            windowWidth: 840,
+            scrollY: 0,         /* 🔥 TRUCO: Ignora si la pantalla del celular está movida */
+            y: 0                /* 🔥 TRUCO: Fuerza el corte de la foto exactamente en el techo del encabezado oscuro */
         }).then(canvas => {
             // Restauramos tamaños
             elemento.style.width = anchoOriginal;
