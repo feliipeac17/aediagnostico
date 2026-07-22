@@ -302,7 +302,7 @@
                                         <span>ODÓMETRO</span>
                                         <input type="number" id="in_vehiculo_km" class="card-input" placeholder="...">
                                     </div>
-                                    <select id="in_vehiculo_unidad" class="card-input pdf-ctrl" style="width: 60px; height: 24px;">
+                                    <select id="in_vehiculo_unidad" class="card-input" style="width: 60px; height: 24px; padding: 0; border-bottom: 1px dashed #cbd5e1; outline:none; font-weight:700; color:#0f172a; cursor:pointer;">
                                         <option value="KM">KM</option>
                                         <option value="MI">MI</option>
                                     </select>
@@ -315,7 +315,10 @@
                         <div class="pdf-info-card check">
                             <div class="pdf-card-title"><i class="fa-solid fa-clipboard-check"></i> INSPECCIÓN FÍSICA</div>
                             
-                            <div class="pdf-data-item" style="margin-bottom: 5px;"><span>NIVEL DE COMBUSTIBLE</span></div>
+                            <div class="pdf-data-item" style="margin-bottom: 5px; flex-direction: row; justify-content: space-between; align-items: flex-end;">
+                                <span>NIVEL DE COMBUSTIBLE</span>
+                                <span id="pdf_visual_gas_text" style="display:none; color:#0f172a; font-weight:800; font-size:8.5pt;"></span>
+                            </div>
                             <div class="fuel-selector" id="fuel-container">
                                 <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(0)">E</div>
                                 <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(25)">1/4</div>
@@ -612,13 +615,14 @@
     }
 
     // 🛠️ PREPARACIÓN DE CAPTURA HTML2CANVAS (Oculta botones visuales de control)
-    function prepararCaptura() {
-        // Sincronizar textareas para saltos de línea
-        const inputs = document.querySelectorAll('#printable-canvas input.card-input, #printable-canvas textarea.card-input');
+function prepararCaptura() {
+        // 🔥 AÑADIDO: También buscamos los selectores (select.card-input) para capturar KM/MI
+        const inputs = document.querySelectorAll('#printable-canvas input.card-input, #printable-canvas textarea.card-input, #printable-canvas select.card-input');
         const reemplazos = [];
 
         inputs.forEach(input => {
             const esArea = input.tagName.toLowerCase() === 'textarea';
+            const esSelect = input.tagName.toLowerCase() === 'select';
             const span = document.createElement('div');
             
             if (esArea) {
@@ -633,7 +637,8 @@
                 span.style.lineHeight = '1.4';
                 span.style.paddingBottom = '5px';
             } else {
-                span.innerText = input.value || '';
+                // 🔥 AÑADIDO: Si es un selector (KM/MI), sacamos su texto activo
+                span.innerText = esSelect ? input.options[input.selectedIndex].text : (input.value || '');
                 span.style.width = '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
@@ -650,13 +655,29 @@
         const elementosAOcultar = document.querySelectorAll('.pdf-ctrl');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
+        // 🔥 AÑADIDO: Lógica Visual Combustible en PDF (Barra + Texto)
         document.getElementById('fuel-container').style.display = 'none';
         const pdfGas = document.getElementById('pdf_visual_gas');
         const pdfGasFill = document.getElementById('pdf_visual_gas_fill');
+        const txtGas = document.getElementById('pdf_visual_gas_text');
         const valGas = parseInt(document.getElementById('in_vehiculo_gas').value) || 0;
+        
         pdfGas.style.display = 'block';
         pdfGasFill.style.width = valGas + "%";
         pdfGasFill.style.background = valGas <= 25 ? '#d32f2f' : (valGas >= 75 ? '#4caf50' : '#ff9800');
+        
+        // Convertimos el porcentaje en un texto de fracción exacto para el PDF
+        let stringGas = "1/2";
+        if(valGas === 0) stringGas = "E (VACÍO)";
+        else if(valGas <= 25) stringGas = "1/4";
+        else if(valGas <= 50) stringGas = "1/2";
+        else if(valGas <= 75) stringGas = "3/4";
+        else stringGas = "F (LLENO)";
+        
+        if(txtGas) {
+            txtGas.innerText = stringGas;
+            txtGas.style.display = 'inline-block'; // Mostramos el texto temporalmente
+        }
 
         const elemento = document.querySelector('.wrapper-page');
         
@@ -666,31 +687,38 @@
         const borderOriginal = elemento.style.border;
         const radiusOriginal = elemento.style.borderRadius;
         const marginOriginal = elemento.style.margin;
+        const posOriginal = elemento.style.position;
+        const topOriginal = elemento.style.top;
+        const leftOriginal = elemento.style.left;
 
-        // 🔥 CORRECCIÓN: Le quitamos los bordes y márgenes para que el encabezado pegue al ras
+        // 🔥 CORRECCIÓN FINAL: Forzamos posiciones absolutas en 0,0 para destruir márgenes blancos
+        elemento.style.position = 'absolute';
+        elemento.style.top = '0px';
+        elemento.style.left = '0px';
         elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
         elemento.style.border = 'none';
         elemento.style.borderRadius = '0';
         elemento.style.margin = '0';
 
-        return { elementosAOcultar, reemplazos, elemento, anchoOriginal, maxWOriginal, borderOriginal, radiusOriginal, marginOriginal };
+        return { elementosAOcultar, reemplazos, elemento, anchoOriginal, maxWOriginal, borderOriginal, radiusOriginal, marginOriginal, posOriginal, topOriginal, leftOriginal };
     }
 
-   function restaurarPantalla(estado) {
-        // 🔥 CORRECCIÓN: Restauramos bordes y tamaños
+    function restaurarPantalla(estado) {
+        // Restauramos estilos y posiciones exactas
         estado.elemento.style.width = estado.anchoOriginal;
         estado.elemento.style.maxWidth = estado.maxWOriginal;
         estado.elemento.style.border = estado.borderOriginal;
         estado.elemento.style.borderRadius = estado.radiusOriginal;
         estado.elemento.style.margin = estado.marginOriginal;
+        estado.elemento.style.position = estado.posOriginal;
+        estado.elemento.style.top = estado.topOriginal;
+        estado.elemento.style.left = estado.leftOriginal;
         
         estado.elementosAOcultar.forEach(el => {
             if (el.classList.contains('btn-del-photo')) {
                 const img = el.previousElementSibling;
-                if(img.src && img.style.display === 'block') el.style.display = 'flex';
-            } else if(el.tagName === 'SELECT') {
-                el.style.display = 'block';
+                if(img && img.src && img.style.display === 'block') el.style.display = 'flex';
             } else {
                 el.style.display = 'flex';
             }
@@ -698,6 +726,10 @@
 
         document.getElementById('fuel-container').style.display = 'flex';
         document.getElementById('pdf_visual_gas').style.display = 'none';
+        
+        // Ocultamos el texto exacto de la gasolina para volver al editor
+        const txtGas = document.getElementById('pdf_visual_gas_text');
+        if(txtGas) txtGas.style.display = 'none';
         
         estado.reemplazos.forEach(par => {
             par.falso.remove();
