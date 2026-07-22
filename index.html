@@ -647,7 +647,6 @@
             reemplazos.push({ original: input, falso: span });
         });
 
-        // Ocultar botones de control y mostrar barra de gas para PDF
         const elementosAOcultar = document.querySelectorAll('.pdf-ctrl');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
@@ -660,27 +659,40 @@
         pdfGasFill.style.background = valGas <= 25 ? '#d32f2f' : (valGas >= 75 ? '#4caf50' : '#ff9800');
 
         const elemento = document.querySelector('.wrapper-page');
+        
+        // Guardamos los estilos originales
         const anchoOriginal = elemento.style.width;
         const maxWOriginal = elemento.style.maxWidth;
+        const borderOriginal = elemento.style.border;
+        const radiusOriginal = elemento.style.borderRadius;
+        const marginOriginal = elemento.style.margin;
+
+        // 🔥 CORRECCIÓN: Le quitamos los bordes y márgenes para que el encabezado pegue al ras
         elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
+        elemento.style.border = 'none';
+        elemento.style.borderRadius = '0';
+        elemento.style.margin = '0';
 
-        return { elementosAOcultar, reemplazos, elemento, anchoOriginal, maxWOriginal };
+        return { elementosAOcultar, reemplazos, elemento, anchoOriginal, maxWOriginal, borderOriginal, radiusOriginal, marginOriginal };
     }
 
-    function restaurarPantalla(estado) {
+   function restaurarPantalla(estado) {
+        // 🔥 CORRECCIÓN: Restauramos bordes y tamaños
         estado.elemento.style.width = estado.anchoOriginal;
         estado.elemento.style.maxWidth = estado.maxWOriginal;
+        estado.elemento.style.border = estado.borderOriginal;
+        estado.elemento.style.borderRadius = estado.radiusOriginal;
+        estado.elemento.style.margin = estado.marginOriginal;
         
         estado.elementosAOcultar.forEach(el => {
             if (el.classList.contains('btn-del-photo')) {
-                // Solo restaurar si hay imagen
                 const img = el.previousElementSibling;
                 if(img.src && img.style.display === 'block') el.style.display = 'flex';
             } else if(el.tagName === 'SELECT') {
                 el.style.display = 'block';
             } else {
-                el.style.display = 'flex'; // Para los fuel-btn
+                el.style.display = 'flex';
             }
         });
 
@@ -1216,7 +1228,7 @@ function cargarRegistroParaEditar(rep) {
         }, () => {});
     }
     
-    // Conexión del botón de PDF en la vista digital al nuevo WYSIWYG
+// Conexión del botón de PDF en la vista digital al nuevo WYSIWYG
     document.addEventListener('DOMContentLoaded', () => {
         const btnPdfHistorial = document.getElementById('btnDescargarPDF');
         if (btnPdfHistorial) {
@@ -1225,18 +1237,24 @@ function cargarRegistroParaEditar(rep) {
                 btnPdfHistorial.innerHTML = "⏳ GENERANDO...";
                 btnPdfHistorial.disabled = true;
                 
-                // Carga la información en el formulario (invisible) y genera el PDF
+                // Cargamos la info en el form
                 cargarRegistroParaEditar(reportDataGlobal);
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('formularioSection').style.position = 'absolute';
-                document.getElementById('formularioSection').style.left = '-9999px';
+                
+                // 🔥 CORRECCIÓN: Movemos TODO el panel completo fuera de la pantalla, no solo el formulario
+                const panelCompleto = document.getElementById('adminPanel');
+                panelCompleto.style.display = 'block';
+                panelCompleto.style.position = 'absolute';
+                panelCompleto.style.left = '-9999px';
+                panelCompleto.style.top = '0';
                 
                 await forzarDescargaPDF();
                 
-                document.getElementById('formularioSection').style.position = 'relative';
-                document.getElementById('formularioSection').style.left = '0';
+                // Restauramos el panel a su lugar
+                panelCompleto.style.position = 'relative';
+                panelCompleto.style.left = '0';
+                panelCompleto.style.top = 'auto';
                 
-                regresarAlFormulario(); // Devuelve al usuario a la lista normal después de descargar
+                regresarAlFormulario(); // Nos devuelve al historial
                 btnPdfHistorial.innerHTML = btnOriginalText;
                 btnPdfHistorial.disabled = false;
             };
