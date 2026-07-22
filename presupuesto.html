@@ -481,8 +481,10 @@
             </div>
         </div>
 
-        <button class="btn-submit-app" onclick="procesarYDescargarPresupuesto()"><i class="fa-solid fa-file-pdf"></i> Descargar</button>
-
+<button class="btn-submit-app" onclick="forzarDescargaPNG()">
+    <i class="fa-solid fa-file-pdf"></i> Descargar
+</button>
+    
 <script>
 // SEGURIDAD: Si no hay PIN, no entra
     if (localStorage.getItem('ae_sesion_valida') !== 'true') {
@@ -606,7 +608,7 @@ function agregarRenglon(listaId) {
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-function procesarYDescargarPresupuesto() {
+function forzarDescargaPNG() { // <--- Nuevo nombre de la función
     // 1. Sincronizamos los inputs
     const inputs = document.querySelectorAll('input, textarea');
     inputs.forEach(input => {
@@ -620,31 +622,46 @@ function procesarYDescargarPresupuesto() {
     // 3. Obtenemos el nombre del archivo
     let nombreArchivo = document.title || "Presupuesto";
 
-    // 4. SELECCIONAMOS EL CONTENEDOR PRINCIPAL
+    // 4. Seleccionamos el contenedor principal
     const elemento = document.querySelector('.wrapper-page');
 
-    // 🔥 SOLUCIÓN: Forzamos un ancho fijo grande temporalmente para que html2canvas capture todo el formato completo
-    const anchoOriginal = elemento.style.width;
-    const maxWOriginal = elemento.style.maxWidth;
-    elemento.style.width = '820px'; // Coincide con tu max-width definido
-    elemento.style.maxWidth = 'none'; 
+    // 🔥 SOLUCIÓN MEJORADA: Forzamos estilos temporales para asegurar la captura completa
+    // Guardamos los estilos originales para restaurarlos luego
+    const originalWidth = elemento.style.width;
+    const originalMaxWidth = elemento.style.maxWidth;
+    const originalOverflow = elemento.style.overflow;
+    const originalPosition = elemento.style.position;
+    const originalParentOverflow = elemento.parentElement.style.overflow;
+
+    // Forzamos el ancho total del formato (820px) e ignoramos el responsive para la captura
+    elemento.style.width = '820px';
+    elemento.style.maxWidth = 'none';
+    elemento.style.overflow = 'visible';
+    // Aseguramos que el padre no corte el contenido forzado
+    elemento.parentElement.style.overflow = 'visible';
 
     // 5. Capturamos el diseño completo en alta resolución
     html2canvas(elemento, {
-        scale: 2,           // Alta resolución
-        useCORS: true,
+        scale: 2,           // Alta resolución (nítido)
+        useCORS: true,      // Permite imágenes externas
         scrollY: 0,
-        // Asegura que capture todo el scroll
-        windowWidth: elemento.scrollWidth,
+        // Forzamos el tamaño del canvas al tamaño completo del elemento
+        width: 820,
+        windowWidth: 820,
+        // IMPORTANTE: Aseguramos que capture el scrollHeight por si es muy largo
+        height: elemento.scrollHeight,
         windowHeight: elemento.scrollHeight
     }).then(canvas => {
-        // 6. Restauramos el tamaño original
-        elemento.style.width = anchoOriginal;
-        elemento.style.maxWidth = maxWOriginal;
+        // 6. Restauramos los estilos originales inmediatamente
+        elemento.style.width = originalWidth;
+        elemento.style.maxWidth = originalMaxWidth;
+        elemento.style.overflow = originalOverflow;
+        elemento.style.position = originalPosition;
+        elemento.parentElement.style.overflow = originalParentOverflow;
 
         // 7. Generamos el archivo descargable
         const enlace = document.createElement('a');
-        enlace.download = nombreArchivo + ".png"; // Descarga como PNG de alta calidad
+        enlace.download = nombreArchivo + "_Completo.png"; // Agregamos "_Completo" para verificar que es la nueva versión
         enlace.href = canvas.toDataURL('image/png');
         
         // 8. Simulamos el clic
@@ -659,8 +676,8 @@ function procesarYDescargarPresupuesto() {
     }).catch(err => {
         console.error("Error en la captura:", err);
         // Restauramos estilos si falla
-        elemento.style.width = anchoOriginal;
-        elemento.style.maxWidth = maxWOriginal;
+        elemento.style.width = originalWidth;
+        elemento.style.maxWidth = originalMaxWidth;
         botones.forEach(b => b.style.display = 'inline-block');
     });
 }
