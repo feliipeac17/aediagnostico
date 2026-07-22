@@ -454,7 +454,7 @@
                 </div>
             </div>
 
-            <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">💾 Guardar Reporte en Nube</button>
+            <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">💾 Guardar Reporte</button>
             <div class="pdf-actions-bar">
                 <button class="btn-download-image" onclick="forzarDescargaPNG()"><i class="fa-solid fa-image"></i> Descargar Imagen</button>
                 <button class="btn-download-pdf" onclick="forzarDescargaPDF()"><i class="fa-solid fa-file-pdf"></i> Descargar PDF</button>
@@ -762,7 +762,7 @@ function restaurarPantalla(estado) {
 
     async function forzarDescargaPNG() {
         const estado = prepararCaptura();
-        let nombreArchivo = (document.title || "Reporte_AE");
+        let nombreArchivo = (document.title || "REPORTE_SERVICIO_AE");
 
         try {
             const canvas = await html2canvas(estado.elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
@@ -781,7 +781,7 @@ function restaurarPantalla(estado) {
         if (!jsPDF) { alert("Librería PDF no lista."); return; }
 
         const estado = prepararCaptura();
-        let nombreArchivoPDF = (document.title || "Reporte_AE") + ".pdf";
+        let nombreArchivoPDF = (document.title || "REPORTE_SERVICIO_AE") + ".pdf";
 
         try {
             const canvas = await html2canvas(estado.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
@@ -820,10 +820,10 @@ if (scanFolio) {
             loadingOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#111; z-index:999999;';
             loadingOverlay.innerHTML = `
                 <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
-                    <div style="margin-bottom: 40px;"><span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📊 REPORTE DE ESCÁNER</span></div>
+                    <div style="margin-bottom: 40px;"><span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📊 REPORTE DE ESCANER</span></div>
                     <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
                     <div id="scan-loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
-                    <h2 id="scan-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">DESCARGANDO REPORTE DE ESCÁNER...</h2>
+                    <h2 id="scan-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">DESCARGANDO REPORTE DE ESCANER...</h2>
                     <p id="scan-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, acepta la descarga en la alerta de tu celular.</p>
                     <button id="btnRetryScan" style="display:none;background:#d32f2f;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">🔄 Descargar PDF Nuevamente</button>
                 </div><style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
@@ -953,7 +953,7 @@ if (pdfFolio) {
             document.getElementById('buscadorHistorial').value = "";
             document.getElementById('edit_record_id').value = "";
             document.getElementById('formPanelTitle').innerHTML = "Historial de <span>Reportes</span>";
-            document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte en Nube";
+            document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte";
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
             cargarHistorialSupabase(); 
         }
@@ -964,7 +964,7 @@ if (pdfFolio) {
     function limpiarFormularioCompleto() {
         document.getElementById('edit_record_id').value = "";
         document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
-        document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte en Nube";
+        document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte";
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
 
         document.querySelectorAll('#formularioSection input, #formularioSection textarea').forEach(el => el.value = "");
@@ -1069,7 +1069,7 @@ async function guardarYProcesarReporte() {
             else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
 
             if (error) throw error;
-            alert(isEditing ? "✅ REGISTRO ACTUALIZADO EN LA NUBE" : "✅ REPORTE GUARDADO EN LA NUBE CON ÉXITO.");
+            alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE GUARDADO CON EXITO.");
             
             const { data: reporteGuardado } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', folioCalculado).single();
             if(reporteGuardado) mostrarVistaPreviaDigital(reporteGuardado);
@@ -1160,7 +1160,7 @@ function cargarRegistroParaEditar(rep) {
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + rep.folio;
         document.title = "Reporte_" + rep.folio;
-        document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar Reporte Cloud";
+        document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar Reporte";
 
         document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
         document.getElementById('in_cliente_telefono').value = rep.cliente_telefono || '';
