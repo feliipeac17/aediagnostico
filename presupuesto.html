@@ -935,6 +935,9 @@ textarea.card-input {
         elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
 
+        // 🚀 AÑADIDO: Obtenemos el nombre dinámico igual que en el PNG
+        let nombreArchivoPDF = (document.title || "Presupuesto_AE") + ".pdf";
+
         try {
             const canvas = await html2canvas(elemento, {
                 scale: 3,
@@ -952,7 +955,9 @@ textarea.card-input {
             const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
 
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-            pdf.save('Presupuesto_AE.pdf');
+            
+            // 🔥 AÑADIDO: Ahora se guarda con el nombre dinámico en lugar de uno fijo
+            pdf.save(nombreArchivoPDF);
 
         } catch (error) {
             console.error("Error al generar el PDF:", error);
