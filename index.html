@@ -13,13 +13,16 @@
     <meta name="theme-color" content="#111111">
 
     <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    
     <script>
-    // ESTO ES UNA DEFINICIÓN DE EMERGENCIA GLOBAL
-    // Al ser lo primero que se carga, no habrá forma de que no esté definida
     window.convertUrlToImageElement = async function(url) {
         return new Promise((resolve) => {
             if (!url || url === "" || url === "undefined") { resolve(null); return; }
@@ -30,70 +33,87 @@
             img.src = url;
         });
     };
-</script>
+    </script>
 
     <style>
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { margin: 0; padding: 0; background-color: #f4f6f9; color: #333; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; background-color: #f4f6f9; color: #333; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
         
-        /* ================= MÓVIL / FORMULARIO CAPTURA ================= */
-        .admin-panel {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px 15px;
-            min-height: 100vh;
-            display: none;
-        }
-        @media (min-width: 768px) {
-            .admin-panel { margin: 30px auto; min-height: auto; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        }
+        /* ================= MÓVIL / FORMULARIO CAPTURA (ESTRUCTURA BASE) ================= */
+        .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 20px 15px; min-height: 100vh; display: none; }
+        @media (min-width: 768px) { .admin-panel { margin: 30px auto; min-height: auto; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); } }
+        
         .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a1a1a; padding-bottom: 15px; margin-bottom: 20px; }
-        .panel-header h1, .panel-header h2 { margin: 0; }
         .panel-title { font-size: 15pt; font-weight: bold; color: #1a1a1a; }
         .panel-title span { color: #d32f2f; }
-        
-        .form-section { background: #fdfdfd; border: 1px solid #eef0f3; border-left: 4px solid #d32f2f; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
-        .form-section-title { font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #1a1a1a; margin-top: 0; margin-bottom: 12px; letter-spacing: 0.5px; }
-        .form-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 600px) { .form-grid { grid-template-columns: repeat(2, 1fr); } .full-width { grid-column: span 2; } }
-        
-        .form-group { display: flex; flex-direction: column; }
-        .form-group label { font-size: 9pt; font-weight: bold; color: #555; margin-bottom: 6px; }
-        .form-group input[type="text"], .form-group input[type="tel"], .form-group textarea { text-transform: uppercase; }
-        .form-group input, .form-group select, .form-group textarea { padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; background: #fff; width: 100%; }
-        
-        .inline-group { display: flex; gap: 10px; }
-        .inline-group input { flex: 2; }
-        .inline-group select { flex: 1; min-width: 90px; }
-        
-        .range-container { margin-top: 8px; padding: 0 5px; }
-        .range-container input { width: 100%; height: 8px; accent-color: #d32f2f; cursor: pointer; }
-        .range-labels { display: flex; justify-content: space-between; font-size: 8.5pt; color: #666; margin-top: 8px; }
-
-        .checklist-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
-        @media (min-width: 480px) { .checklist-grid { grid-template-columns: repeat(2, 1fr); } }
-        .check-item { display: flex; align-items: center; background: #f4f6f9; padding: 14px 12px; border-radius: 6px; font-size: 10pt; font-weight: 500; }
-        .check-item input { margin-right: 12px; transform: scale(1.3); accent-color: #d32f2f; }
-
-        .photo-picker-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 480px) { .photo-picker-grid { grid-template-columns: repeat(2, 1fr); } }
-        .photo-picker-card { background: #fdfdfd; display: flex; flex-direction: column; }
-        .photo-picker-card label { font-size: 9pt; font-weight: bold; color: #444; margin-bottom: 6px; text-transform: uppercase; }
-        .upload-box { border: 2px dashed #bbb; background: #f8fafc; border-radius: 6px; height: 120px; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative; overflow: hidden; }
-        .upload-box span { font-size: 9.5pt; color: #666; font-weight: bold; }
-        .upload-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2; }
+        .btn-logout { background: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 9pt; }
 
         .btn-submit { background: #1a1a1a; color: #fff; border: none; padding: 16px; font-size: 12pt; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-submit:hover { background: #d32f2f; }
-        .btn-logout { background: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 9pt; }
 
-        /* ================= VISTA PREVIA INTERNA EN DIGITAL ================= */
+        /* 📌 CONGELAR BOTONES DE NAVEGACIÓN PRINCIPAL */
+        .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 10px 0; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; }
+        
+        /* ================= NUEVO DISEÑO WYSIWYG PARA EL REPORTE ================= */
+        .wrapper-page { width: 100%; max-width: 840px; margin: 0 auto; box-sizing: border-box; background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 20px;}
+        
+        #printable-canvas { width: 100% !important; max-width: 100% !important; height: auto !important; margin: 0 !important; background: #ffffff !important; overflow: hidden !important; display: block !important; position: relative !important; padding: 5px 20px 15px 20px !important; }
+        
+        .pdf-header-container { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; padding: 25px 35px !important; display: flex !important; justify-content: space-between !important; align-items: center !important; color: white !important; }
+        .pdf-divider { height: 6px !important; background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; width: 100% !important; display: block !important; margin: 0 !important; margin-top: -2px !important; position: relative !important; z-index: 999 !important; }
+        
+        .pdf-brand-block p { color: #94a3b8; margin: 0; font-size: 8.5pt; line-height: 1.4;}
+        .pdf-folio-container { background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 12px 18px; min-width: 220px; }
+        .pdf-folio-badge { background-color: #0284c7; color: #ffffff; font-size: 8.5pt; font-weight: 800; padding: 5px; border-radius: 5px; text-align: center; font-family: 'Montserrat', sans-serif; margin-bottom: 8px; }
+        .pdf-meta-table { width: 100%; font-size: 8.5pt; border-collapse: collapse; color: white; }
+        .pdf-meta-table td { padding: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; }
+        .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }
+        
+        .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0px !important; margin-bottom: 12px; }
+        .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; margin: 0;}
+        .pdf-badge-oficial { background-color: #10b981; color: white; font-size: 7.5pt; font-weight: 800; padding: 4px 12px; border-radius: 6px; font-family: 'Montserrat', sans-serif; }
+
+        .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .pdf-info-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 15px; position: relative; }
+        .pdf-info-card.cliente { border-left: 5px solid #0284c7; }
+        .pdf-info-card.vehiculo { border-left: 5px solid #d32f2f; }
+        .pdf-info-card.tecnico { border-left: 5px solid #f59e0b; }
+        .pdf-info-card.check { border-left: 5px solid #8b5cf6; }
+
+        .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; }
+        .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
+        .pdf-data-item { font-size: 10pt; display: flex; flex-direction: column; justify-content: flex-start; }
+        .pdf-data-item span { display: block; color: #64748b; font-weight: 700; font-size: 6.5pt; margin-bottom: 2px; }
+
+        /* Inputs WYSIWYG */
+        input[type="text"], input[type="tel"], textarea { text-transform: uppercase !important; }
+        input.card-input { width: 100%; border: none; border-bottom: 1px dashed #cbd5e1; background: transparent; font-size: 8.5pt; font-weight: 700; color: #0f172a; outline: none; height: 24px !important; line-height: 22px !important; padding: 0 0 2px 0 !important; }
+        textarea.card-input { width: 100%; border: none; border-bottom: 1px dashed #cbd5e1; background: transparent; font-size: 8.5pt; font-weight: 700; color: #0f172a; outline: none; height: auto !important; white-space: pre-wrap !important; word-wrap: break-word !important; line-height: 1.4 !important; }
+
+        /* Elementos Interactivos Checklist */
+        .fuel-selector { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; margin-bottom: 15px; background: #e2e8f0; padding: 4px; border-radius: 6px; }
+        .fuel-btn { flex: 1; text-align: center; font-size: 8pt; font-weight: 700; padding: 4px 0; cursor: pointer; color: #64748b; border-radius: 4px; transition: 0.2s; }
+        .fuel-btn.active { background: #0284c7; color: white; }
+
+        .check-item { display: flex; align-items: center; gap: 8px; font-size: 8.5pt; font-weight: 600; color: #0f172a; cursor: pointer; margin-bottom: 6px; }
+        .check-icon { font-size: 12pt; color: #cbd5e1; transition: 0.2s; }
+        .check-icon.active { color: #16a34a; }
+
+        /* Evidencia Fotografica */
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .photo-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; }
+        .photo-box:hover { border-color: #0284c7; background: #e0f2fe; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: none; z-index: 2; }
+        .photo-placeholder { color: #94a3b8; font-size: 8pt; font-weight: 700; text-align: center; z-index: 1; }
+        .photo-placeholder i { font-size: 18pt; margin-bottom: 5px; color: #cbd5e1; }
+        .btn-del-photo { position: absolute; top: 5px; right: 5px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 10pt; cursor: pointer; z-index: 10; display: none; align-items: center; justify-content: center; }
+        
+        .logo-header { max-height: 70px; width: auto; display: block; margin-bottom: 10px; }
+
+        /* ================= VISTA PREVIA INTERNA EN DIGITAL (HISTORIAL) ================= */
         .report-view { display: none; padding: 15px 10px; background-color: #f4f6f9; min-height: 100vh; }
-        .preview-card-view {
-            width: 100%; max-width: 780px; margin: 0 auto; background: #fff; padding: 30px 25px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
+        .preview-card-view { width: 100%; max-width: 780px; margin: 0 auto; background: #fff; padding: 30px 25px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .preview-header-block { background: #1a1a1a; color:#fff; border-left: 6px solid #d32f2f; padding: 18px; margin-bottom: 25px; border-radius: 0 4px 4px 0; display: flex; justify-content: space-between; align-items: center; }
         
         .preview-section { margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #eee; text-transform: uppercase;}
@@ -120,23 +140,13 @@
         .view-sub-btn { background: none; border: none; padding: 10px 15px; font-size: 10pt; font-weight: bold; color: #666; cursor: pointer; border-radius: 4px 4px 0 0; text-transform: uppercase; }
         .view-sub-btn.active { color: #d32f2f; border-bottom: 3px solid #d32f2f; background: #f8fafc; }
 
-        /* CAMBIA ESTO */
-.scanner-frame-container { 
-    width: 100%; 
-    height: 700px; /* Asegura altura */
-    border: 1px solid #ddd; 
-    border-radius: 6px; 
-    overflow: hidden; 
-    background: #fff; 
-    display: block; /* IMPORTANTE: Cambiado a block */
-}
+        .scanner-frame-container { width: 100%; height: 700px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #fff; display: block; }
         .scanner-frame-container iframe { width: 100%; height: 100%; border: none; }
 
-        /* 📱 PANTALLA DE MÁSCARA TOTAL PARA EL CLIENTE (LAUNCH DISFRAZADO) */
+        /* PANTALLAS DE BLOQUEO Y CLIENTE */
         .mask-fullscreen-view { display: none; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: #fff; z-index: 99999; }
         .mask-fullscreen-view iframe { width: 100%; height: 100%; border: none; }
-
-        /* ================= PANTALLA DE BLOQUEO POR PIN ================= */
+        
         .pin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111111; z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .pin-container { text-align: center; width: 100%; max-width: 290px; padding: 10px; }
         .pin-instruction { color: #888; font-size: 10.5pt; margin-bottom: 25px; }
@@ -149,43 +159,27 @@
         .pin-btn:active { background: #333; color: #d32f2f; }
         .btn-clear, .btn-backspace { background: transparent; color: #555; font-size: 13pt; }
 
-        /* 📌 CONGELAR BOTONES DE NAVEGACIÓN PRINCIPAL (NUEVO / HISTORIAL) */
-        .sticky-nav-container {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0;
-            background-color: #f4f6f9;
-            padding: 10px 0;
-            z-index: 1000;
-        }
-        /* 📌 CONGELAR BARRA DE ACCIONES DEL REPORT VIEW (VOLVER / PDF / WHATSAPP) */
-        .sticky-actions-bar {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0;
-            background-color: #f4f6f9;
-            padding: 10px 0 15px 0;
-            z-index: 1000;
-        }
-        /* Esto fuerza al botón a estar visible siempre que esté en la lista */
-.btn-card-cotizar {
-    display: inline-block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
+        .sticky-actions-bar { position: -webkit-sticky; position: sticky; top: 0; background-color: #f4f6f9; padding: 10px 0 15px 0; z-index: 1000; }
+        .btn-card-cotizar { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
 
-#contenedorVisorDinamico {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important; 
-    overflow: hidden;
-}
+        /* Botones de Descarga en Formulario */
+        .pdf-actions-bar { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-download-image { flex: 1; background: #0284c7; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(2,132,199,0.2); text-transform: uppercase;}
+        .btn-download-pdf { flex: 1; background: #d32f2f; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); text-transform: uppercase;}
+        
+        @media screen and (max-width: 768px) {
+            .pdf-header-container { flex-direction: column !important; gap: 15px !important; padding: 20px 15px !important; }
+            .pdf-folio-container { width: 100% !important; }
+            .pdf-grid-boxes { grid-template-columns: 1fr !important; }
+            .photo-grid { grid-template-columns: 1fr 1fr !important; }
+            #printable-canvas { padding: 10px !important; }
+            .pdf-actions-bar { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
     
 <script>
-    // Solo limpiamos si NO hay parámetros de búsqueda (como ?scan=)
     if (window.location.pathname.endsWith('index.html') && !window.location.search) {
         window.history.replaceState(null, '', '/');
     }
@@ -224,7 +218,7 @@
 
     <div id="adminPanel" class="admin-panel">
         <div class="sticky-nav-container">
-            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 5px;">
                 <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#d32f2f;" onclick="cambiarPestana('nuevo')">📝 Nuevo</button>
                 <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial</button>
             </div>
@@ -237,100 +231,216 @@
 
         <div id="formularioSection">
             <input type="hidden" id="edit_record_id" value="">
-
-            <div class="form-section">
-                <div class="form-section-title">Datos del Cliente</div>
-                <div class="form-grid">
-                    <div class="form-group"><label>Nombre Completo:</label><input type="text" id="in_cliente_nombre" placeholder="JUAN PEREZ HERNANDEZ"></div>
-                    <div class="form-group"><label>Teléfono Celular (10-11 dígitos):</label><input type="tel" id="in_cliente_telefono" placeholder="8781234567" maxlength="11"></div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="form-section-title">Datos del Vehiculo</div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Marca:</label>
-                        <select id="in_vehiculo_marca" style="text-transform: uppercase;">
-                            <option value="">SELECCIONE MARCA</option>
-                            <option value="NISSAN">NISSAN</option><option value="CHEVROLET">CHEVROLET</option><option value="FORD">FORD</option><option value="TOYOTA">TOYOTA</option><option value="HONDA">HONDA</option><option value="VOLKSWAGEN">VOLKSWAGEN</option><option value="KIA">KIA</option><option value="HYUNDAI">HYUNDAI</option><option value="MAZDA">MAZDA</option><option value="JEEP">JEEP</option><option value="RAM">RAM</option><option value="DODGE">DODGE</option><option value="CHRYSLER">CHRYSLER</option><option value="GMC">GMC</option><option value="BUICK">BUICK</option><option value="BMW">BMW</option><option value="MERCEDES-BENZ">MERCEDES-BENZ</option><option value="AUDI">AUDI</option><option value="RENAULT">RENAULT</option><option value="SUZUKI">SUZUKI</option><option value="MITSUBISHI">MITSUBISHI</option><option value="FIAT">FIAT</option><option value="PEUGEOT">PEUGEOT</option>
-                        </select>
+            
+            <div class="wrapper-page">
+                <div class="pdf-header-container">
+                    <div class="pdf-brand-block">
+                        <img src="logo3.png" alt="AE Diagnóstico" class="logo-header" onerror="this.style.display='none'"> 
+                        <p style="color: #94a3b8; margin: 0; font-size: 8.5pt;">
+                            <i class="fa-solid fa-location-dot" style="color:var(--primary-red);"></i> Jalisco #729, Col. San Joaquin, Piedras Negras<br>
+                            <i class="fa-solid fa-phone" style="color:var(--primary-red);"></i> Tel: 878-116-5910 | <i class="fa-solid fa-envelope" style="color:var(--primary-red);"></i> aediagnostico@gmail.com
+                        </p>
                     </div>
-                    <div class="form-group"><label>Modelo / Año:</label><input type="text" id="in_vehiculo_modelo" placeholder="Versa 2019"></div>
-                    <div class="form-group"><label>Color:</label><input type="text" id="in_vehiculo_color" placeholder="Gris"></div>
-                    <div class="form-group"><label>Placas:</label><input type="text" id="in_vehiculo_placas" placeholder="Matricula"></div>
-                    <div class="form-group"><label>Numero de Serie (VIN):</label><input type="text" id="in_vehiculo_vin" placeholder="17 digitos" maxlength="17"></div>
-                    <div class="form-group">
-                        <label>Odómetro:</label>
-                        <div class="inline-group">
-                            <input type="number" id="in_vehiculo_km" placeholder="58000">
-                            <select id="in_vehiculo_unidad"><option value="km">Km</option><option value="mi">Millas</option></select>
+                    <div class="pdf-folio-container">
+                        <div class="pdf-folio-badge" id="pdf-lbl-folio">REPORTE AE-0000</div>
+                        <table class="pdf-meta-table">
+                            <tr><td>FECHA</td><td id="pdf-lbl-fecha">--/--/----</td></tr>
+                            <tr><td>HORA</td><td id="pdf-lbl-hora">00:00</td></tr>
+                            <tr><td>ESTADO</td><td style="color: #10b981;">EN REVISIÓN</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pdf-divider"></div>
+
+                <div id="printable-canvas">
+                    <div class="pdf-title-row">
+                        <h2>REPORTE DE SERVICIO</h2>
+                        <div class="pdf-badge-oficial">DOCUMENTO DE INGRESO</div>
+                    </div>
+
+                    <div class="pdf-grid-boxes">
+                        <div class="pdf-info-card cliente">
+                            <div class="pdf-card-title"><i class="fa-solid fa-user-gear"></i> DATOS DEL CLIENTE</div>
+                            <div class="pdf-card-data" style="grid-template-columns: 1fr;">
+                                <div class="pdf-data-item">
+                                    <span>NOMBRE COMPLETO</span>
+                                    <input type="text" id="in_cliente_nombre" class="card-input" placeholder="...">
+                                </div>
+                                <div class="pdf-data-item">
+                                    <span>TELÉFONO DE CONTACTO</span>
+                                    <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pdf-info-card vehiculo">
+                            <div class="pdf-card-title"><i class="fa-solid fa-car-rear"></i> DATOS DEL VEHÍCULO</div>
+                            <div class="pdf-card-data">
+                                <div class="pdf-data-item">
+                                    <span>MARCA</span>
+                                    <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="...">
+                                </div>
+                                <div class="pdf-data-item">
+                                    <span>MODELO / AÑO</span>
+                                    <input type="text" id="in_vehiculo_modelo" class="card-input" placeholder="...">
+                                </div>
+                                <div class="pdf-data-item">
+                                    <span>COLOR</span>
+                                    <input type="text" id="in_vehiculo_color" class="card-input" placeholder="...">
+                                </div>
+                                <div class="pdf-data-item">
+                                    <span>PLACAS</span>
+                                    <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
+                                </div>
+                                <div class="pdf-data-item" style="grid-column: span 2;">
+                                    <span>NÚMERO DE SERIE (VIN)</span>
+                                    <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
+                                </div>
+                                <div class="pdf-data-item" style="grid-column: span 2; display: flex; flex-direction: row; align-items: flex-end; gap: 5px;">
+                                    <div style="flex:1;">
+                                        <span>ODÓMETRO</span>
+                                        <input type="number" id="in_vehiculo_km" class="card-input" placeholder="...">
+                                    </div>
+                                    <select id="in_vehiculo_unidad" class="card-input pdf-ctrl" style="width: 60px; height: 24px;">
+                                        <option value="KM">KM</option>
+                                        <option value="MI">MI</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group full-width">
-                        <label>Nivel de Combustible:</label>
-                        <div class="range-container">
-                            <input type="range" id="in_vehiculo_gas" min="0" max="100" step="25" value="50">
-                            <div class="range-labels"><span>E</span><span>1/4</span><span>1/2</span><span>3/4</span><span>F</span></div>
+
+                    <div class="pdf-grid-boxes">
+                        <div class="pdf-info-card check">
+                            <div class="pdf-card-title"><i class="fa-solid fa-clipboard-check"></i> INSPECCIÓN FÍSICA</div>
+                            
+                            <div class="pdf-data-item" style="margin-bottom: 5px;"><span>NIVEL DE COMBUSTIBLE</span></div>
+                            <div class="fuel-selector" id="fuel-container">
+                                <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(0)">E</div>
+                                <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(25)">1/4</div>
+                                <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(50)">1/2</div>
+                                <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(75)">3/4</div>
+                                <div class="fuel-btn pdf-ctrl" onclick="seleccionarCombustible(100)">F</div>
+                            </div>
+                            <input type="hidden" id="in_vehiculo_gas" value="50">
+                            <div id="pdf_visual_gas" style="display:none; width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-bottom:15px; position: relative;">
+                                <div id="pdf_visual_gas_fill" style="height: 100%; width: 50%; background: #ff9800; border-radius: 3px;"></div>
+                            </div>
+
+                            <div class="pdf-data-item" style="margin-bottom: 5px; margin-top: 10px;"><span>CHECKLIST ELÉCTRICO INICIAL</span></div>
+                            
+                            <input type="checkbox" id="chk_luces" style="display:none;">
+                            <input type="checkbox" id="chk_elevadores" style="display:none;">
+                            <input type="checkbox" id="chk_tablero" style="display:none;">
+
+                            <div class="check-item" onclick="toggleCheck('chk_luces', this)">
+                                <i class="fa-regular fa-square check-icon"></i> LUCES E INDICADORES
+                            </div>
+                            <div class="check-item" onclick="toggleCheck('chk_elevadores', this)">
+                                <i class="fa-regular fa-square check-icon"></i> ELEVADORES Y SEGUROS
+                            </div>
+                            <div class="check-item" onclick="toggleCheck('chk_tablero', this)">
+                                <i class="fa-regular fa-square check-icon"></i> SIN TESTIGOS EN TABLERO
+                            </div>
+
+                            <div class="pdf-data-item" style="margin-top: 10px;">
+                                <span>NOTAS DEL CHECKLIST</span>
+                                <input type="text" id="in_obs_electrico" class="card-input" placeholder="SIN OBSERVACIONES..." style="color:#64748b;">
+                            </div>
+                        </div>
+
+                        <div class="pdf-info-card tecnico">
+                            <div class="pdf-card-title"><i class="fa-solid fa-screwdriver-wrench"></i> DIAGNÓSTICO TÉCNICO</div>
+                            <div class="pdf-card-data" style="grid-template-columns: 1fr;">
+                                <div class="pdf-data-item">
+                                    <span>MOTIVO DEL INGRESO / SÍNTOMAS REPORTADOS</span>
+                                    <textarea id="in_motivo_ingreso" class="card-input" placeholder="..." oninput="autoExpandir(this)" style="min-height: 50px;"></textarea>
+                                </div>
+                                <div class="pdf-data-item">
+                                    <span>OBSERVACIONES GENERALES / MECÁNICAS</span>
+                                    <textarea id="in_obs_diagnostico" class="card-input" placeholder="NINGUNO..." oninput="autoExpandir(this)" style="min-height: 50px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pdf-info-card" style="border-left: 5px solid #334155;">
+                        <div class="pdf-card-title"><i class="fa-solid fa-camera-retro"></i> EVIDENCIA FOTOGRÁFICA</div>
+                        <div class="photo-grid">
+                            <div class="photo-box" onclick="document.getElementById('input_frente').click()">
+                                <div class="photo-placeholder" id="txt_frente"><i class="fa-solid fa-car"></i><br>FRENTE</div>
+                                <img id="prev_frente" src="">
+                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_frente', 'prev_frente', 'txt_frente')"><i class="fa-solid fa-xmark"></i></button>
+                                <input type="file" id="input_frente" accept="image/*" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;">
+                            </div>
+                            <div class="photo-box" onclick="document.getElementById('input_trasera').click()">
+                                <div class="photo-placeholder" id="txt_trasera"><i class="fa-solid fa-car-side"></i><br>TRASERA</div>
+                                <img id="prev_trasera" src="">
+                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_trasera', 'prev_trasera', 'txt_trasera')"><i class="fa-solid fa-xmark"></i></button>
+                                <input type="file" id="input_trasera" accept="image/*" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;">
+                            </div>
+                            <div class="photo-box" onclick="document.getElementById('input_izq').click()">
+                                <div class="photo-placeholder" id="txt_izq"><i class="fa-solid fa-car-side fa-flip-horizontal"></i><br>IZQUIERDA</div>
+                                <img id="prev_izq" src="">
+                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_izq', 'prev_izq', 'txt_izq')"><i class="fa-solid fa-xmark"></i></button>
+                                <input type="file" id="input_izq" accept="image/*" onchange="previewImage(this, 'prev_izq', 'txt_izq')" style="display:none;">
+                            </div>
+                            <div class="photo-box" onclick="document.getElementById('input_der').click()">
+                                <div class="photo-placeholder" id="txt_der"><i class="fa-solid fa-truck-pickup"></i><br>DERECHA</div>
+                                <img id="prev_der" src="">
+                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_der', 'prev_der', 'txt_der')"><i class="fa-solid fa-xmark"></i></button>
+                                <input type="file" id="input_der" accept="image/*" onchange="previewImage(this, 'prev_der', 'txt_der')" style="display:none;">
+                            </div>
+                            <div class="photo-box" onclick="document.getElementById('input_motor').click()">
+                                <div class="photo-placeholder" id="txt_motor"><i class="fa-solid fa-gears"></i><br>MOTOR</div>
+                                <img id="prev_motor" src="">
+                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_motor', 'prev_motor', 'txt_motor')"><i class="fa-solid fa-xmark"></i></button>
+                                <input type="file" id="input_motor" accept="image/*" onchange="previewImage(this, 'prev_motor', 'txt_motor')" style="display:none;">
+                            </div>
+                            <div class="photo-box" onclick="document.getElementById('input_cluster').click()">
+                                <div class="photo-placeholder" id="txt_cluster"><i class="fa-solid fa-gauge-high"></i><br>TABLERO</div>
+                                <img id="prev_cluster" src="">
+                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_cluster', 'prev_cluster', 'txt_cluster')"><i class="fa-solid fa-xmark"></i></button>
+                                <input type="file" id="input_cluster" accept="image/*" onchange="previewImage(this, 'prev_cluster', 'txt_cluster')" style="display:none;">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-section">
-                <div class="form-section-title">Diagnostico</div>
-                <div class="form-grid">
-                    <div class="form-group full-width" style="margin-bottom: 10px;"><label>Motivo del Ingreso:</label><textarea id="in_motivo_ingreso" rows="2" placeholder="Sintomas reportados"></textarea></div>
-                    <div class="form-group full-width"><label>Observaciones de Diagnóstico:</label><textarea id="in_obs_diagnostico" rows="2" placeholder="Notas"></textarea></div>
+            <div style="background: #fdfdfd; border: 1px solid #eef0f3; border-left: 4px solid #1a1a1a; padding: 15px; border-radius: 4px;">
+                <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">Módulo Escáner (No se imprime)</div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                        <label style="font-size: 9pt; font-weight: bold; color: #555; margin-bottom: 6px; display:block;">Enlace del Reporte QR:</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="in_link_escaner" placeholder="URL del reporte o escanea QR" style="flex:1; padding:12px; border:1px solid #ccc; border-radius:6px;">
+                            <button type="button" onclick="iniciarEscaneoQR()" style="background:#1a1a1a; color:white; border:none; padding:10px 15px; border-radius:6px; cursor:pointer;">📸</button>
+                        </div>
+                    </div>
+                    <div id="reader" style="width: 100%; display:none;"></div>
+                    <div>
+                        <label style="font-size: 9pt; font-weight: bold; color: #555; margin-bottom: 6px; display:block;">Adjuntar Reporte PDF (Opcional):</label>
+                        <input type="file" id="pdfUploader" accept="application/pdf" style="width: 100%; padding: 8px; border: 1px dashed #ccc; border-radius: 6px; background:white;">
+                    </div>
                 </div>
             </div>
 
-            <div class="form-section">
-                <div class="checklist-grid">
-                    <label class="check-item"><input type="checkbox" id="chk_luces"> Luces e Indicadores</label>
-                    <label class="check-item"><input type="checkbox" id="chk_elevadores"> Elevadores y Seguros</label>
-                    <label class="check-item"><input type="checkbox" id="chk_tablero"> Sin Testigos en Tablero</label>
-                </div>
-                <div class="form-group"><label>Notas del Checklist:</label><textarea id="in_obs_electrico" rows="2" placeholder="Fallas"></textarea></div>
+            <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">💾 Guardar Reporte en Nube</button>
+            <div class="pdf-actions-bar">
+                <button class="btn-download-image" onclick="forzarDescargaPNG()"><i class="fa-solid fa-image"></i> Descargar Imagen</button>
+                <button class="btn-download-pdf" onclick="forzarDescargaPDF()"><i class="fa-solid fa-file-pdf"></i> Descargar PDF</button>
             </div>
-
-            <div class="form-section">
-                <div class="form-section-title">Evidencia Fotografica</div>
-                <div class="photo-picker-grid">
-                    <div class="photo-picker-card"><label>1. Frente</label><div class="upload-box" onclick="triggerUpload('input_frente')"><img id="prev_frente" style="display:none;"><span id="txt_frente">📸 Capturar</span></div><input type="file" id="input_frente" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;"></div>
-                    <div class="photo-picker-card"><label>2. Trasera</label><div class="upload-box" onclick="triggerUpload('input_trasera')"><img id="prev_trasera" style="display:none;"><span id="txt_trasera">📸 Capturar</span></div><input type="file" id="input_trasera" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;"></div>
-                    <div class="photo-picker-card"><label>3. Lado Izquierdo</label><div class="upload-box" onclick="triggerUpload('input_izq')"><img id="prev_izq" style="display:none;"><span id="txt_izq">📸 Capturar</span></div><input type="file" id="input_izq" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_izq', 'txt_izq')" style="display:none;"></div>
-                    <div class="photo-picker-card"><label>4. Lado Derecho</label><div class="upload-box" onclick="triggerUpload('input_der')"><img id="prev_der" style="display:none;"><span id="txt_der">📸 Capturar</span></div><input type="file" id="input_der" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_der', 'txt_der')" style="display:none;"></div>
-                    <div class="photo-picker-card"><label>5. Motor</label><div class="upload-box" onclick="triggerUpload('input_motor')"><img id="prev_motor" style="display:none;"><span id="txt_motor">📸 Capturar</span></div><input type="file" id="input_motor" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_motor', 'txt_motor')" style="display:none;"></div>
-                    <div class="photo-picker-card"><label>6. Cluster / Tablero</label><div class="upload-box" onclick="triggerUpload('input_cluster')"><img id="prev_cluster" style="display:none;"><span id="txt_cluster">📸 Capturar</span></div><input type="file" id="input_cluster" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_cluster', 'txt_cluster')" style="display:none;"></div>
-                </div>
-            </div>
-
-<div class="form-section" style="border-left-color: #1a1a1a;">
-    <div class="form-section-title">Modulo Escaner</div>
-    <div class="form-group">
-        <label>Enlace del Reporte QR:</label>
-        <div style="display: flex; gap: 5px;">
-            <input type="text" id="in_link_escaner" placeholder="URL del reporte o escanea QR">
-            <button type="button" onclick="iniciarEscaneoQR()" style="background:#1a1a1a; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer;">📸</button>
-        </div>
-    </div>
-    <div id="reader" style="width: 100%; display:none; margin-top:10px;"></div>
-    <div class="form-group" style="margin-top: 15px;">
-        <label>Adjuntar Reporte PDF (Opcional):</label>
-        <input type="file" id="pdfUploader" accept="application/pdf" style="width: 100%; padding: 8px; border: 1px dashed #ccc; border-radius: 6px;">
-    </div>
-</div>
-
-            <button class="btn-submit" id="btnGuardarForm" onclick="guardarYProcesarReporte()">Generar Reporte</button>
+            
             <button class="btn-submit" id="btnCancelarEdicion" style="background:#555; display:none; margin-top:8px;" onclick="cancelarEdicionActiva()">❌ Cancelar Edición</button>
         </div>
 
         <div id="historialSection" style="display: none;">
-            <div class="form-group" style="margin-bottom: 15px;">
-                <input type="text" id="buscadorHistorial" placeholder="🔍 BUSCAR POR FOLIO, CLIENTE O PLACAS..." onkeyup="filtrarHistorial()" style="padding: 14px; font-size: 15px; border-radius: 6px; border: 1px solid #bbb;">
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="buscadorHistorial" placeholder="🔍 BUSCAR POR FOLIO, CLIENTE O PLACAS..." onkeyup="filtrarHistorial()" style="width:100%; padding: 14px; font-size: 15px; border-radius: 6px; border: 1px solid #bbb;">
             </div>
-            <div class="form-section-title">Lista de Reportes</div>
+            <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #1a1a1a; margin-bottom: 12px;">Lista de Reportes</div>
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
                 <p style="color:#777; font-size:10pt; text-align:center;">Cargando historial...</p>
             </div>
@@ -340,7 +450,7 @@
     <div id="reportView" class="report-view">
         <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
-            <button id="btnDescargarPDF" class="btn-submit" style="background:#0284c7; margin:0;">📥 PDF</button>
+            <button id="btnDescargarPDF" class="btn-submit" style="background:#d32f2f; margin:0;">📥 Generar PDF</button>
             <button id="btnEnviarWhatsApp" class="btn-submit" onclick="enviarWhatsApp()" style="background:#25D366; margin:0; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <span>💬 Enviar por WhatsApp</span>
             </button>
@@ -406,7 +516,7 @@
                     </div>
 
                     <div class="preview-section" style="border-bottom: none;">
-                        <div class="preview-section-title">Evidencia Fotografica (Toca para ver calidad original)</div>
+                        <div class="preview-section-title">Evidencia Fotografica</div>
                         <div class="web-photo-grid">
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('frente')"><img id="web_img_frente" src=""></div><div class="web-photo-title">1. Frente</div></div>
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('trasera')"><img id="web_img_trasera" src=""></div><div class="web-photo-title">2. Trasera</div></div>
@@ -419,7 +529,6 @@
                 </div>
 
                 <div id="subVistaContenidoEscaner" class="scanner-frame-container">
-                    <iframe id="iframeEscanerLaunch" src=""></iframe>
                     <div id="noLinkMsg" style="display:none; text-align:center; padding:50px 20px; color:#666;">
                         ⚠️ Este reporte no cuenta con una lectura de códigos de Launch enlazada.
                     </div>
@@ -428,801 +537,676 @@
         </div>
     </div>
 
-    <script>        
-window.onload = function() {
-    if (localStorage.getItem('ae_sesion_valida') === 'true') {
-        cargarHistorialSupabase();
+<script>
+    // ================= CREDENCIALES SUPABASE =================
+    const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
+    const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentPin = "";
+    const CORRECT_PIN = "3001";
+    let reportDataGlobal = null;
+    let listaReportesMemoria = [];
+    const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
+
+    // 🔄 Auto-Mayúsculas
+    document.addEventListener('input', function (e) {
+        if (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
+            const start = e.target.selectionStart;
+            const end = e.target.selectionEnd;
+            e.target.value = e.target.value.toUpperCase();
+            e.target.setSelectionRange(start, end);
+        }
+    });
+
+    // 📐 Textarea expansible
+    function autoExpandir(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
     }
-};
-        // ================= CREDENCIALES DE TU SUPABASE =================
-        const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
-        const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let currentPin = "";
-        const CORRECT_PIN = "3001";
-        let reportDataGlobal = null;
-        let listaReportesMemoria = [];
-        const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
+    // ⛽ Lógica Visual Combustible
+    function seleccionarCombustible(valor) {
+        document.getElementById('in_vehiculo_gas').value = valor;
+        const botones = document.querySelectorAll('.fuel-btn');
+        botones.forEach(b => b.classList.remove('active'));
+        
+        let index = 2; // Default 1/2
+        if(valor === 0) index = 0; else if(valor <= 25) index = 1; else if(valor <= 50) index = 2; else if(valor <= 75) index = 3; else index = 4;
+        botones[index].classList.add('active');
+    }
 
-// 🎭 DETECTOR DE ENLACES EXTERNOS
-window.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const scanFolio = urlParams.get('scan'); 
-    const pdfFolio = urlParams.get('pdf');
+    // ☑️ Lógica Visual Checklist
+    function toggleCheck(inputId, divElement) {
+        const checkbox = document.getElementById(inputId);
+        checkbox.checked = !checkbox.checked;
+        const icon = divElement.querySelector('.check-icon');
+        
+        if (checkbox.checked) {
+            icon.classList.remove('fa-square');
+            icon.classList.add('fa-square-check', 'active');
+        } else {
+            icon.classList.add('fa-square');
+            icon.classList.remove('fa-square-check', 'active');
+        }
+    }
 
-if (scanFolio) {
-            // 1. Pintamos la pantalla de carga idéntica a la del PDF
+    // 📸 Lógica Fotos Visual
+    function previewImage(input, imgId, textId) {
+        if (input.files && input.files[0]) {
+            const objectURL = URL.createObjectURL(input.files[0]);
+            document.getElementById(imgId).src = objectURL; 
+            document.getElementById(imgId).style.display = 'block';
+            document.getElementById(textId).style.display = 'none';
+            input.nextElementSibling.style.display = 'flex'; // Muestra botón borrar
+        }
+    }
+
+    function borrarFoto(event, inputId, imgId, textId) {
+        event.stopPropagation();
+        document.getElementById(inputId).value = "";
+        document.getElementById(imgId).src = "";
+        document.getElementById(imgId).style.display = 'none';
+        document.getElementById(textId).style.display = 'block';
+        event.target.closest('.btn-del-photo').style.display = 'none';
+    }
+
+    // 🛠️ PREPARACIÓN DE CAPTURA HTML2CANVAS (Oculta botones visuales de control)
+    function prepararCaptura() {
+        // Sincronizar textareas para saltos de línea
+        const inputs = document.querySelectorAll('#printable-canvas input.card-input, #printable-canvas textarea.card-input');
+        const reemplazos = [];
+
+        inputs.forEach(input => {
+            const esArea = input.tagName.toLowerCase() === 'textarea';
+            const span = document.createElement('div');
+            
+            if (esArea) {
+                span.innerText = input.value || '';
+                span.style.whiteSpace = 'pre-wrap';
+                span.style.wordWrap = 'break-word';
+                span.style.overflowWrap = 'break-word';
+                span.style.width = '100%';
+                span.style.fontSize = '8.5pt';
+                span.style.fontWeight = '700';
+                span.style.color = '#0f172a';
+                span.style.lineHeight = '1.4';
+                span.style.paddingBottom = '5px';
+            } else {
+                span.innerText = input.value || '';
+                span.style.width = '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize;
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.color = '#0f172a';
+                span.style.display = 'inline-block';
+                span.style.padding = '2px 0';
+            }
+
+            input.parentNode.insertBefore(span, input);
+            input.style.display = 'none';
+            reemplazos.push({ original: input, falso: span });
+        });
+
+        // Ocultar botones de control y mostrar barra de gas para PDF
+        const elementosAOcultar = document.querySelectorAll('.pdf-ctrl');
+        elementosAOcultar.forEach(el => el.style.display = 'none');
+
+        document.getElementById('fuel-container').style.display = 'none';
+        const pdfGas = document.getElementById('pdf_visual_gas');
+        const pdfGasFill = document.getElementById('pdf_visual_gas_fill');
+        const valGas = parseInt(document.getElementById('in_vehiculo_gas').value) || 0;
+        pdfGas.style.display = 'block';
+        pdfGasFill.style.width = valGas + "%";
+        pdfGasFill.style.background = valGas <= 25 ? '#d32f2f' : (valGas >= 75 ? '#4caf50' : '#ff9800');
+
+        const elemento = document.querySelector('.wrapper-page');
+        const anchoOriginal = elemento.style.width;
+        const maxWOriginal = elemento.style.maxWidth;
+        elemento.style.width = '840px';
+        elemento.style.maxWidth = 'none';
+
+        return { elementosAOcultar, reemplazos, elemento, anchoOriginal, maxWOriginal };
+    }
+
+    function restaurarPantalla(estado) {
+        estado.elemento.style.width = estado.anchoOriginal;
+        estado.elemento.style.maxWidth = estado.maxWOriginal;
+        
+        estado.elementosAOcultar.forEach(el => {
+            if (el.classList.contains('btn-del-photo')) {
+                // Solo restaurar si hay imagen
+                const img = el.previousElementSibling;
+                if(img.src && img.style.display === 'block') el.style.display = 'flex';
+            } else if(el.tagName === 'SELECT') {
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'flex'; // Para los fuel-btn
+            }
+        });
+
+        document.getElementById('fuel-container').style.display = 'flex';
+        document.getElementById('pdf_visual_gas').style.display = 'none';
+        
+        estado.reemplazos.forEach(par => {
+            par.falso.remove();
+            par.original.style.display = ''; 
+        });
+    }
+
+    // 🖼️ DESCARGA PNG
+    async function forzarDescargaPNG() {
+        const estado = prepararCaptura();
+        let nombreArchivo = (document.title || "Reporte_AE");
+
+        try {
+            const canvas = await html2canvas(estado.elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
+            const enlace = document.createElement('a');
+            enlace.download = nombreArchivo + ".png";
+            enlace.href = canvas.toDataURL('image/png');
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+        } catch (err) { console.error("Error PNG:", err); } 
+        finally { restaurarPantalla(estado); }
+    }
+
+    // 📄 DESCARGA PDF (WYSIWYG ULTRA DEFINIDO)
+    async function forzarDescargaPDF() {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) { alert("Librería PDF no lista."); return; }
+
+        const estado = prepararCaptura();
+        let nombreArchivoPDF = (document.title || "Reporte_AE") + ".pdf";
+
+        try {
+            const canvas = await html2canvas(estado.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
+            const imgData = canvas.toDataURL('image/jpeg', 1.0); 
+            const pdf = new jsPDF('p', 'mm', 'letter');
+            const pdfWidth = pdf.internal.pageSize.getWidth();     
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
+
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
+            pdf.save(nombreArchivoPDF);
+        } catch (error) { console.error("Error PDF:", error); } 
+        finally { restaurarPantalla(estado); }
+    }
+
+    // ================= FUNCIONES CORE DE SUPABASE Y LOGICA =================
+
+    window.onload = function() {
+        if (localStorage.getItem('ae_sesion_valida') === 'true') { cargarHistorialSupabase(); }
+        // Inicializar fecha
+        const hoy = new Date();
+        document.getElementById('pdf-lbl-fecha').innerText = hoy.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
+        document.getElementById('pdf-lbl-hora').innerText = hoy.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+    };
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const scanFolio = urlParams.get('scan'); 
+        const pdfFolio = urlParams.get('pdf');
+
+        if (scanFolio) {
+            // Lógica intacta para visor de Escáner cliente
             document.body.innerHTML = `
                 <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
                     <div style="margin-bottom: 40px;">
-<span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📊 REPORTE DE ESCANER
-    </span>
-        </div>
+                        <span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📊 REPORTE DE ESCANER</span>
+                    </div>
                     <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
                     <div id="loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
                     <h2 id="pdf-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">DESCARGANDO REPORTE DE ESCÁNER...</h2>
                     <p id="pdf-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, acepta la descarga en la alerta de tu celular.</p>
-                    <button id="btnRetryPDF" style="display:none;background:#d32f2f;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">
-                        🔄 Descargar PDF Nuevamente
-                    </button>
+                    <button id="btnRetryPDF" style="display:none;background:#d32f2f;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">🔄 Descargar PDF Nuevamente</button>
                 </div>
-                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-            `;
+                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
 
-            // 2. Buscamos el link en Supabase
-            const { data: reporte, error } = await supabaseClient
-                .from('reportes_servicio')
-                .select('link_escaner')
-                .eq('folio', scanFolio.toUpperCase())
-                .single();
-
+            const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('link_escaner').eq('folio', scanFolio.toUpperCase()).single();
             if (!error && reporte && reporte.link_escaner) {
                 const url = reporte.link_escaner;
-
                 if (url.toLowerCase().endsWith('.pdf')) {
                     try {
-                        // Intentamos la descarga por Blob para forzar el nombre personalizado
-                        const response = await fetch(url);
-                        const blob = await response.blob();
-                        const urlBlob = window.URL.createObjectURL(blob);
-                        const link = document.createElement('a');
-                        link.style.display = 'none';
-                        link.href = urlBlob;
-                        link.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
-                        document.body.appendChild(link);
-                        link.click();
-                        window.URL.revokeObjectURL(urlBlob);
-                        document.body.removeChild(link);
+                        const response = await fetch(url); const blob = await response.blob(); const urlBlob = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a'); link.style.display = 'none'; link.href = urlBlob; link.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
+                        document.body.appendChild(link); link.click(); window.URL.revokeObjectURL(urlBlob); document.body.removeChild(link);
                     } catch (e) {
-                        // Si hay bloqueo de CORS, abrimos como respaldo directo
-                        const linkFallback = document.createElement('a');
-                        linkFallback.href = url;
-                        linkFallback.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
-                        linkFallback.target = '_blank';
-                        linkFallback.click();
+                        const linkFallback = document.createElement('a'); linkFallback.href = url; linkFallback.download = `REPORTE_ESCANER_${scanFolio}.pdf`; linkFallback.target = '_blank'; linkFallback.click();
                     }
-
-                    // 3. Actualizamos la pantalla al estado de éxito (igual a la imagen)
-                    document.getElementById('loading-spinner').style.display = 'none';
-                    document.getElementById('pdf-status-title').innerText = "¡REPORTE CREADO!";
+                    document.getElementById('loading-spinner').style.display = 'none'; document.getElementById('pdf-status-title').innerText = "¡REPORTE CREADO!";
                     document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
-                    
-                   const btnRetry = document.getElementById('btnRetryPDF');
-                    btnRetry.style.display = 'inline-block';
-
-                    // AQUÍ VA LA LÓGICA CORREGIDA DEL BOTÓN
-                    btnRetry.onclick = async () => {
-                        try {
-                            const response = await fetch(url);
-                            const blob = await response.blob();
-                            const urlBlob = window.URL.createObjectURL(blob);
-                            const link = document.createElement('a');
-                            link.style.display = 'none';
-                            link.href = urlBlob;
-                            link.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
-                            document.body.appendChild(link);
-                            link.click();
-                            window.URL.revokeObjectURL(urlBlob);
-                            document.body.removeChild(link);
-                        } catch (e) {
-                            // Respaldo simple si el fetch falla
-                            const fallbackLink = document.createElement('a');
-                            fallbackLink.href = url;
-                            fallbackLink.download = `REPORTE_ESCANER_${scanFolio}.pdf`;
-                            fallbackLink.target = '_blank';
-                            document.body.appendChild(fallbackLink);
-                            fallbackLink.click();
-                            document.body.removeChild(fallbackLink);
-                        }
-                    };
-
+                    document.getElementById('btnRetryPDF').style.display = 'inline-block';
                 } else {
-                    // Si no es un PDF, mostramos el iframe clásico en pantalla completa
-                    document.body.innerHTML = `
-                        <div id="maskFullscreenView" class="mask-fullscreen-view" style="display:block; width:100vw; height:100vh; position:fixed; top:0; left:0; background:#fff; z-index:99999;">
-                            <iframe src="${url}" style="width:100%; height:100%; border:none;"></iframe>
-                        </div>`;
+                    document.body.innerHTML = `<div id="maskFullscreenView" class="mask-fullscreen-view" style="display:block; width:100vw; height:100vh; position:fixed; top:0; left:0; background:#fff; z-index:99999;"><iframe src="${url}" style="width:100%; height:100%; border:none;"></iframe></div>`;
                 }
-                return;
-            } else {
-                document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE LAUNCH NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico registrado.</p></div></div>`;
-                return;
-            }
-        }
-
-    if (pdfFolio) {
-        // ... (tu lógica original de pdfFolio se mantiene igual)
-        document.body.innerHTML = `
-            <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
-               <div style="margin-bottom: 40px;">
-<span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📋 REPORTE DE SERVICIO
-    </span>
-        </div>
-                <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
-                <div id="loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
-                <h2 id="pdf-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">GENERANDO REPORTE PDF...</h2>
-                <p id="pdf-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, acepta la descarga en la alerta de tu celular.</p>
-                <button id="btnRetryPDF" style="display:none;background:#d32f2f;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">
-                    🔄 Descargar PDF Nuevamente
-                </button>
-            </div>
-            <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-        `;
-        
-        const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', pdfFolio.toUpperCase()).single();
-        if (!error && reporte) {
-            reportDataGlobal = reporte;
-            await generarPDFConJSPDF(true);
-            document.getElementById('loading-spinner').style.display = 'none';
-            document.getElementById('pdf-status-title').innerText = "¡REPORTE CREADO!";
-            document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
-            document.getElementById('btnRetryPDF').style.display = 'inline-block';
-            return;
-        } else {
-            document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ ERROR</h2><p>El folio ingresado no existe o es inválido.</p></div></div>`;
+            } else { document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE LAUNCH NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico registrado.</p></div></div>`; }
             return;
         }
-    }
 
-    if (localStorage.getItem('ae_sesion_valida') === 'true') {
-        mostrarPanel();
-    }
-});
-        
-        function pressNum(num) {
-            if (currentPin.length >= 4) return;
-            document.getElementById('pin-error-msg').style.visibility = 'hidden';
-            currentPin += num; updateDots();
-            if (currentPin.length === 4) setTimeout(validatePin, 200);
-        }
-        function clearPin() { currentPin = ""; updateDots(); }
-        function backspacePin() { currentPin = currentPin.slice(0, -1); updateDots(); }
-        function updateDots() {
-            const dots = document.querySelectorAll('.pin-dot');
-            dots.forEach((dot, index) => { dot.classList.toggle('active', index < currentPin.length); });
-        }
-        function validatePin() {
-            if (currentPin === CORRECT_PIN) { localStorage.setItem('ae_sesion_valida', 'true'); mostrarPanel(); }
-            else { document.getElementById('pin-error-msg').style.visibility = 'visible'; currentPin = ""; updateDots(); }
-        }
-function mostrarPanel() {
-    document.getElementById('pin-lock-screen').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
-    document.getElementById('reportView').style.display = 'none';
-    
-    // NO ocultes nada aquí. Si necesitas limpiar, hazlo solo en cambiarPestana
-    cargarHistorialSupabase();
-}
-// 1. CORRECCIÓN: Al regresar al formulario, ocultamos los botones de PDF/WhatsApp
-function regresarAlFormulario() {
-    // 1. Ocultar la vista de reporte
-    document.getElementById('reportView').style.display = 'none';
-    
-    // 2. Mostrar el panel
-    document.getElementById('adminPanel').style.display = 'block';
-    
-    // 3. Ocultar los botones específicos del PDF/WhatsApp
-    document.getElementById('btnDescargarPDF').style.display = 'none';
-    document.getElementById('btnEnviarWhatsApp').style.display = 'none';
-    
-    // 4. Cambiar a la pestaña de historial
-    cambiarPestana('historial');
-    
-    // 5. ¡FORZAR REDIBUJO! Esto obliga a que el botón Cotizar aparezca de nuevo
-    cargarHistorialSupabase();
-}
-        function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
-
-        function triggerUpload(inputId) { document.getElementById(inputId).click(); }
-        function previewImage(input, imgId, textId) {
-            const file = input.files[0];
-            if (file) {
-                const objectURL = URL.createObjectURL(file);
-                const img = document.getElementById(imgId);
-                img.src = objectURL; img.style.display = 'block';
-                document.getElementById(textId).style.display = 'none';
-            }
-        }
-
-function cambiarPestana(modo) {
-    document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
-    document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
-    document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
-    document.getElementById('btnTabHistorial').style.background = modo === 'nuevo' ? '#555' : '#d32f2f';
-    
-    // --- ESTA ES LA CORRECCIÓN ---
-    if (modo === 'nuevo') {
-        limpiarFormularioCompleto(); // Esto limpia los datos de ediciones anteriores
-        document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
-    }
-    // -----------------------------
-    
-    if (modo === 'historial') {
-        document.getElementById('buscadorHistorial').value = "";
-        document.getElementById('edit_record_id').value = "";
-        document.getElementById('formPanelTitle').innerHTML = "Historial de <span>Reportes</span>";
-        document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
-        if(document.getElementById('btnCancelarEdicion')) {
-            document.getElementById('btnCancelarEdicion').style.display = 'none';
-        }
-        cargarHistorialSupabase(); 
-    }
-}
-
-        function cancelarEdicionActiva() {
-            limpiarFormularioCompleto();
-            cambiarPestana('historial');
-        }
-
-function limpiarFormularioCompleto() {
-    document.getElementById('edit_record_id').value = "";
-    document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
-    document.getElementById('btnGuardarForm').innerText = "Guardar y Generar Reporte";
-    
-    if(document.getElementById('btnCancelarEdicion')) {
-        document.getElementById('btnCancelarEdicion').style.display = 'none';
-    }
-
-    document.querySelectorAll('.admin-panel input, .admin-panel textarea').forEach(el => el.value = "");
-    document.querySelectorAll('.admin-panel input[type="checkbox"]').forEach(el => el.checked = false);
-    document.querySelectorAll('.upload-box img').forEach(img => { img.src=""; img.style.display = 'none'; });
-    document.querySelectorAll('.upload-box span').forEach(sp => sp.style.display = 'inline');
-    document.getElementById('in_vehiculo_gas').value = 50;
-    document.getElementById('in_vehiculo_marca').value = "";
-    document.getElementById('in_vehiculo_unidad').value = "km";
-
-    // --- NUEVAS LÍNEAS PARA LIMPIEZA TOTAL ---
-    // 1. Limpiar el selector de archivos
-    const pdfUploader = document.getElementById('pdfUploader');
-    if (pdfUploader) pdfUploader.value = ""; 
-
-    // 2. Limpiar el visor del PDF para que no se quede el anterior
-    const contenedor = document.getElementById('contenedorVisorDinamico');
-    if (contenedor) contenedor.innerHTML = "";
-
-    // 3. Limpiar la variable global
-    reportDataGlobal = null;
-}
-
-        async function subirFotoOriginal(inputId, folioUnico) {
-            const input = document.getElementById(inputId);
-            if (!input || !input.files || input.files.length === 0) return null;
-            const file = input.files[0];
-            const fileExtension = file.name.split('.').pop();
-            const filePath = `${folioUnico}/${inputId}_${Date.now()}.${fileExtension}`;
-            const { error } = await supabaseClient.storage.from('fotos_reportes').upload(filePath, file, { cacheControl: '3600', upsert: true });
-            if (error) return null;
-            return supabaseClient.storage.from('fotos_reportes').getPublicUrl(filePath).data.publicUrl;
-        }
-
-async function guardarYProcesarReporte() {
-    const btnSubmit = document.getElementById('btnGuardarForm');
-    const editId = document.getElementById('edit_record_id').value;
-    const isEditing = editId !== "";
-
-    // --- NUEVO: Lógica de subida de PDF ---
-    const fileInput = document.getElementById('pdfUploader');
-    const file = fileInput ? fileInput.files[0] : null;
-    let linkEscanerFinal = document.getElementById('in_link_escaner').value;
-
-    const telVal = document.getElementById('in_cliente_telefono').value.trim();
-    const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
-
-    if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEBE TENER 10-11 DÍGITOS."); return; }
-    if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL VIN DEBE TENER 17 CARACTERES."); return; }
-
-    const textoOriginal = btnSubmit.innerText;
-    btnSubmit.innerText = "⏳ PROCESANDO Y ALMACENANDO EN LA NUBE..."; 
-    btnSubmit.disabled = true;
-
-    let folioCalculado = "";
-    if (isEditing) { folioCalculado = reportDataGlobal.folio; } 
-    else { 
-        const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        let parteAleatoria = '';
-        for (let i = 0; i < 4; i++) {
-            parteAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-        }
-        folioCalculado = "AE-" + parteAleatoria;
-    }
-
-    try {
-// --- PROCESAR PDF SI EXISTE ---
-        if (file) {
-            const fileName = `REPORTE_ESCANER_${folioCalculado}.pdf`;
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                .from('reportes')
-                .upload(fileName, file, {
-            upsert: true // IMPORTANTE: Pon esto en true si quieres reemplazar el PDF anterior al editar
-        });
-
-            if (uploadError) throw uploadError;
-
-            const { data: urlData } = supabaseClient.storage
-                .from('reportes')
-                .getPublicUrl(fileName);
+        if (pdfFolio) {
+            // Lógica adaptada para generar el WYSIWYG desde enlace público
+            document.body.innerHTML = `
+                <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
+                    <div style="margin-bottom: 40px;"><span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 📋 REPORTE DE SERVICIO</span></div>
+                    <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
+                    <div id="loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #d32f2f;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
+                    <h2 id="pdf-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">GENERANDO REPORTE PDF...</h2>
+                    <p id="pdf-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, espera unos segundos.</p>
+                </div><style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
             
-            linkEscanerFinal = urlData.publicUrl;
-            
-            // ¡ESTA LÍNEA ES LA QUE TE FALTA!
-            // Esto actualiza el campo visual para que el sistema vea el nuevo link
-            document.getElementById('in_link_escaner').value = linkEscanerFinal;
+            const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', pdfFolio.toUpperCase()).single();
+            if (!error && reporte) {
+                // Truco: Restauramos el DOM original oculto para renderizar
+                const tempDiv = document.createElement('div');
+                tempDiv.style.position = 'absolute'; tempDiv.style.left = '-9999px'; tempDiv.innerHTML = document.getElementById('adminPanel').outerHTML;
+                document.body.appendChild(tempDiv);
+                
+                cargarRegistroParaEditar(reporte); // Llena el form
+                await forzarDescargaPDF(); // Genera
+                
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.getElementById('pdf-status-title').innerText = "¡REPORTE DESCARGADO!";
+                document.getElementById('pdf-status-desc').innerText = "El PDF está listo en tu dispositivo.";
+            } else { document.body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ ERROR</h2><p>El folio ingresado no existe o es inválido.</p></div></div>`; }
+            return;
         }
 
-        // --- SUBIR FOTOS (Tu lógica actual) ---
-        const urlFrente = await subirFotoOriginal(inputsFotos.frente, folioCalculado);
-        const urlTrasera = await subirFotoOriginal(inputsFotos.trasera, folioCalculado);
-        const urlIzq = await subirFotoOriginal(inputsFotos.izq, folioCalculado);
-        const urlDer = await subirFotoOriginal(inputsFotos.der, folioCalculado);
-        const urlMotor = await subirFotoOriginal(inputsFotos.motor, folioCalculado);
-        const urlCluster = await subirFotoOriginal(inputsFotos.cluster, folioCalculado);
+        if (localStorage.getItem('ae_sesion_valida') === 'true') { mostrarPanel(); }
+    });
 
-        const getUpperVal = (id) => (document.getElementById(id).value || '').toUpperCase();
+    // --- BLOQUEO POR PIN ---
+    function pressNum(num) { if (currentPin.length >= 4) return; document.getElementById('pin-error-msg').style.visibility = 'hidden'; currentPin += num; updateDots(); if (currentPin.length === 4) setTimeout(validatePin, 200); }
+    function clearPin() { currentPin = ""; updateDots(); }
+    function backspacePin() { currentPin = currentPin.slice(0, -1); updateDots(); }
+    function updateDots() { const dots = document.querySelectorAll('.pin-dot'); dots.forEach((dot, index) => { dot.classList.toggle('active', index < currentPin.length); }); }
+    function validatePin() { if (currentPin === CORRECT_PIN) { localStorage.setItem('ae_sesion_valida', 'true'); mostrarPanel(); } else { document.getElementById('pin-error-msg').style.visibility = 'visible'; currentPin = ""; updateDots(); } }
+    
+    function mostrarPanel() {
+        document.getElementById('pin-lock-screen').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('reportView').style.display = 'none';
+        cargarHistorialSupabase();
+    }
 
-        const payload = {
-            cliente_nombre: getUpperVal('in_cliente_nombre'),
-            cliente_telefono: getUpperVal('in_cliente_telefono'),
-            vehiculo_marca: document.getElementById('in_vehiculo_marca').value,
-            vehiculo_modelo: getUpperVal('in_vehiculo_modelo'),
-            vehiculo_color: getUpperVal('in_vehiculo_color'),
-            vehiculo_placas: getUpperVal('in_vehiculo_placas'),
-            vehiculo_vin: getUpperVal('in_vehiculo_vin'),
-            vehiculo_km: document.getElementById('in_vehiculo_km').value ? `${document.getElementById('in_vehiculo_km').value} ${document.getElementById('in_vehiculo_unidad').value.toUpperCase()}` : '',
-            vehiculo_gas_nivel: parseInt(document.getElementById('in_vehiculo_gas').value),
-            motivo_ingreso: getUpperVal('in_motivo_ingreso'),
-            observaciones_diagnostico: getUpperVal('in_obs_diagnostico'),
-            chk_luces: document.getElementById('chk_luces').checked,
-            chk_elevadores: document.getElementById('chk_elevadores').checked,
-            chk_tablero: document.getElementById('chk_tablero').checked,
-            observaciones_electrico: getUpperVal('in_obs_electrico'),
-            link_escaner: linkEscanerFinal // Usamos la URL del PDF si se subió, o el link del QR
-        };
-
-        if(urlFrente) payload.foto_frente_url = urlFrente;
-        if(urlTrasera) payload.foto_trasera_url = urlTrasera;
-        if(urlIzq) payload.foto_izquierdo_url = urlIzq;
-        if(urlDer) payload.foto_derecho_url = urlDer;
-        if(urlMotor) payload.foto_motor_url = urlMotor;
-        if(urlCluster) payload.foto_cluster_url = urlCluster;
-
-        let error = null;
-        if (isEditing) { const { error: errUpdate } = await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId); error = errUpdate; } 
-        else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
-
-        if (error) throw error;
-        alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE ALMACENADO CON ÉXITO.");
-        alternarSubVista('escaner');
-        limpiarFormularioCompleto(); 
-        cargarHistorialSupabase(); 
+    function regresarAlFormulario() {
+        document.getElementById('reportView').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
         cambiarPestana('historial');
-    } catch (err) { alert("❌ ERROR: " + err.message); }
-    finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
-}
-
-        async function cargarHistorialSupabase() {
-            const contenedor = document.getElementById('listaReportes');
-            if (contenedor) {
-                contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
-            }
-            const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false });
-            if (error) { 
-                if (contenedor) contenedor.innerHTML = `<p style="color:red; font-size:10pt;">Error: ${error.message}</p>`; 
-                return; 
-            }
-            listaReportesMemoria = reportes; 
-            inyectarTarjetasHistorial(listaReportesMemoria);
-        }
-
-        // 3. CORRECCIÓN: En la inyección, aseguramos que el botón COTIZAR siempre se renderice
-function inyectarTarjetasHistorial(arr) {
-    const contenedor = document.getElementById('listaReportes');
-    if (!contenedor) return;
-    contenedor.innerHTML = "";
-    
-    arr.forEach(rep => {
-        const tarjeta = document.createElement('div');
-        // Estilo de la tarjeta
-        tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
-        
-        tarjeta.innerHTML = `
-            <div style="flex:1;">
-                <strong style="color:#d32f2f;">FOLIO: ${rep.folio || 'N/A'}</strong>
-                <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''}</div>
-                <div style="font-size:10pt;">🔢 ${rep.vehiculo_placas || 'S/N'}</div>
-                <div style="font-size:10pt; font-weight:bold;">👤 ${rep.cliente_nombre || 'S/N'}</div>
-            </div>
-            <div style="display:flex; gap:6px;">
-                <button id="btn-ver-${rep.folio}" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
-                <button id="btn-edit-${rep.folio}" style="background:#000; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
-                <button id="btn-cotizar-${rep.folio}" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">💰 Cotizar</button>
-            </div>
-        `;
-        
-        contenedor.appendChild(tarjeta);
-
-        // ASIGNACIÓN DIRECTA DE EVENTOS (Aquí estaba el fallo de "no funciona")
-        document.getElementById(`btn-ver-${rep.folio}`).onclick = () => mostrarVistaPreviaDigital(rep);
-        document.getElementById(`btn-edit-${rep.folio}`).onclick = () => cargarRegistroParaEditar(rep);
-        document.getElementById(`btn-cotizar-${rep.folio}`).onclick = () => {
-            localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(rep));
-            window.location.replace('/presupuesto.html');
-        };
-    });
-}
-        
-        function transferirAPresupuesto(rep) {
-    const datos = {
-        cliente_nombre: String(rep.cliente_nombre || '').trim(),
-        cliente_telefono: String(rep.cliente_telefono || '').trim(),
-        vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
-        vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
-        vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
-        vehiculo_color: String(rep.vehiculo_color || '').trim(),
-        vehiculo_km: String(rep.vehiculo_km || '').trim()
-    };
-    localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
-    
-    // CAMBIO AQUÍ: Forzamos la ruta completa para evitar el error de "index.html" a lado
-    window.location.href = window.location.origin + '/presupuesto.html';
-}
-
-        function filtrarHistorial() {
-            const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
-            if(!query) { inyectarTarjetasHistorial(listaReportesMemoria); return; }
-            const filtrados = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
-            inyectarTarjetasHistorial(filtrados);
-        }
-
-function alternarSubVista(vista) {
-    const tabRec = document.getElementById('subTabRecepcion'); 
-    const tabEsc = document.getElementById('subTabEscaner');
-    const secRec = document.getElementById('subVistaContenidoRecepcion'); 
-    const secEsc = document.getElementById('subVistaContenidoEscaner');
-
-    if (vista === 'recepcion') { 
-        if (tabRec) tabRec.classList.add('active'); 
-        if (tabEsc) tabEsc.classList.remove('active'); 
-        if (secRec) secRec.style.display = 'block'; 
-        if (secEsc) secEsc.style.display = 'none'; 
-} else { 
-    // Lógica de Pestaña Escáner
-    if (tabRec) tabRec.classList.remove('active'); 
-    if (tabEsc) tabEsc.classList.add('active'); 
-    if (secRec) secRec.style.display = 'none'; 
-    if (secEsc) secEsc.style.display = 'block'; 
-    
-    const link = document.getElementById('in_link_escaner').value;
-    const iframeFijo = document.getElementById('iframeEscanerLaunch');
-    const msg = document.getElementById('noLinkMsg');
-    
-    // Ocultamos el iframe fijo y el mensaje de error
-    if (iframeFijo) iframeFijo.style.display = 'none';
-    if (msg) msg.style.display = 'none';
-    
-    // Usamos el mismo contenedor que ya tienes en el HTML (subVistaContenidoEscaner)
-    // No necesitamos crear otro div si ya existe secEsc
-    if (link && link.trim() !== "") {
-        secEsc.innerHTML = `<embed src="${link}" type="application/pdf" width="100%" height="100%">`;
-    } else {
-        if (msg) msg.style.display = 'block';
+        cargarHistorialSupabase();
     }
-}}
     
-        function abrirCalidadOriginal(tipoFoto) {
-            if(!reportDataGlobal) return;
-            let urlDestino = "";
-            if(tipoFoto === 'frente') urlDestino = reportDataGlobal.foto_frente_url;
-            else if(tipoFoto === 'trasera') urlDestino = reportDataGlobal.foto_trasera_url;
-            else if(tipoFoto === 'izq') urlDestino = reportDataGlobal.foto_izquierdo_url;
-            else if(tipoFoto === 'der') urlDestino = reportDataGlobal.foto_derecho_url;
-            else if(tipoFoto === 'motor') urlDestino = reportDataGlobal.foto_motor_url;
-            else if(tipoFoto === 'cluster') urlDestino = reportDataGlobal.foto_cluster_url;
-            if (urlDestino && urlDestino.includes('http')) { window.open(urlDestino, '_blank'); }
+    function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
+
+    function cambiarPestana(modo) {
+        document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
+        document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
+        document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
+        document.getElementById('btnTabHistorial').style.background = modo === 'nuevo' ? '#555' : '#d32f2f';
+        
+        if (modo === 'nuevo') {
+            limpiarFormularioCompleto(); 
+            document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
         }
-
-function mostrarVistaPreviaDigital(rep) {
-    reportDataGlobal = rep; 
-    
-    // 1. Iniciamos siempre en la pestaña de Recepción
-    alternarSubVista('recepcion');
-
-    // 2. Datos básicos
-    document.getElementById('web_view_folio').innerText = "FOLIO: " + (rep.folio || 'N/A');
-    document.getElementById('web_view_cliente').innerText = rep.cliente_nombre || 'N/A';
-    document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'N/A';
-    document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || 'N/A';
-    document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || 'N/A';
-    document.getElementById('web_view_color').innerText = rep.vehiculo_color || 'N/A';
-    document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || 'N/A';
-    document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || 'N/A';
-    document.getElementById('web_view_km').innerText = rep.vehiculo_km || 'N/A';
-
-    // 3. Gasolina
-    const fillGas = rep.vehiculo_gas_nivel || 0;
-    const barWeb = document.getElementById('web_view_gas_fill');
-    if(barWeb) {
-        barWeb.style.width = fillGas + "%";
-        barWeb.style.background = fillGas <= 25 ? '#d32f2f' : (fillGas >= 75 ? '#4caf50' : '#ff9800');
+        if (modo === 'historial') {
+            document.getElementById('buscadorHistorial').value = "";
+            document.getElementById('edit_record_id').value = "";
+            document.getElementById('formPanelTitle').innerHTML = "Historial de <span>Reportes</span>";
+            document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte en Nube";
+            if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
+            cargarHistorialSupabase(); 
+        }
     }
 
-    // 4. Diagnóstico
-    document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'SIN MOTIVO.';
-    document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'SIN OBSERVACIONES.';
-    document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES.';
+    function cancelarEdicionActiva() { limpiarFormularioCompleto(); cambiarPestana('historial'); }
 
-    // 5. Checklist
-    const setDotWeb = (id, val) => {
-        const dot = document.getElementById(id);
-        if(dot) dot.style.background = val ? '#4caf50' : '#d32f2f';
-    };
-    setDotWeb('dot_luces', rep.chk_luces);
-    setDotWeb('dot_elevadores', rep.chk_elevadores);
-    setDotWeb('dot_tablero', rep.chk_tablero);
+    function limpiarFormularioCompleto() {
+        document.getElementById('edit_record_id').value = "";
+        document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
+        document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte en Nube";
+        if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
 
-    // 6. Fotos
-    const fotos = [
-        {id: 'web_img_frente', url: rep.foto_frente_url},
-        {id: 'web_img_trasera', url: rep.foto_trasera_url},
-        {id: 'web_img_izq', url: rep.foto_izquierdo_url},
-        {id: 'web_img_der', url: rep.foto_derecho_url},
-        {id: 'web_img_motor', url: rep.foto_motor_url},
-        {id: 'web_img_cluster', url: rep.foto_cluster_url}
-    ];
-    fotos.forEach(f => {
-        const img = document.getElementById(f.id);
-        if(img) {
-            if(f.url) { img.src = f.url; img.style.display = 'block'; }
-            else { img.style.display = 'none'; }
-        }
-    });
-
-// 7. CONFIGURACIÓN DEL ESCÁNER (Actualizada para visor dinámico)
-    const msgEscaner = document.getElementById('noLinkMsg');
-    const secEsc = document.getElementById('subVistaContenidoEscaner');
-    
-    // Limpiamos cualquier rastro anterior
-    if (msgEscaner) msgEscaner.style.display = 'none';
-    
-    if (rep.link_escaner && rep.link_escaner.trim() !== "") {
-        // Inyectamos el PDF directamente en el contenedor padre
-        secEsc.innerHTML = `
-            <div style="width:100%; height:700px; background:#fff;">
-                <embed src="${rep.link_escaner}" type="application/pdf" width="100%" height="100%">
-            </div>
-        `;
-    } else {
-        // Si no hay link, mostramos el mensaje de aviso
-        if (msgEscaner) msgEscaner.style.display = 'block';
+        document.querySelectorAll('#formularioSection input, #formularioSection textarea').forEach(el => el.value = "");
+        document.querySelectorAll('#formularioSection input[type="checkbox"]').forEach(el => el.checked = false);
+        document.querySelectorAll('.check-icon').forEach(icon => { icon.classList.remove('fa-square-check', 'active'); icon.classList.add('fa-square'); });
+        
+        document.querySelectorAll('.photo-box img').forEach(img => { img.src=""; img.style.display = 'none'; });
+        document.querySelectorAll('.photo-placeholder').forEach(sp => sp.style.display = 'block');
+        document.querySelectorAll('.btn-del-photo').forEach(btn => btn.style.display = 'none');
+        
+        seleccionarCombustible(50);
+        document.getElementById('in_vehiculo_unidad').value = "KM";
+        const pdfUploader = document.getElementById('pdfUploader'); if (pdfUploader) pdfUploader.value = ""; 
+        
+        let folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + folioTxt;
+        document.title = "Reporte_" + folioTxt;
+        reportDataGlobal = null;
     }
 
-    // 8. Visibilidad final
-    document.getElementById('adminPanel').style.display = 'none'; 
-    document.getElementById('reportView').style.display = 'block'; 
-    document.getElementById('btnDescargarPDF').style.display = 'block';
-    document.getElementById('btnEnviarWhatsApp').style.display = 'block';
-    
-    window.scrollTo(0, 0);
-}
+    async function subirFotoOriginal(inputId, folioUnico) {
+        const input = document.getElementById(inputId);
+        if (!input || !input.files || input.files.length === 0) return null;
+        const file = input.files[0];
+        const fileExtension = file.name.split('.').pop();
+        const filePath = `${folioUnico}/${inputId}_${Date.now()}.${fileExtension}`;
+        const { error } = await supabaseClient.storage.from('fotos_reportes').upload(filePath, file, { cacheControl: '3600', upsert: true });
+        if (error) return null;
+        return supabaseClient.storage.from('fotos_reportes').getPublicUrl(filePath).data.publicUrl;
+    }
 
-        
-        function cargarRegistroParaEditar(rep) {
-            reportDataGlobal = rep;
-            document.getElementById('edit_record_id').value = rep.id;
-            document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
-            document.getElementById('btnGuardarForm').innerText = "Actualizar Reporte Cloud";
+    async function guardarYProcesarReporte() {
+        const btnSubmit = document.getElementById('btnGuardarForm');
+        const editId = document.getElementById('edit_record_id').value;
+        const isEditing = editId !== "";
 
-            document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
-            document.getElementById('in_cliente_telefono').value = rep.cliente_telefono || '';
-            document.getElementById('in_vehiculo_marca').value = rep.vehiculo_marca || '';
-            document.getElementById('in_vehiculo_modelo').value = rep.vehiculo_modelo || '';
-            document.getElementById('in_vehiculo_color').value = rep.vehiculo_color || '';
-            document.getElementById('in_vehiculo_placas').value = rep.vehiculo_placas || '';
-            document.getElementById('in_vehiculo_vin').value = rep.vehiculo_vin || '';
-            
-            if (rep.vehiculo_km) {
-                const partes = rep.vehiculo_km.split(' ');
-                document.getElementById('in_vehiculo_km').value = partes[0] || '';
-                document.getElementById('in_vehiculo_unidad').value = (partes[1] || 'KM').toLowerCase();
-            } else {
-                document.getElementById('in_vehiculo_km').value = '';
-                document.getElementById('in_vehiculo_unidad').value = 'km';
+        const fileInput = document.getElementById('pdfUploader');
+        const file = fileInput ? fileInput.files[0] : null;
+        let linkEscanerFinal = document.getElementById('in_link_escaner').value;
+
+        const telVal = document.getElementById('in_cliente_telefono').value.trim();
+        const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
+
+        if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEBE TENER 10-11 DÍGITOS."); return; }
+        if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL VIN DEBE TENER 17 CARACTERES."); return; }
+
+        const textoOriginal = btnSubmit.innerHTML;
+        btnSubmit.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; 
+        btnSubmit.disabled = true;
+
+        let folioCalculado = document.getElementById('pdf-lbl-folio').innerText.replace("REPORTE ", "");
+
+        try {
+            if (file) {
+                const fileName = `REPORTE_ESCANER_${folioCalculado}.pdf`;
+                const { error: uploadError } = await supabaseClient.storage.from('reportes').upload(fileName, file, { upsert: true });
+                if (uploadError) throw uploadError;
+                const { data: urlData } = supabaseClient.storage.from('reportes').getPublicUrl(fileName);
+                linkEscanerFinal = urlData.publicUrl;
+                document.getElementById('in_link_escaner').value = linkEscanerFinal;
             }
-            document.getElementById('in_vehiculo_gas').value = rep.vehiculo_gas_nivel ?? 50;
-            document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || '';
-            document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
-            document.getElementById('chk_luces').checked = !!rep.chk_luces;
-            document.getElementById('chk_elevadores').checked = !!rep.chk_elevadores;
-            document.getElementById('chk_tablero').checked = !!rep.chk_tablero;
-            document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || '';
-            document.getElementById('in_link_escaner').value = rep.link_escaner || '';
 
-            const setFormPrev = (imgId, textId, url) => {
-                const img = document.getElementById(imgId); const txt = document.getElementById(textId);
-                if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; } else { img.src=""; img.style.display='none'; txt.style.display='inline'; }
+            const urlFrente = await subirFotoOriginal(inputsFotos.frente, folioCalculado);
+            const urlTrasera = await subirFotoOriginal(inputsFotos.trasera, folioCalculado);
+            const urlIzq = await subirFotoOriginal(inputsFotos.izq, folioCalculado);
+            const urlDer = await subirFotoOriginal(inputsFotos.der, folioCalculado);
+            const urlMotor = await subirFotoOriginal(inputsFotos.motor, folioCalculado);
+            const urlCluster = await subirFotoOriginal(inputsFotos.cluster, folioCalculado);
+
+            const getUpperVal = (id) => (document.getElementById(id).value || '').toUpperCase();
+
+            const payload = {
+                cliente_nombre: getUpperVal('in_cliente_nombre'),
+                cliente_telefono: getUpperVal('in_cliente_telefono'),
+                vehiculo_marca: getUpperVal('in_vehiculo_marca'),
+                vehiculo_modelo: getUpperVal('in_vehiculo_modelo'),
+                vehiculo_color: getUpperVal('in_vehiculo_color'),
+                vehiculo_placas: getUpperVal('in_vehiculo_placas'),
+                vehiculo_vin: getUpperVal('in_vehiculo_vin'),
+                vehiculo_km: document.getElementById('in_vehiculo_km').value ? `${document.getElementById('in_vehiculo_km').value} ${document.getElementById('in_vehiculo_unidad').value.toUpperCase()}` : '',
+                vehiculo_gas_nivel: parseInt(document.getElementById('in_vehiculo_gas').value),
+                motivo_ingreso: getUpperVal('in_motivo_ingreso'),
+                observaciones_diagnostico: getUpperVal('in_obs_diagnostico'),
+                chk_luces: document.getElementById('chk_luces').checked,
+                chk_elevadores: document.getElementById('chk_elevadores').checked,
+                chk_tablero: document.getElementById('chk_tablero').checked,
+                observaciones_electrico: getUpperVal('in_obs_electrico'),
+                link_escaner: linkEscanerFinal 
             };
-            setFormPrev('prev_frente', 'txt_frente', rep.foto_frente_url); setFormPrev('prev_trasera', 'txt_trasera', rep.foto_trasera_url); setFormPrev('prev_izq', 'txt_izq', rep.foto_izquierdo_url); setFormPrev('prev_der', 'txt_der', rep.foto_derecho_url); setFormPrev('prev_motor', 'txt_motor', rep.foto_motor_url); setFormPrev('prev_cluster', 'txt_cluster', rep.foto_cluster_url);
 
-            document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
-            document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
-            if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
-        }
+            if(urlFrente) payload.foto_frente_url = urlFrente;
+            if(urlTrasera) payload.foto_trasera_url = urlTrasera;
+            if(urlIzq) payload.foto_izquierdo_url = urlIzq;
+            if(urlDer) payload.foto_derecho_url = urlDer;
+            if(urlMotor) payload.foto_motor_url = urlMotor;
+            if(urlCluster) payload.foto_cluster_url = urlCluster;
+
+            let error = null;
+            if (isEditing) { const { error: errUpdate } = await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId); error = errUpdate; } 
+            else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
+
+            if (error) throw error;
+            alert(isEditing ? "✅ REGISTRO ACTUALIZADO EN LA NUBE" : "✅ REPORTE GUARDADO EN LA NUBE CON ÉXITO.");
             
-async function generarPDFConJSPDF(autoDownloadAndClose = false) {
-
-            const btn = document.getElementById('btnDescargarPDF'); 
-            if(!autoDownloadAndClose) { btn.innerText = "⏳ GENERANDO DOCUMENTO..."; btn.disabled = true; }
+            // Pasar a vista digital
+            const { data: reporteGuardado } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', folioCalculado).single();
+            if(reporteGuardado) mostrarVistaPreviaDigital(reporteGuardado);
             
-            const rep = reportDataGlobal; const { jsPDF } = window.jspdf; const doc = new jsPDF('p', 'mm', 'a4');
-            const f = new Date(rep.created_at); const fechaTxt = `${f.toLocaleDateString('es-MX')}  |  ${f.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})}`;
+        } catch (err) { alert("❌ ERROR: " + err.message); }
+        finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.disabled = false; }
+    }
 
-            const pintarFondoBase = () => { doc.setFillColor(211, 47, 47); doc.rect(0, 0, 8, 297, 'F'); };
-            const pintarPiePagina = (num) => { doc.setFillColor(26, 26, 26); doc.rect(8, 289, 202, 8, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255); doc.text(`PAGINA ${num} DE 2`, 110, 294.2, { align: 'center' }); };
-            
-            const dibujarIconoUsuario = (x, y) => { doc.setFillColor(211, 47, 47); doc.circle(x + 2, y - 1.5, 1.2, 'F'); doc.ellipse(x + 2, y + 1.5, 2.5, 1, 'F'); };
-            const dibujarIconoAuto = (x, y) => { doc.setFillColor(211, 47, 47); doc.rect(x, y - 0.5, 5, 2, 'F'); doc.rect(x + 0.8, y - 2, 3.4, 1.8, 'F'); doc.setFillColor(26, 26, 26); doc.circle(x + 1.2, y + 1.8, 0.6, 'F'); doc.circle(x + 3.8, y + 1.8, 0.6, 'F'); };
-            const dibujarIconoRayo = (x, y) => { doc.setFillColor(211, 47, 47); doc.triangle(x + 2, y - 3, x, y + 0.5, x + 2.2, y + 0.5, 'F'); doc.triangle(x + 1.2, y + 3, x + 3.4, y - 0.5, x + 1.2, y - 0.5, 'F'); };
-            const dibujarIconoLlave = (x, y) => { doc.setDrawColor(211, 47, 47); doc.setLineWidth(1); doc.line(x, y + 2, x + 4, y - 2); doc.setFillColor(211, 47, 47); doc.circle(x + 4, y - 2, 1.2, 'F'); };
+    async function cargarHistorialSupabase() {
+        const contenedor = document.getElementById('listaReportes');
+        if (contenedor) contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
+        const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false });
+        if (error) { if (contenedor) contenedor.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
+        listaReportesMemoria = reportes; 
+        inyectarTarjetasHistorial(listaReportesMemoria);
+    }
 
-            const pintarCheckFila = (txt, val, x, y) => { doc.setFillColor(val ? 76 : 211, val ? 175 : 47, val ? 80 : 47); doc.circle(x + 2, y - 1, 1.5, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(val ? 46 : 198, val ? 125 : 40, val ? 50 : 40); doc.text(val ? "OK" : "FALLA", x + 6, y); doc.setFont("helvetica", "normal"); doc.setTextColor(60, 60, 65); doc.text(txt, x + 20, y); };
+    function inyectarTarjetasHistorial(arr) {
+        const contenedor = document.getElementById('listaReportes');
+        if (!contenedor) return;
+        contenedor.innerHTML = "";
+        
+        arr.forEach(rep => {
+            const tarjeta = document.createElement('div');
+            tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
+            tarjeta.innerHTML = `
+                <div style="flex:1;">
+                    <strong style="color:#d32f2f;">FOLIO: ${rep.folio || 'N/A'}</strong>
+                    <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''}</div>
+                    <div style="font-size:10pt;">🔢 ${rep.vehiculo_placas || 'S/N'}</div>
+                    <div style="font-size:10pt; font-weight:bold;">👤 ${rep.cliente_nombre || 'S/N'}</div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button id="btn-ver-${rep.folio}" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
+                    <button id="btn-edit-${rep.folio}" style="background:#000; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
+                    <button id="btn-cotizar-${rep.folio}" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">💰 Cotizar</button>
+                </div>
+            `;
+            contenedor.appendChild(tarjeta);
 
-            let imgLogo = await convertUrlToImageElement('logo.png');
+            document.getElementById(`btn-ver-${rep.folio}`).onclick = () => mostrarVistaPreviaDigital(rep);
+            document.getElementById(`btn-edit-${rep.folio}`).onclick = () => cargarRegistroParaEditar(rep);
+            document.getElementById(`btn-cotizar-${rep.folio}`).onclick = () => transferirAPresupuesto(rep);
+        });
+    }
 
-            pintarFondoBase(); doc.setFillColor(26, 26, 26); doc.rect(8, 0, 202, 28, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(1.5); doc.line(8, 28, 210, 28);
-            doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("REPORTE DE SERVICIO", 20, 11); doc.setFontSize(9.5); doc.setTextColor(211, 47, 47); doc.text(`FOLIO: ${rep.folio}`, 20, 17); doc.setTextColor(200, 200, 200); doc.text(fechaTxt, 20, 22);
-            if (imgLogo) { let maxH = 14; let ratio = imgLogo.width / imgLogo.height; doc.addImage(imgLogo, 'PNG', 200 - (maxH * ratio), 7, maxH * ratio, maxH); }
+    function transferirAPresupuesto(rep) {
+        const datos = {
+            folio: String(rep.folio || '').trim(),
+            cliente_nombre: String(rep.cliente_nombre || '').trim(),
+            cliente_telefono: String(rep.cliente_telefono || '').trim(),
+            vehiculo_marca: String(rep.vehiculo_marca || '').trim(),
+            vehiculo_modelo: String(rep.vehiculo_modelo || '').trim(),
+            vehiculo_placas: String(rep.vehiculo_placas || '').trim(),
+            vehiculo_color: String(rep.vehiculo_color || '').trim(),
+            vehiculo_km: String(rep.vehiculo_km || '').trim(),
+            vehiculo_vin: String(rep.vehiculo_vin || '').trim(),
+            motivo_ingreso: String(rep.motivo_ingreso || '').trim()
+        };
+        localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
+        window.location.href = window.location.origin + '/presupuesto.html';
+    }
 
-            dibujarIconoUsuario(20, 40); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL CLIENTE", 28, 42); doc.setDrawColor(230, 232, 235); doc.setLineWidth(0.5); doc.line(20, 45, 200, 45);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("NOMBRE COMPLETO", 20, 52); doc.text("TELEFONO DE CONTACTO", 120, 52);
-            doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.cliente_nombre, 20, 57); doc.text(rep.cliente_telefono || '--', 120, 57);
+    function filtrarHistorial() {
+        const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
+        if(!query) { inyectarTarjetasHistorial(listaReportesMemoria); return; }
+        const filtrados = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
+        inyectarTarjetasHistorial(filtrados);
+    }
 
-            dibujarIconoAuto(20, 75); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DATOS DEL VEHICULO", 28, 77); doc.line(20, 80, 200, 80);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(110, 110, 110); doc.text("MARCA", 20, 87); doc.text("MODELO / AÑO", 75, 87); doc.text("COLOR", 150, 87);
-            doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_marca || '--', 20, 92); doc.text(rep.vehiculo_modelo || '--', 75, 92); doc.text(rep.vehiculo_color || '--', 150, 92);
-            doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("PLACAS", 20, 102); doc.text("NUMERO DE SERIE (VIN)", 75, 102); doc.text("KILOMETRAJE", 150, 102);
-            doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.vehiculo_placas || '--', 20, 107); doc.text(rep.vehiculo_vin || '--', 75, 107);
-            
-            let kmPdfTexto = '--';
-            if (rep.vehiculo_km) {
-                const partes = rep.vehiculo_km.split(' ');
-                const numero = parseFloat(partes[0]);
-                const unidad = partes[1] || 'KM';
-                kmPdfTexto = !isNaN(numero) ? `${numero.toLocaleString()} ${unidad}` : rep.vehiculo_km;
-            }
-            doc.text(kmPdfTexto, 150, 107);
+    function cargarRegistroParaEditar(rep) {
+        reportDataGlobal = rep;
+        document.getElementById('edit_record_id').value = rep.id;
+        document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
+        document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + rep.folio;
+        document.title = "Reporte_" + rep.folio;
+        document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar Reporte Cloud";
 
-            let yGas = 120; doc.setFont("helvetica", "normal"); doc.setTextColor(110, 110, 110); doc.text("NIVEL DE COMBUSTIBLE EN TABLERO", 20, yGas); doc.setFillColor(235, 237, 240); doc.rect(20, yGas + 2, 180, 3.5, 'F');
-            let fillGas = rep.vehiculo_gas_nivel; if (fillGas > 0) { if(fillGas <= 25) doc.setFillColor(211, 47, 47); else if(fillGas >= 75) doc.setFillColor(76, 175, 80); else doc.setFillColor(255, 152, 0); doc.rect(20, yGas + 2, (fillGas / 100) * 180, 3.5, 'F'); }
-            doc.setFontSize(7.5); doc.setTextColor(140, 140, 145); doc.text("E (VACÍO)", 20, yGas + 9); doc.text("1/2", 108, yGas + 9); doc.text("F (LLENO)", 193, yGas + 9);
-
-            dibujarIconoRayo(20, 143); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("CHECKLIST ELECTRICO INICIAL", 28, 145); doc.line(20, 148, 200, 148);
-            pintarCheckFila("LUCES E INDICADORES", rep.chk_luces, 20, 156); pintarCheckFila("ELEVADORES Y SEGUROS", rep.chk_elevadores, 110, 156); pintarCheckFila("TESTIGOS EN TABLERO", rep.chk_tablero, 20, 164);
-
-            let yCheckNotes = 171; doc.setFillColor(248, 249, 251); doc.rect(20, yCheckNotes, 180, 14, 'F'); doc.setDrawColor(180, 180, 185); doc.setLineWidth(0.3); doc.line(20, yCheckNotes, 20, yCheckNotes + 14);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(100, 100, 105); doc.text("NOTAS DEL CHECKLIST SISTEMA ELECTRICO:", 24, yCheckNotes + 5); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(rep.observaciones_electrico || 'SIN OBSERVACIONES REGISTRADAS.', 24, yCheckNotes + 10);
-
-            let yDiagSec = 196; dibujarIconoLlave(20, yDiagSec + 2); doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(26, 26, 26); doc.text("DIAGNOSTICO TECNICO", 28, yDiagSec + 4); doc.setDrawColor(230, 232, 235); doc.line(20, yDiagSec + 6, 200, yDiagSec + 6);
-            
-            const pintarBloqueDiagnostico = (titulo, cuerpo, y) => { doc.setFillColor(248, 249, 251); doc.rect(20, y, 180, 21, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(0.8); doc.line(20, y, 20, y + 21); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 120, 125); doc.text(titulo, 24, y + 5); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 30, 34); doc.text(cuerpo || 'NINGUNO.', 24, y + 11, { maxWidth: 172 }); };
-            pintarBloqueDiagnostico("MOTIVO DEL INGRESO / SINTOMAS REPORTADOS POR EL CLIENTE", rep.motivo_ingreso, yDiagSec + 11); pintarBloqueDiagnostico("OBSERVACIONES GENERALES DEL DIAGNOSTICO MECANICO", rep.observaciones_diagnostico, yDiagSec + 36);
-            pintarPiePagina(1);
-
-            doc.addPage(); pintarFondoBase(); doc.setFillColor(26, 26, 26); doc.rect(8, 0, 202, 28, 'F'); doc.setDrawColor(211, 47, 47); doc.setLineWidth(1.5); doc.line(8, 28, 210, 28);
-            doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255); doc.text("EVIDENCIA FOTOGRAFICA", 20, 16);
-            if (imgLogo) { let ratio = imgLogo.width / imgLogo.height; doc.addImage(imgLogo, 'PNG', 200 - (14 * ratio), 7, 14 * ratio, 14); }
-
-            const fotosPDF = [ { url: rep.foto_frente_url, label: '1. FRENTE DEL VEHÍCULO' }, { url: rep.foto_trasera_url, label: '2. PARTE TRASERA' }, { url: rep.foto_izquierdo_url, label: '3. LADO IZQUIERDO' }, { url: rep.foto_derecho_url, label: '4. LADO DERECHO' }, { url: rep.foto_motor_url, label: '5. MOTOR' }, { url: rep.foto_cluster_url, label: '6. CLUSTER / TABLERO' } ];
-            let coords = [{ x: 20, y: 36 }, { x: 115, y: 36 }, { x: 20, y: 115 }, { x: 115, y: 115 }, { x: 20, y: 194 }, { x: 115, y: 194 }];
-            for (let i = 0; i < fotosPDF.length; i++) {
-                let imgEl = await convertUrlToImageElement(fotosPDF[i].url); let c = coords[i];
-                if (imgEl) doc.addImage(imgEl, 'JPEG', c.x, c.y, 85, 62, undefined, 'FAST');
-                else { doc.setFillColor(245, 246, 248); doc.rect(c.x, c.y, 85, 62, 'F'); doc.setFontSize(8); doc.setTextColor(160, 160, 165); doc.text("FOTO NO DISPONIBLE", c.x + 26, c.y + 31); }
-                doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor(90, 90, 95); doc.text(fotosPDF[i].label, c.x + 1, c.y + 67);
-            }
-            pintarPiePagina(2);
-
-            doc.save(`REPORTE_SERVICIO_${rep.folio}.pdf`);
-            
-            if (autoDownloadAndClose) {
-                console.log("PDF generado exitosamente para el cliente.");
-            } else {
-                btn.innerText = "📥 Generar PDF"; btn.disabled = false;
-            }
+        document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
+        document.getElementById('in_cliente_telefono').value = rep.cliente_telefono || '';
+        document.getElementById('in_vehiculo_marca').value = rep.vehiculo_marca || '';
+        document.getElementById('in_vehiculo_modelo').value = rep.vehiculo_modelo || '';
+        document.getElementById('in_vehiculo_color').value = rep.vehiculo_color || '';
+        document.getElementById('in_vehiculo_placas').value = rep.vehiculo_placas || '';
+        document.getElementById('in_vehiculo_vin').value = rep.vehiculo_vin || '';
+        
+        if (rep.vehiculo_km) {
+            const partes = rep.vehiculo_km.split(' ');
+            document.getElementById('in_vehiculo_km').value = partes[0] || '';
+            document.getElementById('in_vehiculo_unidad').value = (partes[1] || 'KM').toUpperCase();
         }
         
-    // Pega esto justo después de tus otras funciones
+        seleccionarCombustible(rep.vehiculo_gas_nivel ?? 50);
+        
+        document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || '';
+        document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
+        
+        // Checklist update visual
+        const setChkVisual = (id, val) => {
+            const chk = document.getElementById(id); chk.checked = !!val;
+            const icon = chk.nextElementSibling.querySelector('.check-icon');
+            if(val) { icon.classList.remove('fa-square'); icon.classList.add('fa-square-check', 'active'); } 
+            else { icon.classList.add('fa-square'); icon.classList.remove('fa-square-check', 'active'); }
+        };
+        setChkVisual('chk_luces', rep.chk_luces);
+        setChkVisual('chk_elevadores', rep.chk_elevadores);
+        setChkVisual('chk_tablero', rep.chk_tablero);
+
+        document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || '';
+        document.getElementById('in_link_escaner').value = rep.link_escaner || '';
+
+        const setFormPrev = (imgId, textId, inputId, url) => {
+            const img = document.getElementById(imgId); const txt = document.getElementById(textId); const btn = document.getElementById(inputId).nextElementSibling;
+            if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; btn.style.display='flex'; } 
+            else { img.src=""; img.style.display='none'; txt.style.display='block'; btn.style.display='none';}
+        };
+        setFormPrev('prev_frente', 'txt_frente', 'input_frente', rep.foto_frente_url); 
+        setFormPrev('prev_trasera', 'txt_trasera', 'input_trasera', rep.foto_trasera_url); 
+        setFormPrev('prev_izq', 'txt_izq', 'input_izq', rep.foto_izquierdo_url); 
+        setFormPrev('prev_der', 'txt_der', 'input_der', rep.foto_derecho_url); 
+        setFormPrev('prev_motor', 'txt_motor', 'input_motor', rep.foto_motor_url); 
+        setFormPrev('prev_cluster', 'txt_cluster', 'input_cluster', rep.foto_cluster_url);
+
+        document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
+        document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
+        if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
+    }
+
+    function mostrarVistaPreviaDigital(rep) {
+        reportDataGlobal = rep; 
+        alternarSubVista('recepcion');
+
+        document.getElementById('web_view_folio').innerText = "FOLIO: " + (rep.folio || 'N/A');
+        document.getElementById('web_view_cliente').innerText = rep.cliente_nombre || 'N/A';
+        document.getElementById('web_view_telefono').innerText = rep.cliente_telefono || 'N/A';
+        document.getElementById('web_view_marca').innerText = rep.vehiculo_marca || 'N/A';
+        document.getElementById('web_view_modelo').innerText = rep.vehiculo_modelo || 'N/A';
+        document.getElementById('web_view_color').innerText = rep.vehiculo_color || 'N/A';
+        document.getElementById('web_view_placas').innerText = rep.vehiculo_placas || 'N/A';
+        document.getElementById('web_view_vin').innerText = rep.vehiculo_vin || 'N/A';
+        document.getElementById('web_view_km').innerText = rep.vehiculo_km || 'N/A';
+
+        const fillGas = rep.vehiculo_gas_nivel || 0;
+        const barWeb = document.getElementById('web_view_gas_fill');
+        if(barWeb) { barWeb.style.width = fillGas + "%"; barWeb.style.background = fillGas <= 25 ? '#d32f2f' : (fillGas >= 75 ? '#4caf50' : '#ff9800'); }
+
+        document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'SIN MOTIVO.';
+        document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'SIN OBSERVACIONES.';
+        document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES.';
+
+        const setDotWeb = (id, val) => { const dot = document.getElementById(id); if(dot) dot.style.background = val ? '#4caf50' : '#d32f2f'; };
+        setDotWeb('dot_luces', rep.chk_luces); setDotWeb('dot_elevadores', rep.chk_elevadores); setDotWeb('dot_tablero', rep.chk_tablero);
+
+        const fotos = [ {id: 'web_img_frente', url: rep.foto_frente_url}, {id: 'web_img_trasera', url: rep.foto_trasera_url}, {id: 'web_img_izq', url: rep.foto_izquierdo_url}, {id: 'web_img_der', url: rep.foto_derecho_url}, {id: 'web_img_motor', url: rep.foto_motor_url}, {id: 'web_img_cluster', url: rep.foto_cluster_url} ];
+        fotos.forEach(f => { const img = document.getElementById(f.id); if(img) { if(f.url) { img.src = f.url; img.style.display = 'block'; } else { img.style.display = 'none'; } } });
+
+        const msgEscaner = document.getElementById('noLinkMsg');
+        const secEsc = document.getElementById('subVistaContenidoEscaner');
+        if (msgEscaner) msgEscaner.style.display = 'none';
+        
+        if (rep.link_escaner && rep.link_escaner.trim() !== "") {
+            secEsc.innerHTML = `<div style="width:100%; height:700px; background:#fff;"><embed src="${rep.link_escaner}" type="application/pdf" width="100%" height="100%"></div>`;
+        } else { if (msgEscaner) msgEscaner.style.display = 'block'; }
+
+        document.getElementById('adminPanel').style.display = 'none'; 
+        document.getElementById('reportView').style.display = 'block'; 
+        window.scrollTo(0, 0);
+    }
+
+    function alternarSubVista(vista) {
+        const tabRec = document.getElementById('subTabRecepcion'); const tabEsc = document.getElementById('subTabEscaner');
+        const secRec = document.getElementById('subVistaContenidoRecepcion'); const secEsc = document.getElementById('subVistaContenidoEscaner');
+        if (vista === 'recepcion') { 
+            if (tabRec) tabRec.classList.add('active'); if (tabEsc) tabEsc.classList.remove('active'); 
+            if (secRec) secRec.style.display = 'block'; if (secEsc) secEsc.style.display = 'none'; 
+        } else { 
+            if (tabRec) tabRec.classList.remove('active'); if (tabEsc) tabEsc.classList.add('active'); 
+            if (secRec) secRec.style.display = 'none'; if (secEsc) secEsc.style.display = 'block'; 
+        }
+    }
+
+    function abrirCalidadOriginal(tipoFoto) {
+        if(!reportDataGlobal) return; let urlDestino = "";
+        if(tipoFoto === 'frente') urlDestino = reportDataGlobal.foto_frente_url;
+        else if(tipoFoto === 'trasera') urlDestino = reportDataGlobal.foto_trasera_url;
+        else if(tipoFoto === 'izq') urlDestino = reportDataGlobal.foto_izquierdo_url;
+        else if(tipoFoto === 'der') urlDestino = reportDataGlobal.foto_derecho_url;
+        else if(tipoFoto === 'motor') urlDestino = reportDataGlobal.foto_motor_url;
+        else if(tipoFoto === 'cluster') urlDestino = reportDataGlobal.foto_cluster_url;
+        if (urlDestino && urlDestino.includes('http')) { window.open(urlDestino, '_blank'); }
+    }
+
     function enviarWhatsApp() {
-        let rep = reportDataGlobal || JSON.parse(localStorage.getItem('ae_reporte_activo'));
-        
-        if (!rep) {
-            alert("⚠️ No hay reporte cargado. Por favor, abre el reporte nuevamente.");
-            return;
-        }
-
+        let rep = reportDataGlobal;
+        if (!rep) { alert("⚠️ No hay reporte cargado."); return; }
         let telLimpio = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : "";
-        
-        if (telLimpio.length < 10 || telLimpio.length > 11) {
-            alert("El número de teléfono parece inválido: " + rep.cliente_telefono);
-            return;
-        }
-
-        let telefonoFinal = telLimpio;
-        if (telLimpio.length === 10) {
-            telefonoFinal = "52" + telLimpio;
-        }
+        if (telLimpio.length < 10 || telLimpio.length > 11) { alert("El número de teléfono parece inválido."); return; }
+        let telefonoFinal = telLimpio.length === 10 ? "52" + telLimpio : telLimpio;
 
         const mensaje = `Hola *${rep.cliente_nombre.toUpperCase()}!* Te compartimos el Reporte de Servicio y Escaneo de tu vehículo 🚗 *${rep.vehiculo_marca} ${rep.vehiculo_modelo}* con el folio *${rep.folio}*. \n\n` +
-                        `📊 *Reporte de Escáneo:* \n` +
-                        `https://aediagnostico.com/?scan=${rep.folio}\n\n` +
-                        `📄 *Reporte de Servicio:* \n` +
-                        `https://aediagnostico.com/?pdf=${rep.folio}\n\n` +
+                        `📊 *Reporte de Escáneo:* \nhttps://aediagnostico.com/?scan=${rep.folio}\n\n` +
+                        `📄 *Reporte de Servicio:* \nhttps://aediagnostico.com/?pdf=${rep.folio}\n\n` +
                         `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
-        
-        const urlWpp = `https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`;
-        window.open(urlWpp, '_blank');
+        window.open(`https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
 
-    // Esta función "escucha" cuando el usuario regresa a la página (por ejemplo, al darle atrás en el navegador)
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
-            // Si el navegador restauró la página, forzamos la carga del historial
-            console.log("Regresando de presupuesto, recargando lista...");
-            cargarHistorialSupabase();
+    function iniciarEscaneoQR() {
+        const readerDiv = document.getElementById('reader'); readerDiv.style.display = 'block';
+        const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render((decodedText) => {
+            document.getElementById('in_link_escaner').value = decodedText;
+            html5QrcodeScanner.clear(); readerDiv.style.display = 'none'; alert("¡Código QR escaneado!");
+        }, () => {});
+    }
+    
+    // Conexión del botón de PDF en la vista digital al nuevo WYSIWYG
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnPdfHistorial = document.getElementById('btnDescargarPDF');
+        if (btnPdfHistorial) {
+            btnPdfHistorial.onclick = async function() {
+                const btnOriginalText = btnPdfHistorial.innerHTML;
+                btnPdfHistorial.innerHTML = "⏳ GENERANDO...";
+                btnPdfHistorial.disabled = true;
+                
+                // Carga la información en el formulario (invisible) y genera el PDF
+                cargarRegistroParaEditar(reportDataGlobal);
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('formularioSection').style.position = 'absolute';
+                document.getElementById('formularioSection').style.left = '-9999px';
+                
+                await forzarDescargaPDF();
+                
+                document.getElementById('formularioSection').style.position = 'relative';
+                document.getElementById('formularioSection').style.left = '0';
+                
+                regresarAlFormulario(); // Devuelve al usuario a la lista normal después de descargar
+                btnPdfHistorial.innerHTML = btnOriginalText;
+                btnPdfHistorial.disabled = false;
+            };
         }
     });
-
-        // Esto asegura que el botón siempre encuentre la función, aunque la página recargue
-document.addEventListener('DOMContentLoaded', () => {
-    const btnPdf = document.getElementById('btnDescargarPDF');
-    if (btnPdf) {
-        btnPdf.onclick = function() {
-            generarPDFConJSPDF();
-        };
-    }
-});
-        // ... al final de tus scripts actuales ...
-
-function iniciarEscaneoQR() {
-    const readerDiv = document.getElementById('reader');
-    readerDiv.style.display = 'block';
-
-    const html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
-        fps: 10, 
-        qrbox: 250 
-    });
-    
-    html5QrcodeScanner.render((decodedText) => {
-        // Al detectar el QR, lo ponemos en el input
-        document.getElementById('in_link_escaner').value = decodedText;
-        
-        // Cerramos la cámara
-        html5QrcodeScanner.clear();
-        readerDiv.style.display = 'none';
-        alert("¡Código QR escaneado con éxito!");
-    }, (errorMessage) => {
-        // Aquí no hacemos nada para evitar que el usuario vea errores constantes
-    });
-}
 </script>
 </body>
 </html>
