@@ -722,25 +722,25 @@ textarea.card-input {
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
-function forzarDescargaPNG() {
-        // 1. Ocultamos los elementos que no deben salir en la foto
-        const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .btn-submit-app');
+    // 📥 FUNCIÓN CORREGIDA: Descarga de Imagen PNG Limpia
+    function forzarDescargaPNG() {
+        // Ocultamos botones de control, barra superior y barra de descarga inferior
+        const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-        // 2. TRUCO MAESTRO: Cambiamos todos los inputs y textareas por etiquetas de texto normal 
-        // para que html2canvas pueda leer los saltos de línea perfectos y no aviente el texto a los lados.
+        // Truco para conservar los saltos de línea de las fallas en la captura
         const inputs = document.querySelectorAll('input, textarea');
-        const reemplazos = []; // Guardamos los originales para regresarlos después
+        const reemplazos = [];
 
         inputs.forEach(input => {
             const esArea = input.tagName.toLowerCase() === 'textarea';
             const span = document.createElement('div');
             
-// Si es un text area (Fallas), respetamos los saltos de línea y el alto automático
             if (esArea) {
                 span.innerText = input.value || '';
                 span.style.whiteSpace = 'pre-wrap';
                 span.style.wordWrap = 'break-word';
+                span.style.overflowWrap = 'break-word';
                 span.style.width = '100%';
                 span.style.fontSize = '8.5pt';
                 span.style.fontWeight = '700';
@@ -749,10 +749,9 @@ function forzarDescargaPNG() {
                 span.style.lineHeight = '1.4';
                 span.style.minHeight = '38px';
                 span.style.paddingBottom = '5px';
-                span.style.display = 'block'; // <--- NUEVO
-                span.style.marginTop = '0';   // <--- NUEVO
+                span.style.display = 'block';
+                span.style.marginTop = '0';
             } else {
-                // Si es un input corto, le damos el mismo estilo de la cajita
                 span.innerText = input.value || '';
                 span.style.width = '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
@@ -761,144 +760,43 @@ function forzarDescargaPNG() {
                 span.style.textTransform = 'uppercase';
                 span.style.display = 'inline-block';
                 span.style.padding = '2px 0';
-                // Para las tablas, lo alineamos a la derecha si es precio
                 if(input.classList.contains('price-input')) span.style.textAlign = 'right';
             }
 
-            // Hacemos el cambio en la página visible
             input.parentNode.insertBefore(span, input);
-            input.style.display = 'none'; // Ocultamos el input original
-            
-            // Guardamos el par para revertirlo después
+            input.style.display = 'none';
             reemplazos.push({ original: input, falso: span });
         });
 
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
-        // Ajustamos los anchos para la captura
         const anchoOriginal = elemento.style.width;
         const maxWOriginal = elemento.style.maxWidth;
         elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
 
-// 3. Tomamos la foto
         html2canvas(elemento, {
-            scale: 4,           
+            scale: 3,           
             useCORS: true,      
             logging: false,
             width: 840,         
             windowWidth: 840,
-            scrollY: 0,         /* 🔥 TRUCO: Ignora si la pantalla del celular está movida */
-            y: 0                /* 🔥 TRUCO: Fuerza el corte de la foto exactamente en el techo del encabezado oscuro */
+            scrollY: 0,         
+            y: 0                
         }).then(canvas => {
-            // Restauramos tamaños
             elemento.style.width = anchoOriginal;
             elemento.style.maxWidth = maxWOriginal;
 
-            // 4. Descargamos la imagen
             const enlace = document.createElement('a');
             enlace.download = nombreArchivo + ".png";
             enlace.href = canvas.toDataURL('image/png');
+            
             document.body.appendChild(enlace);
             enlace.click();
             document.body.removeChild(enlace);
 
-            // 5. RESTAURAMOS TODO A LA NORMALIDAD (Regresamos los inputs y botones)
             setTimeout(() => {
-                elementosAOcultar.forEach(el => {
-                    if (el.classList.contains('nav-bar') || el.classList.contains('btn-submit-app')) {
-                        el.style.display = 'flex';
-                    } else {
-                        el.style.display = 'inline-flex';
-                    }
-                });
-                
-                // Quitamos los textos falsos y volvemos a mostrar los inputs reales
-                reemplazos.forEach(par => {
-                    par.falso.remove();
-                    par.original.style.display = ''; 
-                });
-            }, 500);
-
-        }).catch(err => {
-            console.error("Error en la captura:", err);
-            // Si hay error, de todos modos restauramos todo
-            elemento.style.width = anchoOriginal;
-            elemento.style.maxWidth = maxWOriginal;
-            elementosAOcultar.forEach(el => {
-                el.style.display = el.classList.contains('nav-bar') || el.classList.contains('btn-submit-app') ? 'flex' : 'inline-flex';
-            });
-            reemplazos.forEach(par => {
-                par.falso.remove();
-                par.original.style.display = ''; 
-            });
-        });
-    }
-    
-async function forzarDescargaPDF() {
-            const { jsPDF } = window.jspdf;
-            if (!jsPDF) {
-                alert("La librería de PDF no está lista. Verifica tu conexión a internet.");
-                return;
-            }
-
-            console.log("Generando PDF profesional limpio...");
-
-            // 1. Sincronizamos textos por seguridad
-            const inputs = document.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                if (input.tagName.toLowerCase() === 'textarea') {
-                    input.innerHTML = input.value;
-                } else {
-                    if (input.value) input.setAttribute('value', input.value);
-                }
-            });
-
-            // 2. 🔥 Ocultamos TODOS los botones (los de control, basura, y los botones principales de descarga)
-            const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
-            elementosAOcultar.forEach(el => el.style.display = 'none');
-
-            // 3. Seleccionamos el contenedor .wrapper-page para que SÍ salga el encabezado oscuro completo
-            const elemento = document.querySelector('.wrapper-page');
-
-            const anchoOriginal = elemento.style.width;
-            const maxWOriginal = elemento.style.maxWidth;
-            elemento.style.width = '840px';
-            elemento.style.maxWidth = 'none';
-
-            try {
-                // 4. Tomamos la foto en Ultra HD (Escala 3) sin rastro de resplandor blanco
-                const canvas = await html2canvas(elemento, {
-                    scale: 3,
-                    useCORS: true,
-                    logging: false,
-                    width: 840,
-                    windowWidth: 840,
-                    scrollY: 0,
-                    y: 0
-                });
-
-                const imgData = canvas.toDataURL('image/png');
-
-                // 5. Creamos el PDF formato Carta (Letter)
-                const pdf = new jsPDF('p', 'mm', 'letter');
-                const pdfWidth = pdf.internal.pageSize.getWidth();     // Ancho exacto de página carta (~215.9mm)
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Alto proporcional exacto
-
-                // 6. Insertamos la imagen en máxima calidad conservando nitidez tipográfica
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-
-                // 7. 🔥 Descarga directa del archivo PDF
-                pdf.save('Presupuesto_AE.pdf');
-
-            } catch (error) {
-                console.error("Error al generar el PDF:", error);
-                alert("Ocurrió un error al generar el PDF.");
-            } finally {
-                // 8. Restauramos los anchos y volvemos a mostrar los botones en pantalla
-                elemento.style.width = anchoOriginal;
-                elemento.style.maxWidth = maxWOriginal;
                 elementosAOcultar.forEach(el => {
                     if (el.classList.contains('nav-bar') || el.classList.contains('pdf-actions-bar')) {
                         el.style.display = 'flex';
@@ -906,8 +804,122 @@ async function forzarDescargaPDF() {
                         el.style.display = 'inline-flex';
                     }
                 });
-            }
+                reemplazos.forEach(par => {
+                    par.falso.remove();
+                    par.original.style.display = ''; 
+                });
+            }, 500);
+        }).catch(err => {
+            console.error("Error en la captura:", err);
+            elemento.style.width = anchoOriginal;
+            elemento.style.maxWidth = maxWOriginal;
+            elementosAOcultar.forEach(el => {
+                el.style.display = el.classList.contains('nav-bar') || el.classList.contains('pdf-actions-bar') ? 'flex' : 'inline-flex';
+            });
+            reemplazos.forEach(par => {
+                par.falso.remove();
+                par.original.style.display = ''; 
+            });
+        });
+    }
+
+    // 📄 FUNCIÓN CORREGIDA: Descarga Directa de PDF Perfecta
+    async function forzarDescargaPDF() {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) {
+            alert("La librería de PDF no está lista. Verifica tu conexión a internet.");
+            return;
         }
+
+        console.log("Generando PDF profesional...");
+
+        const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
+        elementosAOcultar.forEach(el => el.style.display = 'none');
+
+        // Mismo truco de reemplazo para que el PDF respete las múltiples filas en fallas
+        const inputs = document.querySelectorAll('input, textarea');
+        const reemplazos = [];
+
+        inputs.forEach(input => {
+            const esArea = input.tagName.toLowerCase() === 'textarea';
+            const span = document.createElement('div');
+            
+            if (esArea) {
+                span.innerText = input.value || '';
+                span.style.whiteSpace = 'pre-wrap';
+                span.style.wordWrap = 'break-word';
+                span.style.overflowWrap = 'break-word';
+                span.style.width = '100%';
+                span.style.fontSize = '8.5pt';
+                span.style.fontWeight = '700';
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.lineHeight = '1.4';
+                span.style.minHeight = '38px';
+                span.style.paddingBottom = '5px';
+                span.style.display = 'block';
+                span.style.marginTop = '0';
+            } else {
+                span.innerText = input.value || '';
+                span.style.width = '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize;
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.display = 'inline-block';
+                span.style.padding = '2px 0';
+                if(input.classList.contains('price-input')) span.style.textAlign = 'right';
+            }
+
+            input.parentNode.insertBefore(span, input);
+            input.style.display = 'none';
+            reemplazos.push({ original: input, falso: span });
+        });
+
+        const elemento = document.querySelector('.wrapper-page');
+        const anchoOriginal = elemento.style.width;
+        const maxWOriginal = elemento.style.maxWidth;
+        elemento.style.width = '840px';
+        elemento.style.maxWidth = 'none';
+
+        try {
+            const canvas = await html2canvas(elemento, {
+                scale: 3,
+                useCORS: true,
+                logging: false,
+                width: 840,
+                windowWidth: 840,
+                scrollY: 0,
+                y: 0
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'letter');
+            const pdfWidth = pdf.internal.pageSize.getWidth();     
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+            pdf.save('Presupuesto_AE.pdf');
+
+        } catch (error) {
+            console.error("Error al generar el PDF:", error);
+            alert("Ocurrió un error al generar el PDF.");
+        } finally {
+            elemento.style.width = anchoOriginal;
+            elemento.style.maxWidth = maxWOriginal;
+            elementosAOcultar.forEach(el => {
+                if (el.classList.contains('nav-bar') || el.classList.contains('pdf-actions-bar')) {
+                    el.style.display = 'flex';
+                } else {
+                    el.style.display = 'inline-flex';
+                }
+            });
+            reemplazos.forEach(par => {
+                par.falso.remove();
+                par.original.style.display = ''; 
+            });
+        }
+    }
 </script>
 </body>
 </html>
