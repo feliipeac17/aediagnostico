@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AE Diagnostico</title>
     <link rel="icon" type="image/png" href="logo2.png">
-<link rel="apple-touch-icon" href="logo2.png">
+    <link rel="apple-touch-icon" href="logo2.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<style>
+    <style>
         :root {
             --primary-blue: #0284c7;
             --primary-red: #d32f2f;
@@ -38,13 +38,12 @@
         .nav-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; background: #fff; padding: 8px 15px; border-radius: 8px; border: 1px solid var(--border-color); }
         .btn-back { background: #64748b; color: white; border: none; padding: 8px 16px; font-size: 9pt; font-weight: 600; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 
-        /* 📄 Lienzo de Impresión Ultra Ajustado sin Márgenes */
         #printable-canvas {
             width: 100% !important;        
             max-width: 100% !important;    
             height: auto !important;       
             margin: 0 !important;          
-            margin-top: -6px !important;   /* Elimina el espacio blanco debajo de la línea */
+            margin-top: -6px !important;   
             background: #ffffff !important;
             overflow: hidden !important;
             display: block !important;
@@ -52,14 +51,12 @@
             padding: 15px 20px !important;
         }
 
-        /* Forzamos que las columnas se apilen en celular */
         .pdf-grid-boxes, .pdf-pillars-grid { 
             display: grid; 
             grid-template-columns: 1fr !important; 
             gap: 15px; 
         }
 
-        /* Encabezado Estirado */
         .pdf-header-container { 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; 
             border-radius: 8px 8px 0 0 !important; 
@@ -73,7 +70,6 @@
             margin-bottom: 0 !important;
         }
 
-        /* 🚀 LÍNEA TRICOLOR */
         .pdf-divider { 
             height: 6px !important; 
             background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; 
@@ -101,7 +97,6 @@
         .pdf-title-row h2 span { color: #0284c7; }
         .pdf-badge-informativo { background-color: #ef4444; color: white; font-size: 7.5pt; font-weight: 800; padding: 4px 12px; border-radius: 6px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; }
 
-        /* Tarjetas de Información */
         .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .pdf-info-card { background-color: var(--gray-light); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 15px; position: relative; }
         .pdf-info-card.cliente { border-left: 5px solid #0284c7; }
@@ -123,7 +118,6 @@
         
         .card-input { width: 100%; border: none; border-bottom: 1px dashed var(--border-color); background: transparent; font-size: 8pt; font-weight: 700; color: #0f172a; outline: none; padding: 2px 0; text-transform: uppercase; }
 
-        /* 3 Columnas */
         .pdf-pillars-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .pdf-pillar-card { 
             border: 1px solid var(--border-color); 
@@ -162,7 +156,6 @@
         .btn-add-item { background: none; border: 1px dashed var(--border-color); color: var(--text-color); width: 100%; padding: 6px; font-size: 7.5pt; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 5px; }
         .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; }
 
-        /* Totales y Cierre */
         .pdf-footer-section { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; align-items: start; }
         .pdf-terms-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; background-color: #ffffff; }
         .pdf-terms-card h4 { font-family: 'Montserrat', sans-serif; font-size: 8.5pt; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #0f172a; }
@@ -200,46 +193,18 @@
         .btn-submit-app:hover { background: #b71c1c; }
         .btn-ctrl-col { display: inline-flex; }
 
-        /* Media Print limpio y optimizado */
         @media print {
-            @page {
-                size: letter portrait;
-                margin: 0mm !important;
-            }
-            * {
-                -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important;
-            }
-            body { 
-                background: white !important; 
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .nav-bar, .btn-submit-app, .btn-add-item, .btn-del-item, .fa-trash { 
-                display: none !important; 
-            }
-            .wrapper-page {
-                width: 100% !important;
-                max-width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .pdf-header-container {
-                width: 100% !important;
-                max-width: 100% !important;
-                border-radius: 0 !important;
-                margin: 0 !important;
-            }
+            @page { size: letter portrait; margin: 0mm !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { background: white !important; margin: 0 !important; padding: 0 !important; }
+            .nav-bar, .btn-submit-app, .btn-add-item, .btn-del-item, .fa-trash { display: none !important; }
+            .wrapper-page { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .pdf-header-container { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; margin: 0 !important; }
             .pdf-grid-boxes { grid-template-columns: 1fr 1fr !important; }
             .pdf-pillars-grid { grid-template-columns: 1fr 1fr 1fr !important; }
         }
 
-        .logo-header {
-            max-height: 70px;
-            width: auto;
-            display: block;
-            margin-bottom: 10px;
-        }
+        .logo-header { max-height: 70px; width: auto; display: block; margin-bottom: 10px; }
 
         .table-header-row {
             display: grid;
@@ -274,219 +239,214 @@
 <body>
 
 <div class="wrapper-page">
+    
     <div class="nav-bar">
         <button onclick="volverAlInicio()" class="btn-back" style="background:none; border:none; cursor:pointer; font-size: 14px; color: inherit; display: flex; align-items: center; gap: 5px;">
             <i class="fa-solid fa-arrow-left"></i> Volver al Panel
         </button>
     </div>
-</div>
 
-<script>
-    function volverAlInicio() {
-        // window.location.replace limpia el historial de navegación 
-        // evitando que el navegador confunda "index.html" con "/"
-        window.location.replace('/');
-    }
-</script>
-
-<div class="pdf-header-container">
-    <div class="pdf-brand-block">
-        <img src="logo3.png" alt="AE Diagnóstico" class="logo-header">
-        <p style="color: #94a3b8; margin: 0;">
-            <i class="fa-solid fa-location-dot" style="color:var(--primary-red);"></i> 
-            Jalisco #729, Colonia San Joaquin, Piedras Negras, COAH<br>
-            <i class="fa-solid fa-phone" style="color:var(--primary-red);"></i> 
-            Tel: 878-116-5910  |  
-            <i class="fa-solid fa-envelope" style="color:var(--primary-red);"></i> 
-            aediagnostico@gmail.com
-        </p>
+    <div class="pdf-header-container">
+        <div class="pdf-brand-block">
+            <img src="logo3.png" alt="AE Diagnóstico" class="logo-header">
+            <p style="color: #94a3b8; margin: 0;">
+                <i class="fa-solid fa-location-dot" style="color:var(--primary-red);"></i> 
+                Jalisco #729, Colonia San Joaquin, Piedras Negras, COAH<br>
+                <i class="fa-solid fa-phone" style="color:var(--primary-red);"></i> 
+                Tel: 878-116-5910  |  
+                <i class="fa-solid fa-envelope" style="color:var(--primary-red);"></i> 
+                aediagnostico@gmail.com
+            </p>
+        </div>
+        <div class="pdf-folio-container">
+            <div class="pdf-folio-badge" id="pdf-lbl-folio">PRES-0000</div>
+            <table class="pdf-meta-table">
+                <tr>
+                    <td style="font-weight: 700; color: #94a3b8;">Fecha</td>
+                    <td id="pdf-lbl-fecha" style="font-weight: 400; color: #94a3b8;">--/--/----</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 700; color: #94a3b8;">Hora</td>
+                    <td id="pdf-lbl-hora" style="font-weight: 400; color: #94a3b8;">00:00 a.m.</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 700; color: #94a3b8;">Vigencia</td>
+                    <td style="font-weight: 400; color: #94a3b8;">15 Días</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div class="pdf-folio-container">
-        <div class="pdf-folio-badge" id="pdf-lbl-folio">PRES-0000</div>
-        <table class="pdf-meta-table">
-            <tr>
-                <td style="font-weight: 700; color: #94a3b8;">Fecha</td>
-                <td id="pdf-lbl-fecha" style="font-weight: 400; color: #94a3b8;">--/--/----</td>
-            </tr>
-            <tr>
-                <td style="font-weight: 700; color: #94a3b8;">Hora</td>
-                <td id="pdf-lbl-hora" style="font-weight: 400; color: #94a3b8;">00:00 a.m.</td>
-            </tr>
-            <tr>
-                <td style="font-weight: 700; color: #94a3b8;">Vigencia</td>
-                <td style="font-weight: 400; color: #94a3b8;">15 Días</td>
-            </tr>
-        </table>
-    </div>
-</div>
 
     <div class="pdf-divider"></div>
 
-<div id="printable-canvas" style="padding: 15px 20px !important;">
-            <div class="pdf-title-row">
-                <h2>Presupuesto</h2>
-                <div class="pdf-badge-informativo">Documento Informativo</div>
-            </div>
+    <div id="printable-canvas" style="padding: 15px 20px !important;">
+        <div class="pdf-title-row">
+            <h2>Presupuesto</h2>
+            <div class="pdf-badge-informativo">Documento Informativo</div>
+        </div>
 
-<div class="pdf-grid-boxes">
-                <div class="pdf-info-card cliente">
-                    <i class="fa-solid fa-user-gear pdf-card-icon"></i>
-                    <div class="pdf-card-title">Cliente</div>
-                    <div class="pdf-card-data" style="gap: 10px;">
-                        <div class="pdf-data-item" style="grid-column: span 2;">
-                            <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente" style="font-size: 10pt; font-weight: 700 !important;">
-                        </div>
-                        <div class="pdf-data-item">
-                            <span>Telefono</span>
-                            <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="11">
-                        </div>
-                    </div>
-                </div>
-
-<div class="pdf-info-card vehiculo">
-                    <i class="fa-solid fa-car-rear pdf-card-icon"></i>
-                    <div class="pdf-card-title">Vehiculo</div>
-                    <div class="pdf-card-data" style="gap: 10px;">
-                        <div class="pdf-data-item" style="grid-column: span 2;">
-                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo" style="font-size: 10pt; font-weight: 700 !important;">
-                        </div>
-                        <div class="pdf-data-item">
-                            <span>Placas</span>
-                            <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
-                        </div>
-                        <div class="pdf-data-item">
-                            <span>Color</span>
-                            <input type="text" id="in_vehiculo_color" class="card-input" placeholder="...">
-                        </div>
-                        <div class="pdf-data-item">
-                            <span>VIN / Serie</span>
-                            <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
-                        </div>
-                        <div class="pdf-data-item">
-                            <span>Kilometraje</span>
-                            <input type="text" id="in_vehiculo_km" class="card-input" placeholder="...">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-<div class="pdf-info-card diagnostico" style="margin-bottom: 15px;">
-                <i class="fa-solid fa-notes-medical pdf-card-icon"></i>
-                <div class="pdf-card-title">Diagnostico</div>
-                <div class="pdf-card-data" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div class="pdf-data-item">
-                        <span>Falla o Sintomas Reportados por el Cliente</span>
-                        <textarea id="in_falla_reportada" class="card-input" placeholder="..." 
-                            oninput="autoExpandir(this)" 
-                            style="resize: none; width: 100%; overflow: hidden; min-height: 38px; font-family: inherit;"></textarea>
+        <div class="pdf-grid-boxes">
+            <div class="pdf-info-card cliente">
+                <i class="fa-solid fa-user-gear pdf-card-icon"></i>
+                <div class="pdf-card-title">Cliente</div>
+                <div class="pdf-card-data" style="gap: 10px;">
+                    <div class="pdf-data-item" style="grid-column: span 2;">
+                        <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente" style="font-size: 10pt; font-weight: 700 !important;">
                     </div>
                     <div class="pdf-data-item">
-                        <span>Notas adicionales</span>
-                        <textarea id="in_codigo_fallas" class="card-input" placeholder="..." 
-                            oninput="autoExpandir(this)" 
-                            style="resize: none; width: 100%; overflow: hidden; min-height: 38px; font-family: inherit;"></textarea>
+                        <span>Telefono</span>
+                        <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="11">
                     </div>
                 </div>
             </div>
 
-<div class="pdf-pillars-grid">
-                <div class="pdf-pillar-card">
-                    <div class="pdf-pillar-header">
-                        <div class="pdf-pillar-title">
-                            <span class="pdf-pillar-num">1</span> 
-                            <i class="fa-solid fa-screwdriver-wrench" style="margin-right: 4px;"></i> Servicios
-                        </div>
-                        <span class="pdf-pillar-total" id="pdf-tot-servicios">$0.00</span>
+            <div class="pdf-info-card vehiculo">
+                <i class="fa-solid fa-car-rear pdf-card-icon"></i>
+                <div class="pdf-card-title">Vehiculo</div>
+                <div class="pdf-card-data" style="gap: 10px;">
+                    <div class="pdf-data-item" style="grid-column: span 2;">
+                        <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo" style="font-size: 10pt; font-weight: 700 !important;">
                     </div>
-                    <div class="table-container">
-                        <div class="table-header-row">
-                            <span>Descripcion</span>
-                            <span style="text-align: right;">Importe</span>
-                        </div>
-                        <div id="listServicios"></div>
-                        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listServicios')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
+                    <div class="pdf-data-item">
+                        <span>Placas</span>
+                        <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
                     </div>
-                </div>
-
-                <div class="pdf-pillar-card">
-                    <div class="pdf-pillar-header">
-                        <div class="pdf-pillar-title">
-                            <span class="pdf-pillar-num">2</span> 
-                            <i class="fa-solid fa-box-open" style="margin-right: 4px;"></i> Refacciones
-                        </div>
-                        <span class="pdf-pillar-total" id="pdf-tot-refacciones">$0.00</span>
+                    <div class="pdf-data-item">
+                        <span>Color</span>
+                        <input type="text" id="in_vehiculo_color" class="card-input" placeholder="...">
                     </div>
-                    <div class="table-container">
-                        <div class="table-header-row">
-                            <span>Descripcion</span>
-                            <span style="text-align: right;">Importe</span>
-                        </div>
-                        <div id="listRefacciones"></div>
-                        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listRefacciones')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
+                    <div class="pdf-data-item">
+                        <span>VIN / Serie</span>
+                        <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
+                    </div>
+                    <div class="pdf-data-item">
+                        <span>Kilometraje</span>
+                        <input type="text" id="in_vehiculo_km" class="card-input" placeholder="...">
                     </div>
                 </div>
-
-                <div class="pdf-pillar-card">
-                    <div class="pdf-pillar-header">
-                        <div class="pdf-pillar-title">
-                            <span class="pdf-pillar-num">3</span> 
-                            <i class="fa-solid fa-gears" style="margin-right: 4px;"></i> Mano de Obra
-                        </div>
-                        <span class="pdf-pillar-total" id="pdf-tot-manoobra">$0.00</span>
-                    </div>
-                    <div class="table-container">
-                        <div class="table-header-row">
-                            <span>Descripcion</span>
-                            <span style="text-align: right;">Importe</span>
-                        </div>
-                        <div id="listManoObra"></div>
-                        <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listManoObra')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pdf-footer-section">
-                <div class="pdf-terms-card">
-                    <h4>Terminos y Condiciones</h4>
-                    <ol>
-                        <li>Este presupuesto es informativo y tiene vigencia de 15 días naturales; los precios de refacciones pueden variar segun disponibilidad del proveedor.</li>
-                        <li>La mano de obra cuenta con garantía de 30 días naturales a partir de la entrega; la garantia de refacciones depende del fabricante.</li>
-                        <li>Cualquier alteracion al documento debera autorizarla el cliente antes de continuar.</li>
-                        <li>El taller no se hace responsable por objetos de valor olvidados dentro del vehiculo y aplicara cargo por almacenaje a unidades no recojidas tras 15 dias.</li>
-                    </ol>
-                    <div class="pdf-note-red">▲ NOTA IMPORTANTE: El precio puede variar en caso de requerir piezas adicionales no visibles en el diagnóstico inicial.</div>
-                </div>
-                
-<div class="pdf-totals-container">
-    <table class="pdf-totals-table">
-        <tr>
-            <td style="color: #94a3b8;">Servicios</td>
-            <td id="pdf-val-tservicios" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td>
-        </tr>
-        <tr>
-            <td style="color: #94a3b8;">Refacciones</td>
-            <td id="pdf-val-trefacciones" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td>
-        </tr>
-        <tr>
-            <td style="color: #94a3b8;">Mano de Obra</td>
-            <td id="pdf-val-tmanoobra" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td>
-        </tr>
-    </table>
-    
-<div class="pdf-rest-box" style="margin-top: 10px; padding: 8px 10px;">
-                        <span style="font-size: 12pt; font-weight: 700; color: #ffffff;">Total</span>
-                        <strong id="pdf-val-gtotal" style="font-size: 16pt; font-weight: 700; color: #ffffff;">$0.00</strong>
-                    </div>
-</div>
             </div>
         </div>
 
-<button class="btn-submit-app" onclick="forzarDescargaPNG()">
-    <i class="fa-solid fa-file-pdf"></i> Descargar
-</button>
-    
-<script>
-// SEGURIDAD: Si no hay PIN, no entra
+        <div class="pdf-info-card diagnostico" style="margin-bottom: 15px;">
+            <i class="fa-solid fa-notes-medical pdf-card-icon"></i>
+            <div class="pdf-card-title">Diagnostico</div>
+            <div class="pdf-card-data" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="pdf-data-item">
+                    <span>Falla o Sintomas Reportados por el Cliente</span>
+                    <textarea id="in_falla_reportada" class="card-input" placeholder="..." 
+                        oninput="autoExpandir(this)" 
+                        style="resize: none; width: 100%; overflow: hidden; min-height: 38px; font-family: inherit;"></textarea>
+                </div>
+                <div class="pdf-data-item">
+                    <span>Notas adicionales</span>
+                    <textarea id="in_codigo_fallas" class="card-input" placeholder="..." 
+                        oninput="autoExpandir(this)" 
+                        style="resize: none; width: 100%; overflow: hidden; min-height: 38px; font-family: inherit;"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="pdf-pillars-grid">
+            <div class="pdf-pillar-card">
+                <div class="pdf-pillar-header">
+                    <div class="pdf-pillar-title">
+                        <span class="pdf-pillar-num">1</span> 
+                        <i class="fa-solid fa-screwdriver-wrench" style="margin-right: 4px;"></i> Servicios
+                    </div>
+                    <span class="pdf-pillar-total" id="pdf-tot-servicios">$0.00</span>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-row">
+                        <span>Descripcion</span>
+                        <span style="text-align: right;">Importe</span>
+                    </div>
+                    <div id="listServicios"></div>
+                    <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listServicios')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
+                </div>
+            </div>
+
+            <div class="pdf-pillar-card">
+                <div class="pdf-pillar-header">
+                    <div class="pdf-pillar-title">
+                        <span class="pdf-pillar-num">2</span> 
+                        <i class="fa-solid fa-box-open" style="margin-right: 4px;"></i> Refacciones
+                    </div>
+                    <span class="pdf-pillar-total" id="pdf-tot-refacciones">$0.00</span>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-row">
+                        <span>Descripcion</span>
+                        <span style="text-align: right;">Importe</span>
+                    </div>
+                    <div id="listRefacciones"></div>
+                    <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listRefacciones')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
+                </div>
+            </div>
+
+            <div class="pdf-pillar-card">
+                <div class="pdf-pillar-header">
+                    <div class="pdf-pillar-title">
+                        <span class="pdf-pillar-num">3</span> 
+                        <i class="fa-solid fa-gears" style="margin-right: 4px;"></i> Mano de Obra
+                    </div>
+                    <span class="pdf-pillar-total" id="pdf-tot-manoobra">$0.00</span>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-row">
+                        <span>Descripcion</span>
+                        <span style="text-align: right;">Importe</span>
+                    </div>
+                    <div id="listManoObra"></div>
+                    <button class="btn-add-item btn-ctrl-col" onclick="agregarRenglon('listManoObra')"><i class="fa-solid fa-plus"></i> Añadir fila</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pdf-footer-section">
+            <div class="pdf-terms-card">
+                <h4>Terminos y Condiciones</h4>
+                <ol>
+                    <li>Este presupuesto es informativo y tiene vigencia de 15 días naturales; los precios de refacciones pueden variar segun disponibilidad del proveedor.</li>
+                    <li>La mano de obra cuenta con garantía de 30 días naturales a partir de la entrega; la garantia de refacciones depende del fabricante.</li>
+                    <li>Cualquier alteracion al documento debera autorizarla el cliente antes de continuar.</li>
+                    <li>El taller no se hace responsable por objetos de valor olvidados dentro del vehiculo y aplicara cargo por almacenaje a unidades no recojidas tras 15 dias.</li>
+                </ol>
+                <div class="pdf-note-red">▲ NOTA IMPORTANTE: El precio puede variar en caso de requerir piezas adicionales no visibles en el diagnóstico inicial.</div>
+            </div>
+            
+            <div class="pdf-totals-container">
+                <table class="pdf-totals-table">
+                    <tr>
+                        <td style="color: #94a3b8;">Servicios</td>
+                        <td id="pdf-val-tservicios" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #94a3b8;">Refacciones</td>
+                        <td id="pdf-val-trefacciones" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #94a3b8;">Mano de Obra</td>
+                        <td id="pdf-val-tmanoobra" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td>
+                    </tr>
+                </table>
+                
+                <div class="pdf-rest-box" style="margin-top: 10px; padding: 8px 10px;">
+                    <span style="font-size: 12pt; font-weight: 700; color: #ffffff;">Total</span>
+                    <strong id="pdf-val-gtotal" style="font-size: 16pt; font-weight: 700; color: #ffffff;">$0.00</strong>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-submit-app" onclick="forzarDescargaPNG()">
+            <i class="fa-solid fa-file-pdf"></i> Descargar
+        </button>
+
+    </div> </div> <script>
+    function volverAlInicio() {
+        window.location.replace('/');
+    }
+
+    // SEGURIDAD: Si no hay PIN, no entra
     if (localStorage.getItem('ae_sesion_valida') !== 'true') {
         window.location.replace('/');
     }
@@ -497,7 +457,7 @@
         const hTxt = hoy.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
         
         let folioTxt = "PRES-" + hoy.getFullYear() + String(hoy.getMonth()+1).padStart(2,'0') + String(hoy.getDate()).padStart(2,'0') + "-" + Math.floor(100 + Math.random() * 900);
-        let idReporteCorto = "AE-" + Math.floor(1000 + Math.random() * 9000); // Folio corto por defecto
+        let idReporteCorto = "AE-" + Math.floor(1000 + Math.random() * 9000);
 
         document.getElementById('pdf-lbl-fecha').innerText = fTxt;
         document.getElementById('pdf-lbl-hora').innerText = hTxt;
@@ -517,7 +477,6 @@
                     idReporteCorto = info.folio;
                 }
                 
-                // Validación segura por si borraste la etiqueta superior
                 const lblReporte = document.getElementById('pdf-lbl-reporte');
                 if (lblReporte) {
                     lblReporte.innerText = "REPORTE " + folioTxt;
@@ -544,7 +503,6 @@
             localStorage.removeItem('ae_transferencia_presupuesto');
         } 
 
-        // 🚀 EXTRACCIÓN SEGURA DEL CÓDIGO PARA EL NOMBRE DEL PDF
         let codigoLimpio = idReporteCorto;
         const lblReporteCheck = document.getElementById('pdf-lbl-reporte');
         
@@ -553,16 +511,14 @@
             codigoLimpio = textoReporteLbl.replace("REPORTE ", "").trim();
         }
         
-        // Si no encontró un código AE-, genera uno seguro
         if (!codigoLimpio.includes("AE-")) {
             codigoLimpio = "AE-" + Math.floor(1000 + Math.random() * 9000);
         }
 
-        // Asigna exactamente el nombre: Presupuesto_AE-XXXX al documento
         document.title = "Presupuesto_" + codigoLimpio;
     });
     
-function agregarRenglon(listaId) {
+    function agregarRenglon(listaId) {
         const contenedor = document.getElementById(listaId);
         const div = document.createElement('div');
         div.className = 'table-row';
@@ -577,11 +533,10 @@ function agregarRenglon(listaId) {
         contenedor.appendChild(div);
     }
 
-   function calcularSumaColumna(listaId) {
+    function calcularSumaColumna(listaId) {
         let total = 0;
         const inputs = document.querySelectorAll(`#${listaId} .price-input`);
         inputs.forEach(input => {
-            // Limpiamos el texto: quitamos el $, comas y letras, dejando solo números y el punto
             const valorLimpio = input.value.replace(/[^0-9.]/g, '');
             const val = parseFloat(valorLimpio);
             if (!isNaN(val)) total += val;
@@ -608,105 +563,43 @@ function agregarRenglon(listaId) {
         if(document.getElementById('pdf-val-grestante')) document.getElementById('pdf-val-grestante').innerText = `$${restante.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
-function forzarDescargaPNG() {
-    // 1. Sincronizamos los inputs para que el texto escrito no se pierda
-    const inputs = document.querySelectorAll('input, textarea');
-    inputs.forEach(input => {
-        if (input.value) input.setAttribute('value', input.value);
-    });
-
-    // 2. Ocultamos los botones de control para que no salgan en la captura
-    const botones = document.querySelectorAll('.btn-ctrl-col');
-    botones.forEach(b => b.style.display = 'none');
-
-    // 3. Obtenemos el nombre del archivo
-    let nombreArchivo = document.title || "Presupuesto";
-
-    // 4. Seleccionamos el contenedor principal que contiene todo tu formato
-    const elemento = document.querySelector('.wrapper-page');
-
-    // 5. Configuramos html2canvas para que renderice todo el bloque completo sin recortes
-    html2canvas(elemento, {
-        scale: 2,               // Alta resolución (súper nítido)
-        useCORS: true,          // Permite imágenes locales/externas
-        logging: false,
-        x: 0,                   // Inicia desde la esquina superior izquierda exacta
-        y: 0,
-        width: elemento.offsetWidth,   // Toma todo el ancho real del contenedor
-        height: elemento.scrollHeight, // 🚀 MAGIA: Captura toda la altura real del documento (evita el corte)
-        windowWidth: 820        // Fuerza el motor a calcularlo como una pantalla de escritorio completa
-    }).then(canvas => {
-        // 6. Generamos el archivo PNG descargable automático
-        const enlace = document.createElement('a');
-        enlace.download = nombreArchivo + ".png";
-        enlace.href = canvas.toDataURL('image/png');
-        
-        // 7. Simulamos el clic de descarga inmediata
-        document.body.appendChild(enlace);
-        enlace.click();
-        document.body.removeChild(enlace);
-
-        // 8. Restauramos los botones en pantalla
-        setTimeout(() => {
-            botones.forEach(b => b.style.display = 'inline-block');
-        }, 500);
-    }).catch(err => {
-        console.error("Error en la captura completa:", err);
-        botones.forEach(b => b.style.display = 'inline-block');
-    });
-}
-    
-    function formatearMonedaInput(input) {
-    let valor = input.value.replace(/[^0-9.]/g, ''); // Solo números y punto
-    if (valor !== '') {
-        let numero = parseFloat(valor);
-        if (!isNaN(numero)) {
-            // Formatea con comas y 2 decimales exactos, agregando el signo $
-            input.value = '$ ' + numero.toFixed(2);
-        }
-    }
-}
-
-function limpiarFormatoMoneda(input) {
-    // Al hacer clic para editar, le quitamos el símbolo y los espacios para que escribas libremente
-    input.value = input.value.replace(/[^0-9.]/g, '');
-}
-    
-    function llenarTablaPillar(origListId, targetTblId, targetTotalId) {
-        const tbody = document.querySelector(`#${targetTblId} tbody`);
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        let suma = 0;
-        
-        const filas = document.querySelectorAll(`#${origListId} .table-row`);
-        filas.forEach(row => {
-            const descInput = row.querySelector('.desc-input');
-            const priceInput = row.querySelector('.price-input');
-            if (descInput && priceInput) {
-                const desc = descInput.value.toUpperCase().trim();
-                const precio = parseFloat(priceInput.value) || 0;
-                if (desc) {
-                    suma += precio;
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td style="padding: 6px 10px; font-size: 7.5pt; border-bottom: 1px dashed #e2e8f0; text-transform: uppercase;">${desc}</td><td style="padding: 6px 10px; font-size: 7.5pt; border-bottom: 1px dashed #e2e8f0; text-align: right; font-weight: 700;">$${precio.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>`;
-                    tbody.appendChild(tr);
-                }
-            }
+    function forzarDescargaPNG() {
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            if (input.value) input.setAttribute('value', input.value);
         });
 
-        if (tbody.children.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #aaa; font-style: italic; font-size: 7.5pt; padding: 15px 0;">- Sin conceptos registrados -</td></tr>';
-        }
-        
-        if(document.getElementById(targetTotalId)) {
-            document.getElementById(targetTotalId).innerText = `$${suma.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-        }
-    }
-    function autoExpandir(textarea) {
-        // Resetea temporalmente la altura para medir el contenido real
-        textarea.style.height = 'auto';
-        // Ajusta la altura del cuadro al tamaño exacto del texto escrito
-        textarea.style.height = textarea.scrollHeight + 'px';
+        const botones = document.querySelectorAll('.btn-ctrl-col');
+        botones.forEach(b => b.style.display = 'none');
+
+        let nombreArchivo = document.title || "Presupuesto";
+        const elemento = document.querySelector('.wrapper-page');
+
+        html2canvas(elemento, {
+            scale: 2,           
+            useCORS: true,      
+            logging: false,
+            x: 0,                   
+            y: 0,
+            width: elemento.offsetWidth,   
+            height: elemento.scrollHeight, 
+            windowWidth: 820        
+        }).then(canvas => {
+            const enlace = document.createElement('a');
+            enlace.download = nombreArchivo + ".png";
+            enlace.href = canvas.toDataURL('image/png');
+            
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+
+            setTimeout(() => {
+                botones.forEach(b => b.style.display = 'inline-block');
+            }, 500);
+        }).catch(err => {
+            console.error("Error en la captura completa:", err);
+            botones.forEach(b => b.style.display = 'inline-block');
+        });
     }
 </script>
 </body>
