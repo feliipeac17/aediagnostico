@@ -503,20 +503,31 @@
 
         document.getElementById('pdf-lbl-fecha').innerText = fTxt;
         document.getElementById('pdf-lbl-hora').innerText = hTxt;
-        document.getElementById('pdf-lbl-folio').innerText = "FOLIO " + folioTxt;
+        
+        const lblFolio = document.getElementById('pdf-lbl-folio');
+        if (lblFolio) {
+            lblFolio.innerText = "FOLIO " + folioTxt;
+        }
 
         const transferencia = localStorage.getItem('ae_transferencia_presupuesto');
         if (transferencia) {
             const info = JSON.parse(transferencia);
             
             if (info.folio) {
-                // Si el folio viene con formato completo (ej. PRES-20260721-120), extraemos la parte final o usamos el texto del reporte
                 folioTxt = info.folio;
                 if (info.folio.includes("AE-")) {
-                    idReporteCorto = info.folio; // Si ya trae formato AE-XXXX lo respeta
+                    idReporteCorto = info.folio;
                 }
-                document.getElementById('pdf-lbl-reporte').innerText = "REPORTE " + folioTxt;
-                document.getElementById('pdf-lbl-folio').innerText = "FOLIO " + folioTxt;
+                
+                // Validación segura por si borraste la etiqueta superior
+                const lblReporte = document.getElementById('pdf-lbl-reporte');
+                if (lblReporte) {
+                    lblReporte.innerText = "REPORTE " + folioTxt;
+                }
+                
+                if (lblFolio) {
+                    lblFolio.innerText = "FOLIO " + folioTxt;
+                }
             }
             
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
@@ -535,19 +546,24 @@
             localStorage.removeItem('ae_transferencia_presupuesto');
         } 
 
-        // 🚀 FORMATO SOLICITADO: Extraemos el identificador tipo "AE-59WC" o usamos el folio corto
-        let textoReporteLbl = document.getElementById('pdf-lbl-reporte').innerText; // Ejemplo: "REPORTE AE-59WC"
-        let codigoLimpio = textoReporteLbl.replace("REPORTE ", "").trim();
+        // 🚀 EXTRACCIÓN SEGURA DEL CÓDIGO PARA EL NOMBRE DEL PDF
+        let codigoLimpio = idReporteCorto;
+        const lblReporteCheck = document.getElementById('pdf-lbl-reporte');
         
-        // Si no encontró un código AE-, genera uno genérico con el folio
+        if (lblReporteCheck) {
+            let textoReporteLbl = lblReporteCheck.innerText; 
+            codigoLimpio = textoReporteLbl.replace("REPORTE ", "").trim();
+        }
+        
+        // Si no encontró un código AE-, genera uno seguro
         if (!codigoLimpio.includes("AE-")) {
             codigoLimpio = "AE-" + Math.floor(1000 + Math.random() * 9000);
         }
 
-        // Asigna exactamente el nombre: Presupuesto_AE-XXXX
+        // Asigna exactamente el nombre: Presupuesto_AE-XXXX al documento
         document.title = "Presupuesto_" + codigoLimpio;
     });
-
+    
 function agregarRenglon(listaId) {
         const contenedor = document.getElementById(listaId);
         const div = document.createElement('div');
