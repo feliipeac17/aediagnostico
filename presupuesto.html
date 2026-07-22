@@ -348,10 +348,10 @@
                     <div class="pdf-card-title">Cliente</div>
                     <div class="pdf-card-data" style="gap: 10px;">
                         <div class="pdf-data-item" style="grid-column: span 2;">
-                            <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente..." style="font-size: 10pt; font-weight: 700 !important;">
+                            <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente" style="font-size: 10pt; font-weight: 700 !important;">
                         </div>
                         <div class="pdf-data-item">
-                            <span>Teléfono</span>
+                            <span>Telefono</span>
                             <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="11">
                         </div>
                     </div>
@@ -362,7 +362,7 @@
                     <div class="pdf-card-title">Vehiculo</div>
                     <div class="pdf-card-data" style="gap: 10px;">
                         <div class="pdf-data-item" style="grid-column: span 2;">
-                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo..." style="font-size: 10pt; font-weight: 700 !important;">
+                            <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo" style="font-size: 10pt; font-weight: 700 !important;">
                         </div>
                         <div class="pdf-data-item">
                             <span>Placas</span>
@@ -498,15 +498,18 @@
         <button class="btn-submit-app" onclick="procesarYDescargarPresupuesto()"><i class="fa-solid fa-file-pdf"></i> Descargar</button>
 
 <script>
-    // SEGURIDAD: Si no hay PIN, no entra
+// SEGURIDAD: Si no hay PIN, no entra
     if (localStorage.getItem('ae_sesion_valida') !== 'true') {
         window.location.replace('/');
     }
+    
     window.addEventListener('DOMContentLoaded', () => {
         const hoy = new Date();
         const fTxt = hoy.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
         const hTxt = hoy.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
-        const folioTxt = "PRES-" + hoy.getFullYear() + String(hoy.getMonth()+1).padStart(2,'0') + String(hoy.getDate()).padStart(2,'0') + "-" + Math.floor(100 + Math.random() * 900);
+        
+        let folioTxt = "PRES-" + hoy.getFullYear() + String(hoy.getMonth()+1).padStart(2,'0') + String(hoy.getDate()).padStart(2,'0') + "-" + Math.floor(100 + Math.random() * 900);
+        let idReporteCorto = "AE-" + Math.floor(1000 + Math.random() * 9000); // Folio corto por defecto
 
         document.getElementById('pdf-lbl-fecha').innerText = fTxt;
         document.getElementById('pdf-lbl-hora').innerText = hTxt;
@@ -516,11 +519,16 @@
         if (transferencia) {
             const info = JSON.parse(transferencia);
 
-            // AGREGA ESTA LÍNEA PARA VER LOS DATOS EN LA CONSOLA (F12 > Console)
             console.log("Datos recibidos:", info);
             
-if (info.folio) {
-                document.getElementById('pdf-lbl-reporte').innerText = "REPORTE " + info.folio;
+            if (info.folio) {
+                // Si el folio viene con formato completo (ej. PRES-20260721-120), extraemos la parte final o usamos el texto del reporte
+                folioTxt = info.folio;
+                if (info.folio.includes("AE-")) {
+                    idReporteCorto = info.folio; // Si ya trae formato AE-XXXX lo respeta
+                }
+                document.getElementById('pdf-lbl-reporte').innerText = "REPORTE " + folioTxt;
+                document.getElementById('pdf-lbl-folio').innerText = "FOLIO " + folioTxt;
             }
             
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
@@ -529,20 +537,27 @@ if (info.folio) {
             if (info.vehiculo_modelo) document.getElementById('in_vehiculo_marca').value += ' ' + info.vehiculo_modelo;
             if (info.vehiculo_placas) document.getElementById('in_vehiculo_placas').value = info.vehiculo_placas;
             if (info.vehiculo_color) document.getElementById('in_vehiculo_color').value = info.vehiculo_color;
-            if (info.vehiculo_vin) document.getElementById('in_vehiculo_vin').value = info.vehiculo_vin;     // <--- LÍNEA NUEVA PARA EL VIN
+            if (info.vehiculo_vin) document.getElementById('in_vehiculo_vin').value = info.vehiculo_vin;
             if (info.vehiculo_km) document.getElementById('in_vehiculo_km').value = info.vehiculo_km;
 
-    // ---> LÍNEA NUEVA PARA ARRASTRAR EL MOTIVO DE INGRESO / SÍNTOMAS <---
             if (info.motivo_ingreso || info.sintomas) {
                 document.getElementById('in_falla_reportada').value = info.motivo_ingreso || info.sintomas;
             }
 
             localStorage.removeItem('ae_transferencia_presupuesto');
+        } 
+
+        // 🚀 FORMATO SOLICITADO: Extraemos el identificador tipo "AE-59WC" o usamos el folio corto
+        let textoReporteLbl = document.getElementById('pdf-lbl-reporte').innerText; // Ejemplo: "REPORTE AE-59WC"
+        let codigoLimpio = textoReporteLbl.replace("REPORTE ", "").trim();
+        
+        // Si no encontró un código AE-, genera uno genérico con el folio
+        if (!codigoLimpio.includes("AE-")) {
+            codigoLimpio = "AE-" + Math.floor(1000 + Math.random() * 9000);
         }
 
-        // agregarRenglon('listServicios');
-        // agregarRenglon('listRefacciones');
-        // agregarRenglon('listManoObra');
+        // Asigna exactamente el nombre: Presupuesto_AE-XXXX
+        document.title = "Presupuesto_" + codigoLimpio;
     });
 
 function agregarRenglon(listaId) {
