@@ -611,15 +611,15 @@ function agregarRenglon(listaId) {
     }
 
 function procesarYDescargarPresupuesto() {
-    // 1. Ocultamos los botones de control para que no salgan en la captura del PDF
+    // 1. Ocultamos los botones de control para que no salgan en el PDF
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
-    // 2. Obtenemos el nombre exacto configurado en el título (ej: Presupuesto_AE-1005)
+    // 2. Obtenemos el nombre exacto del archivo (ej: Presupuesto_AE-1005.pdf)
     let nombreArchivo = document.title || "Presupuesto";
     nombreArchivo += ".pdf";
 
-    // 3. Definimos exactamente qué elemento de la página se va a convertir en PDF
+    // 3. Seleccionamos el contenedor principal
     const elemento = document.querySelector('.wrapper-page'); 
 
     const opciones = {
@@ -627,22 +627,25 @@ function procesarYDescargarPresupuesto() {
         filename:     nombreArchivo,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { 
-            scale: 2,           // Escala de alta resolución para que los textos y logos se vean nítidos
-            useCORS: true,      // Permite cargar imágenes locales o externas sin bloqueos
-            letterRendering: true 
+            scale: 2,           
+            useCORS: true,      
+            letterRendering: true,
+            scrollY: 0          // <--- Evita desfases de scroll al capturar
         },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // 4. Ejecutamos la generación y descarga directa
-    html2pdf().from(elemento).set(opciones).save().then(() => {
-        // 5. Volvemos a mostrar los botones en pantalla al finalizar la descarga
-        setTimeout(() => {
+    // 4. TRUCO: Usamos setTimeout de 400ms para asegurar que el navegador pinte todo antes de exportar
+    setTimeout(() => {
+        html2pdf().from(elemento).set(opciones).save().then(() => {
+            // 5. Volvemos a mostrar los botones tras completar la descarga
             botones.forEach(b => b.style.display = 'inline-block');
-        }, 500);
-    });
-}        
-
+        }).catch(err => {
+            console.error("Error al generar PDF:", err);
+            botones.forEach(b => b.style.display = 'inline-block');
+        });
+    }, 400);
+}
     function formatearMonedaInput(input) {
     let valor = input.value.replace(/[^0-9.]/g, ''); // Solo números y punto
     if (valor !== '') {
