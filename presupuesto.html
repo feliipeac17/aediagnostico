@@ -211,7 +211,12 @@
         .pdf-pillar-table thead tr { display: grid; grid-template-columns: 1fr 80px; gap: 4px; }
         .table-row { display: grid; grid-template-columns: 1fr 80px; gap: 4px; align-items: center; padding: 4px 0; border-bottom: 1px dashed #e2e8f0; }
         .table-row input.desc-input { width: 100%; text-align: left; }
-        .table-row input.price-input { width: 80px; text-align: right; }
+        .table-row input.price-input { 
+            width: 95px; 
+            text-align: right; 
+            padding-right: 4px; 
+            font-weight: 800 !important; /* <--- Esto hace que las cantidades salgan en negrita */
+        }
         .btn-add-item { background: none; border: 1px dashed var(--border-color); color: var(--text-color); width: 100%; padding: 6px; font-size: 7.5pt; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 5px; }
         .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; }
 
@@ -379,13 +384,6 @@ textarea.card-input {
         }
         .btn-download-image2:active {
             transform: scale(0.98);
-        }
-
-        /* 🔥 Convierte visualmente todo lo que se escriba a MAYÚSCULAS en tiempo real */
-        input[type="text"], 
-        textarea, 
-        select {
-            text-transform: uppercase !important;
         }
     </style>
 </head>
@@ -605,17 +603,7 @@ textarea.card-input {
     </div>
 </div>
 
-<script>
-    // 🔄 Convierte automáticamente cualquier texto a MAYÚSCULAS mientras escribes
-        document.addEventListener('input', function (e) {
-            if (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
-                const start = e.target.selectionStart;
-                const end = e.target.selectionEnd;
-                e.target.value = e.target.value.toUpperCase();
-                e.target.setSelectionRange(start, end); // Mantiene el cursor en su sitio exacto
-            }
-        });
-    
+<script>   
     function volverAlInicio() {
         window.location.replace('/');
     }
