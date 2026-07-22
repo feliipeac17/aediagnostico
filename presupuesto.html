@@ -61,7 +61,7 @@
 .pdf-header-container { 
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
     border-radius: 8px 8px 0 0 !important; 
-    padding: 25px 35px 25px 35px !important; /* <--- Padding perfectamente igual arriba y abajo para que el teléfono respire y no quede al ras */
+    padding: 25px 35px 25px 35px !important; 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
@@ -70,7 +70,9 @@
     width: 100% !important;
     max-width: 100% !important;
     margin-bottom: 0 !important;
-    position: static !important; /* Quitamos absolute para que fluya natural */
+    
+    /* 🚀 TRUCO DEFINITIVO: Dibuja la línea de colores de orilla a orilla EXACTAMENTE en el borde inferior */
+    box-shadow: 0 6px 0 0 #0284c7, 0 12px 0 0 #d32f2f !important; 
 }
         
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
@@ -82,20 +84,7 @@
         .pdf-meta-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
         .pdf-meta-table td { padding: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: white; }
         .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; text-transform: uppercase; }
-        .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }
-
-.pdf-divider { 
-    height: 6px !important; 
-    background: linear-gradient(90deg, #0284c7 0%, var(--primary-red) 100%) !important; 
-    width: 100% !important; 
-    display: block !important;
-    margin: 0 !important; 
-    margin-top: -1px !important; /* <--- Un micro-margen negativo de solo 1px para besar el borde del encabezado sin invadirlo */
-    border-radius: 0 !important; 
-    position: relative !important;
-    z-index: 10 !important;
-}
-        
+        .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }       
         .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; text-transform: uppercase; }
         .pdf-title-row h2 span { color: #0284c7; }
@@ -336,8 +325,6 @@
         </table>
     </div>
 </div>
-
-<div class="pdf-divider"></div>
 
 <div id="printable-canvas" style="padding: 15px 20px !important;">
             <div class="pdf-title-row">
