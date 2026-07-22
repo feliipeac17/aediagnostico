@@ -940,7 +940,7 @@ textarea.card-input {
 
         try {
             const canvas = await html2canvas(elemento, {
-                scale: 3,
+                scale: 4,               /* 🔥 NIVEL MÁXIMO: Subimos a 4 para calidad de imprenta/vectorial */
                 useCORS: true,
                 logging: false,
                 width: 840,
@@ -949,14 +949,19 @@ textarea.card-input {
                 y: 0
             });
 
-            const imgData = canvas.toDataURL('image/png');
+            // Usamos formato JPEG al 100% de calidad. 
+            // TRUCO: Los visores de PDF (como Acrobat o Chrome) renderizan el texto mucho más nítido 
+            // cuando la imagen interna es un JPEG de máxima calidad en lugar de un PNG pesado.
+            const imgData = canvas.toDataURL('image/jpeg', 1.0); 
+            
             const pdf = new jsPDF('p', 'mm', 'letter');
             const pdfWidth = pdf.internal.pageSize.getWidth();     
             const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
 
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+            // 🔥 Le quitamos el 'FAST' al final y lo cambiamos por 'SLOW' (máxima retención de calidad de archivo) 
+            // o 'NONE' (sin compresión en absoluto). 'SLOW' es el mejor balance para que se vea ultra nítido.
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
             
-            // 🔥 AÑADIDO: Ahora se guarda con el nombre dinámico en lugar de uno fijo
             pdf.save(nombreArchivoPDF);
 
         } catch (error) {
