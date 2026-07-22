@@ -114,18 +114,22 @@
         .pdf-data-item { font-size: 10pt; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 6.5pt; margin-bottom: 1px; }
         
-.card-input { 
+/* Campos de tarjetas (Teléfono, Placas, VIN, etc) */
+        .card-input { 
             width: 100%; 
             border: none; 
             border-bottom: 1px dashed var(--border-color); 
             background: transparent; 
-            font-size: 8pt; 
+            font-size: 8.5pt; 
             font-weight: 700; 
             color: #0f172a; 
             outline: none; 
-            padding: 4px 0 6px 0 !important; /* <--- Añade espacio vertical para que no se corte el texto */
             text-transform: uppercase; 
-            line-height: 1.5;
+            
+            /* 🔥 ESTO EVITA EL CORTE: Forzamos una altura exacta para la caja */
+            height: 24px !important; 
+            line-height: 22px !important;
+            padding: 0 0 2px 0 !important; 
         }
         
         /* 3 Columnas hacia los lados (Originales) */
@@ -159,15 +163,19 @@
         }
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+/* Campos dentro de las 3 tablas (Descripciones y Precios) */
         .table-row input { 
             border: none; 
             background: transparent; 
             font-size: 8pt; 
             outline: none; 
-            padding: 4px 2px !important; 
             color: #000000 !important; 
             font-weight: 500;
-            line-height: 1.4;
+            
+            /* 🔥 ESTO EVITA EL CORTE EN LAS TABLAS */
+            height: 24px !important;
+            line-height: 24px !important;
+            padding: 0 4px !important; 
         }
         .pdf-pillar-table thead tr { display: grid; grid-template-columns: 1fr 80px; gap: 4px; }
         .table-row { display: grid; grid-template-columns: 1fr 80px; gap: 4px; align-items: center; padding: 4px 0; border-bottom: 1px dashed #e2e8f0; }
