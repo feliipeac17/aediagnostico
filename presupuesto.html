@@ -86,7 +86,6 @@
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
         .pdf-brand-block h1 span { color: var(--primary-red); }
         .pdf-brand-block p { font-size: 8.5pt; color: #94a3b8; margin-top: 6px; line-height: 1.4; }
-
         .pdf-folio-container { background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 12px 18px; min-width: 220px; color: white; }
         .pdf-folio-badge { background-color: #0284c7; color: #ffffff; font-size: 8.5pt; font-weight: 800; padding: 5px; border-radius: 5px; text-align: center; text-transform: uppercase; font-family: 'Montserrat', sans-serif; margin-bottom: 8px; letter-spacing: 0.5px; }
         .pdf-meta-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
@@ -155,15 +154,12 @@
     }
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
-        
-       
         .table-row input { border: none; background: transparent; font-size: 8pt; outline: none; padding: 2px; color: #000000 !important; /* <--- Fuerza a que el texto escrito sea color negro puro */
         font-weight: 500;}
-     .pdf-pillar-table thead tr { display: grid; grid-template-columns: 1fr 80px; gap: 4px; }
-.table-row { display: grid; grid-template-columns: 1fr 80px; gap: 4px; align-items: center; padding: 4px 0; border-bottom: 1px dashed #e2e8f0; }
-.table-row input.desc-input { width: 100%; text-align: left; }
-.table-row input.price-input { width: 80px; text-align: right; }
-        
+        .pdf-pillar-table thead tr { display: grid; grid-template-columns: 1fr 80px; gap: 4px; }
+        .table-row { display: grid; grid-template-columns: 1fr 80px; gap: 4px; align-items: center; padding: 4px 0; border-bottom: 1px dashed #e2e8f0; }
+        .table-row input.desc-input { width: 100%; text-align: left; }
+        .table-row input.price-input { width: 80px; text-align: right; }
         .btn-add-item { background: none; border: 1px dashed var(--border-color); color: var(--text-color); width: 100%; padding: 6px; font-size: 7.5pt; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 5px; }
         .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; }
 
@@ -174,20 +170,16 @@
         .pdf-terms-card ol { padding-left: 15px; font-size: 7pt; color: #64748b; line-height: 1.5; }
         .pdf-terms-card ol li { margin-bottom: 4px; }
         .pdf-note-red { margin-top: 8px; font-size: 6.5pt; font-weight: 700; color: var(--primary-red); }
-
         .pdf-totals-container { background-color: #0f172a; border-radius: 10px; padding: 18px; color: #ffffff; border-top: 4px solid var(--primary-red); }
         .pdf-totals-table { width: 100%; font-size: 8.5pt; margin-bottom: 12px; border-collapse: collapse; }
         .pdf-totals-table td { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pdf-totals-table td:last-child { text-align: right; font-weight: 700; color: #38bdf8; }
-        
         .pdf-grand-total-box { background-color: rgba(2, 132, 199, 0.15); border: 1px solid #0284c7; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .pdf-grand-total-box span { font-size: 8pt; font-weight: 800; text-transform: uppercase; color: #38bdf8; font-family: 'Montserrat', sans-serif; }
         .pdf-grand-total-box strong { font-size: 13pt; font-weight: 800; font-family: 'Montserrat', sans-serif; color: white; }
-        
         .pdf-rest-box { background-color: #0284c7; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .pdf-rest-box span { font-size: 8.5pt; font-weight: 700; text-transform: uppercase; font-family: 'Montserrat', sans-serif; color: white; }
         .pdf-rest-box strong { font-size: 12pt; font-weight: 800; font-family: 'Montserrat', sans-serif; color: white; }
-
         .pdf-signature-box { background-color: #ffffff; border-radius: 8px; height: 55px; position: relative; border: 1px solid var(--border-color); margin-top: 10px; }
         .pdf-signature-box::after { content: 'FIRMA • AUTORIZACIÓN DEL TALLER'; position: absolute; bottom: 4px; left: 0; width: 100%; text-align: center; font-size: 5.5pt; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px; }
 
@@ -290,8 +282,6 @@
         <button onclick="volverAlInicio()" class="btn-back" style="background:none; border:none; cursor:pointer; font-size: 14px; color: inherit; display: flex; align-items: center; gap: 5px;">
             <i class="fa-solid fa-arrow-left"></i> Volver al Panel
         </button>
-        
-<div id="pdf-lbl-reporte" style="font-size: 10pt; font-weight: 700; color: var(--primary-red);">REPORTE</div>
     </div>
 </div>
 
@@ -591,7 +581,6 @@ function agregarRenglon(listaId) {
         const tServicios = calcularSumaColumna('listServicios');
         const tRefacciones = calcularSumaColumna('listRefacciones');
         const tManoObra = calcularSumaColumna('listManoObra');
-
         const subtotal = tServicios + tRefacciones + tManoObra;
         const anticipo = parseFloat(document.getElementById('in_anticipo')?.value) || 0;
         const restante = subtotal - anticipo;
@@ -599,7 +588,6 @@ function agregarRenglon(listaId) {
         if(document.getElementById('pdf-tot-servicios')) document.getElementById('pdf-tot-servicios').innerText = `$${tServicios.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-tot-refacciones')) document.getElementById('pdf-tot-refacciones').innerText = `$${tRefacciones.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-tot-manoobra')) document.getElementById('pdf-tot-manoobra').innerText = `$${tManoObra.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-
         if(document.getElementById('pdf-val-tservicios')) document.getElementById('pdf-val-tservicios').innerText = `$${tServicios.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-trefacciones')) document.getElementById('pdf-val-trefacciones').innerText = `$${tRefacciones.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-tmanoobra')) document.getElementById('pdf-val-tmanoobra').innerText = `$${tManoObra.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
