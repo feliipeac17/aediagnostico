@@ -55,7 +55,7 @@
         /* Encabezado Estirado */
         .pdf-header-container { 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; 
-            border-radius: 8px 8px 0 0 !important; 
+            border-radius: 0 !important; 
             padding: 25px 35px 25px 35px !important; 
             display: flex !important; 
             justify-content: space-between !important; 
@@ -114,8 +114,8 @@
         .pdf-data-item { font-size: 10pt; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 6.5pt; margin-bottom: 1px; }
         
-/* Campos de tarjetas (Teléfono, Placas, VIN, etc) */
-        .card-input { 
+/* 🔥 SOLO INPUTS CORTOS (Teléfono, Placas, VIN, etc) */
+        input.card-input { 
             width: 100%; 
             border: none; 
             border-bottom: 1px dashed var(--border-color); 
@@ -125,8 +125,6 @@
             color: #0f172a; 
             outline: none; 
             text-transform: uppercase; 
-            
-            /* 🔥 ESTO EVITA EL CORTE: Forzamos una altura exacta para la caja */
             height: 24px !important; 
             line-height: 22px !important;
             padding: 0 0 2px 0 !important; 
@@ -257,11 +255,23 @@
             gap: 6px;                
         }
 
-        .pdf-info-card textarea.card-input {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            line-height: 1.4;
+textarea.card-input {
+            width: 100%; 
+            border: none; 
+            border-bottom: 1px dashed var(--border-color); 
+            background: transparent; 
+            font-size: 8.5pt; 
+            font-weight: 700; 
+            color: #0f172a; 
+            outline: none;
+            text-transform: uppercase;
+            
+            /* Permite que crezca hacia abajo y el texto salte de línea */
+            height: auto !important;
+            white-space: pre-wrap !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            line-height: 1.4 !important;
         }
     </style>
 </head>
@@ -645,10 +655,17 @@
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
-    function forzarDescargaPNG() {
+function forzarDescargaPNG() {
+        // 1. Sincronizamos correctamente inputs y textareas
         const inputs = document.querySelectorAll('input, textarea');
         inputs.forEach(input => {
-            if (input.value) input.setAttribute('value', input.value);
+            if (input.tagName.toLowerCase() === 'textarea') {
+                // Para textos largos (fallas), fijamos el texto para que respete los saltos de línea
+                input.innerHTML = input.value;
+            } else {
+                // Para inputs cortos, fijamos el atributo
+                if (input.value) input.setAttribute('value', input.value);
+            }
         });
 
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .btn-submit-app');
