@@ -508,8 +508,6 @@
         const transferencia = localStorage.getItem('ae_transferencia_presupuesto');
         if (transferencia) {
             const info = JSON.parse(transferencia);
-
-            console.log("Datos recibidos:", info);
             
             if (info.folio) {
                 // Si el folio viene con formato completo (ej. PRES-20260721-120), extraemos la parte final o usamos el texto del reporte
