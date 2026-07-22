@@ -611,16 +611,35 @@ function agregarRenglon(listaId) {
     }
 
 function procesarYDescargarPresupuesto() {
-    // 1. Ocultamos los botones de control para que no salgan en el PDF
+    // 1. Ocultamos los botones de control
     const botones = document.querySelectorAll('.btn-ctrl-col');
     botones.forEach(b => b.style.display = 'none');
 
-    // 2. Obtenemos el nombre exacto del archivo (ej: Presupuesto_AE-1005.pdf)
+    // 2. Obtenemos el nombre del archivo
     let nombreArchivo = document.title || "Presupuesto";
     nombreArchivo += ".pdf";
 
-    // 3. Seleccionamos el contenedor principal
-    const elemento = document.querySelector('.wrapper-page'); 
+    // 3. Clonamos el contenedor principal para transformar inputs en texto visible
+    const elementoOriginal = document.querySelector('.wrapper-page');
+    const elementoClon = elementoOriginal.cloneNode(true);
+
+    // Transformamos todos los inputs y textareas del clon en texto plano para que html2pdf los lea perfectamente
+    const inputsClon = elementoClon.querySelectorAll('input, textarea');
+    inputsClon.forEach(input => {
+        const span = document.createElement('span');
+        span.innerText = input.value || input.placeholder || '';
+        span.style.cssText = window.getComputedStyle(input).cssText;
+        span.style.display = 'inline-block';
+        span.style.border = 'none';
+        span.style.background = 'transparent';
+        span.style.width = '100%';
+        input.parentNode.replaceChild(span, input);
+    });
+
+    // Ocultamos el clon fuera de la pantalla mientras se procesa
+    elementoClon.style.position = 'absolute';
+    elementoClon.style.left = '-9999px';
+    document.body.appendChild(elementoClon);
 
     const opciones = {
         margin:       0,
@@ -630,22 +649,25 @@ function procesarYDescargarPresupuesto() {
             scale: 2,           
             useCORS: true,      
             letterRendering: true,
-            scrollY: 0          // <--- Evita desfases de scroll al capturar
+            scrollY: 0          
         },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // 4. TRUCO: Usamos setTimeout de 400ms para asegurar que el navegador pinte todo antes de exportar
+    // 4. Generamos el PDF usando el clon limpio
     setTimeout(() => {
-        html2pdf().from(elemento).set(opciones).save().then(() => {
-            // 5. Volvemos a mostrar los botones tras completar la descarga
+        html2pdf().from(elementoClon).set(opciones).save().then(() => {
+            // Limpiamos y restauramos la pantalla original
+            document.body.removeChild(elementoClon);
             botones.forEach(b => b.style.display = 'inline-block');
         }).catch(err => {
             console.error("Error al generar PDF:", err);
+            if(document.body.contains(elementoClon)) document.body.removeChild(elementoClon);
             botones.forEach(b => b.style.display = 'inline-block');
         });
     }, 400);
 }
+    
     function formatearMonedaInput(input) {
     let valor = input.value.replace(/[^0-9.]/g, ''); // Solo números y punto
     if (valor !== '') {
