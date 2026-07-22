@@ -534,9 +534,17 @@ textarea.card-input {
             </div>
         </div>
 
-        <button class="btn-submit-app" onclick="forzarDescargaPNG()">
-            <i class="fa-solid fa-file-pdf"></i> Descargar
-        </button>
+<div class="pdf-actions-bar" style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">
+            
+            <button onclick="forzarDescargaPNG()" class="btn-accion btn-png">
+                📥 Descargar Imagen (PNG)
+            </button>
+            
+            <button onclick="forzarDescargaPDF()" class="btn-accion btn-pdf" style="background: #dc2626; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                📄 Descargar PDF
+            </button>
+            
+        </div>
 
     </div>
 </div>
@@ -826,6 +834,46 @@ function forzarDescargaPNG() {
             });
         });
     }
+    function forzarDescargaPDF() {
+            const elemento = document.getElementById('printable-canvas');
+            
+            // 1. Indicamos al usuario que se está generando
+            console.log("Generando PDF...");
+            
+            html2canvas(elemento, {
+                scale: 3,           // Mantenemos la máxima calidad Ultra HD
+                useCORS: true,      
+                logging: false,
+                width: 840,         
+                windowWidth: 840,
+                scrollY: 0,         
+                y: 0                
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                
+                // 2. Creamos una ventana emergente oculta para imprimir o generar el PDF nativo
+                const ventanaPdf = window.open('', '_blank');
+                ventanaPdf.document.write(`
+                    <html>
+                        <head>
+                            <title>Presupuesto_AE</title>
+                            <style>
+                                body { margin: 0; padding: 0; background: #ffffff; display: flex; justify-content: center; align-items: flex-start; }
+                                img { width: 100%; max-width: 840px; height: auto; display: block; }
+                                @media print {
+                                    body { margin: 0; }
+                                    img { width: 100%; page-break-inside: avoid; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <img src="${imgData}" onload="window.print(); window.close();" />
+                        </body>
+                    </html>
+                `);
+                ventanaPdf.document.close();
+            });
+        }
 </script>
 </body>
 </html>
