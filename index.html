@@ -982,7 +982,7 @@ if (pdfFolio) {
         
         let folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000);
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + folioTxt;
-        document.title = "Reporte1_" + folioTxt;
+        document.title = "REPORTE_SERVICIO_" + folioTxt;
         reportDataGlobal = null;
     }
 
@@ -1159,7 +1159,7 @@ function cargarRegistroParaEditar(rep) {
         document.getElementById('edit_record_id').value = rep.id;
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + rep.folio;
-        document.title = "Reporte2_" + rep.folio;
+        document.title = "REPORTE_SERVICIO_" + rep.folio;
         document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar Reporte";
 
         document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
