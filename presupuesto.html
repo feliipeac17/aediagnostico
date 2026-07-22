@@ -59,20 +59,21 @@
 
 /* Encabezado Estirado (Ancho completo y mayor altura) */
 .pdf-header-container { 
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; 
     border-radius: 8px 8px 0 0 !important; 
     padding: 25px 35px 25px 35px !important; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    color: white; 
-    gap: 20px; 
+    display: flex !important; 
+    justify-content: space-between !important; 
+    align-items: center !important; 
+    color: white !important; 
+    gap: 20px !important; 
     width: 100% !important;
     max-width: 100% !important;
     margin-bottom: 0 !important;
     
-    /* 🚀 TRUCO DEFINITIVO: Dibuja la línea de colores de orilla a orilla EXACTAMENTE en el borde inferior */
-    box-shadow: 0 6px 0 0 #0284c7, 0 12px 0 0 #d32f2f !important; 
+    /* 🚀 LA SOLUCIÓN DEFINITIVA: Borde inferior con degradado integrado */
+    border-bottom: 6px solid #0284c7 !important; /* Respaldo en color sólido */
+    border-image: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) 1 !important; 
 }
         
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
