@@ -31,6 +31,11 @@
             display: block;
             margin: 0 !important;
             padding: 0 !important;
+            
+            /* 🔥 TRUCO MÁXIMA NITIDEZ: Suaviza los bordes de los textos en pantallas de alta resolución */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility !important;
         }
 
         .wrapper-page { width: 100%; max-width: 820px; margin: 0 auto; box-sizing: border-box; }
@@ -770,7 +775,7 @@ function forzarDescargaPNG() {
 
 // 3. Tomamos la foto
         html2canvas(elemento, {
-            scale: 2,           
+            scale: 3,           
             useCORS: true,      
             logging: false,
             width: 840,         
