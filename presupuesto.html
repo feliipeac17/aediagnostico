@@ -38,12 +38,13 @@
         .nav-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; background: #fff; padding: 8px 15px; border-radius: 8px; border: 1px solid var(--border-color); }
         .btn-back { background: #64748b; color: white; border: none; padding: 8px 16px; font-size: 9pt; font-weight: 600; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 
+        /* 📄 Lienzo de Impresión Ultra Ajustado sin Márgenes */
         #printable-canvas {
             width: 100% !important;        
             max-width: 100% !important;    
             height: auto !important;       
             margin: 0 !important;          
-            margin-top: -6px !important;   
+            margin-top: -6px !important;   /* Elimina el espacio blanco debajo de la línea */
             background: #ffffff !important;
             overflow: hidden !important;
             display: block !important;
@@ -51,12 +52,7 @@
             padding: 15px 20px !important;
         }
 
-        .pdf-grid-boxes, .pdf-pillars-grid { 
-            display: grid; 
-            grid-template-columns: 1fr !important; 
-            gap: 15px; 
-        }
-
+        /* Encabezado Estirado */
         .pdf-header-container { 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; 
             border-radius: 8px 8px 0 0 !important; 
@@ -70,6 +66,7 @@
             margin-bottom: 0 !important;
         }
 
+        /* 🚀 LÍNEA TRICOLOR */
         .pdf-divider { 
             height: 6px !important; 
             background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; 
@@ -97,6 +94,7 @@
         .pdf-title-row h2 span { color: #0284c7; }
         .pdf-badge-informativo { background-color: #ef4444; color: white; font-size: 7.5pt; font-weight: 800; padding: 4px 12px; border-radius: 6px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; }
 
+        /* Tarjetas de Información */
         .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .pdf-info-card { background-color: var(--gray-light); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 15px; position: relative; }
         .pdf-info-card.cliente { border-left: 5px solid #0284c7; }
@@ -118,6 +116,7 @@
         
         .card-input { width: 100%; border: none; border-bottom: 1px dashed var(--border-color); background: transparent; font-size: 8pt; font-weight: 700; color: #0f172a; outline: none; padding: 2px 0; text-transform: uppercase; }
 
+        /* 3 Columnas hacia los lados */
         .pdf-pillars-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .pdf-pillar-card { 
             border: 1px solid var(--border-color); 
@@ -156,6 +155,7 @@
         .btn-add-item { background: none; border: 1px dashed var(--border-color); color: var(--text-color); width: 100%; padding: 6px; font-size: 7.5pt; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 5px; }
         .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; }
 
+        /* Totales y Cierre */
         .pdf-footer-section { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; align-items: start; }
         .pdf-terms-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; background-color: #ffffff; }
         .pdf-terms-card h4 { font-family: 'Montserrat', sans-serif; font-size: 8.5pt; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #0f172a; }
@@ -441,7 +441,10 @@
             <i class="fa-solid fa-file-pdf"></i> Descargar
         </button>
 
-    </div> </div> <script>
+    </div>
+</div>
+
+<script>
     function volverAlInicio() {
         window.location.replace('/');
     }
@@ -575,16 +578,22 @@
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
+        // Truco para conservar las 3 columnas juntas hacia los lados en la captura
+        const anchoOriginal = elemento.style.width;
+        const maxWOriginal = elemento.style.maxWidth;
+        elemento.style.width = '820px';
+        elemento.style.maxWidth = 'none';
+
         html2canvas(elemento, {
             scale: 2,           
             useCORS: true,      
             logging: false,
-            x: 0,                   
-            y: 0,
-            width: elemento.offsetWidth,   
-            height: elemento.scrollHeight, 
-            windowWidth: 820        
+            width: 820,
+            windowWidth: 820
         }).then(canvas => {
+            elemento.style.width = anchoOriginal;
+            elemento.style.maxWidth = maxWOriginal;
+
             const enlace = document.createElement('a');
             enlace.download = nombreArchivo + ".png";
             enlace.href = canvas.toDataURL('image/png');
@@ -598,8 +607,15 @@
             }, 500);
         }).catch(err => {
             console.error("Error en la captura completa:", err);
+            elemento.style.width = anchoOriginal;
+            elemento.style.maxWidth = maxWOriginal;
             botones.forEach(b => b.style.display = 'inline-block');
         });
+    }
+
+    function autoExpandir(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
     }
 </script>
 </body>
