@@ -61,15 +61,16 @@
 .pdf-header-container { 
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
     border-radius: 8px 8px 0 0 !important; 
-    padding: 20px 35px 20px 35px !important; /* <--- 20px abajo le da el respiro perfecto a la línea */
+    padding: 22px 35px 0 35px !important; /* Padding inferior en 0 para que la línea toque el suelo del contenedor */
     display: flex; 
     justify-content: space-between; 
-    align-items: center; 
+    align-items: flex-start; /* Alinea los elementos arriba para dejar espacio abajo */
     color: white; 
     gap: 20px; 
     width: 100% !important;
     max-width: 100% !important;
     margin-bottom: 0 !important;
+    position: relative !important;
 }
         .pdf-brand-block h1 { font-family: 'Montserrat', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: 0.5px; line-height: 1; color: white; }
         .pdf-brand-block h1 span { color: var(--primary-red); }
@@ -85,14 +86,14 @@
 .pdf-divider { 
     height: 6px !important; 
     background: linear-gradient(90deg, #0284c7 0%, var(--primary-red) 100%) !important; 
-    margin: 0 !important; 
-    margin-top: 0px !important;  /* Quitamos el margen negativo para que no se oculte */
     width: 100% !important; 
-    display: block !important;
-    position: relative !important;
-    z-index: 10 !important;
+    position: absolute !important; /* Se pega de forma absoluta al piso del encabezado */
+    bottom: 0 !important;          /* Justo en la orilla de abajo */
+    left: 0 !important;            /* De esquina a esquina */
+    margin: 0 !important; 
     border-radius: 0 !important; 
 }
+        
         .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; text-transform: uppercase; }
         .pdf-title-row h2 span { color: #0284c7; }
