@@ -300,6 +300,32 @@ textarea.card-input {
             overflow-wrap: break-word !important;
             line-height: 1.4 !important;
         }
+
+        /* 📱 MODO CELULAR: Acomoda todo hacia abajo solo en la pantalla para poder escribir fácil */
+        @media screen and (max-width: 768px) {
+            /* El encabezado se centra y se apila */
+            .pdf-header-container { 
+                flex-direction: column !important; 
+                gap: 15px !important; 
+                padding: 20px 15px !important; 
+            }
+            .pdf-folio-container { width: 100% !important; }
+            
+            /* Cliente y Vehículo se apilan uno debajo del otro */
+            .pdf-grid-boxes { grid-template-columns: 1fr !important; }
+            
+            /* Las Fallas y Notas se apilan verticalmente */
+            .pdf-info-card.diagnostico .pdf-card-data { grid-template-columns: 1fr !important; }
+            
+            /* 🔥 LAS 3 TABLAS se apilan una debajo de la otra para que tengas espacio total al escribir */
+            .pdf-pillars-grid { grid-template-columns: 1fr !important; }
+            
+            /* Términos y Totales se apilan */
+            .pdf-footer-section { grid-template-columns: 1fr !important; }
+            
+            /* El lienzo se pega a las orillas del celular para aprovechar espacio */
+            #printable-canvas { padding: 10px !important; }
+        }
     </style>
 </head>
 <body>
