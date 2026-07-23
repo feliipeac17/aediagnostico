@@ -747,8 +747,8 @@ function prepararCaptura() {
         const lblEstado = document.getElementById('pdf-lbl-estado');
         if (selEstado && lblEstado) {
             lblEstado.innerText = selEstado.value;
-            if(selEstado.value === 'TE' || selEstado.value === 'ENTREGADO') lblEstado.style.color = '#3b82f6';
-            else if(selEstado.value === 'TERMINADO') lblEstado.style.color = '#ff1100';
+            if(selEstado.value === 'TE' || selEstado.value === 'ENTREGADO') lblEstado.style.color = '#ff1100';
+            else if(selEstado.value === 'TERMINADO') lblEstado.style.color = '#3b82f6';
             else lblEstado.style.color = '#10b981';
             lblEstado.style.display = 'inline';
         }
@@ -1163,8 +1163,8 @@ function inyectarTarjetasHistorial(arr) {
             // 🔥 Definimos un color elegante para cada estado
             let estadoActual = rep.estado || 'EN REVISIÓN';
             let colorEstado = '#10b981'; // Verde por defecto (En revisión / Taller)
-            if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#3b82f6'; // Azul
-            else if (estadoActual === 'TERMINADO') colorEstado = '#ff1100'; // Naranja
+            if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#ff1100'; // Azul
+            else if (estadoActual === 'TERMINADO') colorEstado = '#3b82f6'; // Naranja
 
             tarjeta.innerHTML = `
                 <div style="flex:1;">
@@ -1266,8 +1266,8 @@ function cargarRegistroParaEditar(rep) {
         const selectorEstado = document.getElementById('in_estado');
         if(selectorEstado) {
             selectorEstado.value = rep.estado || 'EN REVISIÓN';
-            if(selectorEstado.value === 'TE' || selectorEstado.value === 'ENTREGADO') selectorEstado.style.color = '#3b82f6';
-            else if(selectorEstado.value === 'TERMINADO') selectorEstado.style.color = '#ff1100';
+            if(selectorEstado.value === 'TE' || selectorEstado.value === 'ENTREGADO') selectorEstado.style.color = '#ff1100';
+            else if(selectorEstado.value === 'TERMINADO') selectorEstado.style.color = '#3b82f6';
             else selectorEstado.style.color = '#10b981';
         }
 
