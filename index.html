@@ -623,7 +623,7 @@
 
                 <div id="subVistaContenidoEscaner" class="scanner-frame-container">
                     <div id="noLinkMsg" style="display:none; text-align:center; padding:50px 20px; color:#666;">
-                        ⚠️ Este reporte no cuenta con una lectura de códigos de Launch enlazada.
+                        ⚠️ Este reporte no cuenta con una lectura de códigos.
                     </div>
                 </div>
             </div>
@@ -631,12 +631,10 @@
     </div>
 
 <script>
-// Bloquear clic derecho
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
     });
 
-    // Bloquear atajos de teclado para desarrolladores (F12, Ctrl+Shift+I, Ctrl+U)
     document.addEventListener('keydown', function(e) {
         if (e.key === 'F12' || 
            (e.ctrlKey && e.shiftKey && e.key === 'I') || 
@@ -1291,7 +1289,7 @@ function inyectarTarjetasHistorial(arr) {
         document.getElementById('edit_record_id').value = rep.id;
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + rep.folio;
-        document.title = "Reporte_" + rep.folio;
+        document.title = "REPORTE_SERVICIO_" + rep.folio;
         document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar Reporte";
 
         document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
@@ -1415,7 +1413,7 @@ function inyectarTarjetasHistorial(arr) {
             secEsc.innerHTML = `
                 <div style="background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <i class="fa-solid fa-file-pdf" style="font-size: 30pt; color: #d32f2f; margin-bottom: 10px;"></i>
-                    <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11pt; color: #0f172a; margin-bottom: 5px; text-transform: uppercase;">Reporte de Escáner</div>
+                    <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11pt; color: #0f172a; margin-bottom: 5px; text-transform: uppercase;">Reporte de Escaner</div>
                     <div style="font-size: 9pt; color: #64748b; margin-bottom: 15px;">Si tu navegador no soporta la vista previa, ábrelo directamente aquí:</div>
                     <a href="${rep.link_escaner}" target="_blank" style="background: #0284c7; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 10pt; display: inline-flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir / Descargar PDF
