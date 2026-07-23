@@ -1069,13 +1069,13 @@ function cambiarPestana(modo) {
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
             cargarHistorialSupabase(); 
             
-            document.title = "AE Diagnóstico";
+            document.title = "AE Diagnostico";
             
         } else if (modo === 'dashboard') {
             document.getElementById('formPanelTitle').innerHTML = "Panel <span>Principal</span>";
             cargarHistorialSupabase(); 
             
-            document.title = "AE Diagnóstico";
+            document.title = "AE Diagnostico";
         }
     }
 
@@ -1103,7 +1103,7 @@ function limpiarFormularioCompleto() {
         let folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000);
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + folioTxt;
         
-        document.title = "Reporte_" + folioTxt;
+        document.title = "AE Diagnostico - " + folioTxt;
         reportDataGlobal = null;
     }
 
