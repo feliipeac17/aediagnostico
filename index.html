@@ -1061,6 +1061,10 @@ function cambiarPestana(modo) {
         if (modo === 'nuevo') {
             limpiarFormularioCompleto(); 
             document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
+            
+            let folioActivo = document.getElementById('lbl-folio') ? document.getElementById('lbl-folio').innerText : 'AE-NUEVO';
+            document.title = "Reporte_" + folioActivo;
+            
         } else if (modo === 'historial') {
             document.getElementById('buscadorHistorial').value = "";
             document.getElementById('edit_record_id').value = "";
@@ -1068,9 +1072,14 @@ function cambiarPestana(modo) {
             document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte";
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
             cargarHistorialSupabase(); 
+            
+            document.title = "AE Diagnóstico - Historial";
+            
         } else if (modo === 'dashboard') {
             document.getElementById('formPanelTitle').innerHTML = "Panel <span>Principal</span>";
-            cargarHistorialSupabase();
+            cargarHistorialSupabase(); 
+            
+            document.title = "AE Diagnóstico - Panel";
         }
     }
 
