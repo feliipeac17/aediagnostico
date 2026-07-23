@@ -450,12 +450,12 @@ textarea.card-input {
                 </div>
             </div>
 
-            <div class="pdf-info-card vehiculo">
+<div class="pdf-info-card vehiculo">
                 <div class="pdf-card-title"><i class="fa-solid fa-car-rear"></i> DATOS DEL VEHÍCULO</div>
                 <div class="pdf-card-data">
                     <div class="pdf-data-item">
                         <span>MARCA</span>
-                        <select id="in_vehiculo_marca" class="card-input">
+                        <select id="in_vehiculo_marca" class="card-input" style="width: 100%; font-size: 8.5pt; font-weight: 700; color: #0f172a;">
                             <option value="">SELECCIONE...</option>
                             <option value="NISSAN">NISSAN</option>
                             <option value="CHEVROLET">CHEVROLET</option>
@@ -500,9 +500,9 @@ textarea.card-input {
                     </div>
                     <div class="pdf-data-item" style="grid-column: span 2;">
                         <span>ODÓMETRO</span>
-                        <div style="display: flex; gap: 5px; align-items: flex-end;">
-                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: 80px;">
-                            <select id="in_vehiculo_unidad" class="card-input" style="width: 45px; padding: 0; outline: none; border-bottom: 1px dashed #cbd5e1; font-weight: 700;">
+                        <div style="display: flex; gap: 4px; align-items: baseline;">
+                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: auto; max-width: 100px;">
+                            <select id="in_vehiculo_unidad" class="card-input" style="width: 45px; border: none; background: transparent; outline: none; font-size: 8.5pt; font-weight: 700; color: #0f172a; padding: 0;">
                                 <option value="KM">KM</option>
                                 <option value="MI">MI</option>
                             </select>
@@ -940,51 +940,61 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-// 🔥 MAGIA DE CAPTURA: Convierte TODOS los inputs, selects y textareas en texto limpio sin líneas grises
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
         inputs.forEach(input => {
-            // Ignoramos botones o elementos ocultos
-            if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+            if (input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
 
             const esArea = input.tagName.toLowerCase() === 'textarea';
             const esSelect = input.tagName.toLowerCase() === 'select';
-            const span = document.createElement('div');
+            const span = document.createElement('span');
             
             if (esArea) {
-                span.innerText = input.value || '';
-                span.style.whiteSpace = 'pre-wrap';
-                span.style.wordWrap = 'break-word';
-                span.style.overflowWrap = 'break-word';
-                span.style.width = '100%';
-                span.style.fontSize = '8.5pt';
-                span.style.fontWeight = '700';
-                span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
-                span.style.lineHeight = '1.4';
-                span.style.minHeight = '38px';
-                span.style.paddingBottom = '5px';
-                span.style.display = 'block';
-                span.style.marginTop = '0';
+                const divArea = document.createElement('div');
+                divArea.innerText = input.value || '';
+                divArea.style.whiteSpace = 'pre-wrap';
+                divArea.style.wordWrap = 'break-word';
+                divArea.style.width = '100%';
+                divArea.style.fontSize = '8.5pt';
+                divArea.style.fontWeight = '700';
+                divArea.style.color = '#0f172a';
+                divArea.style.textTransform = 'uppercase';
+                divArea.style.lineHeight = '1.4';
+                divArea.style.minHeight = '38px';
+                
+                input.parentNode.insertBefore(divArea, input);
+                input.style.display = 'none';
+                reemplazos.push({ original: input, falso: divArea });
+                return;
+            }
+
+            // Obtener el valor formateado
+            let textoValor = '';
+            if (esSelect) {
+                const selectedText = input.options.length > 0 ? input.options[input.selectedIndex].text : '';
+                textoValor = (selectedText === 'SELECCIONE...' || selectedText === 'SELECCIONE') ? '' : selectedText;
             } else {
-                // Si es un menú desplegable, toma el texto visible. Si no, toma lo que escribiste.
-                span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
-                
-                // 🔥 Aquí respetamos que el odómetro se quede chiquito (80px)
-                span.style.width = input.style.width || '100%';
-                span.style.fontSize = window.getComputedStyle(input).fontSize;
-                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
-                span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
-                span.style.display = 'inline-block';
-                span.style.padding = '2px 0'; // Sin borde inferior
-                
-                // Mantenemos el formato de dinero alineado a la derecha en las tablitas
-                if(input.classList.contains('price-input')) {
-                    span.style.textAlign = 'right';
-                    span.style.width = '100%'; 
-                }
+                textoValor = input.value || '';
+            }
+
+            span.innerText = textoValor;
+            span.style.fontSize = '8.5pt';
+            span.style.fontWeight = '700';
+            span.style.color = '#0f172a';
+            span.style.textTransform = 'uppercase';
+            span.style.fontFamily = "'Open Sans', sans-serif";
+            span.style.display = 'inline-block';
+            span.style.lineHeight = '22px';
+            span.style.height = '24px';
+            
+            if (input.id === 'in_vehiculo_km') {
+                span.style.marginRight = '4px';
+            } else if (input.classList.contains('price-input')) {
+                span.style.textAlign = 'right';
+                span.style.width = '100%';
+            } else if (!esSelect || input.id === 'in_vehiculo_marca') {
+                span.style.width = '100%';
             }
 
             input.parentNode.insertBefore(span, input);
