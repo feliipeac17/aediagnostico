@@ -972,7 +972,7 @@ if (pdfFolio) {
                 
                 document.getElementById('loading-spinner').style.display = 'none';
                 document.getElementById('pdf-status-title').innerText = "¡REPORTE DESCARGADO!";
-                document.getElementById('pdf-status-desc').innerText = "El PDF está listo en tu dispositivo.";
+                document.getElementById('pdf-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
                 document.getElementById('btnRetryScan2').style.display = 'inline-block';
             } else { 
                 loadingOverlay.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ ERROR</h2><p>El folio ingresado no existe o es inválido.</p></div></div>`; 
