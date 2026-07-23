@@ -631,12 +631,24 @@
     </div>
 
 <script>
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || 
+           (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+           (e.ctrlKey && e.shiftKey && e.key === 'J') || 
+           (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+    
     const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let currentPin = "";
-    const CORRECT_PIN = "3001";
     let reportDataGlobal = null;
     let listaReportesMemoria = [];
     const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
@@ -686,7 +698,6 @@ function previewImage(input, imgId, textId) {
             document.getElementById(imgId).style.display = 'block';
             document.getElementById(textId).style.display = 'none';
             
-            // Muestra la nueva etiqueta sobre la foto
             const label = input.parentElement.querySelector('.photo-label');
             if(label) label.style.display = 'block';
 
@@ -701,7 +712,6 @@ function borrarFoto(event, inputId, imgId, textId) {
         document.getElementById(imgId).style.display = 'none';
         document.getElementById(textId).style.display = 'block';
         
-        // Oculta la etiqueta al borrar
         const label = document.getElementById(inputId).parentElement.querySelector('.photo-label');
         if(label) label.style.display = 'none';
 
@@ -768,7 +778,6 @@ function prepararCaptura() {
             txtGas.style.display = 'inline-block';
         }
 
-        // 🔥 ESTO ES LO NUEVO: Lógica Visual del Estado en PDF
         const selEstado = document.getElementById('in_estado');
         const lblEstado = document.getElementById('pdf-lbl-estado');
         if (selEstado && lblEstado) {
@@ -826,7 +835,6 @@ function restaurarPantalla(estado) {
         const txtGas = document.getElementById('pdf_visual_gas_text');
         if(txtGas) txtGas.style.display = 'none';
 
-        // 🔥 ESTO ES LO NUEVO: Apaga el texto de estado para devolverte el selector
         const lblEstado = document.getElementById('pdf-lbl-estado');
         if(lblEstado) lblEstado.style.display = 'none';
         
@@ -868,14 +876,12 @@ function restaurarPantalla(estado) {
             let pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
             const maxHeight = pdf.internal.pageSize.getHeight();
 
-            // 🔥 TRUCO: Candado anti-expansión. Si se pasa de 1 hoja, lo escala para que quepa exacto.
             if (pdfHeight > maxHeight) {
                 const ratio = maxHeight / pdfHeight;
                 pdfHeight = maxHeight;
                 pdfWidth = pdfWidth * ratio; 
             }
             
-            // Centramos la imagen en caso de que se haya hecho un poco más angosta
             const xOffset = (pdf.internal.pageSize.getWidth() - pdfWidth) / 2;
 
             pdf.addImage(imgData, 'JPEG', xOffset, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
@@ -897,12 +903,10 @@ function restaurarPantalla(estado) {
         const pdfFolio = urlParams.get('pdf');
 
 if (scanFolio) {
-            // 1. Ocultamos las pantallas principales pero SIN destruirlas del HTML
             document.getElementById('pin-lock-screen').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'none';
             document.getElementById('reportView').style.display = 'none';
 
-            // 2. Creamos la capa flotante de carga (Overlay) con el diseño de Escáner
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'scanLoadingOverlay';
             loadingOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#111; z-index:999999;';
@@ -935,7 +939,6 @@ if (scanFolio) {
                         window.URL.revokeObjectURL(urlBlob); 
                         document.body.removeChild(link);
                     } catch (e) {
-                        // En caso de bloqueo por navegador (CORS), usamos método de respaldo
                         const linkFallback = document.createElement('a'); 
                         linkFallback.href = url; 
                         linkFallback.download = `REPORTE_ESCANER_${scanFolio.toUpperCase()}.pdf`; 
@@ -949,7 +952,6 @@ if (scanFolio) {
                     document.getElementById('scan-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
                     document.getElementById('btnRetryScan').style.display = 'inline-block';
                 } else {
-                    // Si el link NO es un PDF (ej. un link web de Launch), apagamos la carga y mostramos el visor nativo.
                     loadingOverlay.style.display = 'none';
                     const maskView = document.getElementById('maskFullscreenView');
                     maskView.style.display = 'block';
@@ -962,18 +964,15 @@ if (scanFolio) {
         }
 
 if (pdfFolio) {
-            // 1. Ocultamos las pantallas pero SIN destruirlas del HTML
             document.getElementById('pin-lock-screen').style.display = 'none';
             document.getElementById('reportView').style.display = 'none';
             
-            // 2. Movemos el panel de admin fuera de la vista (para que se arme el PDF en secreto)
             const panel = document.getElementById('adminPanel');
             panel.style.display = 'block';
             panel.style.position = 'absolute';
             panel.style.left = '-9999px';
             panel.style.top = '0';
 
-            // 3. Creamos la pantalla de carga como una capa flotante (Overlay)
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'pdfLoadingOverlay';
             loadingOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#111; z-index:999999;';
@@ -990,7 +989,6 @@ if (pdfFolio) {
             
             const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', pdfFolio.toUpperCase()).single();
             if (!error && reporte) {
-                // Llenamos el formato invisible y tomamos la foto
                 cargarRegistroParaEditar(reporte); 
                 await forzarDescargaPDF(); 
                 
@@ -1011,14 +1009,32 @@ if (pdfFolio) {
     function clearPin() { currentPin = ""; updateDots(); }
     function backspacePin() { currentPin = currentPin.slice(0, -1); updateDots(); }
     function updateDots() { const dots = document.querySelectorAll('.pin-dot'); dots.forEach((dot, index) => { dot.classList.toggle('active', index < currentPin.length); }); }
-    function validatePin() { if (currentPin === CORRECT_PIN) { localStorage.setItem('ae_sesion_valida', 'true'); mostrarPanel(); } else { document.getElementById('pin-error-msg').style.visibility = 'visible'; currentPin = ""; updateDots(); } }
-    
+    async function hashPIN(pin) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(pin);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+async function validatePin() { 
+        const hashAutorizado = "17551fa19fbfd2fbf00e008ceeb5f9bc6cd938c5cdcd24b333a595ee54de64aa";
+        
+        const hashIngresado = await hashPIN(currentPin);
+
+        if (hashIngresado === hashAutorizado) { 
+            localStorage.setItem('ae_sesion_valida', 'true'); 
+            mostrarPanel(); 
+        } else { 
+            document.getElementById('pin-error-msg').style.visibility = 'visible'; 
+            currentPin = ""; 
+            updateDots(); 
+        } 
+    }    
 function mostrarPanel() {
         document.getElementById('pin-lock-screen').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('reportView').style.display = 'none';
         
-        // 🔥 Hace que la app nazca siempre en el Dashboard
         cambiarPestana('dashboard'); 
     }
 
@@ -1052,7 +1068,7 @@ function cambiarPestana(modo) {
             cargarHistorialSupabase(); 
         } else if (modo === 'dashboard') {
             document.getElementById('formPanelTitle').innerHTML = "Panel <span>Principal</span>";
-            cargarHistorialSupabase(); // Recarga los números
+            cargarHistorialSupabase();
         }
     }
 
@@ -1151,7 +1167,7 @@ async function guardarYProcesarReporte() {
                 chk_tablero: document.getElementById('chk_tablero').checked,
                 observaciones_electrico: getUpperVal('in_obs_electrico'),
                 link_escaner: linkEscanerFinal,
-                estado: document.getElementById('in_estado') ? document.getElementById('in_estado').value : 'EN REVISION' // 🔥 ESTO ES LO NUEVO
+                estado: document.getElementById('in_estado') ? document.getElementById('in_estado').value : 'EN REVISION'
             };
 
             if(urlFrente) payload.foto_frente_url = urlFrente;
@@ -1183,7 +1199,6 @@ async function cargarHistorialSupabase() {
         listaReportesMemoria = reportes; 
         inyectarTarjetasHistorial(listaReportesMemoria);
 
-        // 🔥 LÓGICA DEL DASHBOARD: Contar vehículos según su estado
         let enTaller = 0, esperando = 0, terminados = 0;
         reportes.forEach(rep => {
             const est = rep.estado || 'EN REVISION';
@@ -1192,7 +1207,6 @@ async function cargarHistorialSupabase() {
             else if (est === 'TE' || est === 'ENTREGADO') terminados++;
         });
         
-        // Pintamos los números en las tarjetas del inicio
         if (document.getElementById('dash-taller')) document.getElementById('dash-taller').innerText = enTaller;
         if (document.getElementById('dash-piezas')) document.getElementById('dash-piezas').innerText = esperando;
         if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = terminados;
@@ -1207,11 +1221,10 @@ function inyectarTarjetasHistorial(arr) {
             const tarjeta = document.createElement('div');
             tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
             
-            // 🔥 Definimos un color elegante para cada estado
             let estadoActual = rep.estado || 'EN REVISION';
-            let colorEstado = '#10b981'; // Verde por defecto (En revision / Taller)
-            if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#ff1100'; // Azul
-            else if (estadoActual === 'TERMINADO') colorEstado = '#3b82f6'; // Naranja
+            let colorEstado = '#10b981';
+            if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#ff1100';
+            else if (estadoActual === 'TERMINADO') colorEstado = '#3b82f6';
 
             tarjeta.innerHTML = `
                 <div style="flex:1;">
@@ -1309,7 +1322,6 @@ function cargarRegistroParaEditar(rep) {
         document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || '';
         document.getElementById('in_link_escaner').value = rep.link_escaner || '';
 
-        // 🔥 ESTO ES LO NUEVO: Cargamos el estado desde Supabase y le damos color
         const selectorEstado = document.getElementById('in_estado');
         if(selectorEstado) {
             selectorEstado.value = rep.estado || 'EN REVISION';
@@ -1318,27 +1330,26 @@ function cargarRegistroParaEditar(rep) {
             else selectorEstado.style.color = '#10b981';
         }
 
-        // 🔥 AQUÍ SE ACTUALIZÓ: Se agregó la lógica para encender/apagar la etiqueta flotante (photo-label)
         const setFormPrev = (imgId, textId, inputId, url) => {
             const img = document.getElementById(imgId); 
             const txt = document.getElementById(textId); 
             const inputElem = document.getElementById(inputId);
             
             const btn = inputElem ? inputElem.parentElement.querySelector('.btn-del-photo') : null;
-            const label = inputElem ? inputElem.parentElement.querySelector('.photo-label') : null; // <--- SE BUSCA LA ETIQUETA
+            const label = inputElem ? inputElem.parentElement.querySelector('.photo-label') : null;
             
             if(url) { 
                 img.src = url; 
                 img.style.display = 'block'; 
                 txt.style.display = 'none'; 
                 if(btn) btn.style.display = 'flex'; 
-                if(label) label.style.display = 'block'; // <--- SE MUESTRA LA ETIQUETA
+                if(label) label.style.display = 'block';
             } else { 
                 img.src = ""; 
                 img.style.display = 'none'; 
                 txt.style.display = 'block'; 
                 if(btn) btn.style.display = 'none'; 
-                if(label) label.style.display = 'none'; // <--- SE OCULTA LA ETIQUETA
+                if(label) label.style.display = 'none';
             }
         };
         
@@ -1349,11 +1360,11 @@ function cargarRegistroParaEditar(rep) {
         setFormPrev('prev_motor', 'txt_motor', 'input_motor', rep.foto_motor_url); 
         setFormPrev('prev_cluster', 'txt_cluster', 'input_cluster', rep.foto_cluster_url);
 
-        document.getElementById('dashboardSection').style.display = 'none'; // <-- Agrega esta línea
+        document.getElementById('dashboardSection').style.display = 'none';
         document.getElementById('formularioSection').style.display = 'block'; 
         document.getElementById('historialSection').style.display = 'none';
         
-        if(document.getElementById('btnTabDashboard')) document.getElementById('btnTabDashboard').style.background = '#555'; // <-- Y esta
+        if(document.getElementById('btnTabDashboard')) document.getElementById('btnTabDashboard').style.background = '#555';
         document.getElementById('btnTabNuevo').style.background = '#d32f2f'; 
         document.getElementById('btnTabHistorial').style.background = '#555'; 
         window.scrollTo(0,0);
