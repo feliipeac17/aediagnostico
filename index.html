@@ -1058,28 +1058,8 @@ function cambiarPestana(modo) {
         document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
         document.getElementById('btnTabHistorial').style.background = modo === 'historial' ? '#d32f2f' : '#555';
         
-if (modo === 'nuevo') {
+        if (modo === 'nuevo') {
             limpiarFormularioCompleto(); 
-            document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
-            
-            setTimeout(() => {
-                const lblFolio = document.getElementById('lbl-folio');
-                if (lblFolio && lblFolio.innerText.trim() !== "") {
-                    const textoOriginal = lblFolio.innerText;
-                    const coincidencia = textoOriginal.match(/AE-\d+/i);
-                    
-                    if (coincidencia) {
-                        document.title = "Reporte_" + coincidencia[0].toUpperCase(); 
-                    } else {
-                        const codigoLimpio = textoOriginal
-                            .replace(/REPORTE/gi, '')
-                            .replace(/SERVICIO/gi, '')
-                            .replace(/DE/gi, '')
-                            .trim();
-                        document.title = "Reporte_" + codigoLimpio;
-                    }
-                }
-            }, 500);
             
         } else if (modo === 'historial') {
             document.getElementById('buscadorHistorial').value = "";
@@ -1089,19 +1069,19 @@ if (modo === 'nuevo') {
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
             cargarHistorialSupabase(); 
             
-            document.title = "AE Diagnostico";
+            document.title = "AE Diagnóstico";
             
         } else if (modo === 'dashboard') {
             document.getElementById('formPanelTitle').innerHTML = "Panel <span>Principal</span>";
             cargarHistorialSupabase(); 
             
-            document.title = "AE Diagnostico";
+            document.title = "AE Diagnóstico";
         }
     }
 
     function cancelarEdicionActiva() { limpiarFormularioCompleto(); cambiarPestana('historial'); }
 
-    function limpiarFormularioCompleto() {
+function limpiarFormularioCompleto() {
         document.getElementById('edit_record_id').value = "";
         document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
         document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte";
@@ -1122,7 +1102,8 @@ if (modo === 'nuevo') {
         
         let folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000);
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + folioTxt;
-        document.title = "REPORTE_SERVICIO_" + folioTxt;
+        
+        document.title = "Reporte_" + folioTxt;
         reportDataGlobal = null;
     }
 
@@ -1306,11 +1287,12 @@ function inyectarTarjetasHistorial(arr) {
     }
 
 function cargarRegistroParaEditar(rep) {
+   function cargarRegistroParaEditar(rep) {
         reportDataGlobal = rep;
         document.getElementById('edit_record_id').value = rep.id;
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + rep.folio;
-        document.title = "REPORTE_SERVICIO_" + rep.folio;
+        document.title = "Reporte_" + rep.folio;
         document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar Reporte";
 
         document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
