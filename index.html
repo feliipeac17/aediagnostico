@@ -748,7 +748,7 @@ function prepararCaptura() {
         if (selEstado && lblEstado) {
             lblEstado.innerText = selEstado.value;
             if(selEstado.value === 'TE' || selEstado.value === 'ENTREGADO') lblEstado.style.color = '#3b82f6';
-            else if(selEstado.value === 'TERMINADO') lblEstado.style.color = '#f59e0b';
+            else if(selEstado.value === 'TERMINADO') lblEstado.style.color = '#ff1100';
             else lblEstado.style.color = '#10b981';
             lblEstado.style.display = 'inline';
         }
@@ -1164,7 +1164,7 @@ function inyectarTarjetasHistorial(arr) {
             let estadoActual = rep.estado || 'EN REVISIÓN';
             let colorEstado = '#10b981'; // Verde por defecto (En revisión / Taller)
             if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#3b82f6'; // Azul
-            else if (estadoActual === 'TERMINADO') colorEstado = '#f59e0b'; // Naranja
+            else if (estadoActual === 'TERMINADO') colorEstado = '#ff1100'; // Naranja
 
             tarjeta.innerHTML = `
                 <div style="flex:1;">
@@ -1267,7 +1267,7 @@ function cargarRegistroParaEditar(rep) {
         if(selectorEstado) {
             selectorEstado.value = rep.estado || 'EN REVISIÓN';
             if(selectorEstado.value === 'TE' || selectorEstado.value === 'ENTREGADO') selectorEstado.style.color = '#3b82f6';
-            else if(selectorEstado.value === 'TERMINADO') selectorEstado.style.color = '#f59e0b';
+            else if(selectorEstado.value === 'TERMINADO') selectorEstado.style.color = '#ff1100';
             else selectorEstado.style.color = '#10b981';
         }
 
