@@ -231,9 +231,10 @@
 
     <div id="adminPanel" class="admin-panel">
         <div class="sticky-nav-container">
-            <div style="display: flex; gap: 10px; margin-bottom: 5px;">
-                <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#d32f2f;" onclick="cambiarPestana('nuevo')">📝 Nuevo</button>
-                <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555;" onclick="cambiarPestana('historial')">📂 Historial</button>
+<div style="display: flex; gap: 8px; margin-bottom: 5px;">
+                <button id="btnTabDashboard" class="btn-submit" style="margin:0; flex:1; background:#d32f2f; font-size: 9.5pt;" onclick="cambiarPestana('dashboard')">📊 Inicio</button>
+                <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#555; font-size: 9.5pt;" onclick="cambiarPestana('nuevo')">📝 Nuevo</button>
+                <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555; font-size: 9.5pt;" onclick="cambiarPestana('historial')">📂 Historial</button>
             </div>
         </div>
 
@@ -242,7 +243,27 @@
             <button class="btn-logout" onclick="cerrarSesion()">Bloquear</button>
         </div>
 
-        <div id="formularioSection">
+        <div id="dashboardSection" style="display: block;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #0284c7; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase;">En Taller / Revisión</div>
+                    <div id="dash-taller" style="font-size: 24pt; font-weight: 800; color: #0f172a; margin-top: 5px;">0</div>
+                </div>
+                <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #f59e0b; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase;">Esperando Piezas</div>
+                    <div id="dash-piezas" style="font-size: 24pt; font-weight: 800; color: #0f172a; margin-top: 5px;">0</div>
+                </div>
+                <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #10b981; box-shadow: 0 4px 6px rgba(0,0,0,0.05); grid-column: span 2; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase;">Terminados / Entregados</div>
+                        <div id="dash-terminados" style="font-size: 24pt; font-weight: 800; color: #0f172a; margin-top: 5px;">0</div>
+                    </div>
+                    <i class="fa-solid fa-check-double" style="font-size: 30pt; color: #e2e8f0;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="formularioSection" style="display: none;">
             <input type="hidden" id="edit_record_id" value="">
             
             <div class="wrapper-page">
@@ -992,11 +1013,13 @@ if (pdfFolio) {
     function updateDots() { const dots = document.querySelectorAll('.pin-dot'); dots.forEach((dot, index) => { dot.classList.toggle('active', index < currentPin.length); }); }
     function validatePin() { if (currentPin === CORRECT_PIN) { localStorage.setItem('ae_sesion_valida', 'true'); mostrarPanel(); } else { document.getElementById('pin-error-msg').style.visibility = 'visible'; currentPin = ""; updateDots(); } }
     
-    function mostrarPanel() {
+function mostrarPanel() {
         document.getElementById('pin-lock-screen').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('reportView').style.display = 'none';
-        cargarHistorialSupabase();
+        
+        // 🔥 Hace que la app nazca siempre en el Dashboard
+        cambiarPestana('dashboard'); 
     }
 
     function regresarAlFormulario() {
@@ -1008,23 +1031,28 @@ if (pdfFolio) {
     
     function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
 
-    function cambiarPestana(modo) {
+function cambiarPestana(modo) {
+        document.getElementById('dashboardSection').style.display = modo === 'dashboard' ? 'block' : 'none';
         document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
-        document.getElementById('historialSection').style.display = modo === 'nuevo' ? 'none' : 'block';
+        document.getElementById('historialSection').style.display = modo === 'historial' ? 'block' : 'none';
+        
+        document.getElementById('btnTabDashboard').style.background = modo === 'dashboard' ? '#d32f2f' : '#555';
         document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
-        document.getElementById('btnTabHistorial').style.background = modo === 'nuevo' ? '#555' : '#d32f2f';
+        document.getElementById('btnTabHistorial').style.background = modo === 'historial' ? '#d32f2f' : '#555';
         
         if (modo === 'nuevo') {
             limpiarFormularioCompleto(); 
             document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
-        }
-        if (modo === 'historial') {
+        } else if (modo === 'historial') {
             document.getElementById('buscadorHistorial').value = "";
             document.getElementById('edit_record_id').value = "";
             document.getElementById('formPanelTitle').innerHTML = "Historial de <span>Reportes</span>";
             document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar Reporte";
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
             cargarHistorialSupabase(); 
+        } else if (modo === 'dashboard') {
+            document.getElementById('formPanelTitle').innerHTML = "Panel <span>Principal</span>";
+            cargarHistorialSupabase(); // Recarga los números
         }
     }
 
@@ -1147,13 +1175,27 @@ async function guardarYProcesarReporte() {
         finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.disabled = false; }
     }
 
-    async function cargarHistorialSupabase() {
+async function cargarHistorialSupabase() {
         const contenedor = document.getElementById('listaReportes');
         if (contenedor) contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
         const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false });
         if (error) { if (contenedor) contenedor.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
         listaReportesMemoria = reportes; 
         inyectarTarjetasHistorial(listaReportesMemoria);
+
+        // 🔥 LÓGICA DEL DASHBOARD: Contar vehículos según su estado
+        let enTaller = 0, esperando = 0, terminados = 0;
+        reportes.forEach(rep => {
+            const est = rep.estado || 'EN REVISIÓN';
+            if (est === 'EN TALLER' || est === 'EN REVISIÓN') enTaller++;
+            else if (est === 'ESPERANDO PIEZAS') esperando++;
+            else if (est === 'TERMINADO' || est === 'ENTREGADO') terminados++;
+        });
+        
+        // Pintamos los números en las tarjetas del inicio
+        if (document.getElementById('dash-taller')) document.getElementById('dash-taller').innerText = enTaller;
+        if (document.getElementById('dash-piezas')) document.getElementById('dash-piezas').innerText = esperando;
+        if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = terminados;
     }
 
 function inyectarTarjetasHistorial(arr) {
@@ -1307,8 +1349,11 @@ function cargarRegistroParaEditar(rep) {
         setFormPrev('prev_motor', 'txt_motor', 'input_motor', rep.foto_motor_url); 
         setFormPrev('prev_cluster', 'txt_cluster', 'input_cluster', rep.foto_cluster_url);
 
+        document.getElementById('dashboardSection').style.display = 'none'; // <-- Agrega esta línea
         document.getElementById('formularioSection').style.display = 'block'; 
         document.getElementById('historialSection').style.display = 'none';
+        
+        if(document.getElementById('btnTabDashboard')) document.getElementById('btnTabDashboard').style.background = '#555'; // <-- Y esta
         document.getElementById('btnTabNuevo').style.background = '#d32f2f'; 
         document.getElementById('btnTabHistorial').style.background = '#555'; 
         window.scrollTo(0,0);
