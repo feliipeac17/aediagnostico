@@ -321,14 +321,14 @@
                                     <input type="text" id="in_cliente_nombre" class="card-input" placeholder="...">
                                 </div>
                                 <div class="pdf-data-item">
-                                    <span>TELÉFONO DE CONTACTO</span>
+                                    <span>TELEFONO DE CONTACTO</span>
                                     <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12">
                                 </div>
                             </div>
                         </div>
 
                         <div class="pdf-info-card vehiculo">
-                            <div class="pdf-card-title"><i class="fa-solid fa-car-rear"></i> DATOS DEL VEHÍCULO</div>
+                            <div class="pdf-card-title"><i class="fa-solid fa-car-rear"></i> DATOS DEL VEHICULO</div>
                             <div class="pdf-card-data">
                                 <div class="pdf-data-item">
                                     <span>MARCA</span>
@@ -372,12 +372,12 @@
                                     <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
                                 </div>
                                 <div class="pdf-data-item" style="grid-column: span 2;">
-                                    <span>NÚMERO DE SERIE (VIN)</span>
+                                    <span>NUMERO DE SERIE (VIN)</span>
                                     <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
                                 </div>
                                 <div class="pdf-data-item" style="grid-column: span 2; display: flex; flex-direction: row; align-items: flex-end; gap: 5px;">
                                     <div style="flex:1;">
-                                        <span>ODÓMETRO</span>
+                                        <span>ODOMETRO</span>
                                         <input type="number" id="in_vehiculo_km" class="card-input" placeholder="...">
                                     </div>
                                     <select id="in_vehiculo_unidad" class="card-input" style="width: 55px; height: 24px; font-size: 8.5pt; font-weight: 700; color: #0f172a; border-bottom: 1px dashed #cbd5e1; background: transparent; outline: none;">
@@ -391,7 +391,7 @@
 
                     <div class="pdf-grid-boxes">
                         <div class="pdf-info-card check">
-                            <div class="pdf-card-title"><i class="fa-solid fa-clipboard-check"></i> INSPECCIÓN FÍSICA</div>
+                            <div class="pdf-card-title"><i class="fa-solid fa-clipboard-check"></i> INSPECCION FISICA</div>
                             
                             <div class="pdf-data-item" style="margin-bottom: 5px; flex-direction: row; justify-content: space-between; align-items: flex-end;">
                                 <span>NIVEL DE COMBUSTIBLE</span>
@@ -410,45 +410,45 @@
                                 <div id="pdf_visual_gas_fill" style="height: 100%; width: 50%; background: #ff9800; border-radius: 3px;"></div>
                             </div>
 
-                            <div class="pdf-data-item" style="margin-bottom: 5px; margin-top: 10px;"><span>CHECKLIST ELÉCTRICO INICIAL</span></div>
+                            <div class="pdf-data-item" style="margin-bottom: 5px; margin-top: 10px;"><span>CHECKLIST ELECTRICO INICIAL</span></div>
                             
                             <input type="checkbox" id="chk_luces" style="display:none;">
                             <input type="checkbox" id="chk_elevadores" style="display:none;">
                             <input type="checkbox" id="chk_tablero" style="display:none;">
 
                             <div class="check-item" onclick="toggleCheck('chk_luces', this)">
-                                <i class="fa-regular fa-square check-icon"></i> LUCES E INDICADORES
+                                <i class="fa-regular fa-square check-icon"></i> Luces Principales (Altas/Bajas/Dir)
                             </div>
                             <div class="check-item" onclick="toggleCheck('chk_elevadores', this)">
-                                <i class="fa-regular fa-square check-icon"></i> ELEVADORES Y SEGUROS
+                                <i class="fa-regular fa-square check-icon"></i> Elevadores Y Seguros de Puertas
                             </div>
                             <div class="check-item" onclick="toggleCheck('chk_tablero', this)">
-                                <i class="fa-regular fa-square check-icon"></i> SIN TESTIGOS EN TABLERO
+                                <i class="fa-regular fa-square check-icon"></i> Testigos en Tablero (Check,ABS,Airbag)
                             </div>
 
                             <div class="pdf-data-item" style="margin-top: 10px;">
                                 <span>NOTAS DEL CHECKLIST</span>
-                                <input type="text" id="in_obs_electrico" class="card-input" placeholder="SIN OBSERVACIONES..." style="color:#64748b;">
+                                <input type="text" id="in_obs_electrico" class="card-input" placeholder="..." style="color:#64748b;">
                             </div>
                         </div>
 
                         <div class="pdf-info-card tecnico">
-                            <div class="pdf-card-title"><i class="fa-solid fa-screwdriver-wrench"></i> DIAGNÓSTICO TÉCNICO</div>
+                            <div class="pdf-card-title"><i class="fa-solid fa-screwdriver-wrench"></i> DIAGNOSTICO TECNICO</div>
                             <div class="pdf-card-data" style="grid-template-columns: 1fr;">
                                 <div class="pdf-data-item">
-                                    <span>MOTIVO DEL INGRESO / SÍNTOMAS REPORTADOS</span>
+                                    <span>MOTIVO DEL INGRESO / SINTOMAS REPORTADOS</span>
                                     <textarea id="in_motivo_ingreso" class="card-input" placeholder="..." oninput="autoExpandir(this)" style="min-height: 50px;"></textarea>
                                 </div>
                                 <div class="pdf-data-item">
-                                    <span>OBSERVACIONES GENERALES / MECÁNICAS</span>
-                                    <textarea id="in_obs_diagnostico" class="card-input" placeholder="NINGUNO..." oninput="autoExpandir(this)" style="min-height: 50px;"></textarea>
+                                    <span>OBSERVACIONES GENERALES / MECANICAS</span>
+                                    <textarea id="in_obs_diagnostico" class="card-input" placeholder="..." oninput="autoExpandir(this)" style="min-height: 50px;"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="pdf-info-card" style="border-left: 5px solid #334155;">
-                        <div class="pdf-card-title"><i class="fa-solid fa-camera-retro"></i> EVIDENCIA FOTOGRÁFICA</div>
+                        <div class="pdf-card-title"><i class="fa-solid fa-camera-retro"></i> EVIDENCIA FOTOGRAFICA</div>
                             <div class="photo-grid">
                             <div class="photo-box" onclick="document.getElementById('input_frente').click()">
                                 <div class="photo-placeholder" id="txt_frente"><i class="fa-solid fa-car"></i><br>FRENTE</div>
@@ -503,7 +503,7 @@
             </div>
 
             <div style="background: #fdfdfd; border: 1px solid #eef0f3; border-left: 4px solid #1a1a1a; padding: 15px; border-radius: 4px;">
-                <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">Módulo Escáner (No se imprime)</div>
+                <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">Modulo Escaner (No se imprime)</div>
                 <div style="display: flex; flex-direction: column; gap: 15px;">
                     <div>
                         <label style="font-size: 9pt; font-weight: bold; color: #555; margin-bottom: 6px; display:block;">Enlace del Reporte QR:</label>
