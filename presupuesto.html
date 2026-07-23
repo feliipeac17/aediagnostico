@@ -6,8 +6,8 @@
     <title>AE Diagnostico</title>
     <link rel="icon" type="image/png" href="logo2.png">
     <link rel="apple-touch-icon" href="logo2.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -195,15 +195,17 @@
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
 /* Campos dentro de las 3 tablas (Descripciones y Precios) */
-        .table-row input { 
+.table-row input { 
             border: none; 
             background: transparent; 
             font-size: 8pt; 
             outline: none; 
             color: #000000 !important; 
-            font-weight: 500;
             
-            /* 🔥 ESTO EVITA EL CORTE EN LAS TABLAS */
+            /* 🔥 AQUÍ PONEMOS ROBOTO REGULAR */
+            font-family: 'Roboto', sans-serif !important;
+            font-weight: 400 !important; 
+            
             height: 24px !important;
             line-height: 24px !important;
             padding: 0 4px !important; 
@@ -859,6 +861,8 @@ textarea.card-input {
                 
                 span.style.display = 'inline-block';
                 span.style.padding = '2px 0';
+
+                span.style.fontFamily = window.getComputedStyle(input).fontFamily;
                 
                 if(input.classList.contains('price-input')) {
                     span.style.textAlign = 'right';
@@ -977,6 +981,8 @@ textarea.card-input {
                 
                 span.style.display = 'inline-block';
                 span.style.padding = '2px 0';
+
+                span.style.fontFamily = window.getComputedStyle(input).fontFamily;
                 
                 if(input.classList.contains('price-input')) {
                     span.style.textAlign = 'right';
