@@ -821,47 +821,60 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-// 🔥 ACTUALIZADO: Ahora captura Inputs, Textareas y Selects
-        const inputs = document.querySelectorAll('input, textarea, select');
+// 🔥 NUEVO: Dejamos los inputs intactos para que conserven su formato perfecto, 
+        // y clonamos los textareas y selects para que se vean idénticos a los inputs.
+        const elementosReemplazar = document.querySelectorAll('textarea, select');
         const reemplazos = [];
 
-        inputs.forEach(input => {
-            const esArea = input.tagName.toLowerCase() === 'textarea';
-            const esSelect = input.tagName.toLowerCase() === 'select';
-            const span = document.createElement('div');
+        elementosReemplazar.forEach(el => {
+            const esArea = el.tagName.toLowerCase() === 'textarea';
+            let falso;
             
             if (esArea) {
-                span.innerText = input.value || '';
-                span.style.whiteSpace = 'pre-wrap';
-                span.style.wordWrap = 'break-word';
-                span.style.overflowWrap = 'break-word';
-                span.style.width = '100%';
-                span.style.fontSize = '8.5pt';
-                span.style.fontWeight = '700';
-                span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
-                span.style.lineHeight = '1.4';
-                span.style.minHeight = '38px';
-                span.style.paddingBottom = '5px';
-                span.style.display = 'block';
-                span.style.marginTop = '0';
+                // Los textarea se cambian por un div para que muestren todos los saltos de línea
+                falso = document.createElement('div');
+                falso.innerText = el.value || '';
+                falso.style.whiteSpace = 'pre-wrap';
+                falso.style.wordWrap = 'break-word';
+                falso.style.overflowWrap = 'break-word';
+                falso.style.width = '100%';
+                falso.style.fontSize = '8.5pt';
+                falso.style.fontWeight = '700';
+                falso.style.color = '#0f172a';
+                falso.style.textTransform = 'uppercase';
+                falso.style.lineHeight = '1.4';
+                falso.style.minHeight = '38px';
+                falso.style.paddingBottom = '5px';
+                falso.style.borderBottom = '1px dashed #cbd5e1'; // Misma línea punteada
+                falso.style.display = 'block';
             } else {
-                span.innerText = esSelect ? input.options[input.selectedIndex].text : (input.value || '');
-                span.style.width = '100%';
-                span.style.fontSize = window.getComputedStyle(input).fontSize;
-                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
-                span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
-                span.style.display = 'inline-block';
-                span.style.padding = '2px 0';
-                // Mantiene el alineado a la derecha en los precios
-                if(input.classList.contains('price-input')) span.style.textAlign = 'right';
+                // 🔥 TRUCO: Los Select (MARCA y KM) se cambian por un Input temporal exacto
+                falso = document.createElement('input');
+                falso.type = 'text';
+                falso.className = el.className; // Hereda tu clase card-input
+                
+                // Forzamos los mismos estilos visuales
+                falso.style.width = el.style.width || '100%';
+                falso.style.fontSize = '8.5pt';
+                falso.style.fontWeight = '700';
+                falso.style.color = '#0f172a';
+                falso.style.border = 'none';
+                falso.style.borderBottom = '1px dashed #cbd5e1';
+                falso.style.background = 'transparent';
+                falso.style.outline = 'none';
+                falso.style.textTransform = 'uppercase';
+                falso.style.padding = '0';
+                falso.style.height = '24px';
+                
+                // Si el valor es vacío ("SELECCIONE..."), lo deja en blanco para el PDF
+                falso.value = el.value === "" ? "" : el.options[el.selectedIndex].text;
             }
 
-            input.parentNode.insertBefore(span, input);
-            input.style.display = 'none';
-            reemplazos.push({ original: input, falso: span });
+            el.parentNode.insertBefore(falso, el);
+            el.style.display = 'none';
+            reemplazos.push({ original: el, falso: falso });
         });
+        
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
@@ -930,48 +943,60 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-       // 🔥 ACTUALIZADO: Ahora captura Inputs, Textareas y Selects
-        const inputs = document.querySelectorAll('input, textarea, select');
+// 🔥 NUEVO: Dejamos los inputs intactos para que conserven su formato perfecto, 
+        // y clonamos los textareas y selects para que se vean idénticos a los inputs.
+        const elementosReemplazar = document.querySelectorAll('textarea, select');
         const reemplazos = [];
 
-        inputs.forEach(input => {
-            const esArea = input.tagName.toLowerCase() === 'textarea';
-            const esSelect = input.tagName.toLowerCase() === 'select';
-            const span = document.createElement('div');
+        elementosReemplazar.forEach(el => {
+            const esArea = el.tagName.toLowerCase() === 'textarea';
+            let falso;
             
             if (esArea) {
-                span.innerText = input.value || '';
-                span.style.whiteSpace = 'pre-wrap';
-                span.style.wordWrap = 'break-word';
-                span.style.overflowWrap = 'break-word';
-                span.style.width = '100%';
-                span.style.fontSize = '8.5pt';
-                span.style.fontWeight = '700';
-                span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
-                span.style.lineHeight = '1.4';
-                span.style.minHeight = '38px';
-                span.style.paddingBottom = '5px';
-                span.style.display = 'block';
-                span.style.marginTop = '0';
+                // Los textarea se cambian por un div para que muestren todos los saltos de línea
+                falso = document.createElement('div');
+                falso.innerText = el.value || '';
+                falso.style.whiteSpace = 'pre-wrap';
+                falso.style.wordWrap = 'break-word';
+                falso.style.overflowWrap = 'break-word';
+                falso.style.width = '100%';
+                falso.style.fontSize = '8.5pt';
+                falso.style.fontWeight = '700';
+                falso.style.color = '#0f172a';
+                falso.style.textTransform = 'uppercase';
+                falso.style.lineHeight = '1.4';
+                falso.style.minHeight = '38px';
+                falso.style.paddingBottom = '5px';
+                falso.style.borderBottom = '1px dashed #cbd5e1'; // Misma línea punteada
+                falso.style.display = 'block';
             } else {
-                span.innerText = esSelect ? input.options[input.selectedIndex].text : (input.value || '');
-                span.style.width = '100%';
-                span.style.fontSize = window.getComputedStyle(input).fontSize;
-                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
-                span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
-                span.style.display = 'inline-block';
-                span.style.padding = '2px 0';
-                // Mantiene el alineado a la derecha en los precios
-                if(input.classList.contains('price-input')) span.style.textAlign = 'right';
+                // 🔥 TRUCO: Los Select (MARCA y KM) se cambian por un Input temporal exacto
+                falso = document.createElement('input');
+                falso.type = 'text';
+                falso.className = el.className; // Hereda tu clase card-input
+                
+                // Forzamos los mismos estilos visuales
+                falso.style.width = el.style.width || '100%';
+                falso.style.fontSize = '8.5pt';
+                falso.style.fontWeight = '700';
+                falso.style.color = '#0f172a';
+                falso.style.border = 'none';
+                falso.style.borderBottom = '1px dashed #cbd5e1';
+                falso.style.background = 'transparent';
+                falso.style.outline = 'none';
+                falso.style.textTransform = 'uppercase';
+                falso.style.padding = '0';
+                falso.style.height = '24px';
+                
+                // Si el valor es vacío ("SELECCIONE..."), lo deja en blanco para el PDF
+                falso.value = el.value === "" ? "" : el.options[el.selectedIndex].text;
             }
 
-            input.parentNode.insertBefore(span, input);
-            input.style.display = 'none';
-            reemplazos.push({ original: input, falso: span });
+            el.parentNode.insertBefore(falso, el);
+            el.style.display = 'none';
+            reemplazos.push({ original: el, falso: falso });
         });
-
+        
         const elemento = document.querySelector('.wrapper-page');
         const anchoOriginal = elemento.style.width;
         const maxWOriginal = elemento.style.maxWidth;
