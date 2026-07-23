@@ -498,15 +498,15 @@ textarea.card-input {
                         <span>NÚMERO DE SERIE (VIN)</span>
                         <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
                     </div>
-                    <div class="pdf-data-item" style="grid-column: span 2; display: flex; flex-direction: row; align-items: flex-end; gap: 5px;">
-                        <div style="flex:1;">
-                            <span>ODÓMETRO</span>
-                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="...">
+                    <div class="pdf-data-item" style="grid-column: span 2;">
+                        <span>ODÓMETRO</span>
+                        <div style="display: flex; gap: 5px; align-items: flex-end;">
+                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: 80px;">
+                            <select id="in_vehiculo_unidad" class="card-input" style="width: 45px; padding: 0; outline: none; border-bottom: 1px dashed #cbd5e1; font-weight: 700;">
+                                <option value="KM">KM</option>
+                                <option value="MI">MI</option>
+                            </select>
                         </div>
-                        <select id="in_vehiculo_unidad" class="card-input" style="width: 55px; height: 24px; font-size: 8.5pt; font-weight: 700; color: #0f172a; border-bottom: 1px dashed #cbd5e1; background: transparent; outline: none;">
-                            <option value="KM">KM</option>
-                            <option value="MI">MI</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -821,60 +821,57 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-// 🔥 NUEVO: Dejamos los inputs intactos para que conserven su formato perfecto, 
-        // y clonamos los textareas y selects para que se vean idénticos a los inputs.
-        const elementosReemplazar = document.querySelectorAll('textarea, select');
+// 🔥 MAGIA DE CAPTURA: Convierte TODOS los inputs, selects y textareas en texto limpio sin líneas grises
+        const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
-        elementosReemplazar.forEach(el => {
-            const esArea = el.tagName.toLowerCase() === 'textarea';
-            let falso;
+        inputs.forEach(input => {
+            // Ignoramos botones o elementos ocultos
+            if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+
+            const esArea = input.tagName.toLowerCase() === 'textarea';
+            const esSelect = input.tagName.toLowerCase() === 'select';
+            const span = document.createElement('div');
             
             if (esArea) {
-                // Los textarea se cambian por un div para que muestren todos los saltos de línea
-                falso = document.createElement('div');
-                falso.innerText = el.value || '';
-                falso.style.whiteSpace = 'pre-wrap';
-                falso.style.wordWrap = 'break-word';
-                falso.style.overflowWrap = 'break-word';
-                falso.style.width = '100%';
-                falso.style.fontSize = '8.5pt';
-                falso.style.fontWeight = '700';
-                falso.style.color = '#0f172a';
-                falso.style.textTransform = 'uppercase';
-                falso.style.lineHeight = '1.4';
-                falso.style.minHeight = '38px';
-                falso.style.paddingBottom = '5px';
-                falso.style.borderBottom = '1px dashed #cbd5e1'; // Misma línea punteada
-                falso.style.display = 'block';
+                span.innerText = input.value || '';
+                span.style.whiteSpace = 'pre-wrap';
+                span.style.wordWrap = 'break-word';
+                span.style.overflowWrap = 'break-word';
+                span.style.width = '100%';
+                span.style.fontSize = '8.5pt';
+                span.style.fontWeight = '700';
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.lineHeight = '1.4';
+                span.style.minHeight = '38px';
+                span.style.paddingBottom = '5px';
+                span.style.display = 'block';
+                span.style.marginTop = '0';
             } else {
-                // 🔥 TRUCO: Los Select (MARCA y KM) se cambian por un Input temporal exacto
-                falso = document.createElement('input');
-                falso.type = 'text';
-                falso.className = el.className; // Hereda tu clase card-input
+                // Si es un menú desplegable, toma el texto visible. Si no, toma lo que escribiste.
+                span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
                 
-                // Forzamos los mismos estilos visuales
-                falso.style.width = el.style.width || '100%';
-                falso.style.fontSize = '8.5pt';
-                falso.style.fontWeight = '700';
-                falso.style.color = '#0f172a';
-                falso.style.border = 'none';
-                falso.style.borderBottom = '1px dashed #cbd5e1';
-                falso.style.background = 'transparent';
-                falso.style.outline = 'none';
-                falso.style.textTransform = 'uppercase';
-                falso.style.padding = '0';
-                falso.style.height = '24px';
+                // 🔥 Aquí respetamos que el odómetro se quede chiquito (80px)
+                span.style.width = input.style.width || '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize;
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.display = 'inline-block';
+                span.style.padding = '2px 0'; // Sin borde inferior
                 
-                // Si el valor es vacío ("SELECCIONE..."), lo deja en blanco para el PDF
-                falso.value = el.value === "" ? "" : el.options[el.selectedIndex].text;
+                // Mantenemos el formato de dinero alineado a la derecha en las tablitas
+                if(input.classList.contains('price-input')) {
+                    span.style.textAlign = 'right';
+                    span.style.width = '100%'; 
+                }
             }
 
-            el.parentNode.insertBefore(falso, el);
-            el.style.display = 'none';
-            reemplazos.push({ original: el, falso: falso });
-        });
-        
+            input.parentNode.insertBefore(span, input);
+            input.style.display = 'none';
+            reemplazos.push({ original: input, falso: span });
+        });        
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
@@ -943,58 +940,56 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-// 🔥 NUEVO: Dejamos los inputs intactos para que conserven su formato perfecto, 
-        // y clonamos los textareas y selects para que se vean idénticos a los inputs.
-        const elementosReemplazar = document.querySelectorAll('textarea, select');
+// 🔥 MAGIA DE CAPTURA: Convierte TODOS los inputs, selects y textareas en texto limpio sin líneas grises
+        const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
-        elementosReemplazar.forEach(el => {
-            const esArea = el.tagName.toLowerCase() === 'textarea';
-            let falso;
+        inputs.forEach(input => {
+            // Ignoramos botones o elementos ocultos
+            if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+
+            const esArea = input.tagName.toLowerCase() === 'textarea';
+            const esSelect = input.tagName.toLowerCase() === 'select';
+            const span = document.createElement('div');
             
             if (esArea) {
-                // Los textarea se cambian por un div para que muestren todos los saltos de línea
-                falso = document.createElement('div');
-                falso.innerText = el.value || '';
-                falso.style.whiteSpace = 'pre-wrap';
-                falso.style.wordWrap = 'break-word';
-                falso.style.overflowWrap = 'break-word';
-                falso.style.width = '100%';
-                falso.style.fontSize = '8.5pt';
-                falso.style.fontWeight = '700';
-                falso.style.color = '#0f172a';
-                falso.style.textTransform = 'uppercase';
-                falso.style.lineHeight = '1.4';
-                falso.style.minHeight = '38px';
-                falso.style.paddingBottom = '5px';
-                falso.style.borderBottom = '1px dashed #cbd5e1'; // Misma línea punteada
-                falso.style.display = 'block';
+                span.innerText = input.value || '';
+                span.style.whiteSpace = 'pre-wrap';
+                span.style.wordWrap = 'break-word';
+                span.style.overflowWrap = 'break-word';
+                span.style.width = '100%';
+                span.style.fontSize = '8.5pt';
+                span.style.fontWeight = '700';
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.lineHeight = '1.4';
+                span.style.minHeight = '38px';
+                span.style.paddingBottom = '5px';
+                span.style.display = 'block';
+                span.style.marginTop = '0';
             } else {
-                // 🔥 TRUCO: Los Select (MARCA y KM) se cambian por un Input temporal exacto
-                falso = document.createElement('input');
-                falso.type = 'text';
-                falso.className = el.className; // Hereda tu clase card-input
+                // Si es un menú desplegable, toma el texto visible. Si no, toma lo que escribiste.
+                span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
                 
-                // Forzamos los mismos estilos visuales
-                falso.style.width = el.style.width || '100%';
-                falso.style.fontSize = '8.5pt';
-                falso.style.fontWeight = '700';
-                falso.style.color = '#0f172a';
-                falso.style.border = 'none';
-                falso.style.borderBottom = '1px dashed #cbd5e1';
-                falso.style.background = 'transparent';
-                falso.style.outline = 'none';
-                falso.style.textTransform = 'uppercase';
-                falso.style.padding = '0';
-                falso.style.height = '24px';
+                // 🔥 Aquí respetamos que el odómetro se quede chiquito (80px)
+                span.style.width = input.style.width || '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize;
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase';
+                span.style.display = 'inline-block';
+                span.style.padding = '2px 0'; // Sin borde inferior
                 
-                // Si el valor es vacío ("SELECCIONE..."), lo deja en blanco para el PDF
-                falso.value = el.value === "" ? "" : el.options[el.selectedIndex].text;
+                // Mantenemos el formato de dinero alineado a la derecha en las tablitas
+                if(input.classList.contains('price-input')) {
+                    span.style.textAlign = 'right';
+                    span.style.width = '100%'; 
+                }
             }
 
-            el.parentNode.insertBefore(falso, el);
-            el.style.display = 'none';
-            reemplazos.push({ original: el, falso: falso });
+            input.parentNode.insertBefore(span, input);
+            input.style.display = 'none';
+            reemplazos.push({ original: input, falso: span });
         });
         
         const elemento = document.querySelector('.wrapper-page');
