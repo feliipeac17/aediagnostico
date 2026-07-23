@@ -1067,10 +1067,8 @@ if (modo === 'nuevo') {
                 if (lblFolio && lblFolio.innerText.trim() !== "") {
                     const codigoLimpio = lblFolio.innerText.replace("REPORTE ", "").trim();
                     document.title = "Reporte_" + codigoLimpio;
-                } else {
-                    document.title = "AE Diagnostico - Nuevo";
                 }
-            }, 50);
+            }, 500);
             
         } else if (modo === 'historial') {
             document.getElementById('buscadorHistorial').value = "";
