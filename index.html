@@ -274,8 +274,6 @@
                                 <td style="text-align: right; font-weight: 800;">
                                     <select id="in_estado" class="pdf-ctrl" style="background: transparent; border: none; font-weight: 800; font-size: 8.5pt; text-align: right; outline: none; cursor: pointer; color: #10b981; padding: 0;">
                                         <option value="EN REVISIÓN" style="color: black;">EN REVISIÓN</option>
-                                        <option value="EN TALLER" style="color: black;">EN TALLER</option>
-                                        <option value="ESPERANDO PIEZAS" style="color: black;">ESPERANDO PIEZAS</option>
                                         <option value="TERMINADO" style="color: black;">TERMINADO</option>
                                         <option value="ENTREGADO" style="color: black;">ENTREGADO</option>
                                     </select>
@@ -749,8 +747,8 @@ function prepararCaptura() {
         const lblEstado = document.getElementById('pdf-lbl-estado');
         if (selEstado && lblEstado) {
             lblEstado.innerText = selEstado.value;
-            if(selEstado.value === 'TERMINADO' || selEstado.value === 'ENTREGADO') lblEstado.style.color = '#3b82f6';
-            else if(selEstado.value === 'ESPERANDO PIEZAS') lblEstado.style.color = '#f59e0b';
+            if(selEstado.value === 'TE' || selEstado.value === 'ENTREGADO') lblEstado.style.color = '#3b82f6';
+            else if(selEstado.value === 'TERMINADO') lblEstado.style.color = '#f59e0b';
             else lblEstado.style.color = '#10b981';
             lblEstado.style.display = 'inline';
         }
@@ -1165,8 +1163,8 @@ function inyectarTarjetasHistorial(arr) {
             // 🔥 Definimos un color elegante para cada estado
             let estadoActual = rep.estado || 'EN REVISIÓN';
             let colorEstado = '#10b981'; // Verde por defecto (En revisión / Taller)
-            if (estadoActual === 'TERMINADO' || estadoActual === 'ENTREGADO') colorEstado = '#3b82f6'; // Azul
-            else if (estadoActual === 'ESPERANDO PIEZAS') colorEstado = '#f59e0b'; // Naranja
+            if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#3b82f6'; // Azul
+            else if (estadoActual === 'TERMINADO') colorEstado = '#f59e0b'; // Naranja
 
             tarjeta.innerHTML = `
                 <div style="flex:1;">
@@ -1268,8 +1266,8 @@ function cargarRegistroParaEditar(rep) {
         const selectorEstado = document.getElementById('in_estado');
         if(selectorEstado) {
             selectorEstado.value = rep.estado || 'EN REVISIÓN';
-            if(selectorEstado.value === 'TERMINADO' || selectorEstado.value === 'ENTREGADO') selectorEstado.style.color = '#3b82f6';
-            else if(selectorEstado.value === 'ESPERANDO PIEZAS') selectorEstado.style.color = '#f59e0b';
+            if(selectorEstado.value === 'TE' || selectorEstado.value === 'ENTREGADO') selectorEstado.style.color = '#3b82f6';
+            else if(selectorEstado.value === 'TERMINADO') selectorEstado.style.color = '#f59e0b';
             else selectorEstado.style.color = '#10b981';
         }
 
