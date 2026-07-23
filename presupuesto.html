@@ -684,13 +684,14 @@ textarea.card-input {
             }
             
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
-            if (info.cliente_telefono) document.getElementById('in_cliente_telefono').value = info.cliente_telefono;
-            document.getElementById('in_vehiculo_marca').value = info.vehiculo_marca || '';
-            if (info.vehiculo_modelo) document.getElementById('in_vehiculo_marca').value += ' ' + info.vehiculo_modelo;
+            if (info.cliente_telefono) document.getElementById('in_cliente_telefono').value = info.cliente_telefono;            
+            // 🔥 CORRECCIÓN: Separamos Marca y Modelo en sus propios campos para el nuevo diseño
+            if (info.vehiculo_marca) document.getElementById('in_vehiculo_marca').value = info.vehiculo_marca;
+            if (info.vehiculo_modelo) document.getElementById('in_vehiculo_modelo').value = info.vehiculo_modelo;            
             if (info.vehiculo_placas) document.getElementById('in_vehiculo_placas').value = info.vehiculo_placas;
             if (info.vehiculo_color) document.getElementById('in_vehiculo_color').value = info.vehiculo_color;
             if (info.vehiculo_vin) document.getElementById('in_vehiculo_vin').value = info.vehiculo_vin;
-if (info.vehiculo_km) {
+            if (info.vehiculo_km) {
                 const partes = info.vehiculo_km.split(' ');
                 document.getElementById('in_vehiculo_km').value = partes[0] || '';
                 if(document.getElementById('in_vehiculo_unidad') && partes[1]) {
