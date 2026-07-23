@@ -1188,8 +1188,8 @@ async function cargarHistorialSupabase() {
         reportes.forEach(rep => {
             const est = rep.estado || 'EN REVISIÓN';
             if (est === 'EN TALLER' || est === 'EN REVISIÓN') enTaller++;
-            else if (est === 'ESPERANDO PIEZAS') esperando++;
-            else if (est === 'TERMINADO' || est === 'ENTREGADO') terminados++;
+            else if (est === 'TERMINADO') esperando++;
+            else if (est === 'TE' || est === 'ENTREGADO') terminados++;
         });
         
         // Pintamos los números en las tarjetas del inicio
