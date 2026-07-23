@@ -210,7 +210,7 @@
         }
         .pdf-pillar-table thead tr { display: grid; grid-template-columns: 1fr 80px; gap: 4px; }
         .table-row { display: grid; grid-template-columns: 1fr 80px; gap: 4px; align-items: center; padding: 4px 0; border-bottom: 1px dashed #e2e8f0; }
-        .table-row input.desc-input { width: 100%; text-align: left; }
+        .table-row input.desc-input { width: 100%; text-align: left; text-transform: none !important; }
         .table-row input.price-input { 
             width: 95px; 
             text-align: right; 
@@ -821,12 +821,11 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-// 🔥 MAGIA DE CAPTURA: Convierte TODOS los inputs, selects y textareas en texto limpio sin líneas grises
+// 🔥 MAGIA DE CAPTURA ACTUALIZADA (Permite minúsculas en descripciones)
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
         inputs.forEach(input => {
-            // Ignoramos botones o elementos ocultos
             if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
 
             const esArea = input.tagName.toLowerCase() === 'textarea';
@@ -842,26 +841,25 @@ textarea.card-input {
                 span.style.fontSize = '8.5pt';
                 span.style.fontWeight = '700';
                 span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
+                span.style.textTransform = 'uppercase'; // <- Textareas (Notas) siempre en mayúsculas
                 span.style.lineHeight = '1.4';
                 span.style.minHeight = '38px';
                 span.style.paddingBottom = '5px';
                 span.style.display = 'block';
                 span.style.marginTop = '0';
             } else {
-                // Si es un menú desplegable, toma el texto visible. Si no, toma lo que escribiste.
                 span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
-                
-                // 🔥 Aquí respetamos que el odómetro se quede chiquito (80px)
                 span.style.width = input.style.width || '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase';
-                span.style.display = 'inline-block';
-                span.style.padding = '2px 0'; // Sin borde inferior
                 
-                // Mantenemos el formato de dinero alineado a la derecha en las tablitas
+                // 🔥 AQUÍ ESTÁ EL TRUCO: Si es descripción de la tabla, quita las mayúsculas forzadas
+                span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase';
+                
+                span.style.display = 'inline-block';
+                span.style.padding = '2px 0';
+                
                 if(input.classList.contains('price-input')) {
                     span.style.textAlign = 'right';
                     span.style.width = '100%'; 
@@ -871,7 +869,8 @@ textarea.card-input {
             input.parentNode.insertBefore(span, input);
             input.style.display = 'none';
             reemplazos.push({ original: input, falso: span });
-        });        
+        });       
+        
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
@@ -940,61 +939,49 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
+// 🔥 MAGIA DE CAPTURA ACTUALIZADA (Permite minúsculas en descripciones)
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
         inputs.forEach(input => {
-            if (input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+            if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
 
             const esArea = input.tagName.toLowerCase() === 'textarea';
             const esSelect = input.tagName.toLowerCase() === 'select';
-            const span = document.createElement('span');
+            const span = document.createElement('div');
             
             if (esArea) {
-                const divArea = document.createElement('div');
-                divArea.innerText = input.value || '';
-                divArea.style.whiteSpace = 'pre-wrap';
-                divArea.style.wordWrap = 'break-word';
-                divArea.style.width = '100%';
-                divArea.style.fontSize = '8.5pt';
-                divArea.style.fontWeight = '700';
-                divArea.style.color = '#0f172a';
-                divArea.style.textTransform = 'uppercase';
-                divArea.style.lineHeight = '1.4';
-                divArea.style.minHeight = '38px';
-                
-                input.parentNode.insertBefore(divArea, input);
-                input.style.display = 'none';
-                reemplazos.push({ original: input, falso: divArea });
-                return;
-            }
-
-            // Obtener el valor formateado
-            let textoValor = '';
-            if (esSelect) {
-                const selectedText = input.options.length > 0 ? input.options[input.selectedIndex].text : '';
-                textoValor = (selectedText === 'SELECCIONE...' || selectedText === 'SELECCIONE') ? '' : selectedText;
+                span.innerText = input.value || '';
+                span.style.whiteSpace = 'pre-wrap';
+                span.style.wordWrap = 'break-word';
+                span.style.overflowWrap = 'break-word';
+                span.style.width = '100%';
+                span.style.fontSize = '8.5pt';
+                span.style.fontWeight = '700';
+                span.style.color = '#0f172a';
+                span.style.textTransform = 'uppercase'; // <- Textareas (Notas) siempre en mayúsculas
+                span.style.lineHeight = '1.4';
+                span.style.minHeight = '38px';
+                span.style.paddingBottom = '5px';
+                span.style.display = 'block';
+                span.style.marginTop = '0';
             } else {
-                textoValor = input.value || '';
-            }
-
-            span.innerText = textoValor;
-            span.style.fontSize = '8.5pt';
-            span.style.fontWeight = '700';
-            span.style.color = '#0f172a';
-            span.style.textTransform = 'uppercase';
-            span.style.fontFamily = "'Open Sans', sans-serif";
-            span.style.display = 'inline-block';
-            span.style.lineHeight = '22px';
-            span.style.height = '24px';
-            
-            if (input.id === 'in_vehiculo_km') {
-                span.style.marginRight = '4px';
-            } else if (input.classList.contains('price-input')) {
-                span.style.textAlign = 'right';
-                span.style.width = '100%';
-            } else if (!esSelect || input.id === 'in_vehiculo_marca') {
-                span.style.width = '100%';
+                span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
+                span.style.width = input.style.width || '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize;
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.color = '#0f172a';
+                
+                // 🔥 AQUÍ ESTÁ EL TRUCO: Si es descripción de la tabla, quita las mayúsculas forzadas
+                span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase';
+                
+                span.style.display = 'inline-block';
+                span.style.padding = '2px 0';
+                
+                if(input.classList.contains('price-input')) {
+                    span.style.textAlign = 'right';
+                    span.style.width = '100%'; 
+                }
             }
 
             input.parentNode.insertBefore(span, input);
