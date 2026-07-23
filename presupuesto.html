@@ -740,20 +740,23 @@ textarea.card-input {
         document.title = "PRES_" + codigoLimpio;
     });
     
-    function agregarRenglon(listaId) {
+        function agregarRenglon(listaId) {
         const contenedor = document.getElementById(listaId);
         const div = document.createElement('div');
         div.className = 'table-row';
         div.innerHTML = `
             <input type="text" class="desc-input" placeholder="..." required style="width:100%;">
-            <input type="text" class="price-input" placeholder="$0.00" style="text-align: right; width:100%;" 
+            
+            <input type="text" inputmode="decimal" class="price-input" placeholder="$0.00" style="text-align: right; width:100%;" 
                 onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
                 onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();"
                 required>
+                
             <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove(); actualizarTotales();"><i class="fa-solid fa-trash"></i></button>
         `;
         contenedor.appendChild(div);
     }
+ 
 
     function calcularSumaColumna(listaId) {
         let total = 0;
