@@ -269,7 +269,7 @@
             <div class="wrapper-page">
                 <div class="pdf-header-container">
         <div class="pdf-brand-block">
-            <img src="logo3.png" alt="AE Diagnóstico" class="logo-header">
+            <img src="logo3.png" alt="AE Diagnostico" class="logo-header">
             <p style="color: #94a3b8; margin: 0;">
                 <i class="fa-solid fa-location-dot" style="color:var(--primary-red);"></i> 
                 Jalisco #729, Colonia San Joaquin, Piedras Negras, COAH<br>
@@ -531,7 +531,7 @@
 
         <div id="historialSection" style="display: none;">
             <div style="margin-bottom: 15px;">
-                <input type="text" id="buscadorHistorial" placeholder="🔍 BUSCAR POR FOLIO, CLIENTE O PLACAS..." onkeyup="filtrarHistorial()" style="width:100%; padding: 14px; font-size: 15px; border-radius: 6px; border: 1px solid #bbb;">
+                <input type="text" id="buscadorHistorial" placeholder="🔍 FOLIO, CLIENTE O PLACAS" onkeyup="filtrarHistorial()" style="width:100%; padding: 14px; font-size: 15px; border-radius: 6px; border: 1px solid #bbb;">
             </div>
             <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #1a1a1a; margin-bottom: 12px;">Lista de Reportes</div>
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
@@ -960,7 +960,7 @@ if (scanFolio) {
                     document.getElementById('iframeFullscreenEscaner').src = url;
                 }
             } else { 
-                loadingOverlay.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnóstico registrado o el enlace es incorrecto.</p></div></div>`; 
+                loadingOverlay.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnostico registrado o el enlace es incorrecto.</p></div></div>`; 
             }
             return;
         }
@@ -1058,13 +1058,17 @@ function cambiarPestana(modo) {
         document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
         document.getElementById('btnTabHistorial').style.background = modo === 'historial' ? '#d32f2f' : '#555';
         
-        if (modo === 'nuevo') {
+if (modo === 'nuevo') {
             limpiarFormularioCompleto(); 
             document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
             
-            let folioActivo = document.getElementById('lbl-folio') ? document.getElementById('lbl-folio').innerText : 'AE-NUEVO';
-            document.title = "Reporte_" + folioActivo;
-            
+            const lblFolio = document.getElementById('lbl-folio');
+            if (lblFolio && lblFolio.innerText.trim() !== "") {
+                const codigoLimpio = lblFolio.innerText.replace("REPORTE ", "").trim();
+                document.title = "Reporte_" + codigoLimpio;
+            } else {
+                document.title = "AE Diagnostico - Nuevo";
+            }
         } else if (modo === 'historial') {
             document.getElementById('buscadorHistorial').value = "";
             document.getElementById('edit_record_id').value = "";
@@ -1073,13 +1077,13 @@ function cambiarPestana(modo) {
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
             cargarHistorialSupabase(); 
             
-            document.title = "AE Diagnóstico - Historial";
+            document.title = "AE Diagnostico";
             
         } else if (modo === 'dashboard') {
             document.getElementById('formPanelTitle').innerHTML = "Panel <span>Principal</span>";
             cargarHistorialSupabase(); 
             
-            document.title = "AE Diagnóstico - Panel";
+            document.title = "AE Diagnostico";
         }
     }
 
@@ -1400,9 +1404,9 @@ function cargarRegistroParaEditar(rep) {
         const barWeb = document.getElementById('web_view_gas_fill');
         if(barWeb) { barWeb.style.width = fillGas + "%"; barWeb.style.background = fillGas <= 25 ? '#d32f2f' : (fillGas >= 75 ? '#4caf50' : '#ff9800'); }
 
-        document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'SIN MOTIVO.';
-        document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'SIN OBSERVACIONES.';
-        document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN OBSERVACIONES.';
+        document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'SIN MOTIVO';
+        document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'SIN OBSERVACIONES';
+        document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN NOTAS';
 
         const setDotWeb = (id, val) => { const dot = document.getElementById(id); if(dot) dot.style.background = val ? '#4caf50' : '#d32f2f'; };
         setDotWeb('dot_luces', rep.chk_luces); setDotWeb('dot_elevadores', rep.chk_elevadores); setDotWeb('dot_tablero', rep.chk_tablero);
