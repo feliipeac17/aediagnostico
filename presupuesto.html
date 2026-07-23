@@ -435,43 +435,78 @@ textarea.card-input {
             <h2>Presupuesto</h2>
         </div>
 
-        <div class="pdf-grid-boxes">
+<div class="pdf-grid-boxes">
             <div class="pdf-info-card cliente">
-                <i class="fa-solid fa-user-gear pdf-card-icon"></i>
-                <div class="pdf-card-title">Cliente</div>
-                <div class="pdf-card-data" style="gap: 10px;">
-                    <div class="pdf-data-item" style="grid-column: span 2;">
-                        <input type="text" id="in_cliente_nombre" class="card-input" placeholder="Nombre del cliente" style="font-size: 10pt; font-weight: 700 !important;">
+                <div class="pdf-card-title"><i class="fa-solid fa-user-gear"></i> DATOS DEL CLIENTE</div>
+                <div class="pdf-card-data" style="grid-template-columns: 1fr;">
+                    <div class="pdf-data-item">
+                        <span>NOMBRE COMPLETO</span>
+                        <input type="text" id="in_cliente_nombre" class="card-input" placeholder="...">
                     </div>
                     <div class="pdf-data-item">
-                        <span>Telefono</span>
-                        <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="11">
+                        <span>TELÉFONO DE CONTACTO</span>
+                        <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12">
                     </div>
                 </div>
             </div>
 
             <div class="pdf-info-card vehiculo">
-                <i class="fa-solid fa-car-rear pdf-card-icon"></i>
-                <div class="pdf-card-title">Vehiculo</div>
-                <div class="pdf-card-data" style="gap: 10px;">
-                    <div class="pdf-data-item" style="grid-column: span 2;">
-                        <input type="text" id="in_vehiculo_marca" class="card-input" placeholder="Marca / Modelo" style="font-size: 10pt; font-weight: 700 !important;">
+                <div class="pdf-card-title"><i class="fa-solid fa-car-rear"></i> DATOS DEL VEHÍCULO</div>
+                <div class="pdf-card-data">
+                    <div class="pdf-data-item">
+                        <span>MARCA</span>
+                        <select id="in_vehiculo_marca" class="card-input">
+                            <option value="">SELECCIONE...</option>
+                            <option value="NISSAN">NISSAN</option>
+                            <option value="CHEVROLET">CHEVROLET</option>
+                            <option value="FORD">FORD</option>
+                            <option value="TOYOTA">TOYOTA</option>
+                            <option value="HONDA">HONDA</option>
+                            <option value="VOLKSWAGEN">VOLKSWAGEN</option>
+                            <option value="KIA">KIA</option>
+                            <option value="HYUNDAI">HYUNDAI</option>
+                            <option value="MAZDA">MAZDA</option>
+                            <option value="JEEP">JEEP</option>
+                            <option value="RAM">RAM</option>
+                            <option value="DODGE">DODGE</option>
+                            <option value="CHRYSLER">CHRYSLER</option>
+                            <option value="GMC">GMC</option>
+                            <option value="BUICK">BUICK</option>
+                            <option value="BMW">BMW</option>
+                            <option value="MERCEDES-BENZ">MERCEDES-BENZ</option>
+                            <option value="AUDI">AUDI</option>
+                            <option value="RENAULT">RENAULT</option>
+                            <option value="SUZUKI">SUZUKI</option>
+                            <option value="MITSUBISHI">MITSUBISHI</option>
+                            <option value="FIAT">FIAT</option>
+                            <option value="PEUGEOT">PEUGEOT</option>
+                        </select>
                     </div>
                     <div class="pdf-data-item">
-                        <span>Placas</span>
-                        <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
+                        <span>MODELO / AÑO</span>
+                        <input type="text" id="in_vehiculo_modelo" class="card-input" placeholder="...">
                     </div>
                     <div class="pdf-data-item">
-                        <span>Color</span>
+                        <span>COLOR</span>
                         <input type="text" id="in_vehiculo_color" class="card-input" placeholder="...">
                     </div>
                     <div class="pdf-data-item">
-                        <span>VIN / Serie</span>
+                        <span>PLACAS</span>
+                        <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
+                    </div>
+                    <div class="pdf-data-item" style="grid-column: span 2;">
+                        <span>NÚMERO DE SERIE (VIN)</span>
                         <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
                     </div>
-                    <div class="pdf-data-item">
-                        <span>Kilometraje</span>
-                        <input type="text" id="in_vehiculo_km" class="card-input" placeholder="...">
+                    <div class="pdf-data-item" style="grid-column: span 2; display: flex; flex-direction: row; align-items: flex-end; gap: 5px;">
+                        <div style="flex:1;">
+                            <span>ODÓMETRO</span>
+                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="...">
+                        </div>
+                        <select id="in_vehiculo_unidad" class="card-input" style="width: 55px; height: 24px; font-size: 8.5pt; font-weight: 700; color: #0f172a; border-bottom: 1px dashed #cbd5e1; background: transparent; outline: none;">
+                            <option value="KM">KM</option>
+                            <option value="MI">MI</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -655,8 +690,13 @@ textarea.card-input {
             if (info.vehiculo_placas) document.getElementById('in_vehiculo_placas').value = info.vehiculo_placas;
             if (info.vehiculo_color) document.getElementById('in_vehiculo_color').value = info.vehiculo_color;
             if (info.vehiculo_vin) document.getElementById('in_vehiculo_vin').value = info.vehiculo_vin;
-            if (info.vehiculo_km) document.getElementById('in_vehiculo_km').value = info.vehiculo_km;
-
+if (info.vehiculo_km) {
+                const partes = info.vehiculo_km.split(' ');
+                document.getElementById('in_vehiculo_km').value = partes[0] || '';
+                if(document.getElementById('in_vehiculo_unidad') && partes[1]) {
+                    document.getElementById('in_vehiculo_unidad').value = partes[1].toUpperCase();
+                }
+            }
             if (info.motivo_ingreso || info.sintomas) {
                 document.getElementById('in_falla_reportada').value = info.motivo_ingreso || info.sintomas;
             }
@@ -780,12 +820,13 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-        // Truco para conservar los saltos de línea de las fallas en la captura
-        const inputs = document.querySelectorAll('input, textarea');
+// 🔥 ACTUALIZADO: Ahora captura Inputs, Textareas y Selects
+        const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
         inputs.forEach(input => {
             const esArea = input.tagName.toLowerCase() === 'textarea';
+            const esSelect = input.tagName.toLowerCase() === 'select';
             const span = document.createElement('div');
             
             if (esArea) {
@@ -804,7 +845,7 @@ textarea.card-input {
                 span.style.display = 'block';
                 span.style.marginTop = '0';
             } else {
-                span.innerText = input.value || '';
+                span.innerText = esSelect ? input.options[input.selectedIndex].text : (input.value || '');
                 span.style.width = '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
@@ -812,6 +853,7 @@ textarea.card-input {
                 span.style.textTransform = 'uppercase';
                 span.style.display = 'inline-block';
                 span.style.padding = '2px 0';
+                // Mantiene el alineado a la derecha en los precios
                 if(input.classList.contains('price-input')) span.style.textAlign = 'right';
             }
 
@@ -819,7 +861,6 @@ textarea.card-input {
             input.style.display = 'none';
             reemplazos.push({ original: input, falso: span });
         });
-
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
 
@@ -888,12 +929,13 @@ textarea.card-input {
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-        // Mismo truco de reemplazo para que el PDF respete las múltiples filas en fallas
-        const inputs = document.querySelectorAll('input, textarea');
+       // 🔥 ACTUALIZADO: Ahora captura Inputs, Textareas y Selects
+        const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
         inputs.forEach(input => {
             const esArea = input.tagName.toLowerCase() === 'textarea';
+            const esSelect = input.tagName.toLowerCase() === 'select';
             const span = document.createElement('div');
             
             if (esArea) {
@@ -912,7 +954,7 @@ textarea.card-input {
                 span.style.display = 'block';
                 span.style.marginTop = '0';
             } else {
-                span.innerText = input.value || '';
+                span.innerText = esSelect ? input.options[input.selectedIndex].text : (input.value || '');
                 span.style.width = '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
@@ -920,6 +962,7 @@ textarea.card-input {
                 span.style.textTransform = 'uppercase';
                 span.style.display = 'inline-block';
                 span.style.padding = '2px 0';
+                // Mantiene el alineado a la derecha en los precios
                 if(input.classList.contains('price-input')) span.style.textAlign = 'right';
             }
 
