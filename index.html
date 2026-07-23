@@ -1409,21 +1409,29 @@ function inyectarTarjetasHistorial(arr) {
         const secEsc = document.getElementById('subVistaContenidoEscaner');
         if (msgEscaner) msgEscaner.style.display = 'none';
         
-        if (rep.link_escaner && rep.link_escaner.trim() !== "") {
+ if (rep.link_escaner && rep.link_escaner.trim() !== "") {
+            
+            let urlFinalEscaner = rep.link_escaner;
+            if (urlFinalEscaner.startsWith("http://")) {
+                urlFinalEscaner = "https://corsproxy.io/?" + encodeURIComponent(urlFinalEscaner);
+            }
+
             secEsc.innerHTML = `
                 <div style="background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <i class="fa-solid fa-file-pdf" style="font-size: 30pt; color: #d32f2f; margin-bottom: 10px;"></i>
-                    <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11pt; color: #0f172a; margin-bottom: 5px; text-transform: uppercase;">Reporte de Escaner</div>
-                    <div style="font-size: 9pt; color: #64748b; margin-bottom: 15px;">Si tu navegador no soporta la vista previa, ábrelo directamente aquí:</div>
+                    <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11pt; color: #0f172a; margin-bottom: 5px; text-transform: uppercase;">Reporte de Escáner</div>
+                    <div style="font-size: 9pt; color: #64748b; margin-bottom: 15px;">Vista previa incrustada a través de servidor puente. Si no carga, usa el botón directo:</div>
                     <a href="${rep.link_escaner}" target="_blank" style="background: #0284c7; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 10pt; display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir / Descargar PDF
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Enlace Original
                     </a>
                 </div>
-                <div style="width:100%; height:600px; background:#fff; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
-                    <embed src="${rep.link_escaner}" type="application/pdf" width="100%" height="100%">
+                
+                <div style="width:100%; height:700px; background:#fff; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+                    <iframe src="${urlFinalEscaner}" style="width: 100%; height: 100%; border: none;"></iframe>
                 </div>`;
-        } else { if (msgEscaner) msgEscaner.style.display = 'block'; }
- 
+        } else { 
+            if (msgEscaner) msgEscaner.style.display = 'block'; 
+        }
         
         document.getElementById('adminPanel').style.display = 'none'; 
         document.getElementById('reportView').style.display = 'block'; 
