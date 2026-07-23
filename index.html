@@ -1065,8 +1065,19 @@ if (modo === 'nuevo') {
             setTimeout(() => {
                 const lblFolio = document.getElementById('lbl-folio');
                 if (lblFolio && lblFolio.innerText.trim() !== "") {
-                    const codigoLimpio = lblFolio.innerText.replace("REPORTE ", "").trim();
-                    document.title = "Reporte_" + codigoLimpio;
+                    const textoOriginal = lblFolio.innerText;
+                    const coincidencia = textoOriginal.match(/AE-\d+/i);
+                    
+                    if (coincidencia) {
+                        document.title = "Reporte_" + coincidencia[0].toUpperCase(); 
+                    } else {
+                        const codigoLimpio = textoOriginal
+                            .replace(/REPORTE/gi, '')
+                            .replace(/SERVICIO/gi, '')
+                            .replace(/DE/gi, '')
+                            .trim();
+                        document.title = "Reporte_" + codigoLimpio;
+                    }
                 }
             }, 500);
             
