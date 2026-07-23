@@ -631,7 +631,20 @@
     </div>
 
 <script>
+// Bloquear clic derecho
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
 
+    // Bloquear atajos de teclado para desarrolladores (F12, Ctrl+Shift+I, Ctrl+U)
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || 
+           (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+           (e.ctrlKey && e.shiftKey && e.key === 'J') || 
+           (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
     
     const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
@@ -1006,14 +1019,10 @@ if (pdfFolio) {
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 async function validatePin() { 
-        // 1. El sistema calcula el hash real de lo que tecleaste
+        const hashAutorizado = "a20c25627ed7bbb6d2b999c589b698e6ecd84384e2e0e510d8869d79a5ad244c"; 
         const hashIngresado = await hashPIN(currentPin);
-        
-        // 2. ¡TRUCO! Esto imprimirá tu hash verdadero en la consola
-        console.log("TU HASH MATEMÁTICO REAL ES:", hashIngresado);
 
-        // 3. PUERTA TRASERA: Te dejará entrar si pones 3001 directo
-        if (currentPin === "3001" || hashIngresado === "PEGA_AQUI_TU_HASH_REAL_DESPUES") { 
+        if (hashIngresado === hashAutorizado) { 
             localStorage.setItem('ae_sesion_valida', 'true'); 
             mostrarPanel(); 
         } else { 
@@ -1021,7 +1030,8 @@ async function validatePin() {
             currentPin = ""; 
             updateDots(); 
         } 
-    }  
+    }
+    
 function mostrarPanel() {
         document.getElementById('pin-lock-screen').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
