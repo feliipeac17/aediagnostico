@@ -1062,13 +1062,16 @@ if (modo === 'nuevo') {
             limpiarFormularioCompleto(); 
             document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
             
-            const lblFolio = document.getElementById('lbl-folio');
-            if (lblFolio && lblFolio.innerText.trim() !== "") {
-                const codigoLimpio = lblFolio.innerText.replace("REPORTE ", "").trim();
-                document.title = "Reporte_" + codigoLimpio;
-            } else {
-                document.title = "AE Diagnostico - Nuevo";
-            }
+            setTimeout(() => {
+                const lblFolio = document.getElementById('lbl-folio');
+                if (lblFolio && lblFolio.innerText.trim() !== "") {
+                    const codigoLimpio = lblFolio.innerText.replace("REPORTE ", "").trim();
+                    document.title = "Reporte_" + codigoLimpio;
+                } else {
+                    document.title = "AE Diagnostico - Nuevo";
+                }
+            }, 50);
+            
         } else if (modo === 'historial') {
             document.getElementById('buscadorHistorial').value = "";
             document.getElementById('edit_record_id').value = "";
