@@ -428,7 +428,7 @@
 
                     <div class="pdf-info-card" style="border-left: 5px solid #334155;">
                         <div class="pdf-card-title"><i class="fa-solid fa-camera-retro"></i> EVIDENCIA FOTOGRÁFICA</div>
-                        <div class="photo-grid">
+                            <div class="photo-grid">
                             <div class="photo-box" onclick="document.getElementById('input_frente').click()">
                                 <div class="photo-placeholder" id="txt_frente"><i class="fa-solid fa-car"></i><br>FRENTE</div>
                                 <img id="prev_frente" src="">
@@ -436,6 +436,7 @@
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_frente', 'prev_frente', 'txt_frente')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_frente" accept="image/*" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;">
                             </div>
+                            
                             <div class="photo-box" onclick="document.getElementById('input_trasera').click()">
                                 <div class="photo-placeholder" id="txt_trasera"><i class="fa-solid fa-car-side"></i><br>TRASERA</div>
                                 <img id="prev_trasera" src="">
@@ -443,6 +444,7 @@
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_trasera', 'prev_trasera', 'txt_trasera')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_trasera" accept="image/*" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;">
                             </div>
+                            
                             <div class="photo-box" onclick="document.getElementById('input_izq').click()">
                                 <div class="photo-placeholder" id="txt_izq"><i class="fa-solid fa-car-side fa-flip-horizontal"></i><br>IZQUIERDA</div>
                                 <img id="prev_izq" src="">
@@ -450,6 +452,7 @@
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_izq', 'prev_izq', 'txt_izq')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_izq" accept="image/*" onchange="previewImage(this, 'prev_izq', 'txt_izq')" style="display:none;">
                             </div>
+                            
                             <div class="photo-box" onclick="document.getElementById('input_der').click()">
                                 <div class="photo-placeholder" id="txt_der"><i class="fa-solid fa-truck-pickup"></i><br>DERECHA</div>
                                 <img id="prev_der" src="">
@@ -457,6 +460,7 @@
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_der', 'prev_der', 'txt_der')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_der" accept="image/*" onchange="previewImage(this, 'prev_der', 'txt_der')" style="display:none;">
                             </div>
+                            
                             <div class="photo-box" onclick="document.getElementById('input_motor').click()">
                                 <div class="photo-placeholder" id="txt_motor"><i class="fa-solid fa-gears"></i><br>MOTOR</div>
                                 <img id="prev_motor" src="">
@@ -464,6 +468,7 @@
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_motor', 'prev_motor', 'txt_motor')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_motor" accept="image/*" onchange="previewImage(this, 'prev_motor', 'txt_motor')" style="display:none;">
                             </div>
+                            
                             <div class="photo-box" onclick="document.getElementById('input_cluster').click()">
                                 <div class="photo-placeholder" id="txt_cluster"><i class="fa-solid fa-gauge-high"></i><br>TABLERO</div>
                                 <img id="prev_cluster" src="">
