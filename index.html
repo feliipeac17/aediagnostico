@@ -62,7 +62,9 @@
         .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 10px 0; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; }
         
         .wrapper-page { width: 100%; max-width: 840px; margin: 0 auto; box-sizing: border-box; background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 20px;}
-        #printable-canvas { width: 100% !important; max-width: 100% !important; height: auto !important; margin: 0 !important; background: #ffffff !important; overflow: hidden !important; display: block !important; position: relative !important; padding: 5px 20px 15px 20px !important; }
+
+        /* Quitamos padding arriba para que suba más */
+        #printable-canvas { width: 100% !important; max-width: 100% !important; height: auto !important; margin: 0 !important; background: #ffffff !important; overflow: hidden !important; display: block !important; position: relative !important; padding: 0px 20px 15px 20px !important; }        
         
         .pdf-header-container { 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; 
@@ -76,8 +78,11 @@
             max-width: 100% !important;
             margin-bottom: 0 !important;
         }
-        .pdf-divider { height: 6px !important; background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; width: 100% !important; display: block !important; margin: 0 !important; margin-top: -2px !important; position: relative !important; z-index: 999 !important; }
+
         
+        .pdf-divider { height: 6px !important; background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; width: 100% !important; display: block !important; margin: 0 !important; margin-top: -2px !important; position: relative !important; z-index: 999 !important; }
+        /* 🔥 NUEVO: Estilo para la etiqueta flotante sobre la foto */
+        .photo-label { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.8); color: white; font-size: 7.5pt; font-weight: 800; padding: 5px 0; text-align: center; z-index: 3; text-transform: uppercase; display: none; backdrop-filter: blur(2px); }
         .pdf-brand-block p { color: #94a3b8; margin: 0; font-size: 8.5pt; line-height: 1.4;}
         .pdf-folio-container { background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 12px 18px; min-width: 220px; }
         .pdf-folio-badge { background-color: #ef4444; color: #ffffff; font-size: 8.5pt; font-weight: 800; padding: 5px; border-radius: 5px; text-align: center; font-family: 'Montserrat', sans-serif; margin-bottom: 8px; }
@@ -86,9 +91,10 @@
         .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; }
         .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }
         
-        .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px !important; margin-bottom: 12px; }
+        /* Subimos el título con un margen negativo */
+        .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: -5px !important; margin-bottom: 8px; }
         .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; margin: 0;}
-
+        
         .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .pdf-info-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 15px; position: relative; }
         .pdf-info-card.cliente { border-left: 5px solid #0284c7; }
@@ -254,7 +260,7 @@
         </div>
                     <div class="pdf-folio-container">
                         <div class="pdf-folio-badge" id="pdf-lbl-folio">REPORTE AE-0000</div>
-<table class="pdf-meta-table">
+                        <table class="pdf-meta-table">
                             <tr>
                                 <td style="font-weight: 800; color: #94a3b8;">FECHA</td>
                                 <td id="pdf-lbl-fecha" style="font-weight: 800; color: #ffffff; text-align: right;">--/--/----</td>
@@ -428,36 +434,42 @@
                             <div class="photo-box" onclick="document.getElementById('input_frente').click()">
                                 <div class="photo-placeholder" id="txt_frente"><i class="fa-solid fa-car"></i><br>FRENTE</div>
                                 <img id="prev_frente" src="">
+                                <div class="photo-label">1. FRENTE</div>
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_frente', 'prev_frente', 'txt_frente')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_frente" accept="image/*" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;">
                             </div>
                             <div class="photo-box" onclick="document.getElementById('input_trasera').click()">
                                 <div class="photo-placeholder" id="txt_trasera"><i class="fa-solid fa-car-side"></i><br>TRASERA</div>
                                 <img id="prev_trasera" src="">
+                                <div class="photo-label">2. TRASERA</div>
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_trasera', 'prev_trasera', 'txt_trasera')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_trasera" accept="image/*" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;">
                             </div>
                             <div class="photo-box" onclick="document.getElementById('input_izq').click()">
                                 <div class="photo-placeholder" id="txt_izq"><i class="fa-solid fa-car-side fa-flip-horizontal"></i><br>IZQUIERDA</div>
                                 <img id="prev_izq" src="">
+                                <div class="photo-label">3. IZQUIERDA</div>
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_izq', 'prev_izq', 'txt_izq')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_izq" accept="image/*" onchange="previewImage(this, 'prev_izq', 'txt_izq')" style="display:none;">
                             </div>
                             <div class="photo-box" onclick="document.getElementById('input_der').click()">
                                 <div class="photo-placeholder" id="txt_der"><i class="fa-solid fa-truck-pickup"></i><br>DERECHA</div>
                                 <img id="prev_der" src="">
+                                <div class="photo-label">4. DERECHA</div>
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_der', 'prev_der', 'txt_der')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_der" accept="image/*" onchange="previewImage(this, 'prev_der', 'txt_der')" style="display:none;">
                             </div>
                             <div class="photo-box" onclick="document.getElementById('input_motor').click()">
                                 <div class="photo-placeholder" id="txt_motor"><i class="fa-solid fa-gears"></i><br>MOTOR</div>
                                 <img id="prev_motor" src="">
+                                <div class="photo-label">5. MOTOR</div>
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_motor', 'prev_motor', 'txt_motor')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_motor" accept="image/*" onchange="previewImage(this, 'prev_motor', 'txt_motor')" style="display:none;">
                             </div>
                             <div class="photo-box" onclick="document.getElementById('input_cluster').click()">
                                 <div class="photo-placeholder" id="txt_cluster"><i class="fa-solid fa-gauge-high"></i><br>TABLERO</div>
                                 <img id="prev_cluster" src="">
+                                <div class="photo-label">6. TABLERO</div>
                                 <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_cluster', 'prev_cluster', 'txt_cluster')"><i class="fa-solid fa-xmark"></i></button>
                                 <input type="file" id="input_cluster" accept="image/*" onchange="previewImage(this, 'prev_cluster', 'txt_cluster')" style="display:none;">
                             </div>
@@ -643,22 +655,32 @@
         }
     }
 
-    function previewImage(input, imgId, textId) {
+function previewImage(input, imgId, textId) {
         if (input.files && input.files[0]) {
             const objectURL = URL.createObjectURL(input.files[0]);
             document.getElementById(imgId).src = objectURL; 
             document.getElementById(imgId).style.display = 'block';
             document.getElementById(textId).style.display = 'none';
+            
+            // Muestra la nueva etiqueta sobre la foto
+            const label = input.parentElement.querySelector('.photo-label');
+            if(label) label.style.display = 'block';
+
             input.nextElementSibling.style.display = 'flex';
         }
     }
 
-    function borrarFoto(event, inputId, imgId, textId) {
+function borrarFoto(event, inputId, imgId, textId) {
         event.stopPropagation();
         document.getElementById(inputId).value = "";
         document.getElementById(imgId).src = "";
         document.getElementById(imgId).style.display = 'none';
         document.getElementById(textId).style.display = 'block';
+        
+        // Oculta la etiqueta al borrar
+        const label = document.getElementById(inputId).parentElement.querySelector('.photo-label');
+        if(label) label.style.display = 'none';
+
         event.target.closest('.btn-del-photo').style.display = 'none';
     }
 
@@ -806,7 +828,7 @@ function restaurarPantalla(estado) {
         finally { restaurarPantalla(estado); }
     }
 
-    async function forzarDescargaPDF() {
+   async function forzarDescargaPDF() {
         const { jsPDF } = window.jspdf;
         if (!jsPDF) { alert("Librería PDF no lista."); return; }
 
@@ -817,10 +839,22 @@ function restaurarPantalla(estado) {
             const canvas = await html2canvas(estado.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
             const imgData = canvas.toDataURL('image/jpeg', 1.0); 
             const pdf = new jsPDF('p', 'mm', 'letter');
-            const pdfWidth = pdf.internal.pageSize.getWidth();     
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
+            
+            let pdfWidth = pdf.internal.pageSize.getWidth();     
+            let pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
+            const maxHeight = pdf.internal.pageSize.getHeight();
 
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
+            // 🔥 TRUCO: Candado anti-expansión. Si se pasa de 1 hoja, lo escala para que quepa exacto.
+            if (pdfHeight > maxHeight) {
+                const ratio = maxHeight / pdfHeight;
+                pdfHeight = maxHeight;
+                pdfWidth = pdfWidth * ratio; 
+            }
+            
+            // Centramos la imagen en caso de que se haya hecho un poco más angosta
+            const xOffset = (pdf.internal.pageSize.getWidth() - pdfWidth) / 2;
+
+            pdf.addImage(imgData, 'JPEG', xOffset, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
             pdf.save(nombreArchivoPDF);
         } catch (error) { console.error("Error PDF:", error); } 
         finally { restaurarPantalla(estado); }
@@ -1237,12 +1271,30 @@ function cargarRegistroParaEditar(rep) {
             else selectorEstado.style.color = '#10b981';
         }
 
+        // 🔥 AQUÍ SE ACTUALIZÓ: Se agregó la lógica para encender/apagar la etiqueta flotante (photo-label)
         const setFormPrev = (imgId, textId, inputId, url) => {
-            const img = document.getElementById(imgId); const txt = document.getElementById(textId); const inputElem = document.getElementById(inputId);
+            const img = document.getElementById(imgId); 
+            const txt = document.getElementById(textId); 
+            const inputElem = document.getElementById(inputId);
+            
             const btn = inputElem ? inputElem.parentElement.querySelector('.btn-del-photo') : null;
-            if(url) { img.src = url; img.style.display='block'; txt.style.display='none'; if(btn) btn.style.display='flex'; } 
-            else { img.src=""; img.style.display='none'; txt.style.display='block'; if(btn) btn.style.display='none'; }
+            const label = inputElem ? inputElem.parentElement.querySelector('.photo-label') : null; // <--- SE BUSCA LA ETIQUETA
+            
+            if(url) { 
+                img.src = url; 
+                img.style.display = 'block'; 
+                txt.style.display = 'none'; 
+                if(btn) btn.style.display = 'flex'; 
+                if(label) label.style.display = 'block'; // <--- SE MUESTRA LA ETIQUETA
+            } else { 
+                img.src = ""; 
+                img.style.display = 'none'; 
+                txt.style.display = 'block'; 
+                if(btn) btn.style.display = 'none'; 
+                if(label) label.style.display = 'none'; // <--- SE OCULTA LA ETIQUETA
+            }
         };
+        
         setFormPrev('prev_frente', 'txt_frente', 'input_frente', rep.foto_frente_url); 
         setFormPrev('prev_trasera', 'txt_trasera', 'input_trasera', rep.foto_trasera_url); 
         setFormPrev('prev_izq', 'txt_izq', 'input_izq', rep.foto_izquierdo_url); 
@@ -1250,8 +1302,11 @@ function cargarRegistroParaEditar(rep) {
         setFormPrev('prev_motor', 'txt_motor', 'input_motor', rep.foto_motor_url); 
         setFormPrev('prev_cluster', 'txt_cluster', 'input_cluster', rep.foto_cluster_url);
 
-        document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
-        document.getElementById('btnTabNuevo').style.background = '#d32f2f'; document.getElementById('btnTabHistorial').style.background = '#555'; window.scrollTo(0,0);
+        document.getElementById('formularioSection').style.display = 'block'; 
+        document.getElementById('historialSection').style.display = 'none';
+        document.getElementById('btnTabNuevo').style.background = '#d32f2f'; 
+        document.getElementById('btnTabHistorial').style.background = '#555'; 
+        window.scrollTo(0,0);
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
     }
 
