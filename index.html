@@ -177,8 +177,6 @@
         .btn-card-cotizar { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
 
         .pdf-actions-bar { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-download-image { flex: 1; background: #0284c7; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(2,132,199,0.2); text-transform: uppercase;}
-        .btn-download-pdf { flex: 1; background: #d32f2f; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); text-transform: uppercase;}
         
         @media screen and (max-width: 768px) {
             .pdf-header-container { flex-direction: column !important; gap: 15px !important; padding: 20px 15px !important; }
@@ -187,6 +185,52 @@
             .photo-grid { grid-template-columns: 1fr 1fr !important; }
             #printable-canvas { padding: 10px !important; }
             .pdf-actions-bar { flex-direction: column; }
+        }
+                
+        .btn-download-image {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #0284c7; /* Celeste / Azul institucional */
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 11pt;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-download-image:hover {
+            background-color: #0369a1; /* Azul un poco más oscuro al pasar el mouse */
+        }
+        .btn-download-image:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-download-pdf {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #dc2626;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 11pt;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-download-pdf:hover {
+            background-color: #bd0d00; /* Azul un poco más oscuro al pasar el mouse */
+        }
+        .btn-download-pdf:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
