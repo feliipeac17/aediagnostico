@@ -1150,7 +1150,7 @@ function volverAlInicio() {
             reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
 
             // 3. Subir el archivo a Supabase Storage (Bucket: reportes)
-            const fileName = `PRESUPUESTOS/PRESUPUESTO_${idReporteCortoGlobal}.pdf`;
+            const fileName = `PRESUPUESTOS/PRES_${idReporteCortoGlobal}.pdf`;
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
                 .from('reportes')
                 .upload(fileName, pdfBlob, { upsert: true, contentType: 'application/pdf' });
