@@ -951,11 +951,18 @@ if (scanFolio) {
                     document.getElementById('scan-status-title').innerText = "¡REPORTE DESCARGADO!";
                     document.getElementById('scan-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
                     document.getElementById('btnRetryScan').style.display = 'inline-block';
-                } else {
-                    loadingOverlay.style.display = 'none';
-                    const maskView = document.getElementById('maskFullscreenView');
-                    maskView.style.display = 'block';
-                    document.getElementById('iframeFullscreenEscaner').src = url;
+            } else {
+                    // 🔥 LA SOLUCIÓN: Como es un link HTTP de escáner, redirigimos directo a su servidor 
+                    // para evitar el bloqueo del "iframe" y la pantalla blanca.
+                    
+                    document.getElementById('scan-loading-spinner').style.display = 'none'; 
+                    document.getElementById('scan-status-title').innerText = "ABRIENDO REPORTE...";
+                    document.getElementById('scan-status-desc').innerText = "Redirigiendo a la plataforma de diagnóstico original...";
+                    
+                    // Esperamos 1 segundo para que el cliente lea el mensaje y luego lo mandamos
+                    setTimeout(() => {
+                        window.location.replace(url);
+                    }, 1000);
                 }
             } else { 
                 loadingOverlay.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ REPORTE NO ENCONTRADO</h2><p>El folio ingresado no tiene un diagnostico registrado o el enlace es incorrecto.</p></div></div>`; 
