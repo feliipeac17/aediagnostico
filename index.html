@@ -1493,9 +1493,12 @@ const msgEscaner = document.getElementById('noLinkMsg');
             if (msgEscaner) msgEscaner.style.display = 'block'; 
         }
 
-        const secPres = document.getElementById('subVistaContenidoPresupuesto');
+                const secPres = document.getElementById('subVistaContenidoPresupuesto');
         if (secPres) {
             if (rep.link_presupuesto && rep.link_presupuesto.trim() !== "") {
+                // 🔥 OBLIGA AL NAVEGADOR A DESCARGAR LA VERSIÓN MÁS RECIENTE DE LA NUBE
+                const linkFresca = rep.link_presupuesto.split('?')[0] + '?t=' + Date.now();
+
                 secPres.innerHTML = `
                     <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto;">
                         <div style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: #e0f2fe; border-radius: 50%; margin-bottom: 20px;">
@@ -1504,9 +1507,10 @@ const msgEscaner = document.getElementById('noLinkMsg');
                         <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase;">
                             Reporte de Presupuesto
                         </div>
-                        <a href="${rep.link_presupuesto}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
+                        <a href="${linkFresca}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i> VER</a>
                     </div>`;
+
             } else {
                 secPres.innerHTML = `
                     <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto;">
