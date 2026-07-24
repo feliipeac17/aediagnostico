@@ -739,6 +739,38 @@ function volverAlInicio() {
                 document.getElementById('in_falla_reportada').value = info.motivo_ingreso || info.sintomas;
             }
 
+            if (info.datos_presupuesto_json) {
+                try {
+                    const dataPres = typeof info.datos_presupuesto_json === 'string' 
+                        ? JSON.parse(info.datos_presupuesto_json) 
+                        : info.datos_presupuesto_json;
+
+                    document.getElementById('listServicios').innerHTML = '';
+                    document.getElementById('listRefacciones').innerHTML = '';
+                    document.getElementById('listManoObra').innerHTML = '';
+
+                    if (dataPres.servicios && Array.isArray(dataPres.servicios)) {
+                        dataPres.servicios.forEach(s => agregarRenglon('listServicios', s.desc, s.price));
+                    }
+                    if (dataPres.refacciones && Array.isArray(dataPres.refacciones)) {
+                        dataPres.refacciones.forEach(r => agregarRenglon('listRefacciones', r.desc, r.price));
+                    }
+                    if (dataPres.manoObra && Array.isArray(dataPres.manoObra)) {
+                        dataPres.manoObra.forEach(m => agregarRenglon('listManoObra', m.desc, m.price));
+                    }
+                    if (dataPres.falla_reportada) {
+                        document.getElementById('in_falla_reportada').value = dataPres.falla_reportada;
+                    }
+                    if (dataPres.codigo_fallas) {
+                        document.getElementById('in_codigo_fallas').value = dataPres.codigo_fallas;
+                    }
+
+                    actualizarTotales();
+                } catch(e) {
+                    console.error("Error al reconstruir presupuesto:", e);
+                }
+            }
+            
             localStorage.removeItem('ae_transferencia_presupuesto');
         } 
 
@@ -757,14 +789,14 @@ function volverAlInicio() {
         document.title = "PRES_" + codigoLimpio;
     });
     
-        function agregarRenglon(listaId) {
+function agregarRenglon(listaId, desc = '', price = '') {
         const contenedor = document.getElementById(listaId);
         const div = document.createElement('div');
         div.className = 'table-row';
         div.innerHTML = `
-            <input type="text" class="desc-input" placeholder="..." required style="width:100%;">
+            <input type="text" class="desc-input" placeholder="..." value="${desc}" required style="width:100%;">
             
-            <input type="text" inputmode="decimal" class="price-input" placeholder="$0.00" style="text-align: right; width:100%;" 
+            <input type="text" inputmode="decimal" class="price-input" placeholder="$0.00" value="${price}" style="text-align: right; width:100%;" 
                 onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
                 onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();"
                 required>
@@ -772,9 +804,9 @@ function volverAlInicio() {
             <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove(); actualizarTotales();"><i class="fa-solid fa-trash"></i></button>
         `;
         contenedor.appendChild(div);
+        actualizarTotales();
     }
  
-
     function calcularSumaColumna(listaId) {
         let total = 0;
         const inputs = document.querySelectorAll(`#${listaId} .price-input`);
@@ -1087,7 +1119,7 @@ function volverAlInicio() {
             });
         }
     }
-    // 🔥 LA FUNCIÓN MAESTRA: Crea el PDF, lo sube y avisa a la base de datos
+    
     async function guardarPresupuestoNube() {
         if (!idReporteCortoGlobal || !idReporteCortoGlobal.includes("AE-")) {
             alert("⚠️ Error: No se encontró un folio válido de reporte para vincular.");
@@ -1100,7 +1132,26 @@ function volverAlInicio() {
         btn.disabled = true;
 
         try {
-            // 1. Preparar el HTML para foto (Ocultar botones y inputs)
+            const extraerFilas = (listaId) => {
+                const filas = [];
+                document.querySelectorAll(`#${listaId} .table-row`).forEach(row => {
+                    const desc = row.querySelector('.desc-input')?.value || '';
+                    const price = row.querySelector('.price-input')?.value || '';
+                    if (desc.trim() !== '' || price.trim() !== '') {
+                        filas.push({ desc, price });
+                    }
+                });
+                return filas;
+            };
+
+            const estructuraPresupuesto = {
+                servicios: extraerFilas('listServicios'),
+                refacciones: extraerFilas('listRefacciones'),
+                manoObra: extraerFilas('listManoObra'),
+                falla_reportada: document.getElementById('in_falla_reportada')?.value || '',
+                codigo_fallas: document.getElementById('in_codigo_fallas')?.value || ''
+            };
+
             const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
             elementosAOcultar.forEach(el => el.style.display = 'none');
             const inputs = document.querySelectorAll('input, textarea, select');
@@ -1132,7 +1183,6 @@ function volverAlInicio() {
             const maxWOriginal = elemento.style.maxWidth;
             elemento.style.width = '840px'; elemento.style.maxWidth = 'none';
 
-            // 2. Generar el PDF "Invisible" en la memoria
             const { jsPDF } = window.jspdf;
             const canvas = await html2canvas(elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840 });
             const imgData = canvas.toDataURL('image/jpeg', 1.0); 
@@ -1141,15 +1191,12 @@ function volverAlInicio() {
             const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
             pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
             
-            // 🌟 AQUI ESTÁ EL SECRETO: Lo convertimos en un Archivo Blob en lugar de descargarlo
             const pdfBlob = pdf.output('blob');
 
-            // Restaurar la vista
             elemento.style.width = anchoOriginal; elemento.style.maxWidth = maxWOriginal;
             elementosAOcultar.forEach(el => el.style.display = '');
             reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
 
-            // 3. Subir el archivo a Supabase Storage (Bucket: reportes)
             const fileName = `PRESUPUESTOS/PRES_${idReporteCortoGlobal}.pdf`;
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
                 .from('reportes')
@@ -1157,21 +1204,21 @@ function volverAlInicio() {
 
             if (uploadError) throw uploadError;
 
-            // 4. Obtener el Link Público
             const { data: urlData } = supabaseClient.storage.from('reportes').getPublicUrl(fileName);
             const publicURL = urlData.publicUrl;
 
-            // 5. Pegar el Link en el reporte del cliente
             const { error: updateError } = await supabaseClient
                 .from('reportes_servicio')
-                .update({ link_presupuesto: publicURL })
+                .update({ 
+                    link_presupuesto: publicURL,
+                    datos_presupuesto_json: JSON.stringify(estructuraPresupuesto)
+                })
                 .eq('folio', idReporteCortoGlobal);
 
             if (updateError) throw updateError;
 
-            // 6. ¡Éxito!
             alert("✅ PRESUPUESTO VINCULADO CON ÉXITO.\nYa puedes verlo en el panel del administrador.");
-            window.location.replace('/'); // Te regresa al inicio
+            window.location.replace('/');
 
         } catch (error) {
             console.error("Error completo:", error);
@@ -1180,7 +1227,6 @@ function volverAlInicio() {
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
-    }
-</script>
+    }</script>
 </body>
 </html>
