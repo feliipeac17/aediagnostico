@@ -1345,7 +1345,7 @@ function transferirAPresupuesto(rep) {
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + rep.folio;
         document.title = "REPORTE_SERVICIO_" + rep.folio;
-        document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar Reporte";
+        document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar";
 
         document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
         document.getElementById('in_cliente_telefono').value = rep.cliente_telefono || '';
