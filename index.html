@@ -650,11 +650,26 @@
     });
 
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'F12' || 
-           (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-           (e.ctrlKey && e.shiftKey && e.key === 'J') || 
-           (e.ctrlKey && e.key === 'U')) {
+        // Bloquear F12 (Inspector de elementos)
+        if (e.keyCode === 123) {
             e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+            return false;
         }
     });
     
