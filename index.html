@@ -622,7 +622,7 @@
                     </div>
                 </div>
 
-<div id="subVistaContenidoEscaner" style="display: none; padding-top: 20px;">                    
+<div id="subVistaContenidoEscaner" style="display: none;">
     <div id="noLinkMsg" style="display:none; text-align:center; padding:50px 20px; color:#666;">
                         ⚠️ Este reporte no cuenta con una lectura de códigos.
                     </div>
@@ -1503,17 +1503,14 @@ const msgEscaner = document.getElementById('noLinkMsg');
     }
     
 function alternarSubVista(vista) {
-        // Variables de las 3 pestañas (botones)
         const tabRec = document.getElementById('subTabRecepcion'); 
         const tabEsc = document.getElementById('subTabEscaner');
         const tabPres = document.getElementById('subTabPresupuesto');
 
-        // Variables de los 3 contenidos
         const secRec = document.getElementById('subVistaContenidoRecepcion'); 
         const secEsc = document.getElementById('subVistaContenidoEscaner');
         const secPres = document.getElementById('subVistaContenidoPresupuesto');
 
-        // 1. Apagamos todas las pestañas primero
         if (tabRec) tabRec.classList.remove('active'); 
         if (tabEsc) tabEsc.classList.remove('active'); 
         if (tabPres) tabPres.classList.remove('active');
@@ -1522,19 +1519,32 @@ function alternarSubVista(vista) {
         if (secEsc) secEsc.style.display = 'none'; 
         if (secPres) secPres.style.display = 'none';
 
-        // 2. Encendemos únicamente la que el usuario presionó
         if (vista === 'recepcion') { 
             if (tabRec) tabRec.classList.add('active'); 
-            if (secRec) secRec.style.display = 'block'; 
+            if (secRec) secRec.style.display = 'block'; // Recepción se queda normal
         } else if (vista === 'escaner') { 
             if (tabEsc) tabEsc.classList.add('active'); 
-            if (secEsc) secEsc.style.display = 'block'; 
+            if (secEsc) {
+                secEsc.style.display = 'flex'; 
+                secEsc.style.flexDirection = 'column';
+                secEsc.style.justifyContent = 'center'; // Centrado vertical exacto
+                secEsc.style.alignItems = 'center'; // Centrado horizontal
+                secEsc.style.minHeight = '350px'; // Altura mínima para que flote bien.
+                secEsc.style.padding = '30px 0'; // Espacio de seguridad
+            }
         } else if (vista === 'presupuesto') { 
             if (tabPres) tabPres.classList.add('active'); 
-            if (secPres) secPres.style.display = 'block'; 
+            if (secPres) {
+                secPres.style.display = 'flex'; 
+                secPres.style.flexDirection = 'column';
+                secPres.style.justifyContent = 'center'; 
+                secPres.style.alignItems = 'center'; 
+                secPres.style.minHeight = '350px'; 
+                secPres.style.padding = '30px 0'; // Misma distancia
+            }
         }
     }
-
+    
     function abrirCalidadOriginal(tipoFoto) {
         if(!reportDataGlobal) return; let urlDestino = "";
         if(tipoFoto === 'frente') urlDestino = reportDataGlobal.foto_frente_url;
