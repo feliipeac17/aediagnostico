@@ -554,6 +554,7 @@
                 <div class="view-sub-tabs">
                     <button id="subTabRecepcion" class="view-sub-btn active" onclick="alternarSubVista('recepcion')">📋 Recepcion</button>
                     <button id="subTabEscaner" class="view-sub-btn" onclick="alternarSubVista('escaner')">📊 Escaneo</button>
+                    <button id="subTabPresupuesto" class="view-sub-btn" onclick="alternarSubVista('presupuesto')">💰 Presupuesto</button>
                 </div>
 
                 <div id="subVistaContenidoRecepcion">
@@ -624,6 +625,19 @@
                 <div id="subVistaContenidoEscaner" class="scanner-frame-container">
                     <div id="noLinkMsg" style="display:none; text-align:center; padding:50px 20px; color:#666;">
                         ⚠️ Este reporte no cuenta con una lectura de códigos.
+                    </div>
+                </div>
+                <div id="subVistaContenidoPresupuesto" style="display: none; padding-top: 20px;">
+                    <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto;">
+                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: #f8fafc; border-radius: 50%; margin-bottom: 20px;">
+                            <i class="fa-solid fa-file-invoice-dollar" style="font-size: 28pt; color: #94a3b8;"></i>
+                        </div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase;">
+                            Presupuesto de Reparación
+                        </div>
+                        <p style="font-size: 10pt; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
+                            Aún no se ha vinculado un presupuesto digital para este folio. Ve a la sección de Historial y selecciona "Cotizar" para generarlo.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1456,15 +1470,36 @@ if (rep.link_escaner && rep.link_escaner.trim() !== "") {
         window.scrollTo(0, 0);
     }
     
-    function alternarSubVista(vista) {
-        const tabRec = document.getElementById('subTabRecepcion'); const tabEsc = document.getElementById('subTabEscaner');
-        const secRec = document.getElementById('subVistaContenidoRecepcion'); const secEsc = document.getElementById('subVistaContenidoEscaner');
+function alternarSubVista(vista) {
+        // Variables de las 3 pestañas (botones)
+        const tabRec = document.getElementById('subTabRecepcion'); 
+        const tabEsc = document.getElementById('subTabEscaner');
+        const tabPres = document.getElementById('subTabPresupuesto');
+
+        // Variables de los 3 contenidos
+        const secRec = document.getElementById('subVistaContenidoRecepcion'); 
+        const secEsc = document.getElementById('subVistaContenidoEscaner');
+        const secPres = document.getElementById('subVistaContenidoPresupuesto');
+
+        // 1. Apagamos todas las pestañas primero
+        if (tabRec) tabRec.classList.remove('active'); 
+        if (tabEsc) tabEsc.classList.remove('active'); 
+        if (tabPres) tabPres.classList.remove('active');
+
+        if (secRec) secRec.style.display = 'none'; 
+        if (secEsc) secEsc.style.display = 'none'; 
+        if (secPres) secPres.style.display = 'none';
+
+        // 2. Encendemos únicamente la que el usuario presionó
         if (vista === 'recepcion') { 
-            if (tabRec) tabRec.classList.add('active'); if (tabEsc) tabEsc.classList.remove('active'); 
-            if (secRec) secRec.style.display = 'block'; if (secEsc) secEsc.style.display = 'none'; 
-        } else { 
-            if (tabRec) tabRec.classList.remove('active'); if (tabEsc) tabEsc.classList.add('active'); 
-            if (secRec) secRec.style.display = 'none'; if (secEsc) secEsc.style.display = 'block'; 
+            if (tabRec) tabRec.classList.add('active'); 
+            if (secRec) secRec.style.display = 'block'; 
+        } else if (vista === 'escaner') { 
+            if (tabEsc) tabEsc.classList.add('active'); 
+            if (secEsc) secEsc.style.display = 'block'; 
+        } else if (vista === 'presupuesto') { 
+            if (tabPres) tabPres.classList.add('active'); 
+            if (secPres) secPres.style.display = 'block'; 
         }
     }
 
