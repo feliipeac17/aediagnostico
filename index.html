@@ -1299,7 +1299,7 @@ function inyectarTarjetasHistorial(arr) {
     });
 }
 
-    function transferirAPresupuesto(rep) {
+function transferirAPresupuesto(rep) {
         const datos = {
             folio: String(rep.folio || '').trim(),
             cliente_nombre: String(rep.cliente_nombre || '').trim(),
@@ -1310,7 +1310,8 @@ function inyectarTarjetasHistorial(arr) {
             vehiculo_color: String(rep.vehiculo_color || '').trim(),
             vehiculo_km: String(rep.vehiculo_km || '').trim(),
             vehiculo_vin: String(rep.vehiculo_vin || '').trim(),
-            motivo_ingreso: String(rep.motivo_ingreso || '').trim()
+            motivo_ingreso: String(rep.motivo_ingreso || '').trim(),
+            datos_presupuesto_json: rep.datos_presupuesto_json || null
         };
         localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
         window.location.href = window.location.origin + '/presupuesto.html';
