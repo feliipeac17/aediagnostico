@@ -1232,51 +1232,49 @@ function inyectarTarjetasHistorial(arr) {
     
     arr.forEach(rep => {
         const tarjeta = document.createElement('div');
-        tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
+        // Aseguramos que la tarjeta use flexbox para dividir izquierda y derecha
+        tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;";
         
         let estadoActual = rep.estado || 'EN REVISION';
         let colorEstado = '#10b981';
         if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#ff1100';
         else if (estadoActual === 'TERMINADO') colorEstado = '#3b82f6';
 
-        // 🔥 CONTROL INTERNO: Formateamos la fecha y hora de creación de Supabase (created_at)
-        let fechaCreacion = "Fecha desconocida";
+        // Formato limpio de fecha y hora
+        let fechaCreacion = "Sin fecha";
         if (rep.created_at) {
             const fechaObj = new Date(rep.created_at);
-            fechaCreacion = fechaObj.toLocaleDateString('es-MX', {
-                day: '2-digit', 
-                month: '2-digit', 
-                year: 'numeric'
-            }) + ' | ' + fechaObj.toLocaleTimeString('es-MX', {
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true
-            });
+            const dia = fechaObj.toLocaleDateString('es-MX', {day: '2-digit', month: '2-digit', year: 'numeric'});
+            const hora = fechaObj.toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit', hour12: true});
+            fechaCreacion = `${dia} - ${hora}`;
         }
 
         tarjeta.innerHTML = `
-            <div style="flex:1;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding-right:15px;">
-                    <strong style="color:#d32f2f;">FOLIO: ${rep.folio || 'N/A'}</strong>
-                    <span style="font-size: 8pt; color: #64748b; font-weight: 700; background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">
-                        <i class="fa-regular fa-clock"></i> ${fechaCreacion}
-                    </span>
+            <div style="flex:1; padding-right: 10px;">
+                <div style="margin-bottom:6px;">
+                    <strong style="color:#d32f2f; font-size: 12pt;">FOLIO: ${rep.folio || 'N/A'}</strong>
                 </div>
-                <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
-                <div style="font-size:10pt;">🔢 ${rep.vehiculo_placas || 'S/N'}</div>
-                <div style="font-size:10pt; font-weight:bold;">👤 ${rep.cliente_nombre || 'S/N'}</div>
-                <div style="margin-top: 6px;">
+                <div style="font-size:10pt; color: #333;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                <div style="font-size:10pt; color: #333;">🔢 ${rep.vehiculo_placas || 'S/N'}</div>
+                <div style="font-size:10pt; font-weight:bold; color: #000; margin-top: 2px;">👤 ${rep.cliente_nombre || 'S/N'}</div>
+                <div style="margin-top: 8px;">
                     <span style="background-color: ${colorEstado}; color: white; font-size: 7.5pt; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">
                         ${estadoActual}
                     </span>
                 </div>
             </div>
-            <div style="display:flex; gap:6px; flex-direction:column;">
-                <div style="display:flex; gap:6px;">
-                    <button id="btn-ver-${rep.folio}" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
-                    <button id="btn-edit-${rep.folio}" style="background:#000; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
+            
+            <div style="display:flex; gap:6px; flex-direction:column; min-width: 120px;">
+                
+                <div style="font-size: 7.5pt; color: #64748b; font-weight: 700; background: #e2e8f0; padding: 4px; border-radius: 4px; text-align: center; margin-bottom: 2px; white-space: nowrap;">
+                    <i class="fa-regular fa-clock"></i> ${fechaCreacion}
                 </div>
-                <button id="btn-cotizar-${rep.folio}" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; text-align:center;">💰 Cotizar</button>
+                
+                <div style="display:flex; gap:6px;">
+                    <button id="btn-ver-${rep.folio}" style="flex:1; background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
+                    <button id="btn-edit-${rep.folio}" style="flex:1; background:#000; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
+                </div>
+                <button id="btn-cotizar-${rep.folio}" style="width:100%; background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; text-align:center;">💰 Cotizar</button>
             </div>
         `;
         contenedor.appendChild(tarjeta);
@@ -1286,7 +1284,6 @@ function inyectarTarjetasHistorial(arr) {
         document.getElementById(`btn-cotizar-${rep.folio}`).onclick = () => transferirAPresupuesto(rep);
     });
 }
-
 
     function transferirAPresupuesto(rep) {
         const datos = {
