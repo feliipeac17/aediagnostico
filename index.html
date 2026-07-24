@@ -622,8 +622,8 @@
                     </div>
                 </div>
 
-                <div id="subVistaContenidoEscaner" class="scanner-frame-container">
-                    <div id="noLinkMsg" style="display:none; text-align:center; padding:50px 20px; color:#666;">
+<div id="subVistaContenidoEscaner" style="display: none; padding-top: 20px;">                    
+    <div id="noLinkMsg" style="display:none; text-align:center; padding:50px 20px; color:#666;">
                         ⚠️ Este reporte no cuenta con una lectura de códigos.
                     </div>
                 </div>
@@ -1456,10 +1456,10 @@ const msgEscaner = document.getElementById('noLinkMsg');
                         <i class="fa-solid fa-chart-bar" style="font-size: 28pt; color: #0284c7;"></i>
                     </div>
                     <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-                        Reporte de Diagnostico de Escaner
+                        Reporte de Escaner
                     </div>
                     <a href="${rep.link_escaner}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> VER REPORTE COMPLETO
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> VER
                     </a>
                 </div>`;    
         } else { 
@@ -1475,13 +1475,10 @@ const msgEscaner = document.getElementById('noLinkMsg');
                             <i class="fa-solid fa-file-invoice-dollar" style="font-size: 28pt; color: #0284c7;"></i>
                         </div>
                         <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase;">
-                            Presupuesto Generado
+                            Reporte de Presupuesto
                         </div>
-                        <p style="font-size: 10pt; color: #64748b; margin-bottom: 25px; line-height: 1.5;">
-                            La cotización de reparación y/o refacciones para este vehículo ya está disponible.
-                        </p>
                         <a href="${rep.link_presupuesto}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
-                            <i class="fa-solid fa-download"></i> VER / DESCARGAR COTIZACIÓN
+                            <i class="fa-solid fa-download"></i> VER
                         </a>
                     </div>`;
             } else {
