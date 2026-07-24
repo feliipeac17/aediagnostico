@@ -13,6 +13,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
 
     <style>
         :root {
@@ -642,23 +644,29 @@ textarea.card-input {
             </div>
         </div>
 
-<div class="pdf-actions-bar" style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">
+<div class="pdf-actions-bar" style="display: flex; flex-direction: column; gap: 10px; justify-content: center; margin: 20px 0;">
             
-            <button onclick="forzarDescargaPNG()" class="btn-download-image">
-                📥 Descargar (PNG)
+            <button id="btnGuardarPresupuesto" onclick="guardarPresupuestoNube()" style="background:#10b981; color:white; border:none; padding:16px; border-radius:8px; font-weight:800; font-size:11.5pt; cursor:pointer; width:100%; display:flex; justify-content:center; align-items:center; gap:10px; box-shadow: 0 4px 6px rgba(16,185,129,0.3); text-transform: uppercase;">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Guardar
             </button>
-            
-            <button onclick="forzarDescargaPDF()" class="btn-download-image2">
-                📄 Descargar (PDF)
-            </button>
+
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <button onclick="forzarDescargaPNG()" class="btn-download-image" style="flex: 1;">
+                    📥 Descargar (PNG)
+                </button>
+                <button onclick="forzarDescargaPDF()" class="btn-download-image2" style="flex: 1;">
+                    📄 Descargar (PDF)
+                </button>
+            </div>
             
         </div>
 
     </div>
+    
 </div>
 
 <script>   
-    function volverAlInicio() {
+function volverAlInicio() {
         window.location.replace('/');
     }
 
@@ -667,6 +675,13 @@ textarea.card-input {
         window.location.replace('/');
     }
     
+    const SUPABASE_URL = "https://hgffyhbnsbripdomidyz.supabase.co"; 
+    const SUPABASE_KEY = "sb_publishable_BJNBtTKWs-ZiQ8DfQnUovQ_gie3fNHM";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    let idReporteCortoGlobal = "";
+
+
     window.addEventListener('DOMContentLoaded', () => {
         const hoy = new Date();
         const fTxt = hoy.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
@@ -674,6 +689,8 @@ textarea.card-input {
         
         let folioTxt = "PRES-" + hoy.getFullYear() + String(hoy.getMonth()+1).padStart(2,'0') + String(hoy.getDate()).padStart(2,'0') + "-" + Math.floor(100 + Math.random() * 900);
         let idReporteCorto = "AE-" + Math.floor(1000 + Math.random() * 9000);
+
+        idReporteCortoGlobal = idReporteCorto;
 
         document.getElementById('pdf-lbl-fecha').innerText = fTxt;
         document.getElementById('pdf-lbl-hora').innerText = hTxt;
@@ -691,6 +708,7 @@ textarea.card-input {
                 folioTxt = info.folio;
                 if (info.folio.includes("AE-")) {
                     idReporteCorto = info.folio;
+                    idReporteCortoGlobal = info.folio;
                 }
                 
                 const lblReporte = document.getElementById('pdf-lbl-reporte');
@@ -705,7 +723,6 @@ textarea.card-input {
             
             if (info.cliente_nombre) document.getElementById('in_cliente_nombre').value = info.cliente_nombre;
             if (info.cliente_telefono) document.getElementById('in_cliente_telefono').value = info.cliente_telefono;            
-            // 🔥 CORRECCIÓN: Separamos Marca y Modelo en sus propios campos para el nuevo diseño
             if (info.vehiculo_marca) document.getElementById('in_vehiculo_marca').value = info.vehiculo_marca;
             if (info.vehiculo_modelo) document.getElementById('in_vehiculo_modelo').value = info.vehiculo_modelo;            
             if (info.vehiculo_placas) document.getElementById('in_vehiculo_placas').value = info.vehiculo_placas;
@@ -1068,6 +1085,100 @@ textarea.card-input {
                 par.falso.remove();
                 par.original.style.display = ''; 
             });
+        }
+    }
+    // 🔥 LA FUNCIÓN MAESTRA: Crea el PDF, lo sube y avisa a la base de datos
+    async function guardarPresupuestoNube() {
+        if (!idReporteCortoGlobal || !idReporteCortoGlobal.includes("AE-")) {
+            alert("⚠️ Error: No se encontró un folio válido de reporte para vincular.");
+            return;
+        }
+
+        const btn = document.getElementById('btnGuardarPresupuesto');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO A LA NUBE...";
+        btn.disabled = true;
+
+        try {
+            // 1. Preparar el HTML para foto (Ocultar botones y inputs)
+            const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
+            elementosAOcultar.forEach(el => el.style.display = 'none');
+            const inputs = document.querySelectorAll('input, textarea, select');
+            const reemplazos = [];
+
+            inputs.forEach(input => {
+                if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+                const span = document.createElement('div');
+                span.innerText = input.value || '';
+                span.style.width = input.style.width || '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize;
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.color = '#0f172a';
+                span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+                span.style.display = 'inline-block';
+                if(input.tagName.toLowerCase() === 'textarea') {
+                    span.style.whiteSpace = 'pre-wrap'; span.style.display = 'block';
+                }
+                if(input.classList.contains('price-input')) {
+                    span.style.textAlign = 'right'; span.style.width = '100%'; 
+                }
+                input.parentNode.insertBefore(span, input);
+                input.style.display = 'none';
+                reemplazos.push({ original: input, falso: span });
+            });
+
+            const elemento = document.querySelector('.wrapper-page');
+            const anchoOriginal = elemento.style.width;
+            const maxWOriginal = elemento.style.maxWidth;
+            elemento.style.width = '840px'; elemento.style.maxWidth = 'none';
+
+            // 2. Generar el PDF "Invisible" en la memoria
+            const { jsPDF } = window.jspdf;
+            const canvas = await html2canvas(elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840 });
+            const imgData = canvas.toDataURL('image/jpeg', 1.0); 
+            const pdf = new jsPDF('p', 'mm', 'letter');
+            const pdfWidth = pdf.internal.pageSize.getWidth();     
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
+            
+            // 🌟 AQUI ESTÁ EL SECRETO: Lo convertimos en un Archivo Blob en lugar de descargarlo
+            const pdfBlob = pdf.output('blob');
+
+            // Restaurar la vista
+            elemento.style.width = anchoOriginal; elemento.style.maxWidth = maxWOriginal;
+            elementosAOcultar.forEach(el => el.style.display = '');
+            reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
+
+            // 3. Subir el archivo a Supabase Storage (Bucket: reportes)
+            const fileName = `PRESUPUESTOS/PRESUPUESTO_${idReporteCortoGlobal}.pdf`;
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                .from('reportes')
+                .upload(fileName, pdfBlob, { upsert: true, contentType: 'application/pdf' });
+
+            if (uploadError) throw uploadError;
+
+            // 4. Obtener el Link Público
+            const { data: urlData } = supabaseClient.storage.from('reportes').getPublicUrl(fileName);
+            const publicURL = urlData.publicUrl;
+
+            // 5. Pegar el Link en el reporte del cliente
+            const { error: updateError } = await supabaseClient
+                .from('reportes_servicio')
+                .update({ link_presupuesto: publicURL })
+                .eq('folio', idReporteCortoGlobal);
+
+            if (updateError) throw updateError;
+
+            // 6. ¡Éxito!
+            alert("✅ PRESUPUESTO VINCULADO CON ÉXITO.\nYa puedes verlo en el panel del administrador.");
+            window.location.replace('/'); // Te regresa al inicio
+
+        } catch (error) {
+            console.error("Error completo:", error);
+            alert("❌ Ocurrió un error al guardar: " + error.message);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
     }
 </script>
