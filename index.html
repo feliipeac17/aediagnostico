@@ -1226,46 +1226,67 @@ async function cargarHistorialSupabase() {
     }
 
 function inyectarTarjetasHistorial(arr) {
-        const contenedor = document.getElementById('listaReportes');
-        if (!contenedor) return;
-        contenedor.innerHTML = "";
+    const contenedor = document.getElementById('listaReportes');
+    if (!contenedor) return;
+    contenedor.innerHTML = "";
+    
+    arr.forEach(rep => {
+        const tarjeta = document.createElement('div');
+        tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
         
-        arr.forEach(rep => {
-            const tarjeta = document.createElement('div');
-            tarjeta.style.cssText = "background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;";
-            
-            let estadoActual = rep.estado || 'EN REVISION';
-            let colorEstado = '#10b981';
-            if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#ff1100';
-            else if (estadoActual === 'TERMINADO') colorEstado = '#3b82f6';
+        let estadoActual = rep.estado || 'EN REVISION';
+        let colorEstado = '#10b981';
+        if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#ff1100';
+        else if (estadoActual === 'TERMINADO') colorEstado = '#3b82f6';
 
-            tarjeta.innerHTML = `
-                <div style="flex:1;">
+        // 🔥 CONTROL INTERNO: Formateamos la fecha y hora de creación de Supabase (created_at)
+        let fechaCreacion = "Fecha desconocida";
+        if (rep.created_at) {
+            const fechaObj = new Date(rep.created_at);
+            fechaCreacion = fechaObj.toLocaleDateString('es-MX', {
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric'
+            }) + ' | ' + fechaObj.toLocaleTimeString('es-MX', {
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        tarjeta.innerHTML = `
+            <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding-right:15px;">
                     <strong style="color:#d32f2f;">FOLIO: ${rep.folio || 'N/A'}</strong>
-                    <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
-                    <div style="font-size:10pt;">🔢 ${rep.vehiculo_placas || 'S/N'}</div>
-                    <div style="font-size:10pt; font-weight:bold;">👤 ${rep.cliente_nombre || 'S/N'}</div>
-                    <div style="margin-top: 6px;">
-                        <span style="background-color: ${colorEstado}; color: white; font-size: 7.5pt; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">
-                            ${estadoActual}
-                        </span>
-                    </div>
+                    <span style="font-size: 8pt; color: #64748b; font-weight: 700; background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">
+                        <i class="fa-regular fa-clock"></i> ${fechaCreacion}
+                    </span>
                 </div>
-                <div style="display:flex; gap:6px; flex-direction:column;">
-                    <div style="display:flex; gap:6px;">
-                        <button id="btn-ver-${rep.folio}" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
-                        <button id="btn-edit-${rep.folio}" style="background:#000; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
-                    </div>
-                    <button id="btn-cotizar-${rep.folio}" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; text-align:center;">💰 Cotizar</button>
+                <div style="font-size:10pt;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                <div style="font-size:10pt;">🔢 ${rep.vehiculo_placas || 'S/N'}</div>
+                <div style="font-size:10pt; font-weight:bold;">👤 ${rep.cliente_nombre || 'S/N'}</div>
+                <div style="margin-top: 6px;">
+                    <span style="background-color: ${colorEstado}; color: white; font-size: 7.5pt; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">
+                        ${estadoActual}
+                    </span>
                 </div>
-            `;
-            contenedor.appendChild(tarjeta);
+            </div>
+            <div style="display:flex; gap:6px; flex-direction:column;">
+                <div style="display:flex; gap:6px;">
+                    <button id="btn-ver-${rep.folio}" style="background:#1a1a1a; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">👁️ Ver</button>
+                    <button id="btn-edit-${rep.folio}" style="background:#000; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
+                </div>
+                <button id="btn-cotizar-${rep.folio}" style="background:#0284c7; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; text-align:center;">💰 Cotizar</button>
+            </div>
+        `;
+        contenedor.appendChild(tarjeta);
 
-            document.getElementById(`btn-ver-${rep.folio}`).onclick = () => mostrarVistaPreviaDigital(rep);
-            document.getElementById(`btn-edit-${rep.folio}`).onclick = () => cargarRegistroParaEditar(rep);
-            document.getElementById(`btn-cotizar-${rep.folio}`).onclick = () => transferirAPresupuesto(rep);
-        });
-    }
+        document.getElementById(`btn-ver-${rep.folio}`).onclick = () => mostrarVistaPreviaDigital(rep);
+        document.getElementById(`btn-edit-${rep.folio}`).onclick = () => cargarRegistroParaEditar(rep);
+        document.getElementById(`btn-cotizar-${rep.folio}`).onclick = () => transferirAPresupuesto(rep);
+    });
+}
+
 
     function transferirAPresupuesto(rep) {
         const datos = {
