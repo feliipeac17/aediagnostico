@@ -1204,9 +1204,8 @@ function agregarRenglon(listaId, desc = '', price = '') {
 
             if (uploadError) throw uploadError;
 
+            const { data: urlData } = supabaseClient.storage.from('reportes').getPublicUrl(fileName);
             const publicURL = urlData.publicUrl + '?t=' + Date.now();
-            const publicURL = urlData.publicUrl;
-
             const { error: updateError } = await supabaseClient
                 .from('reportes_servicio')
                 .update({ 
