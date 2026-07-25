@@ -222,33 +222,29 @@
         .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; }
         .pdf-footer-section { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; align-items: start; }
 
-        .pdf-terms-card { 
-            border: 1px solid var(--border-color); 
-            border-radius: 10px; 
-            padding: 12px; 
-            background-color: #ffffff; 
-            text-rendering: auto !important; /* 🔥 ESTO APAGA EL BUG EN FIREFOX */
-        }
+        .pdf-terms-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; background-color: #ffffff; }
         .pdf-terms-card h4 { font-family: 'Montserrat', sans-serif; font-size: 8.5pt; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #0f172a; }
         
-        .pdf-terms-card ol { 
-            padding-left: 15px; 
-            font-size: 7pt; 
+        /* 🔥 CLASE BLINDADA CONTRA FIREFOX */
+        .fake-li { 
+            font-size: 9px !important; /* Usamos px exactos en lugar de pt */
             color: #64748b; 
             line-height: 1.5; 
+            margin-bottom: 5px; 
             text-align: left !important; 
-            text-rendering: auto !important; /* 🔥 APAGA EL BUG AQUÍ TAMBIÉN */
+            letter-spacing: 0px !important; /* Bloquea el estiramiento de letras */
+            word-spacing: 0px !important;   /* Bloquea el estiramiento de palabras */
+            display: block; 
         }
         
-        .pdf-terms-card ol li { 
-            margin-bottom: 4px; 
-            text-rendering: auto !important; /* 🔥 Y AQUÍ POR SEGURIDAD */
+        .pdf-note-red { 
+            margin-top: 8px; 
+            font-size: 8px !important; 
+            font-weight: 700; 
+            color: var(--primary-red); 
+            letter-spacing: 0px !important;
         }
 
-
-
-        
-        .pdf-note-red { margin-top: 8px; font-size: 6.5pt; font-weight: 700; color: var(--primary-red); }
         .pdf-totals-container { background-color: #0f172a; border-radius: 10px; padding: 18px; color: #ffffff; border-top: 4px solid var(--primary-red); }
         .pdf-totals-table { width: 100%; font-size: 8.5pt; margin-bottom: 12px; border-collapse: collapse; }
         .pdf-totals-table td { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -600,16 +596,15 @@ textarea.card-input {
         </div>
 
         <div class="pdf-footer-section">
-            <div class="pdf-terms-card">
+                        <div class="pdf-terms-card">
                 <h4>Terminos y Condiciones</h4>
-                <ol>
-                    <li>Este presupuesto es informativo y tiene vigencia de 15 días naturales; los precios de refacciones pueden variar segun disponibilidad del proveedor.</li>
-                    <li>La mano de obra cuenta con garantía de 30 días naturales a partir de la entrega; la garantia de refacciones depende del fabricante.</li>
-                    <li>Cualquier alteracion al documento debera autorizarla el cliente antes de continuar.</li>
-                    <li>El taller no se hace responsable por objetos de valor olvidados dentro del vehiculo y aplicara cargo por almacenaje a unidades no recojidas tras 15 dias.</li>
-                </ol>
+                <div class="fake-li">1. Este presupuesto es informativo y tiene vigencia de 15 días naturales; los precios de refacciones pueden variar segun disponibilidad del proveedor.</div>
+                <div class="fake-li">2. La mano de obra cuenta con garantía de 30 días naturales a partir de la entrega; la garantia de refacciones depende del fabricante.</div>
+                <div class="fake-li">3. Cualquier alteracion al documento debera autorizarla el cliente antes de continuar.</div>
+                <div class="fake-li">4. El taller no se hace responsable por objetos de valor olvidados dentro del vehiculo y aplicara cargo por almacenaje a unidades no recojidas tras 15 dias.</div>
                 <div class="pdf-note-red">▲ NOTA IMPORTANTE: El precio puede variar en caso de requerir piezas adicionales no visibles en el diagnóstico inicial.</div>
             </div>
+
             
             <div class="pdf-totals-container">
                 <table class="pdf-totals-table">
