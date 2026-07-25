@@ -1237,7 +1237,7 @@ async function guardarYProcesarReporte() {
             else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
 
             if (error) throw error;
-            alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE GUARDADO CON EXITO.");
+            alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE GUARDADO");
             
             const { data: reporteGuardado } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', folioCalculado).single();
             if(reporteGuardado) mostrarVistaPreviaDigital(reporteGuardado);
