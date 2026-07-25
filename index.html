@@ -1055,13 +1055,20 @@ async function validatePin() {
         } 
     }
     
-function mostrarPanel() {
+    function mostrarPanel() {
         document.getElementById('pin-lock-screen').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('reportView').style.display = 'none';
         
-        cambiarPestana('dashboard'); 
+        // Revisamos si venimos de regreso desde la pantalla de presupuestos
+        if (localStorage.getItem('ae_volver_historial') === 'true') {
+            localStorage.removeItem('ae_volver_historial'); // Borramos la nota para no ciclarla
+            cambiarPestana('historial'); // Abrimos la pestaña Historial directo
+        } else {
+            cambiarPestana('dashboard'); // Si entramos normal, abre el Inicio
+        }
     }
+
 
     function regresarAlFormulario() {
         document.getElementById('reportView').style.display = 'none';
