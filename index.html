@@ -1472,9 +1472,16 @@ function mostrarVistaPreviaDigital(rep) {
                     </div>`;
             } else {
                 htmlReportes += `
-                    <div style="background: #ffffff; padding: 30px 20px; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; color: #64748b; font-size: 10pt; width: 100%; box-sizing: border-box;">
-                        <i class="fa-solid fa-chart-bar" style="font-size: 20pt; color: #cbd5e1; margin-bottom: 8px; display: block;"></i>
-                        ⚠️ ESTE REPORTE NO CUENTA CON UNA LECTURA DE CÓDIGOS.
+                        <div style="background: #ffffff; padding: 30px 20px; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
+                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #f8fafc; border-radius: 50%; margin-bottom: 10px;">
+                            <i class="fa-solid fa-chart-bar" style="font-size: 18pt; color: #94a3b8;"></i>
+                        </div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11pt; color: #0f172a; margin-bottom: 6px; text-transform: uppercase;">
+                            ⚠️ ESTE REPORTE NO CUENTA CON UNA LECTURA DE CÓDIGOS
+                        </div>
+                        <p style="font-size: 9.5pt; color: #64748b; line-height: 1.4; margin: 0;">
+                             ⚠️ ESTE REPORTE NO CUENTA CON UNA LECTURA DE CÓDIGOS
+                        </p>
                     </div>`;
             }
 
