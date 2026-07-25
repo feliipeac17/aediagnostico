@@ -549,7 +549,7 @@
         </div>
     </div>
 
-    <div id="reportView" class="report-view">
+<div id="reportView" class="report-view">
         <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
             <button id="btnDescargarPDF" class="btn-submit" style="background:#d32f2f; margin:0;">📥 Generar PDF</button>
@@ -560,10 +560,10 @@
         
         <div class="report-scroll-container">
             <div class="preview-card-view">
-                <div class="view-sub-tabs">
-                    <button id="subTabRecepcion" class="view-sub-btn active" onclick="alternarSubVista('recepcion')">📋 Recepcion</button>
-                    <button id="subTabEscaner" class="view-sub-btn" onclick="alternarSubVista('escaner')">📊 Escaneo</button>
-                    <button id="subTabPresupuesto" class="view-sub-btn" onclick="alternarSubVista('presupuesto')">💰 Presupuesto</button>
+                
+                <div class="view-sub-tabs" style="display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; gap: 5px;">
+                    <button id="subTabRecepcion" class="view-sub-btn active" onclick="alternarSubVista('recepcion')" style="flex: 1; padding: 10px; font-weight: bold;">📋 Recepcion</button>
+                    <button id="subTabReportes" class="view-sub-btn" onclick="alternarSubVista('reportes')" style="flex: 1; padding: 10px; font-weight: bold;">📂 Reportes</button>
                 </div>
 
                 <div id="subVistaContenidoRecepcion">
@@ -631,28 +631,12 @@
                     </div>
                 </div>
 
-<div id="subVistaContenidoEscaner" style="display: none;">
-    <div id="noLinkMsg" style="display:none; text-align:center; padding:50px 20px; color:#666;">
-                        ⚠️ Este reporte no cuenta con una lectura de códigos.
+                <div id="subVistaContenidoReportes" style="display: none; padding-top: 20px;">
                     </div>
-                </div>
-                <div id="subVistaContenidoPresupuesto" style="display: none; padding-top: 20px;">
-                    <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto;">
-                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: #f8fafc; border-radius: 50%; margin-bottom: 20px;">
-                            <i class="fa-solid fa-file-invoice-dollar" style="font-size: 28pt; color: #94a3b8;"></i>
-                        </div>
-                        <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase;">
-                            Presupuesto de Reparación
-                        </div>
-                        <p style="font-size: 10pt; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
-                            Aún no se ha vinculado un presupuesto digital para este folio. Ve a la sección de Historial y selecciona "Cotizar" para generarlo.
-                        </p>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
-
 <script>
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
@@ -1435,7 +1419,7 @@ function transferirAPresupuesto(rep) {
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
     }
 
-    function mostrarVistaPreviaDigital(rep) {
+function mostrarVistaPreviaDigital(rep) {
         reportDataGlobal = rep; 
         alternarSubVista('recepcion');
 
@@ -1463,57 +1447,69 @@ function transferirAPresupuesto(rep) {
         const fotos = [ {id: 'web_img_frente', url: rep.foto_frente_url}, {id: 'web_img_trasera', url: rep.foto_trasera_url}, {id: 'web_img_izq', url: rep.foto_izquierdo_url}, {id: 'web_img_der', url: rep.foto_derecho_url}, {id: 'web_img_motor', url: rep.foto_motor_url}, {id: 'web_img_cluster', url: rep.foto_cluster_url} ];
         fotos.forEach(f => { const img = document.getElementById(f.id); if(img) { if(f.url) { img.src = f.url; img.style.display = 'block'; } else { img.style.display = 'none'; } } });
 
-const msgEscaner = document.getElementById('noLinkMsg');
-        const secEsc = document.getElementById('subVistaContenidoEscaner');
-        if (msgEscaner) msgEscaner.style.display = 'none';
-        
-        if (rep.link_escaner && rep.link_escaner.trim() !== "") {
-            secEsc.innerHTML = `
-                <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 30px auto;">
-                    <div style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: #e0f2fe; border-radius: 50%; margin-bottom: 20px;">
-                        <i class="fa-solid fa-chart-bar" style="font-size: 28pt; color: #0284c7;"></i>
-                    </div>
-                    <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-                        Reporte de Escaner
-                    </div>
-                    <a href="${rep.link_escaner}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> VER</a>
-                </div>`;    
-        } else { 
-            if (msgEscaner) msgEscaner.style.display = 'block'; 
-        }
+        // 🔥 PASO 2: INYECCIÓN UNIFICADA EN LA PESTAÑA "REPORTES"
+        const secReportes = document.getElementById('subVistaContenidoReportes');
+        if (secReportes) {
+            secReportes.innerHTML = ""; // Limpieza de seguridad
 
-                const secPres = document.getElementById('subVistaContenidoPresupuesto');
-        if (secPres) {
+            // Caja contenedora vertical para el par de tarjetas
+            let htmlReportes = `<div style="display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 500px; margin: 0 auto; padding: 10px; box-sizing: border-box;">`;
+
+            // 1. Renderizar Tarjeta de Escáner
+            if (rep.link_escaner && rep.link_escaner.trim() !== "") {
+                const linkEscanerFresco = rep.link_escaner.split('?')[0] + '?t=' + Date.now();
+                htmlReportes += `
+                    <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
+                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: #e0f2fe; border-radius: 50%; margin-bottom: 20px;">
+                            <i class="fa-solid fa-chart-bar" style="font-size: 28pt; color: #0284c7;"></i>
+                        </div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Reporte de Escaner
+                        </div>
+                        <a href="${linkEscanerFresco}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> VER ESCANEO
+                        </a>
+                    </div>`;
+            } else {
+                htmlReportes += `
+                    <div style="background: #ffffff; padding: 30px 20px; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; color: #64748b; font-size: 10pt; width: 100%; box-sizing: border-box;">
+                        <i class="fa-solid fa-chart-bar" style="font-size: 20pt; color: #cbd5e1; margin-bottom: 8px; display: block;"></i>
+                        ⚠️ ESTE REPORTE NO CUENTA CON UNA LECTURA DE CÓDIGOS.
+                    </div>`;
+            }
+
+            // 2. Renderizar Tarjeta de Presupuesto
             if (rep.link_presupuesto && rep.link_presupuesto.trim() !== "") {
-                const linkFresca = rep.link_presupuesto.split('?')[0] + '?t=' + Date.now();
-
-                secPres.innerHTML = `
-                    <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto;">
+                const linkPresupuestoFresco = rep.link_presupuesto.split('?')[0] + '?t=' + Date.now();
+                htmlReportes += `
+                    <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
                         <div style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: #e0f2fe; border-radius: 50%; margin-bottom: 20px;">
                             <i class="fa-solid fa-file-invoice-dollar" style="font-size: 28pt; color: #0284c7;"></i>
                         </div>
                         <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase;">
                             Reporte de Presupuesto
                         </div>
-                        <a href="${linkFresca}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> VER</a>
+                        <a href="${linkPresupuestoFresco}" target="_blank" style="background: #0284c7; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 10.5pt; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); width: 100%; box-sizing: border-box; transition: background 0.2s;">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> VER PRESUPUESTO
+                        </a>
                     </div>`;
-
             } else {
-                secPres.innerHTML = `
-                    <div style="background: #ffffff; padding: 40px 20px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto;">
-                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: #f8fafc; border-radius: 50%; margin-bottom: 20px;">
-                            <i class="fa-solid fa-file-invoice-dollar" style="font-size: 28pt; color: #94a3b8;"></i>
+                htmlReportes += `
+                    <div style="background: #ffffff; padding: 30px 20px; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
+                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #f8fafc; border-radius: 50%; margin-bottom: 10px;">
+                            <i class="fa-solid fa-file-invoice-dollar" style="font-size: 18pt; color: #94a3b8;"></i>
                         </div>
-                        <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13pt; color: #0f172a; margin-bottom: 8px; text-transform: uppercase;">
+                        <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11pt; color: #0f172a; margin-bottom: 6px; text-transform: uppercase;">
                             Presupuesto de Reparación
                         </div>
-                        <p style="font-size: 10pt; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
+                        <p style="font-size: 9.5pt; color: #64748b; line-height: 1.4; margin: 0;">
                             Aún no se ha vinculado un presupuesto digital para este folio. Ve a la sección de Historial y selecciona "Cotizar" para generarlo.
                         </p>
                     </div>`;
             }
+
+            htmlReportes += `</div>`;
+            secReportes.innerHTML = htmlReportes;
         }
 
         document.getElementById('adminPanel').style.display = 'none'; 
@@ -1523,45 +1519,31 @@ const msgEscaner = document.getElementById('noLinkMsg');
     
 function alternarSubVista(vista) {
         const tabRec = document.getElementById('subTabRecepcion'); 
-        const tabEsc = document.getElementById('subTabEscaner');
-        const tabPres = document.getElementById('subTabPresupuesto');
+        const tabReportes = document.getElementById('subTabReportes');
 
         const secRec = document.getElementById('subVistaContenidoRecepcion'); 
-        const secEsc = document.getElementById('subVistaContenidoEscaner');
-        const secPres = document.getElementById('subVistaContenidoPresupuesto');
+        const secReportes = document.getElementById('subVistaContenidoReportes');
 
         if (tabRec) tabRec.classList.remove('active'); 
-        if (tabEsc) tabEsc.classList.remove('active'); 
-        if (tabPres) tabPres.classList.remove('active');
+        if (tabReportes) tabReportes.classList.remove('active'); 
 
         if (secRec) secRec.style.display = 'none'; 
-        if (secEsc) secEsc.style.display = 'none'; 
-        if (secPres) secPres.style.display = 'none';
+        if (secReportes) secReportes.style.display = 'none'; 
 
         if (vista === 'recepcion') { 
             if (tabRec) tabRec.classList.add('active'); 
-            if (secRec) secRec.style.display = 'block';
-        } else if (vista === 'escaner') { 
-            if (tabEsc) tabEsc.classList.add('active'); 
-            if (secEsc) {
-                secEsc.style.display = 'flex'; 
-                secEsc.style.flexDirection = 'column';
-                secEsc.style.justifyContent = 'center'; 
-                secEsc.style.alignItems = 'center'; 
-                secEsc.style.minHeight = '350px'; 
-                secEsc.style.padding = '30px 0'; 
+            if (secRec) secRec.style.display = 'block'; 
+        } else if (vista === 'reportes') { 
+            if (tabReportes) tabReportes.classList.add('active'); 
+            if (secReportes) {
+                secReportes.style.display = 'flex'; 
+                secReportes.style.flexDirection = 'column';
+                secReportes.style.justifyContent = 'center'; 
+                secReportes.style.alignItems = 'center'; 
+                secReportes.style.minHeight = '350px'; 
+                secReportes.style.padding = '30px 0'; 
             }
-        } else if (vista === 'presupuesto') { 
-            if (tabPres) tabPres.classList.add('active'); 
-            if (secPres) {
-                secPres.style.display = 'flex'; 
-                secPres.style.flexDirection = 'column';
-                secPres.style.justifyContent = 'center'; 
-                secPres.style.alignItems = 'center'; 
-                secPres.style.minHeight = '350px'; 
-                secPres.style.padding = '30px 0'; 
-            }
-        }
+        } 
     }
     
     function abrirCalidadOriginal(tipoFoto) {
