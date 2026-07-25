@@ -658,7 +658,9 @@ textarea.card-input {
         }
     });
     
-function volverAlInicio() {
+    function volverAlInicio() {
+        // Le dejamos una nota al panel para que abra el historial
+        localStorage.setItem('ae_volver_historial', 'true');
         window.location.replace('/');
     }
 
@@ -1188,8 +1190,10 @@ function agregarRenglon(listaId, desc = '', price = '') {
 
             if (updateError) throw updateError;
 
-            alert("✅ REGISTRO GUARDADO");
+                        alert("✅ REGISTRO GUARDADO");
+            localStorage.setItem('ae_volver_historial', 'true');
             window.location.replace('/');
+
 
         } catch (error) {
             console.error("Error completo:", error);
