@@ -34,8 +34,6 @@
             display: block;
             margin: 0 !important;
             padding: 0 !important;
-            
-            /* 🔥 TRUCO MÁXIMA NITIDEZ: Suaviza los bordes de los textos en pantallas de alta resolución */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility !important;
@@ -53,18 +51,15 @@
             padding: 8px 15px; 
             border-radius: 8px; 
             border: 1px solid var(--border-color); 
-            
-            /* 🔥 ESTO ES LO NUEVO: Lo vuelve flotante y anclado arriba */
-            position: -webkit-sticky; /* Soporte para iPhone/Safari */
+            position: -webkit-sticky; 
             position: sticky;
-            top: 0; /* Se pega exactamente en el borde superior de la pantalla */
-            z-index: 9999; /* Garantiza que flote por encima de las fotos y tablas */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Sombrita elegante para que se note que está flotando */
+            top: 0; 
+            z-index: 9999; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
         }
       
         .btn-back { background: #64748b; color: white; border: none; padding: 8px 16px; font-size: 9pt; font-weight: 600; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 
-/* 📄 Lienzo de Impresión (Redujimos el espacio superior) */
         #printable-canvas {
             width: 100% !important;        
             max-width: 100% !important;    
@@ -78,7 +73,6 @@
             padding: 5px 20px 15px 20px !important; 
         }
 
-        /* Encabezado Estirado */
         .pdf-header-container { 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; 
             border-radius: 0 !important; 
@@ -92,17 +86,13 @@
             margin-bottom: 0 !important;
         }
 
-/* 🚀 LÍNEA TRICOLOR (Adiós a la línea blanca) */
         .pdf-divider { 
             height: 6px !important; 
             background: linear-gradient(90deg, #0284c7 0%, #d32f2f 100%) !important; 
             width: 100% !important; 
             display: block !important;
             margin: 0 !important; 
-            
-            /* 🔥 Aumentamos a -2px para que muerda bien el encabezado oscuro */
             margin-top: -2px !important; 
-            
             padding: 0 !important;
             border: none !important;
             position: relative !important;
@@ -119,13 +109,10 @@
         .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; text-transform: uppercase; }
         .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }        
         
-/* 🎯 Título de Presupuesto (Pegado más arriba) */
         .pdf-title-row { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            
-            /* 🔥 Le quitamos los 15px de margen que lo empujaban hacia abajo */
             margin-top: 0px !important; 
             margin-bottom: 12px; 
         }
@@ -133,7 +120,6 @@
         .pdf-title-row h2 span { color: #0284c7; }
         .pdf-badge-informativo { background-color: #ef4444; color: white; font-size: 7.5pt; font-weight: 800; padding: 4px 12px; border-radius: 6px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; }
 
-        /* Tarjetas de Información */
         .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .pdf-info-card { background-color: var(--gray-light); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 15px; position: relative; }
         .pdf-info-card.cliente { border-left: 5px solid #0284c7; }
@@ -149,13 +135,13 @@
             display: grid; 
             grid-template-columns: 1fr 1fr; 
             gap: 8px 12px; 
-            align-items: start; /* 🔥 TRUCO: Obliga a que todo se alinee exactamente arriba */
+            align-items: start; 
         }
         .pdf-data-item { 
             font-size: 10pt; 
             display: flex; 
             flex-direction: column; 
-            justify-content: flex-start; /* 🔥 Mantiene el título y el texto pegados arriba */
+            justify-content: flex-start; 
         }
         .pdf-data-item span { 
             display: block; 
@@ -166,7 +152,6 @@
             margin-bottom: 2px; 
         } 
         
-/* 🔥 SOLO INPUTS CORTOS (Teléfono, Placas, VIN, etc) */
         input.card-input { 
             width: 100%; 
             border: none; 
@@ -182,7 +167,6 @@
             padding: 0 0 2px 0 !important; 
         }
         
-        /* 3 Columnas hacia los lados (Originales) */
         .pdf-pillars-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .pdf-pillar-card { 
             border: 1px solid var(--border-color); 
@@ -213,18 +197,15 @@
         }
         .pdf-pillar-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .pdf-pillar-table th { font-size: 6.5pt; text-transform: uppercase; color: #0284c7; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
-/* Campos dentro de las 3 tablas (Descripciones y Precios) */
-.table-row input { 
+
+        .table-row input { 
             border: none; 
             background: transparent; 
             font-size: 8pt; 
             outline: none; 
             color: #000000 !important; 
-            
-            /* 🔥 AQUÍ PONEMOS ROBOTO REGULAR */
             font-family: 'Roboto', sans-serif !important;
             font-weight: 400 !important; 
-            
             height: 24px !important;
             line-height: 24px !important;
             padding: 0 4px !important; 
@@ -236,12 +217,11 @@
             width: 95px; 
             text-align: right; 
             padding-right: 4px; 
-            font-weight: 800 !important; /* <--- Esto hace que las cantidades salgan en negrita */
+            font-weight: 800 !important; 
         }
         .btn-add-item { background: none; border: 1px dashed var(--border-color); color: var(--text-color); width: 100%; padding: 6px; font-size: 7.5pt; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 5px; }
         .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; }
 
-        /* Totales y Cierre */
         .pdf-footer-section { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; align-items: start; }
         .pdf-terms-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; background-color: #ffffff; }
         .pdf-terms-card h4 { font-family: 'Montserrat', sans-serif; font-size: 8.5pt; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #0f172a; }
@@ -324,8 +304,6 @@ textarea.card-input {
             color: #0f172a; 
             outline: none;
             text-transform: uppercase;
-            
-            /* Permite que crezca hacia abajo y el texto salte de línea */
             height: auto !important;
             white-space: pre-wrap !important;
             word-wrap: break-word !important;
@@ -333,9 +311,7 @@ textarea.card-input {
             line-height: 1.4 !important;
         }
 
-        /* 📱 MODO CELULAR: Acomoda todo hacia abajo solo en la pantalla para poder escribir fácil */
         @media screen and (max-width: 768px) {
-            /* El encabezado se centra y se apila */
             .pdf-header-container { 
                 flex-direction: column !important; 
                 gap: 15px !important; 
@@ -343,29 +319,23 @@ textarea.card-input {
             }
             .pdf-folio-container { width: 100% !important; }
             
-            /* Cliente y Vehículo se apilan uno debajo del otro */
             .pdf-grid-boxes { grid-template-columns: 1fr !important; }
             
-            /* Las Fallas y Notas se apilan verticalmente */
             .pdf-info-card.diagnostico .pdf-card-data { grid-template-columns: 1fr !important; }
             
-            /* 🔥 LAS 3 TABLAS se apilan una debajo de la otra para que tengas espacio total al escribir */
             .pdf-pillars-grid { grid-template-columns: 1fr !important; }
             
-            /* Términos y Totales se apilan */
             .pdf-footer-section { grid-template-columns: 1fr !important; }
             
-            /* El lienzo se pega a las orillas del celular para aprovechar espacio */
             #printable-canvas { padding: 10px !important; }
         }
 
-        /* 🎨 Estilo unificado para el botón de Imagen (Azul / Celeste) */
         .btn-download-image {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background-color: #0284c7; /* Celeste / Azul institucional */
+            background-color: #0284c7; 
             color: #ffffff;
             font-weight: 600;
             font-size: 11pt;
@@ -377,13 +347,12 @@ textarea.card-input {
             transition: background-color 0.2s, transform 0.1s;
         }
         .btn-download-image:hover {
-            background-color: #0369a1; /* Azul un poco más oscuro al pasar el mouse */
+            background-color: #0369a1; 
         }
         .btn-download-image:active {
             transform: scale(0.98);
         }
         
-        /* 🎨 Estilo unificado para el botón de Imagen (Azul / Celeste) */
         .btn-download-image2 {
             display: inline-flex;
             align-items: center;
@@ -401,7 +370,7 @@ textarea.card-input {
             transition: background-color 0.2s, transform 0.1s;
         }
         .btn-download-image2:hover {
-            background-color: #bd0d00; /* Azul un poco más oscuro al pasar el mouse */
+            background-color: #bd0d00; 
         }
         .btn-download-image2:active {
             transform: scale(0.98);
@@ -667,7 +636,6 @@ textarea.card-input {
     });
 
     document.addEventListener('keydown', function(e) {
-        // Bloquear F12 (Inspector de elementos)
         if (e.keyCode === 123) {
             e.preventDefault();
             return false;
@@ -694,7 +662,6 @@ function volverAlInicio() {
         window.location.replace('/');
     }
 
-    // SEGURIDAD: Si no hay PIN, no entra
     if (localStorage.getItem('ae_sesion_valida') !== 'true') {
         window.location.replace('/');
     }
@@ -911,13 +878,10 @@ function agregarRenglon(listaId, desc = '', price = '') {
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
-    // 📥 FUNCIÓN CORREGIDA: Descarga de Imagen PNG Limpia
     function forzarDescargaPNG() {
-        // Ocultamos botones de control, barra superior y barra de descarga inferior
         const elementosAOcultar = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         elementosAOcultar.forEach(el => el.style.display = 'none');
 
-// 🔥 MAGIA DE CAPTURA ACTUALIZADA (Permite minúsculas en descripciones)
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
@@ -937,7 +901,7 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 span.style.fontSize = '8.5pt';
                 span.style.fontWeight = '700';
                 span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase'; // <- Textareas (Notas) siempre en mayúsculas
+                span.style.textTransform = 'uppercase'; 
                 span.style.lineHeight = '1.4';
                 span.style.minHeight = '38px';
                 span.style.paddingBottom = '5px';
@@ -948,14 +912,10 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 span.style.width = input.style.width || '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
-                span.style.color = '#0f172a';
-                
-                // 🔥 AQUÍ ESTÁ EL TRUCO: Si es descripción de la tabla, quita las mayúsculas forzadas
-                span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase';
-                
+                span.style.color = '#0f172a';         
+                span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase'; 
                 span.style.display = 'inline-block';
                 span.style.padding = '2px 0';
-
                 span.style.fontFamily = window.getComputedStyle(input).fontFamily;
                 
                 if(input.classList.contains('price-input')) {
@@ -1024,7 +984,6 @@ function agregarRenglon(listaId, desc = '', price = '') {
         });
     }
 
-    // 📄 FUNCIÓN CORREGIDA: Descarga Directa de PDF Perfecta
     async function forzarDescargaPDF() {
         const { jsPDF } = window.jspdf;
         if (!jsPDF) {
@@ -1056,7 +1015,7 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 span.style.fontSize = '8.5pt';
                 span.style.fontWeight = '700';
                 span.style.color = '#0f172a';
-                span.style.textTransform = 'uppercase'; // <- Textareas (Notas) siempre en mayúsculas
+                span.style.textTransform = 'uppercase'; 
                 span.style.lineHeight = '1.4';
                 span.style.minHeight = '38px';
                 span.style.paddingBottom = '5px';
@@ -1067,14 +1026,10 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 span.style.width = input.style.width || '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
-                span.style.color = '#0f172a';
-                
-                // 🔥 AQUÍ ESTÁ EL TRUCO: Si es descripción de la tabla, quita las mayúsculas forzadas
+                span.style.color = '#0f172a';                
                 span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase';
-                
                 span.style.display = 'inline-block';
                 span.style.padding = '2px 0';
-
                 span.style.fontFamily = window.getComputedStyle(input).fontFamily;
                 
                 if(input.classList.contains('price-input')) {
@@ -1094,12 +1049,11 @@ function agregarRenglon(listaId, desc = '', price = '') {
         elemento.style.width = '840px';
         elemento.style.maxWidth = 'none';
 
-        // 🚀 AÑADIDO: Obtenemos el nombre dinámico igual que en el PNG
         let nombreArchivoPDF = (document.title || "PRES_AE") + ".pdf";
 
         try {
             const canvas = await html2canvas(elemento, {
-                scale: 4,               /* 🔥 NIVEL MÁXIMO: Subimos a 4 para calidad de imprenta/vectorial */
+                scale: 4,               
                 useCORS: true,
                 logging: false,
                 width: 840,
@@ -1108,9 +1062,6 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 y: 0
             });
 
-            // Usamos formato JPEG al 100% de calidad. 
-            // TRUCO: Los visores de PDF (como Acrobat o Chrome) renderizan el texto mucho más nítido 
-            // cuando la imagen interna es un JPEG de máxima calidad en lugar de un PNG pesado.
             const imgData = canvas.toDataURL('image/jpeg', 1.0); 
             
             const pdf = new jsPDF('p', 'mm', 'letter');
