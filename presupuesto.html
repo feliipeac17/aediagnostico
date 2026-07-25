@@ -222,21 +222,33 @@
         .btn-add-item { background: none; border: 1px dashed var(--border-color); color: var(--text-color); width: 100%; padding: 6px; font-size: 7.5pt; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 5px; }
         .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; }
         .pdf-footer-section { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; align-items: start; }
-        .pdf-terms-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; background-color: #ffffff; }
+
+        .pdf-terms-card { 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            padding: 12px; 
+            background-color: #ffffff; 
+            text-rendering: auto !important; /* 🔥 ESTO APAGA EL BUG EN FIREFOX */
+        }
         .pdf-terms-card h4 { font-family: 'Montserrat', sans-serif; font-size: 8.5pt; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #0f172a; }
+        
         .pdf-terms-card ol { 
             padding-left: 15px; 
             font-size: 7pt; 
             color: #64748b; 
             line-height: 1.5; 
             text-align: left !important; 
+            text-rendering: auto !important; /* 🔥 APAGA EL BUG AQUÍ TAMBIÉN */
         }
+        
         .pdf-terms-card ol li { 
             margin-bottom: 4px; 
-            text-align: left !important;
-            word-spacing: normal !important;
-            letter-spacing: normal !important;
+            text-rendering: auto !important; /* 🔥 Y AQUÍ POR SEGURIDAD */
         }
+
+
+
+        
         .pdf-note-red { margin-top: 8px; font-size: 6.5pt; font-weight: 700; color: var(--primary-red); }
         .pdf-totals-container { background-color: #0f172a; border-radius: 10px; padding: 18px; color: #ffffff; border-top: 4px solid var(--primary-red); }
         .pdf-totals-table { width: 100%; font-size: 8.5pt; margin-bottom: 12px; border-collapse: collapse; }
