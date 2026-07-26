@@ -53,13 +53,9 @@
         .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a1a1a; padding-bottom: 15px; margin-bottom: 20px; }
         .panel-title { font-size: 15pt; font-weight: bold; color: #1a1a1a; }
         .panel-title span { color: #d32f2f; }
-        .btn-logout { background: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 9pt; }
-
         .btn-submit { background: #1a1a1a; color: #fff; border: none; padding: 16px; font-size: 12pt; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-submit:hover { background: #d32f2f; }
-
         .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 10px 0; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; }
-
         .wrapper-page { width: 100%; max-width: 840px; margin: 0 auto; box-sizing: border-box; background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 20px;}
         #printable-canvas { width: 100% !important; max-width: 100% !important; height: auto !important; margin: 0 !important; background: #ffffff !important; overflow: hidden !important; display: block !important; position: relative !important; padding: 15px 20px 15px 20px !important; }
        
@@ -307,16 +303,25 @@
         #btnCancelarEdicion:active {
             transform: scale(0.97) !important; 
         }
-        .btn-logout {
-            transition: background-color 0.2s ease, transform 0.1s ease !important;
+        .btn-logout { 
+            background: transparent !important; 
+            color: #94a3b8 !important; 
+            border: 1px solid #e2e8f0 !important; 
+            padding: 8px 14px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 9pt; 
+            transition: all 0.2s ease, transform 0.1s ease !important;
         }
         .btn-logout:hover {
-            background-color: #b71c1c !important; /* Rojo más oscuro */
+            background: #fee2e2 !important;   
+            color: #ef4444 !important;        
+            border-color: #fca5a5 !important; 
         }
         .btn-logout:active {
-            transform: scale(0.93) !important;
+            transform: scale(0.93) !important; 
         }
-
         button[onclick="regresarAlFormulario()"] {
             transition: background-color 0.2s ease, transform 0.1s ease !important;
         }
@@ -358,6 +363,60 @@
         }
         #subVistaContenidoReportes a:active {
             transform: scale(0.96) !important;
+        }
+        .nav-tab-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 0;
+            font-weight: 700;
+            color: #64748b;
+            border-radius: 8px;
+            font-size: 9.5pt;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .nav-tab-btn.tab-active {
+            background: #ffffff !important;
+            color: var(--primary-red) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .nav-tab-btn:hover:not(.tab-active) {
+            color: #1e293b;
+        }
+        .input-buscador-moderno {
+            width: 100%; 
+            padding: 14px 16px 14px 44px; 
+            font-size: 10.5pt; 
+            font-weight: 600;
+            border-radius: 12px; 
+            border: 1px solid #e2e8f0; 
+            background-color: #ffffff;
+            color: #0f172a;
+            outline: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.25s ease; 
+        }
+        
+        .input-buscador-moderno:hover {
+            border-color: #cbd5e1;
+        }
+
+        .input-buscador-moderno:focus {
+            border-color: #0284c7; 
+            background-color: #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.08), 0 4px 6px -4px rgba(2, 132, 199, 0.08); 
+        }
+
+        .input-buscador-moderno::placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+            text-transform: none !important; 
         }
     </style>
 </head>
@@ -401,11 +460,11 @@
     </div>
 
     <div id="adminPanel" class="admin-panel">
-        <div class="sticky-nav-container">
-<div style="display: flex; gap: 8px; margin-bottom: 5px;">
-                <button id="btnTabDashboard" class="btn-submit" style="margin:0; flex:1; background:#d32f2f; font-size: 9.5pt;" onclick="cambiarPestana('dashboard')">📊 Inicio</button>
-                <button id="btnTabNuevo" class="btn-submit" style="margin:0; flex:1; background:#555; font-size: 9.5pt;" onclick="cambiarPestana('nuevo')">📝 Nuevo</button>
-                <button id="btnTabHistorial" class="btn-submit" style="margin:0; flex:1; background:#555; font-size: 9.5pt;" onclick="cambiarPestana('historial')">📂 Historial</button>
+<div class="sticky-nav-container" style="border-bottom: none; box-shadow: 0 4px 10px rgba(0,0,0,0.03); padding: 15px 15px;">
+            <div style="display: flex; background: #e2e8f0; border-radius: 12px; padding: 5px; gap: 5px;">
+                <button id="btnTabDashboard" class="nav-tab-btn tab-active" onclick="cambiarPestana('dashboard')"><i class="fa-solid fa-chart-pie"></i> Inicio</button>
+                <button id="btnTabNuevo" class="nav-tab-btn" onclick="cambiarPestana('nuevo')"><i class="fa-solid fa-file-circle-plus"></i> Nuevo</button>
+                <button id="btnTabHistorial" class="nav-tab-btn" onclick="cambiarPestana('historial')"><i class="fa-solid fa-folder-open"></i> Historial</button>
             </div>
         </div>
 
@@ -414,23 +473,29 @@
             <button class="btn-logout" onclick="cerrarSesion()">Bloquear</button>
         </div>
 
-        <div id="dashboardSection" style="display: block;">
+<div id="dashboardSection" style="display: block;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #10b981; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase;">En Revision</div>
-                    <div id="dash-taller" style="font-size: 24pt; font-weight: 800; color: #0f172a; margin-top: 5px;">0</div>
+                
+                <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+                    <i class="fa-solid fa-screwdriver-wrench" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #10b981; opacity: 0.1; transform: rotate(-15deg);"></i>
+                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Revision</div>
+                    <div id="dash-taller" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
                 </div>
-                <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase;">Terminados</div>
-                    <div id="dash-piezas" style="font-size: 24pt; font-weight: 800; color: #0f172a; margin-top: 5px;">0</div>
+                
+                <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+                    <i class="fa-solid fa-car-on" style="position: absolute; right: -5px; bottom: -10px; font-size: 50pt; color: #3b82f6; opacity: 0.1;"></i>
+                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">Terminados</div>
+                    <div id="dash-piezas" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
                 </div>
-                <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #ff1100; box-shadow: 0 4px 6px rgba(0,0,0,0.05); grid-column: span 2; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase;">Entregados</div>
-                        <div id="dash-terminados" style="font-size: 24pt; font-weight: 800; color: #0f172a; margin-top: 5px;">0</div>
+                
+                <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 20px 25px; border-radius: 12px; border-left: 5px solid #ef4444; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15); grid-column: span 2; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden;">
+                    <i class="fa-solid fa-check-double" style="position: absolute; right: 20px; font-size: 60pt; color: #ffffff; opacity: 0.05;"></i>
+                    <div style="position: relative; z-index: 2;">
+                        <div style="font-size: 9pt; color: #94a3b8; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Total Entregados</div>
+                        <div id="dash-terminados" style="font-size: 32pt; font-weight: 800; color: #ffffff; margin-top: 2px;">0</div>
                     </div>
-                    <i class="fa-solid fa-check-double" style="font-size: 30pt; color: #e2e8f0;"></i>
                 </div>
+                
             </div>
         </div>
 
@@ -706,8 +771,9 @@
         </div>
 
         <div id="historialSection" style="display: none;">
-            <div style="margin-bottom: 15px;">
-                <input type="text" id="buscadorHistorial" placeholder="🔍 FOLIO, CLIENTE O PLACAS" onkeyup="filtrarHistorial()" style="width:100%; padding: 14px; font-size: 15px; border-radius: 6px; border: 1px solid #bbb;">
+            <div style="margin-bottom: 20px; position: relative;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 11pt; z-index: 10;"></i>
+                <input type="text" id="buscadorHistorial" placeholder="Buscar folio, cliente o placas..." onkeyup="filtrarHistorial()" class="input-buscador-moderno">
             </div>
             <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #1a1a1a; margin-bottom: 12px;">Lista de Reportes</div>
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
@@ -1277,9 +1343,13 @@ function cambiarPestana(modo) {
         document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
         document.getElementById('historialSection').style.display = modo === 'historial' ? 'block' : 'none';
         
-        document.getElementById('btnTabDashboard').style.background = modo === 'dashboard' ? '#d32f2f' : '#555';
-        document.getElementById('btnTabNuevo').style.background = modo === 'nuevo' ? '#d32f2f' : '#555';
-        document.getElementById('btnTabHistorial').style.background = modo === 'historial' ? '#d32f2f' : '#555';
+        document.getElementById('btnTabDashboard').classList.remove('tab-active');
+        document.getElementById('btnTabNuevo').classList.remove('tab-active');
+        document.getElementById('btnTabHistorial').classList.remove('tab-active');
+        
+        if (modo === 'dashboard') document.getElementById('btnTabDashboard').classList.add('tab-active');
+        if (modo === 'nuevo') document.getElementById('btnTabNuevo').classList.add('tab-active');
+        if (modo === 'historial') document.getElementById('btnTabHistorial').classList.add('tab-active');
         
         if (modo === 'nuevo') {
             limpiarFormularioCompleto(); 
