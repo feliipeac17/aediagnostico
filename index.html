@@ -198,7 +198,6 @@
         .btn-download-pdf:active {
             transform: scale(0.98);
         }
-        /* 🎨 ESTILOS Y HOVER PARA EL MODAL DE FOTOS */
         .btn-modal-foto {
             flex: 1; 
             padding: 20px 10px; 
@@ -213,38 +212,35 @@
             align-items: center; 
             justify-content: center; 
             gap: 8px;
-            transition: background-color 0.2s ease, transform 0.1s ease; /* Transición suave */
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
         
         .btn-modal-foto i {
             font-size: 20pt;
         }
 
-        /* Botón Cámara */
         .btn-camara {
             background: #0284c7; 
             box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);
         }
         .btn-camara:hover {
-            background: #0369a1; /* Azul más oscuro al pasar cursor */
+            background: #0369a1; 
         }
         .btn-camara:active {
-            transform: scale(0.97); /* Efecto de hundido al presionarse */
+            transform: scale(0.97); 
         }
 
-        /* Botón Galería */
         .btn-galeria {
             background: #334155; 
             box-shadow: 0 4px 6px rgba(51, 65, 85, 0.2);
         }
         .btn-galeria:hover {
-            background: #1e293b; /* Gris oscuro al pasar cursor */
+            background: #1e293b; 
         }
         .btn-galeria:active {
-            transform: scale(0.97); /* Efecto de hundido al presionarse */
+            transform: scale(0.97); 
         }
 
-        /* Botón Cancelar */
         .btn-modal-cancelar {
             width: 100%; 
             padding: 12px; 
@@ -258,7 +254,7 @@
             transition: background-color 0.2s ease;
         }
         .btn-modal-cancelar:hover {
-            background: #e2e8f0; /* Un gris un poco más marcado al pasar cursor */
+            background: #e2e8f0; 
         }
     </style>
 </head>
@@ -1155,12 +1151,11 @@ async function validatePin() {
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('reportView').style.display = 'none';
         
-        // Revisamos si venimos de regreso desde la pantalla de presupuestos
         if (localStorage.getItem('ae_volver_historial') === 'true') {
-            localStorage.removeItem('ae_volver_historial'); // Borramos la nota para no ciclarla
-            cambiarPestana('historial'); // Abrimos la pestaña Historial directo
+            localStorage.removeItem('ae_volver_historial'); 
+            cambiarPestana('historial'); 
         } else {
-            cambiarPestana('dashboard'); // Si entramos normal, abre el Inicio
+            cambiarPestana('dashboard'); 
         }
     }
 
@@ -1234,7 +1229,6 @@ function limpiarFormularioCompleto() {
 
 async function subirFotoOriginal(inputId, folioUnico) {
         let input = document.getElementById(inputId);
-        // Si el input normal no tiene foto, revisamos el de la cámara (_cam)
         if (!input || !input.files || input.files.length === 0) {
             input = document.getElementById(inputId + '_cam');
         }
@@ -1251,7 +1245,6 @@ async function subirFotoOriginal(inputId, folioUnico) {
     let inputGaleriaActual = null;
     let inputCamaraActual = null;
 
-    // Abrir el menú flotante
     function solicitarFoto(event, inputId) {
         if(event) event.stopPropagation();
         inputGaleriaActual = document.getElementById(inputId);
@@ -1259,19 +1252,16 @@ async function subirFotoOriginal(inputId, folioUnico) {
         document.getElementById('modalOrigenFoto').style.display = 'flex';
     }
 
-    // Acción al elegir "Cámara"
     function abrirCamaraDirecta() {
         cerrarModalOrigen();
         if (inputCamaraActual) inputCamaraActual.click();
     }
 
-    // Acción al elegir "Galería"
     function abrirGaleriaDirecta() {
         cerrarModalOrigen();
         if (inputGaleriaActual) inputGaleriaActual.click();
     }
 
-    // Cerrar el menú
     function cerrarModalOrigen() {
         document.getElementById('modalOrigenFoto').style.display = 'none';
     }
@@ -1582,15 +1572,12 @@ function mostrarVistaPreviaDigital(rep) {
         const fotos = [ {id: 'web_img_frente', url: rep.foto_frente_url}, {id: 'web_img_trasera', url: rep.foto_trasera_url}, {id: 'web_img_izq', url: rep.foto_izquierdo_url}, {id: 'web_img_der', url: rep.foto_derecho_url}, {id: 'web_img_motor', url: rep.foto_motor_url}, {id: 'web_img_cluster', url: rep.foto_cluster_url} ];
         fotos.forEach(f => { const img = document.getElementById(f.id); if(img) { if(f.url) { img.src = f.url; img.style.display = 'block'; } else { img.style.display = 'none'; } } });
 
-        // 🔥 PASO 2: INYECCIÓN UNIFICADA EN LA PESTAÑA "REPORTES"
         const secReportes = document.getElementById('subVistaContenidoReportes');
         if (secReportes) {
-            secReportes.innerHTML = ""; // Limpieza de seguridad
+            secReportes.innerHTML = ""; 
 
-            // Caja contenedora vertical para el par de tarjetas
             let htmlReportes = `<div style="display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 500px; margin: 0 auto; padding: 10px; box-sizing: border-box;">`;
 
-            // 1. Renderizar Tarjeta de Escáner
             if (rep.link_escaner && rep.link_escaner.trim() !== "") {
                 const linkEscanerFresco = rep.link_escaner.split('?')[0] + '?t=' + Date.now();
                 htmlReportes += `
@@ -1620,7 +1607,6 @@ function mostrarVistaPreviaDigital(rep) {
                     </div>`;
             }
 
-            // 2. Renderizar Tarjeta de Presupuesto
             if (rep.link_presupuesto && rep.link_presupuesto.trim() !== "") {
                 const linkPresupuestoFresco = rep.link_presupuesto.split('?')[0] + '?t=' + Date.now();
                 htmlReportes += `
