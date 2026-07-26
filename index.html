@@ -459,55 +459,61 @@
 
                     <div class="pdf-info-card" style="border-left: 5px solid #334155;">
                         <div class="pdf-card-title"><i class="fa-solid fa-camera-retro"></i> EVIDENCIA FOTOGRAFICA</div>
-                            <div class="photo-grid">
-                            <div class="photo-box" onclick="document.getElementById('input_frente').click()">
-                                <div class="photo-placeholder" id="txt_frente"><i class="fa-solid fa-car"></i><br>FRENTE</div>
-                                <img id="prev_frente" src="">
-                                <div class="photo-label">1. FRENTE</div>
-                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_frente', 'prev_frente', 'txt_frente')"><i class="fa-solid fa-xmark"></i></button>
-                                <input type="file" id="input_frente" accept="image/*" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;">
-                            </div>
-                            
-                            <div class="photo-box" onclick="document.getElementById('input_trasera').click()">
-                                <div class="photo-placeholder" id="txt_trasera"><i class="fa-solid fa-car-side"></i><br>TRASERA</div>
-                                <img id="prev_trasera" src="">
-                                <div class="photo-label">2. TRASERA</div>
-                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_trasera', 'prev_trasera', 'txt_trasera')"><i class="fa-solid fa-xmark"></i></button>
-                                <input type="file" id="input_trasera" accept="image/*" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;">
-                            </div>
-                            
-                            <div class="photo-box" onclick="document.getElementById('input_izq').click()">
-                                <div class="photo-placeholder" id="txt_izq"><i class="fa-solid fa-car-side fa-flip-horizontal"></i><br>IZQUIERDA</div>
-                                <img id="prev_izq" src="">
-                                <div class="photo-label">3. IZQUIERDA</div>
-                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_izq', 'prev_izq', 'txt_izq')"><i class="fa-solid fa-xmark"></i></button>
-                                <input type="file" id="input_izq" accept="image/*" onchange="previewImage(this, 'prev_izq', 'txt_izq')" style="display:none;">
-                            </div>
-                            
-                            <div class="photo-box" onclick="document.getElementById('input_der').click()">
-                                <div class="photo-placeholder" id="txt_der"><i class="fa-solid fa-truck-pickup"></i><br>DERECHA</div>
-                                <img id="prev_der" src="">
-                                <div class="photo-label">4. DERECHA</div>
-                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_der', 'prev_der', 'txt_der')"><i class="fa-solid fa-xmark"></i></button>
-                                <input type="file" id="input_der" accept="image/*" onchange="previewImage(this, 'prev_der', 'txt_der')" style="display:none;">
-                            </div>
-                            
-                            <div class="photo-box" onclick="document.getElementById('input_motor').click()">
-                                <div class="photo-placeholder" id="txt_motor"><i class="fa-solid fa-gears"></i><br>MOTOR</div>
-                                <img id="prev_motor" src="">
-                                <div class="photo-label">5. MOTOR</div>
-                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_motor', 'prev_motor', 'txt_motor')"><i class="fa-solid fa-xmark"></i></button>
-                                <input type="file" id="input_motor" accept="image/*" onchange="previewImage(this, 'prev_motor', 'txt_motor')" style="display:none;">
-                            </div>
-                            
-                            <div class="photo-box" onclick="document.getElementById('input_cluster').click()">
-                                <div class="photo-placeholder" id="txt_cluster"><i class="fa-solid fa-gauge-high"></i><br>TABLERO</div>
-                                <img id="prev_cluster" src="">
-                                <div class="photo-label">6. TABLERO</div>
-                                <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_cluster', 'prev_cluster', 'txt_cluster')"><i class="fa-solid fa-xmark"></i></button>
-                                <input type="file" id="input_cluster" accept="image/*" onchange="previewImage(this, 'prev_cluster', 'txt_cluster')" style="display:none;">
-                            </div>
-                        </div>
+<div class="photo-grid">
+    <div class="photo-box" onclick="solicitarFoto(event, 'input_frente')">
+        <div class="photo-placeholder" id="txt_frente"><i class="fa-solid fa-car"></i><br>FRENTE</div>
+        <img id="prev_frente" src="">
+        <div class="photo-label">1. FRENTE</div>
+        <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_frente', 'prev_frente', 'txt_frente')"><i class="fa-solid fa-xmark"></i></button>
+        <input type="file" id="input_frente" accept="image/*" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;">
+        <input type="file" id="input_frente_cam" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_frente', 'txt_frente')" style="display:none;">
+    </div>
+    
+    <div class="photo-box" onclick="solicitarFoto(event, 'input_trasera')">
+        <div class="photo-placeholder" id="txt_trasera"><i class="fa-solid fa-car-side"></i><br>TRASERA</div>
+        <img id="prev_trasera" src="">
+        <div class="photo-label">2. TRASERA</div>
+        <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_trasera', 'prev_trasera', 'txt_trasera')"><i class="fa-solid fa-xmark"></i></button>
+        <input type="file" id="input_trasera" accept="image/*" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;">
+        <input type="file" id="input_trasera_cam" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_trasera', 'txt_trasera')" style="display:none;">
+    </div>
+    
+    <div class="photo-box" onclick="solicitarFoto(event, 'input_izq')">
+        <div class="photo-placeholder" id="txt_izq"><i class="fa-solid fa-car-side fa-flip-horizontal"></i><br>IZQUIERDA</div>
+        <img id="prev_izq" src="">
+        <div class="photo-label">3. IZQUIERDA</div>
+        <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_izq', 'prev_izq', 'txt_izq')"><i class="fa-solid fa-xmark"></i></button>
+        <input type="file" id="input_izq" accept="image/*" onchange="previewImage(this, 'prev_izq', 'txt_izq')" style="display:none;">
+        <input type="file" id="input_izq_cam" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_izq', 'txt_izq')" style="display:none;">
+    </div>
+    
+    <div class="photo-box" onclick="solicitarFoto(event, 'input_der')">
+        <div class="photo-placeholder" id="txt_der"><i class="fa-solid fa-truck-pickup"></i><br>DERECHA</div>
+        <img id="prev_der" src="">
+        <div class="photo-label">4. DERECHA</div>
+        <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_der', 'prev_der', 'txt_der')"><i class="fa-solid fa-xmark"></i></button>
+        <input type="file" id="input_der" accept="image/*" onchange="previewImage(this, 'prev_der', 'txt_der')" style="display:none;">
+        <input type="file" id="input_der_cam" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_der', 'txt_der')" style="display:none;">
+    </div>
+    
+    <div class="photo-box" onclick="solicitarFoto(event, 'input_motor')">
+        <div class="photo-placeholder" id="txt_motor"><i class="fa-solid fa-gears"></i><br>MOTOR</div>
+        <img id="prev_motor" src="">
+        <div class="photo-label">5. MOTOR</div>
+        <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_motor', 'prev_motor', 'txt_motor')"><i class="fa-solid fa-xmark"></i></button>
+        <input type="file" id="input_motor" accept="image/*" onchange="previewImage(this, 'prev_motor', 'txt_motor')" style="display:none;">
+        <input type="file" id="input_motor_cam" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_motor', 'txt_motor')" style="display:none;">
+    </div>
+    
+    <div class="photo-box" onclick="solicitarFoto(event, 'input_cluster')">
+        <div class="photo-placeholder" id="txt_cluster"><i class="fa-solid fa-gauge-high"></i><br>TABLERO</div>
+        <img id="prev_cluster" src="">
+        <div class="photo-label">6. TABLERO</div>
+        <button class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'input_cluster', 'prev_cluster', 'txt_cluster')"><i class="fa-solid fa-xmark"></i></button>
+        <input type="file" id="input_cluster" accept="image/*" onchange="previewImage(this, 'prev_cluster', 'txt_cluster')" style="display:none;">
+        <input type="file" id="input_cluster_cam" accept="image/*" capture="environment" onchange="previewImage(this, 'prev_cluster', 'txt_cluster')" style="display:none;">
+    </div>
+</div>
                     </div>
                 </div>
             </div>
@@ -637,6 +643,25 @@
             </div>
         </div>
     </div>
+    <div id="modalOrigenFoto" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.7); z-index:999999; justify-content:center; align-items:flex-end; backdrop-filter: blur(3px);">
+    <div style="background:#ffffff; width:100%; max-width:450px; border-top-left-radius:16px; border-top-right-radius:16px; padding:25px 20px; text-align:center; box-sizing:border-box; box-shadow: 0 -4px 20px rgba(0,0,0,0.2);">
+        <h3 style="margin-top:0; font-family:'Montserrat', sans-serif; font-size:11pt; font-weight:800; color:#0f172a; margin-bottom:18px; text-transform:uppercase;">
+            ¿Cómo deseas agregar la foto?
+        </h3>
+        
+        <button onclick="abrirCamaraDirecta()" style="width:100%; padding:15px; background:#0284c7; color:white; border:none; border-radius:10px; font-weight:700; font-size:10.5pt; margin-bottom:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <i class="fa-solid fa-camera" style="font-size:14pt;"></i> 📸 Tomar Foto con Cámara
+        </button>
+        
+        <button onclick="abrirGaleriaDirecta()" style="width:100%; padding:15px; background:#334155; color:white; border:none; border-radius:10px; font-weight:700; font-size:10.5pt; margin-bottom:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <i class="fa-solid fa-images" style="font-size:14pt;"></i> 🖼️ Elegir de la Galería
+        </button>
+        
+        <button onclick="cerrarModalOrigen()" style="width:100%; padding:10px; background:transparent; color:#94a3b8; border:none; font-weight:700; font-size:9pt; cursor:pointer;">
+            CANCELAR
+        </button>
+    </div>
+</div>
 <script>
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
@@ -1137,9 +1162,14 @@ function limpiarFormularioCompleto() {
         reportDataGlobal = null;
     }
 
-    async function subirFotoOriginal(inputId, folioUnico) {
-        const input = document.getElementById(inputId);
+async function subirFotoOriginal(inputId, folioUnico) {
+        let input = document.getElementById(inputId);
+        // Si el input normal no tiene foto, revisamos el de la cámara (_cam)
+        if (!input || !input.files || input.files.length === 0) {
+            input = document.getElementById(inputId + '_cam');
+        }
         if (!input || !input.files || input.files.length === 0) return null;
+
         const file = input.files[0];
         const fileExtension = file.name.split('.').pop();
         const filePath = `${folioUnico}/${inputId}_${Date.now()}.${fileExtension}`;
@@ -1147,7 +1177,35 @@ function limpiarFormularioCompleto() {
         if (error) return null;
         return supabaseClient.storage.from('fotos_reportes').getPublicUrl(filePath).data.publicUrl;
     }
+    
+    let inputGaleriaActual = null;
+    let inputCamaraActual = null;
 
+    // Abrir el menú flotante
+    function solicitarFoto(event, inputId) {
+        if(event) event.stopPropagation();
+        inputGaleriaActual = document.getElementById(inputId);
+        inputCamaraActual = document.getElementById(inputId + '_cam');
+        document.getElementById('modalOrigenFoto').style.display = 'flex';
+    }
+
+    // Acción al elegir "Cámara"
+    function abrirCamaraDirecta() {
+        cerrarModalOrigen();
+        if (inputCamaraActual) inputCamaraActual.click();
+    }
+
+    // Acción al elegir "Galería"
+    function abrirGaleriaDirecta() {
+        cerrarModalOrigen();
+        if (inputGaleriaActual) inputGaleriaActual.click();
+    }
+
+    // Cerrar el menú
+    function cerrarModalOrigen() {
+        document.getElementById('modalOrigenFoto').style.display = 'none';
+    }
+    
 async function guardarYProcesarReporte() {
         const btnSubmit = document.getElementById('btnGuardarForm');
         const editId = document.getElementById('edit_record_id').value;
