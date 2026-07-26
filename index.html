@@ -747,7 +747,13 @@ function previewImage(input, imgId, textId) {
             const label = input.parentElement.querySelector('.photo-label');
             if(label) label.style.display = 'block';
 
-            input.nextElementSibling.style.display = 'flex';
+            if(input.nextElementSibling && input.nextElementSibling.classList.contains('btn-del-photo')) {
+                input.nextElementSibling.style.display = 'flex';
+            }
+
+            if(typeof cerrarModalOrigen === 'function') {
+                cerrarModalOrigen();
+            }
         }
     }
 
