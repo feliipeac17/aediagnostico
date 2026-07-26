@@ -198,6 +198,68 @@
         .btn-download-pdf:active {
             transform: scale(0.98);
         }
+        /* 🎨 ESTILOS Y HOVER PARA EL MODAL DE FOTOS */
+        .btn-modal-foto {
+            flex: 1; 
+            padding: 20px 10px; 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 11pt; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            transition: background-color 0.2s ease, transform 0.1s ease; /* Transición suave */
+        }
+        
+        .btn-modal-foto i {
+            font-size: 20pt;
+        }
+
+        /* Botón Cámara */
+        .btn-camara {
+            background: #0284c7; 
+            box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);
+        }
+        .btn-camara:hover {
+            background: #0369a1; /* Azul más oscuro al pasar cursor */
+        }
+        .btn-camara:active {
+            transform: scale(0.97); /* Efecto de hundido al presionarse */
+        }
+
+        /* Botón Galería */
+        .btn-galeria {
+            background: #334155; 
+            box-shadow: 0 4px 6px rgba(51, 65, 85, 0.2);
+        }
+        .btn-galeria:hover {
+            background: #1e293b; /* Gris oscuro al pasar cursor */
+        }
+        .btn-galeria:active {
+            transform: scale(0.97); /* Efecto de hundido al presionarse */
+        }
+
+        /* Botón Cancelar */
+        .btn-modal-cancelar {
+            width: 100%; 
+            padding: 12px; 
+            background: #f1f5f9; 
+            color: #64748b; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            font-size: 9.5pt; 
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn-modal-cancelar:hover {
+            background: #e2e8f0; /* Un gris un poco más marcado al pasar cursor */
+        }
     </style>
 </head>
 <body>
@@ -650,16 +712,16 @@
         </h3>
         
         <div style="display: flex; gap: 12px; margin-bottom: 15px;">
-            <button onclick="abrirCamaraDirecta()" style="flex: 1; padding:20px 10px; background:#0284c7; color:white; border:none; border-radius:12px; font-weight:700; font-size:11pt; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);">
-                <i class="fa-solid fa-camera" style="font-size:20pt;"></i> Cámara
+            <button class="btn-modal-foto btn-camara" onclick="abrirCamaraDirecta()">
+                <i class="fa-solid fa-camera"></i> Cámara
             </button>
             
-            <button onclick="abrirGaleriaDirecta()" style="flex: 1; padding:20px 10px; background:#334155; color:white; border:none; border-radius:12px; font-weight:700; font-size:11pt; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; box-shadow: 0 4px 6px rgba(51, 65, 85, 0.2);">
-                <i class="fa-solid fa-images" style="font-size:20pt;"></i> Galería
+            <button class="btn-modal-foto btn-galeria" onclick="abrirGaleriaDirecta()">
+                <i class="fa-solid fa-images"></i> Galería
             </button>
         </div>
         
-        <button onclick="cerrarModalOrigen()" style="width:100%; padding:12px; background:#f1f5f9; color:#64748b; border:none; border-radius:10px; font-weight:700; font-size:9.5pt; cursor:pointer;">
+        <button class="btn-modal-cancelar" onclick="cerrarModalOrigen()">
             CANCELAR
         </button>
     </div>
