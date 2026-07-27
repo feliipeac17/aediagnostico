@@ -950,10 +950,25 @@
                             <div class="preview-item"><strong><i class="fa-solid fa-barcode"></i> Numero de Serie (VIN)</strong><span id="web_view_vin">--</span></div>
                         </div>
                         
-                        <div style="margin-top: 20px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px dashed #cbd5e1;">
-                            <div style="font-size: 8pt; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;"><i class="fa-solid fa-gas-pump"></i> Nivel de Combustible</div>
-                            <div class="web-gas-bar" style="max-width: 100%; height: 14px; background: #e2e8f0; border-radius: 8px;"><div id="web_view_gas_fill" class="web-gas-fill" style="border-radius: 8px;"></div></div>
-                            <div style="display:flex; justify-content:space-between; font-size:8pt; color:#94a3b8; margin-top:6px; font-weight:800;"><span>E</span><span>1/2</span><span>F</span></div>
+<div style="margin-top: 20px; background: #f8fafc; padding: 20px 15px; border-radius: 12px; border: 1px dashed #cbd5e1; text-align: center;">
+                            <div style="font-size: 9pt; font-weight: 800; color: #64748b; margin-bottom: 15px; text-transform: uppercase;"><i class="fa-solid fa-gas-pump"></i> Nivel de Combustible</div>
+                            
+                            <div style="position: relative; width: 160px; height: 85px; margin: 0 auto;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110" style="width: 100%; height: 100%;">
+                                    <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e2e8f0" stroke-width="18" stroke-linecap="round"/>
+                                    <path id="web_view_gas_arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#f59e0b" stroke-width="18" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="125.6" style="transition: stroke-dashoffset 0.6s ease, stroke 0.6s ease;"/>
+                                </svg>
+                                
+                                <div style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;">
+                                    <div id="web_view_gas_num" style="font-size: 24pt; font-weight: 800; color: #f59e0b; line-height: 1; transition: color 0.6s ease;">50%</div>
+                                    <div id="web_view_gas_text" style="font-size: 7.5pt; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-top: 4px;">MEDIO TANQUE</div>
+                                </div>
+                            </div>
+                            
+                            <div style="display:flex; justify-content:space-between; width:100%; max-width: 180px; margin: 0 auto; font-size:12pt; color:#94a3b8; font-weight:800; padding-top: 8px;">
+                                <span style="color: #ef4444;">E</span>
+                                <span style="color: #10b981;">F</span>
+                            </div>
                         </div>
                     </div>
 
@@ -1991,9 +2006,39 @@ function mostrarVistaPreviaDigital(rep) {
         document.getElementById('web_view_km').innerText = rep.vehiculo_km || 'N/A';
 
         const fillGas = rep.vehiculo_gas_nivel || 0;
-        const barWeb = document.getElementById('web_view_gas_fill');
-        if(barWeb) { barWeb.style.width = fillGas + "%"; barWeb.style.background = fillGas <= 25 ? '#d32f2f' : (fillGas >= 75 ? '#4caf50' : '#ff9800'); }
-
+        const arcoSVG = document.getElementById('web_view_gas_arc');
+        const numGas = document.getElementById('web_view_gas_num');
+        const txtGas = document.getElementById('web_view_gas_text');
+        
+        if (arcoSVG && numGas && txtGas) {
+            // Calcular el llenado del arco matemáticamente (251.2 es el tamaño total del arco)
+            const longitudArco = 251.2;
+            const offset = longitudArco - (fillGas / 100) * longitudArco;
+            
+            // Asignar color y textos según el nivel
+            let colorGas = "#10b981"; // Verde (Lleno por defecto)
+            let labelGas = "LLENO";
+            
+            if (fillGas <= 25) { 
+                colorGas = "#ef4444"; // Rojo
+                labelGas = fillGas === 0 ? "VACÍO" : "1/4 DE TANQUE"; 
+            } else if (fillGas <= 75) { 
+                colorGas = "#f59e0b"; // Amarillo / Naranja
+                labelGas = fillGas === 50 ? "MEDIO TANQUE" : "3/4 DE TANQUE"; 
+            }
+            
+            // Aplicar los cambios visuales con animación
+            // Usamos un ligero retraso (setTimeout) para que el arco tenga efecto de animación al abrir la ventana
+            setTimeout(() => {
+                arcoSVG.style.strokeDashoffset = offset;
+                arcoSVG.style.stroke = colorGas;
+                numGas.style.color = colorGas;
+            }, 50);
+            
+            numGas.innerText = fillGas + "%";
+            txtGas.innerText = labelGas;
+        }
+    
         document.getElementById('web_view_motivo').innerText = rep.motivo_ingreso || 'SIN MOTIVO';
         document.getElementById('web_view_diagnostico').innerText = rep.observaciones_diagnostico || 'SIN OBSERVACIONES';
         document.getElementById('web_view_obs_electrico').innerText = rep.observaciones_electrico || 'SIN NOTAS';
