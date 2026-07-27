@@ -812,7 +812,7 @@
         <div id="historialSection" style="display: none;">
             <div style="margin-bottom: 20px; position: relative;">
                 <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 11pt; z-index: 10;"></i>
-                <input type="text" id="buscadorHistorial" placeholder="Buscar folio, cliente o placas..." onkeyup="filtrarHistorial()" class="input-buscador-moderno">
+                <input type="text" id="buscadorHistorial" placeholder="Buscar folio, cliente, placas, marca o modelo..." onkeyup="filtrarHistorial()" class="input-buscador-moderno">
             </div>
             <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #1a1a1a; margin-bottom: 12px;">Lista de Reportes</div>
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
@@ -978,7 +978,9 @@
     const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
     document.addEventListener('input', function (e) {
-        if (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
+        if ((e.target.tagName === 'INPUT' && e.target.type === 'text') || e.target.tagName === 'TEXTAREA') {
+            if (e.target.id === 'in_link_escaner') return; 
+            
             const start = e.target.selectionStart;
             const end = e.target.selectionEnd;
             e.target.value = e.target.value.toUpperCase();
@@ -1645,12 +1647,18 @@ async function cargarHistorialSupabase() {
         if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = terminados;
     }
 
-    function filtrarHistorial() {
+function filtrarHistorial() {
         const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
         if(!query) { 
             listaReportesFiltrada = [...listaReportesMemoria]; 
         } else {
-            listaReportesFiltrada = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
+            listaReportesFiltrada = listaReportesMemoria.filter(rep => 
+                (rep.folio && rep.folio.toUpperCase().includes(query)) || 
+                (rep.cliente_nombre && rep.cliente_nombre.toUpperCase().includes(query)) || 
+                (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)) ||
+                (rep.vehiculo_marca && rep.vehiculo_marca.toUpperCase().includes(query)) ||
+                (rep.vehiculo_modelo && rep.vehiculo_modelo.toUpperCase().includes(query))
+            );
         }
         
         paginaActual = 1; // Al buscar, siempre regresamos a la página 1
