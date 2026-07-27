@@ -1540,10 +1540,17 @@ async function guardarYProcesarReporte() {
             if(urlMotor) payload.foto_motor_url = urlMotor;
             if(urlCluster) payload.foto_cluster_url = urlCluster;
 
-            // 🔥 AQUÍ SE INTEGRA EL PASO 5: Forzar la fecha elegida del calendario hacia la base de datos
             const valFechaSel = document.getElementById('in_fecha').value;
             if (valFechaSel) {
-                payload.created_at = new Date(valFechaSel + 'T12:00:00').toISOString();
+                if (isEditing && reportDataGlobal && reportDataGlobal.created_at) {
+                    // Si estamos editando, extraemos la hora original guardada (ej: 15:30:00)
+                    const horaOriginal = reportDataGlobal.created_at.split('T')[1] || '12:00:00.000Z';
+                    payload.created_at = `${valFechaSel}T${horaOriginal}`;
+                } else {
+                    // Si es un reporte nuevo, toma la fecha del calendario y le une la hora de ahorita
+                    const horaActual = new Date().toTimeString().split(' ')[0];
+                    payload.created_at = new Date(`${valFechaSel}T${horaActual}`).toISOString();
+                }
             }
 
             let error = null;
@@ -1675,13 +1682,13 @@ function cargarRegistroParaEditar(rep) {
         document.title = "REPORTE_SERVICIO_" + rep.folio;
         document.getElementById('btnGuardarForm').innerHTML = "💾 Actualizar";
 
-        // 🔥 AQUÍ SE QUEDÓ INTEGRADA LA PARTE 2 (Cargar fecha en el calendario)
         if (rep.created_at) {
             const fechaObj = new Date(rep.created_at);
             const yyyy = fechaObj.getFullYear();
             const mm = String(fechaObj.getMonth() + 1).padStart(2, '0');
             const dd = String(fechaObj.getDate()).padStart(2, '0');
             document.getElementById('in_fecha').value = `${yyyy}-${mm}-${dd}`;
+            document.getElementById('pdf-lbl-hora').innerText = fechaObj.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
         }
 
         document.getElementById('in_cliente_nombre').value = rep.cliente_nombre || '';
