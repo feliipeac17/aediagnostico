@@ -428,7 +428,6 @@
         button[id^="btn-wa-"]:active {
             transform: scale(0.95) !important;
         }
-        /* 📄 ESTILOS PARA LOS BOTONES DE PAGINACIÓN */
         .btn-paginacion {
             border: none;
             padding: 10px 16px;
@@ -480,7 +479,7 @@
             padding: 20px !important;
             margin-bottom: 16px !important;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03) !important;
-            text-transform: none !important; /* Quitamos las mayúsculas forzadas generales */
+            text-transform: none !important; 
         }
         .preview-section-title {
             color: #0f172a !important;
@@ -535,6 +534,58 @@
             color: #334155 !important;
             font-size: 8pt !important;
             text-transform: uppercase !important;
+        }
+        .sticky-actions-bar {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: rgba(244, 246, 249, 0.9);
+            backdrop-filter: blur(8px); 
+            padding: 12px 5px !important;
+            z-index: 1000;
+        }
+
+        .btn-action-view {
+            border: none;
+            padding: 14px 18px;
+            font-size: 10pt;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-action-back {
+            background: #334155;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(51, 65, 85, 0.25);
+        }
+        .btn-action-back:hover {
+            background: #1e293b;
+            box-shadow: 0 6px 14px rgba(30, 41, 59, 0.35);
+        }
+        .btn-action-back:active {
+            transform: scale(0.96);
+        }
+
+        .btn-action-pdf {
+            background: #d32f2f;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.35);
+        }
+        .btn-action-pdf:hover {
+            background: #b71c1c;
+            box-shadow: 0 6px 16px rgba(183, 28, 28, 0.45);
+        }
+        .btn-action-pdf:active {
+            transform: scale(0.96);
         }
     </style>
 </head>
@@ -909,9 +960,13 @@
     </div>
 
 <div id="reportView" class="report-view">
-        <div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button class="btn-submit" style="background:#555; margin:0;" onclick="regresarAlFormulario()">← Volver</button>
-            <button id="btnDescargarPDF" class="btn-submit" style="background:#d32f2f; margin:0;">📥 Generar PDF</button>
+<div class="sticky-actions-bar" style="max-width: 780px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <button class="btn-action-view btn-action-back" onclick="regresarAlFormulario()">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+            <button id="btnDescargarPDF" class="btn-action-view btn-action-pdf">
+                <i class="fa-solid fa-file-pdf"></i> Generar PDF
+            </button>
         </div>
         
         <div class="report-scroll-container">
@@ -1074,7 +1129,7 @@
     let listaReportesMemoria = []; 
     let listaReportesFiltrada = [];
     let paginaActual = 1;
-    const itemsPorPagina = 10; // Muestra 10 tarjetas por página
+    const itemsPorPagina = 10; 
     
     const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
@@ -1284,7 +1339,6 @@ function restaurarPantalla(estado) {
             par.original.style.display = ''; 
         });
 
-        // 🔥 AQUÍ SE INTEGRA EL PASO 2: Ocultar el texto de la fecha al regresar a la normalidad
         const txtFecha = document.getElementById('pdf-lbl-fecha-text');
         if(txtFecha) txtFecha.style.display = 'none';
     }
@@ -1545,12 +1599,10 @@ function limpiarFormularioCompleto() {
         document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar";
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
 
-        // 🧹 1. Aquí se limpian todos los campos primero
         document.querySelectorAll('#formularioSection input, #formularioSection textarea').forEach(el => el.value = "");
         document.querySelectorAll('#formularioSection input[type="checkbox"]').forEach(el => el.checked = false);
         document.querySelectorAll('.check-icon').forEach(icon => { icon.classList.remove('fa-square-check', 'active'); icon.classList.add('fa-square'); });
         
-        // 🔥 2. AQUÍ SE INTEGRA EL PASO PARA LA FECHA EXACTA DE HOY
         const hoy = new Date();
         const yyyy = hoy.getFullYear();
         const mm = String(hoy.getMonth() + 1).padStart(2, '0');
@@ -1562,7 +1614,6 @@ function limpiarFormularioCompleto() {
         const lblHora = document.getElementById('pdf-lbl-hora');
         if (lblHora) lblHora.innerText = hoy.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
-        // 3. Limpieza de fotos y demás
         document.querySelectorAll('.photo-box img').forEach(img => { img.src=""; img.style.display = 'none'; });
         document.querySelectorAll('.photo-placeholder').forEach(sp => sp.style.display = 'block');
         document.querySelectorAll('.btn-del-photo').forEach(btn => btn.style.display = 'none');
@@ -1685,7 +1736,6 @@ async function guardarYProcesarReporte() {
             if(urlMotor) payload.foto_motor_url = urlMotor;
             if(urlCluster) payload.foto_cluster_url = urlCluster;
 
-            // 🔥 Bloque definitivo y a prueba de errores para las fechas
             const valFechaSel = document.getElementById('in_fecha').value; 
             if (valFechaSel) {
                 const partesFecha = valFechaSel.split('-'); 
