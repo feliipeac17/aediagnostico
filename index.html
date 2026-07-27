@@ -457,6 +457,85 @@
         .btn-paginacion.next:hover { background: #0369a1; }
         .btn-paginacion:active { transform: scale(0.95); }
         .btn-paginacion:disabled { opacity: 0.5; pointer-events: none; }
+
+        .preview-card-view {
+            background: transparent !important; 
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+        .preview-header-block {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            border-left: none !important;
+            border-radius: 16px !important;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2) !important;
+            margin-bottom: 20px !important;
+            padding: 25px 20px !important;
+        }
+        #web_view_folio { color: #ffffff !important; font-weight: 800 !important; }
+        
+        .preview-section {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 16px !important;
+            padding: 20px !important;
+            margin-bottom: 16px !important;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03) !important;
+            text-transform: none !important; /* Quitamos las mayúsculas forzadas generales */
+        }
+        .preview-section-title {
+            color: #0f172a !important;
+            font-size: 12pt !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            border-bottom: 2px solid #f1f5f9 !important;
+            padding-bottom: 12px !important;
+            margin-bottom: 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+        }
+        .preview-item { margin-bottom: 8px; }
+        .preview-item strong {
+            color: #64748b !important;
+            font-size: 7.5pt !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            margin-bottom: 4px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+        .preview-item span {
+            font-size: 10.5pt !important;
+            font-weight: 800 !important;
+            color: #1e293b !important;
+            display: block !important;
+            text-transform: uppercase !important;
+        }
+        
+        .web-photo-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important; 
+            gap: 12px !important;
+            margin-top: 10px !important;
+        }
+        .web-photo-card {
+            border: 1px solid #e2e8f0 !important;
+            background: #f8fafc !important;
+            border-radius: 12px !important;
+            padding: 8px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+        }
+        .web-photo-wrapper {
+            border-radius: 8px !important;
+            height: 120px !important;
+            background: #e2e8f0 !important;
+        }
+        .web-photo-title {
+            color: #334155 !important;
+            font-size: 8pt !important;
+            text-transform: uppercase !important;
+        }
     </style>
 </head>
 <body>
@@ -843,60 +922,68 @@
                     <button id="subTabReportes" class="view-sub-btn" onclick="alternarSubVista('reportes')" style="flex: 1; padding: 10px; font-weight: bold;">📂 Reportes</button>
                 </div>
 
-                <div id="subVistaContenidoRecepcion">
+<div id="subVistaContenidoRecepcion">
                     <div class="preview-header-block">
                         <div>
-                            <h2 id="web_view_folio" style="margin:0; font-size:15pt; letter-spacing: 0.5px;">FOLIO: AE-000000</h2>
-                            <div id="web_view_fecha" style="font-size:9.5pt; margin-top:4px; color:#ccc;"></div>
+                            <h2 id="web_view_folio" style="margin:0; font-size:16pt; letter-spacing: 0.5px;">FOLIO: AE-000000</h2>
+                            <div id="web_view_fecha" style="font-size:10pt; margin-top:6px; color:#94a3b8; font-weight: 600;"><i class="fa-regular fa-calendar"></i> --/--/----</div>
                         </div>
-                        <img src="logo.png" alt="Logo" style="max-height: 38px; width: auto; background: transparent;">
+                        <img src="logo.png" alt="Logo" style="max-height: 45px; width: auto; background: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title">Datos del Cliente</div>
+                        <div class="preview-section-title"><i class="fa-solid fa-user-gear" style="color: #0284c7; font-size: 14pt;"></i> Datos del Cliente</div>
                         <div class="preview-data-grid">
-                            <div class="preview-item"><strong>Nombre Completo</strong><span id="web_view_cliente">--</span></div>
-                            <div class="preview-item"><strong>Telefono</strong><span id="web_view_telefono">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-user"></i> Nombre Completo</strong><span id="web_view_cliente">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-phone"></i> Teléfono</strong><span id="web_view_telefono">--</span></div>
                         </div>
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title">Ficha del Vehiculo</div>
+                        <div class="preview-section-title"><i class="fa-solid fa-car-rear" style="color: #d32f2f; font-size: 14pt;"></i> Ficha del Vehículo</div>
                         <div class="preview-data-grid">
-                            <div class="preview-item"><strong>Marca</strong><span id="web_view_marca">--</span></div>
-                            <div class="preview-item"><strong>Modelo / Año</strong><span id="web_view_modelo">--</span></div>
-                            <div class="preview-item"><strong>Color</strong><span id="web_view_color">--</span></div>
-                            <div class="preview-item"><strong>Placas</strong><span id="web_view_placas">--</span></div>
-                            <div class="preview-item"><strong>Kilometraje</strong><span id="web_view_km">--</span></div>
-                            <div class="preview-item"><strong>Numero de Serie (VIN)</strong><span id="web_view_vin">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-tag"></i> Marca</strong><span id="web_view_marca">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-calendar-days"></i> Modelo / Año</strong><span id="web_view_modelo">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-palette"></i> Color</strong><span id="web_view_color">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-id-card"></i> Placas</strong><span id="web_view_placas">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-gauge-high"></i> Kilometraje</strong><span id="web_view_km">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-barcode"></i> Número de Serie (VIN)</strong><span id="web_view_vin">--</span></div>
                         </div>
-                        <div style="margin-top: 15px;">
-                            <div class="web-gas-bar"><div id="web_view_gas_fill" class="web-gas-fill"></div></div>
-                            <div style="display:flex; justify-content:space-between; width:100%; max-width:350px; font-size:8pt; color:#888; margin-top:4px; font-weight:bold;"><span>E</span><span>1/2</span><span>F</span></div>
-                        </div>
-                    </div>
-
-                    <div class="preview-section">
-                        <div class="preview-section-title">Checklist Electrico</div>
-                        <div class="web-check-list">
-                            <div class="web-check-item"><div id="dot_luces" class="web-check-dot"></div> Luces e Indicadores</div>
-                            <div class="web-check-item"><div id="dot_elevadores" class="web-check-dot"></div> Elevadores y Seguros</div>
-                            <div class="web-check-item"><div id="dot_tablero" class="web-check-dot"></div> Testigos en Tablero</div>
-                        </div>
-                        <div style="margin-top:15px;" class="preview-item">
-                            <strong>Notas del Checklist</strong>
-                            <span id="web_view_obs_electrico" style="font-style: italic; color:#444;">--</span>
+                        
+                        <div style="margin-top: 20px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px dashed #cbd5e1;">
+                            <div style="font-size: 8pt; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase;"><i class="fa-solid fa-gas-pump"></i> Nivel de Combustible</div>
+                            <div class="web-gas-bar" style="max-width: 100%; height: 14px; background: #e2e8f0; border-radius: 8px;"><div id="web_view_gas_fill" class="web-gas-fill" style="border-radius: 8px;"></div></div>
+                            <div style="display:flex; justify-content:space-between; font-size:8pt; color:#94a3b8; margin-top:6px; font-weight:800;"><span>E</span><span>1/2</span><span>F</span></div>
                         </div>
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title">Diagnostico Tecnico</div>
-                        <div class="preview-item" style="margin-bottom: 12px;"><strong>Motivo de Ingreso / Sintomas</strong><span id="web_view_motivo">--</span></div>
-                        <div class="preview-item"><strong>Observaciones General de Diagnostico</strong><span id="web_view_diagnostico">--</span></div>
+                        <div class="preview-section-title"><i class="fa-solid fa-screwdriver-wrench" style="color: #f59e0b; font-size: 14pt;"></i> Diagnóstico Técnico</div>
+                        <div class="preview-item" style="margin-bottom: 16px;">
+                            <strong><i class="fa-solid fa-comment-dots"></i> Motivo de Ingreso / Síntomas</strong>
+                            <span id="web_view_motivo" style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 9.5pt; color: #334155;">--</span>
+                        </div>
+                        <div class="preview-item">
+                            <strong><i class="fa-solid fa-stethoscope"></i> Observaciones Generales</strong>
+                            <span id="web_view_diagnostico" style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 9.5pt; color: #334155;">--</span>
+                        </div>
                     </div>
 
-                    <div class="preview-section" style="border-bottom: none;">
-                        <div class="preview-section-title">Evidencia Fotografica</div>
+                    <div class="preview-section">
+                        <div class="preview-section-title"><i class="fa-solid fa-bolt" style="color: #8b5cf6; font-size: 14pt;"></i> Checklist Eléctrico</div>
+                        <div class="web-check-list" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                            <div class="web-check-item" style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #f1f5f9;"><div id="dot_luces" class="web-check-dot"></div> Luces e Indicadores</div>
+                            <div class="web-check-item" style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #f1f5f9;"><div id="dot_elevadores" class="web-check-dot"></div> Elevadores y Seguros</div>
+                            <div class="web-check-item" style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #f1f5f9;"><div id="dot_tablero" class="web-check-dot"></div> Testigos en Tablero</div>
+                        </div>
+                        <div style="margin-top:16px;" class="preview-item">
+                            <strong><i class="fa-solid fa-pen-clip"></i> Notas del Checklist</strong>
+                            <span id="web_view_obs_electrico" style="font-style: italic; color:#64748b; font-weight: 600; font-size: 9pt;">--</span>
+                        </div>
+                    </div>
+
+                    <div class="preview-section">
+                        <div class="preview-section-title"><i class="fa-solid fa-camera-retro" style="color: #10b981; font-size: 14pt;"></i> Evidencia Fotográfica</div>
                         <div class="web-photo-grid">
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('frente')"><img id="web_img_frente" src=""></div><div class="web-photo-title">1. Frente</div></div>
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('trasera')"><img id="web_img_trasera" src=""></div><div class="web-photo-title">2. Trasera</div></div>
