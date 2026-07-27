@@ -428,6 +428,35 @@
         button[id^="btn-wa-"]:active {
             transform: scale(0.95) !important;
         }
+        /* 📄 ESTILOS PARA LOS BOTONES DE PAGINACIÓN */
+        .btn-paginacion {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 9.5pt;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-paginacion.prev {
+            background: #ffffff;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .btn-paginacion.prev:hover { background: #f1f5f9; color: #0f172a; }
+        
+        .btn-paginacion.next {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);
+        }
+        .btn-paginacion.next:hover { background: #0369a1; }
+        .btn-paginacion:active { transform: scale(0.95); }
+        .btn-paginacion:disabled { opacity: 0.5; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -789,6 +818,15 @@
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
                 <p style="color:#777; font-size:10pt; text-align:center;">Cargando historial...</p>
             </div>
+<div id="paginacionControles" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-bottom: 20px;">
+                <button id="btnPrevPage" class="btn-paginacion prev" onclick="cambiarPagina(-1)">
+                    <i class="fa-solid fa-chevron-left"></i> Anterior
+                </button>
+                <span id="lblPaginaActual" style="font-size: 10pt; font-weight: 700; color: #64748b; background: #e2e8f0; padding: 6px 12px; border-radius: 20px;">Página 1 de 1</span>
+                <button id="btnNextPage" class="btn-paginacion next" onclick="cambiarPagina(1)">
+                    Siguiente <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -932,7 +970,11 @@
 
     let currentPin = "";
     let reportDataGlobal = null;
-    let listaReportesMemoria = [];
+    let listaReportesMemoria = []; 
+    let listaReportesFiltrada = [];
+    let paginaActual = 1;
+    const itemsPorPagina = 10; // Muestra 10 tarjetas por página
+    
     const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
     document.addEventListener('input', function (e) {
@@ -1582,9 +1624,14 @@ async function cargarHistorialSupabase() {
         if (contenedor) contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
         const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false });
         if (error) { if (contenedor) contenedor.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
+        
         listaReportesMemoria = reportes; 
-        inyectarTarjetasHistorial(listaReportesMemoria);
+        listaReportesFiltrada = [...listaReportesMemoria]; // Copia para la paginación
+        paginaActual = 1; 
+        
+        renderizarPagina(); // Llamamos al motor de paginación
 
+        // Calculamos los números del panel superior (Dashboard)
         let enTaller = 0, esperando = 0, terminados = 0;
         reportes.forEach(rep => {
             const est = rep.estado || 'EN REVISION';
@@ -1596,6 +1643,48 @@ async function cargarHistorialSupabase() {
         if (document.getElementById('dash-taller')) document.getElementById('dash-taller').innerText = enTaller;
         if (document.getElementById('dash-piezas')) document.getElementById('dash-piezas').innerText = esperando;
         if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = terminados;
+    }
+
+    function filtrarHistorial() {
+        const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
+        if(!query) { 
+            listaReportesFiltrada = [...listaReportesMemoria]; 
+        } else {
+            listaReportesFiltrada = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
+        }
+        
+        paginaActual = 1; // Al buscar, siempre regresamos a la página 1
+        renderizarPagina();
+    }
+
+    function renderizarPagina() {
+        const totalPaginas = Math.ceil(listaReportesFiltrada.length / itemsPorPagina) || 1;
+        
+        if (paginaActual < 1) paginaActual = 1;
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+        const inicio = (paginaActual - 1) * itemsPorPagina;
+        const fin = inicio + itemsPorPagina;
+        const reportesPagina = listaReportesFiltrada.slice(inicio, fin);
+
+        inyectarTarjetasHistorial(reportesPagina);
+
+        document.getElementById('lblPaginaActual').innerText = `Página ${paginaActual} de ${totalPaginas}`;
+        
+        const btnPrev = document.getElementById('btnPrevPage');
+        const btnNext = document.getElementById('btnNextPage');
+        
+        if(btnPrev) btnPrev.disabled = (paginaActual === 1);
+        if(btnNext) btnNext.disabled = (paginaActual === totalPaginas);
+    }
+
+    function cambiarPagina(direccion) {
+        paginaActual += direccion;
+        renderizarPagina();
+        
+        // Hacemos scroll suavemente hacia el buscador para empezar a ver desde arriba
+        const buscador = document.getElementById('buscadorHistorial');
+        if (buscador) buscador.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
 function inyectarTarjetasHistorial(arr) {
@@ -1677,11 +1766,16 @@ function transferirAPresupuesto(rep) {
         window.location.href = window.location.origin + '/presupuesto.html';
     }
 
-    function filtrarHistorial() {
+function filtrarHistorial() {
         const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
-        if(!query) { inyectarTarjetasHistorial(listaReportesMemoria); return; }
-        const filtrados = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
-        inyectarTarjetasHistorial(filtrados);
+        if(!query) { 
+            listaReportesFiltrada = [...listaReportesMemoria]; 
+        } else {
+            listaReportesFiltrada = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
+        }
+        
+        paginaActual = 1; // Al buscar, siempre regresamos a la página 1
+        renderizarPagina();
     }
 
 function cargarRegistroParaEditar(rep) {
