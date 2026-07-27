@@ -1540,16 +1540,19 @@ async function guardarYProcesarReporte() {
             if(urlMotor) payload.foto_motor_url = urlMotor;
             if(urlCluster) payload.foto_cluster_url = urlCluster;
 
-            const valFechaSel = document.getElementById('in_fecha').value;
+            const valFechaSel = document.getElementById('in_fecha').value; 
             if (valFechaSel) {
+                const fechaConDiagonales = valFechaSel.replace(/-/g, '/');
+                
                 if (isEditing && reportDataGlobal && reportDataGlobal.created_at) {
-                    // Si estamos editando, extraemos la hora original guardada (ej: 15:30:00)
                     const horaOriginal = reportDataGlobal.created_at.split('T')[1] || '12:00:00.000Z';
-                    payload.created_at = `${valFechaSel}T${horaOriginal}`;
+                    const fechaLocal = new Date(`${fechaConDiagonales} 12:00:00`);
+                    payload.created_at = `${fechaLocal.toISOString().split('T')[0]}T${horaOriginal}`;
                 } else {
-                    // Si es un reporte nuevo, toma la fecha del calendario y le une la hora de ahorita
-                    const horaActual = new Date().toTimeString().split(' ')[0];
-                    payload.created_at = new Date(`${valFechaSel}T${horaActual}`).toISOString();
+                    const ahora = new Date();
+                    const horaLimpia = ahora.toTimeString().split(' ')[0]; // "HH:MM:SS"
+                    const fechaFinal = new Date(`${fechaConDiagonales} ${horaLimpia}`);
+                    payload.created_at = fechaFinal.toISOString();
                 }
             }
 
