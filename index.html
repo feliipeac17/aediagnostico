@@ -1540,19 +1540,26 @@ async function guardarYProcesarReporte() {
             if(urlMotor) payload.foto_motor_url = urlMotor;
             if(urlCluster) payload.foto_cluster_url = urlCluster;
 
+            // 🔥 Bloque definitivo y a prueba de errores para las fechas
             const valFechaSel = document.getElementById('in_fecha').value; 
             if (valFechaSel) {
-                const fechaConDiagonales = valFechaSel.replace(/-/g, '/');
-                
+                const partesFecha = valFechaSel.split('-'); 
+                const anioLocal = parseInt(partesFecha[0]);
+                const mesLocal = parseInt(partesFecha[1]) - 1; 
+                const diaLocal = parseInt(partesFecha[2]);
+
                 if (isEditing && reportDataGlobal && reportDataGlobal.created_at) {
-                    const horaOriginal = reportDataGlobal.created_at.split('T')[1] || '12:00:00.000Z';
-                    const fechaLocal = new Date(`${fechaConDiagonales} 12:00:00`);
-                    payload.created_at = `${fechaLocal.toISOString().split('T')[0]}T${horaOriginal}`;
+                    const fechaEditada = new Date(reportDataGlobal.created_at);
+                    fechaEditada.setFullYear(anioLocal);
+                    fechaEditada.setMonth(mesLocal);
+                    fechaEditada.setDate(diaLocal);
+                    payload.created_at = fechaEditada.toISOString();
                 } else {
-                    const ahora = new Date();
-                    const horaLimpia = ahora.toTimeString().split(' ')[0]; // "HH:MM:SS"
-                    const fechaFinal = new Date(`${fechaConDiagonales} ${horaLimpia}`);
-                    payload.created_at = fechaFinal.toISOString();
+                    const fechaNueva = new Date();
+                    fechaNueva.setFullYear(anioLocal);
+                    fechaNueva.setMonth(mesLocal);
+                    fechaNueva.setDate(diaLocal);
+                    payload.created_at = fechaNueva.toISOString();
                 }
             }
 
