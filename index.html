@@ -1661,7 +1661,7 @@ function filtrarHistorial() {
             );
         }
         
-        paginaActual = 1; // Al buscar, siempre regresamos a la página 1
+        paginaActual = 1;
         renderizarPagina();
     }
 
@@ -1772,18 +1772,6 @@ function transferirAPresupuesto(rep) {
         };
         localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
         window.location.href = window.location.origin + '/presupuesto.html';
-    }
-
-function filtrarHistorial() {
-        const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
-        if(!query) { 
-            listaReportesFiltrada = [...listaReportesMemoria]; 
-        } else {
-            listaReportesFiltrada = listaReportesMemoria.filter(rep => rep.folio.toUpperCase().includes(query) || rep.cliente_nombre.toUpperCase().includes(query) || (rep.vehiculo_placas && rep.vehiculo_placas.toUpperCase().includes(query)));
-        }
-        
-        paginaActual = 1; // Al buscar, siempre regresamos a la página 1
-        renderizarPagina();
     }
 
 function cargarRegistroParaEditar(rep) {
