@@ -891,7 +891,7 @@
         <div id="historialSection" style="display: none;">
             <div style="margin-bottom: 20px; position: relative;">
                 <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 11pt; z-index: 10;"></i>
-                <input type="text" id="buscadorHistorial" placeholder="Buscar..." onkeyup="filtrarHistorial()" class="input-buscador-moderno">
+                <input type="text" id="buscadorHistorial" placeholder="Buscar" onkeyup="filtrarHistorial()" class="input-buscador-moderno">
             </div>
             <div id="listaReportes" style="display: grid; grid-template-columns:1fr; gap:15px; margin-top:10px;">
                 <p style="color:#777; font-size:10pt; text-align:center;">Cargando historial...</p>
@@ -935,19 +935,19 @@
                         <div class="preview-section-title"><i class="fa-solid fa-user-gear" style="color: #0284c7; font-size: 14pt;"></i> Datos del Cliente</div>
                         <div class="preview-data-grid">
                             <div class="preview-item"><strong><i class="fa-solid fa-user"></i> Nombre Completo</strong><span id="web_view_cliente">--</span></div>
-                            <div class="preview-item"><strong><i class="fa-solid fa-phone"></i> Teléfono</strong><span id="web_view_telefono">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-phone"></i> Telefono</strong><span id="web_view_telefono">--</span></div>
                         </div>
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title"><i class="fa-solid fa-car-rear" style="color: #d32f2f; font-size: 14pt;"></i> Ficha del Vehículo</div>
+                        <div class="preview-section-title"><i class="fa-solid fa-car-rear" style="color: #d32f2f; font-size: 14pt;"></i> Ficha del Vehiculo</div>
                         <div class="preview-data-grid">
                             <div class="preview-item"><strong><i class="fa-solid fa-tag"></i> Marca</strong><span id="web_view_marca">--</span></div>
                             <div class="preview-item"><strong><i class="fa-solid fa-calendar-days"></i> Modelo / Año</strong><span id="web_view_modelo">--</span></div>
                             <div class="preview-item"><strong><i class="fa-solid fa-palette"></i> Color</strong><span id="web_view_color">--</span></div>
                             <div class="preview-item"><strong><i class="fa-solid fa-id-card"></i> Placas</strong><span id="web_view_placas">--</span></div>
                             <div class="preview-item"><strong><i class="fa-solid fa-gauge-high"></i> Kilometraje</strong><span id="web_view_km">--</span></div>
-                            <div class="preview-item"><strong><i class="fa-solid fa-barcode"></i> Número de Serie (VIN)</strong><span id="web_view_vin">--</span></div>
+                            <div class="preview-item"><strong><i class="fa-solid fa-barcode"></i> Numero de Serie (VIN)</strong><span id="web_view_vin">--</span></div>
                         </div>
                         
                         <div style="margin-top: 20px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px dashed #cbd5e1;">
@@ -958,9 +958,9 @@
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title"><i class="fa-solid fa-screwdriver-wrench" style="color: #f59e0b; font-size: 14pt;"></i> Diagnóstico Técnico</div>
+                        <div class="preview-section-title"><i class="fa-solid fa-screwdriver-wrench" style="color: #f59e0b; font-size: 14pt;"></i> Diagnostico Tecnico</div>
                         <div class="preview-item" style="margin-bottom: 16px;">
-                            <strong><i class="fa-solid fa-comment-dots"></i> Motivo de Ingreso / Síntomas</strong>
+                            <strong><i class="fa-solid fa-comment-dots"></i> Motivo de Ingreso / Sintomas</strong>
                             <span id="web_view_motivo" style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 9.5pt; color: #334155;">--</span>
                         </div>
                         <div class="preview-item">
@@ -970,7 +970,7 @@
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title"><i class="fa-solid fa-bolt" style="color: #8b5cf6; font-size: 14pt;"></i> Checklist Eléctrico</div>
+                        <div class="preview-section-title"><i class="fa-solid fa-bolt" style="color: #8b5cf6; font-size: 14pt;"></i> Checklist Electrico</div>
                         <div class="web-check-list" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
                             <div class="web-check-item" style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #f1f5f9;"><div id="dot_luces" class="web-check-dot"></div> Luces e Indicadores</div>
                             <div class="web-check-item" style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #f1f5f9;"><div id="dot_elevadores" class="web-check-dot"></div> Elevadores y Seguros</div>
@@ -983,7 +983,7 @@
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title"><i class="fa-solid fa-camera-retro" style="color: #10b981; font-size: 14pt;"></i> Evidencia Fotográfica</div>
+                        <div class="preview-section-title"><i class="fa-solid fa-camera-retro" style="color: #10b981; font-size: 14pt;"></i> Evidencia Fotografica</div>
                         <div class="web-photo-grid">
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('frente')"><img id="web_img_frente" src=""></div><div class="web-photo-title">1. Frente</div></div>
                             <div class="web-photo-card"><div class="web-photo-wrapper" onclick="abrirCalidadOriginal('trasera')"><img id="web_img_trasera" src=""></div><div class="web-photo-title">2. Trasera</div></div>
@@ -1615,7 +1615,7 @@ async function guardarYProcesarReporte() {
         const telVal = document.getElementById('in_cliente_telefono').value.trim();
         const vinVal = document.getElementById('in_vehiculo_vin').value.trim();
 
-        if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELÉFONO DEBE TENER 10-11 DÍGITOS."); return; }
+        if (telVal.length > 0 && telVal.length < 10) { alert("⚠️ EL TELEFONO DEBE TENER 10-11 DÍGITOS."); return; }
         if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL VIN DEBE TENER 17 CARACTERES."); return; }
 
         const textoOriginal = btnSubmit.innerHTML;
@@ -2121,7 +2121,7 @@ function enviarWhatsApp(repObj) {
         let rep = repObj || reportDataGlobal;
         if (!rep) { alert("⚠️ No se encontró la información del reporte."); return; }
         let telLimpio = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : "";
-        if (telLimpio.length < 10 || telLimpio.length > 11) { alert("⚠️ El número de teléfono del cliente parece inválido o está vacío."); return; }
+        if (telLimpio.length < 10 || telLimpio.length > 11) { alert("⚠️ El número de telefono del cliente parece inválido o está vacío."); return; }
         let telefonoFinal = telLimpio.length === 10 ? "52" + telLimpio : telLimpio;
 
         const mensaje = `Hola *${(rep.cliente_nombre || '').toUpperCase()}!* Te compartimos el Reporte de Servicio y Escaneo de tu vehículo 🚗 *${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}* con el folio *${rep.folio}*. \n\n` +
