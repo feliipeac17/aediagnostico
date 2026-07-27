@@ -1343,31 +1343,32 @@ function cambiarPestana(modo) {
         document.getElementById('formularioSection').style.display = modo === 'nuevo' ? 'block' : 'none';
         document.getElementById('historialSection').style.display = modo === 'historial' ? 'block' : 'none';
         
+        document.getElementById('btnTabDashboard').style.background = '';
+        document.getElementById('btnTabNuevo').style.background = '';
+        document.getElementById('btnTabHistorial').style.background = '';
+
         document.getElementById('btnTabDashboard').classList.remove('tab-active');
         document.getElementById('btnTabNuevo').classList.remove('tab-active');
         document.getElementById('btnTabHistorial').classList.remove('tab-active');
         
-        if (modo === 'dashboard') document.getElementById('btnTabDashboard').classList.add('tab-active');
-        if (modo === 'nuevo') document.getElementById('btnTabNuevo').classList.add('tab-active');
-        if (modo === 'historial') document.getElementById('btnTabHistorial').classList.add('tab-active');
-        
         if (modo === 'nuevo') {
+            document.getElementById('btnTabNuevo').classList.add('tab-active');
             limpiarFormularioCompleto(); 
             
         } else if (modo === 'historial') {
+            document.getElementById('btnTabHistorial').classList.add('tab-active');
             document.getElementById('buscadorHistorial').value = "";
             document.getElementById('edit_record_id').value = "";
             document.getElementById('formPanelTitle').innerHTML = "Historial de <span>Reportes</span>";
             document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar";
             if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
             cargarHistorialSupabase(); 
-            
             document.title = "AE Diagnostico";
             
         } else if (modo === 'dashboard') {
+            document.getElementById('btnTabDashboard').classList.add('tab-active');
             document.getElementById('formPanelTitle').innerHTML = "Panel <span>Principal</span>";
             cargarHistorialSupabase(); 
-            
             document.title = "AE Diagnostico";
         }
     }
@@ -1710,9 +1711,13 @@ function transferirAPresupuesto(rep) {
         document.getElementById('formularioSection').style.display = 'block'; 
         document.getElementById('historialSection').style.display = 'none';
         
-        if(document.getElementById('btnTabDashboard')) document.getElementById('btnTabDashboard').style.background = '#555';
-        document.getElementById('btnTabNuevo').style.background = '#d32f2f'; 
-        document.getElementById('btnTabHistorial').style.background = '#555'; 
+        document.getElementById('btnTabDashboard').style.background = '';
+        document.getElementById('btnTabNuevo').style.background = '';
+        document.getElementById('btnTabHistorial').style.background = '';
+        
+        document.getElementById('btnTabDashboard').classList.remove('tab-active');
+        document.getElementById('btnTabHistorial').classList.remove('tab-active');
+        document.getElementById('btnTabNuevo').classList.add('tab-active');
         window.scrollTo(0,0);
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
     }
