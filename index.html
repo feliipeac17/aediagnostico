@@ -1915,15 +1915,18 @@ function alternarSubVista(vista) {
                 panelCompleto.style.left = '-9999px';
                 panelCompleto.style.top = '0';
                 
-                await forzarDescargaPDF();
+                                await forzarDescargaPDF();
                 
                 panelCompleto.style.position = 'relative';
                 panelCompleto.style.left = '0';
                 panelCompleto.style.top = 'auto';
                 
-                regresarAlFormulario(); 
+                // 🔥 En lugar de regresar al historial, simplemente volvemos a ocultar el panel fantasma
+                panelCompleto.style.display = 'none'; 
+                
                 btnPdfHistorial.innerHTML = btnOriginalText;
                 btnPdfHistorial.disabled = false;
+
             };
         }
     });
