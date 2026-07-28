@@ -1238,8 +1238,11 @@ function agregarRenglon(listaId, desc = '', price = '') {
                     let telLimpio = telCliente.replace(/\D/g, '');
                     let telefonoFinal = telLimpio.length === 10 ? "52" + telLimpio : telLimpio;
                     
+                    // 🔥 NUEVO: Creamos el link limpio con tu dominio
+                    const linkLimpio = `https://aediagnostico.com/?pres=${idReporteCortoGlobal}`;
+                    
                     const mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto de servicio para tu vehículo 🚗 *${marca} ${modelo}* (Folio: *${idReporteCortoGlobal}*). \n\n` +
-                                    `📄 *Ver Presupuesto aquí:* \n${publicURL}\n\n` +
+                                    `📄 *Ver Presupuesto aquí:* \n${linkLimpio}\n\n` +
                                     `_Quedamos a tus órdenes para cualquier duda o para autorizar el trabajo._`;
                     
                     window.open(`https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`, '_blank');
