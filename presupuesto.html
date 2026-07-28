@@ -392,6 +392,21 @@ textarea.card-input {
         #btnGuardarPresupuesto:active {
             transform: scale(0.97) !important; 
         }
+
+                /* 🎯 CORRECCIÓN: Centrado vertical perfecto en los renglones del PDF */
+        .table-row > div {
+            display: flex !important;
+            align-items: center !important;
+            height: 28px !important; /* Imita la altura original de la caja de texto */
+            padding: 0 4px !important;
+            margin-bottom: 2px !important; /* Levanta el texto sutilmente */
+        }
+        
+        /* Asegura que los importes se sigan alineando a la derecha */
+        .table-row > div[style*="text-align: right"] {
+            justify-content: flex-end !important;
+        }
+
     </style>
 </head>
 <body>
