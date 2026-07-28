@@ -393,19 +393,22 @@ textarea.card-input {
             transform: scale(0.97) !important; 
         }
 
-                /* 🎯 CORRECCIÓN: Centrado vertical perfecto en los renglones del PDF */
+                        /* 🎯 CORRECCIÓN: Centrado vertical perfecto y COMPACTO para PDF */
         .table-row > div {
             display: flex !important;
             align-items: center !important;
-            height: 28px !important; /* Imita la altura original de la caja de texto */
+            height: auto !important; /* 🔥 Quitamos la altura forzada para que se encoja */
+            min-height: 16px !important; /* Una altura muy delgadita solo para el texto */
             padding: 0 4px !important;
-            margin-bottom: 2px !important; /* Levanta el texto sutilmente */
+            margin: 0 !important; /* Quitamos cualquier margen */
+            line-height: 1.1 !important; /* Evita que el interlineado invisible empuje el texto */
         }
         
         /* Asegura que los importes se sigan alineando a la derecha */
         .table-row > div[style*="text-align: right"] {
             justify-content: flex-end !important;
         }
+
 
     </style>
 </head>
