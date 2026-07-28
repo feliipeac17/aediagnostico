@@ -1762,13 +1762,25 @@ async function guardarYProcesarReporte() {
             if (isEditing) { const { error: errUpdate } = await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId); error = errUpdate; } 
             else { payload.folio = folioCalculado; const { error: errInsert } = await supabaseClient.from('reportes_servicio').insert([payload]); error = errInsert; }
 
-            if (error) throw error;
+                        if (error) throw error;
             alert(isEditing ? "✅ REGISTRO ACTUALIZADO" : "✅ REPORTE GUARDADO");
             
             const { data: reporteGuardado } = await supabaseClient.from('reportes_servicio').select('*').eq('folio', folioCalculado).single();
-            if(reporteGuardado) mostrarVistaPreviaDigital(reporteGuardado);
+            if(reporteGuardado) {
+                mostrarVistaPreviaDigital(reporteGuardado);
+                
+                // 🔥 NUEVO: Preguntar y redirigir a WhatsApp automáticamente
+                if (reporteGuardado.cliente_telefono && reporteGuardado.cliente_telefono.trim() !== "") {
+                    setTimeout(() => {
+                        if(confirm("📲 Reporte guardado. ¿Deseas enviar el reporte al cliente por WhatsApp ahora mismo?")) {
+                            enviarWhatsApp(reporteGuardado);
+                        }
+                    }, 500); // Pequeña pausa para que cargue la vista previa primero
+                }
+            }
             
         } catch (err) { alert("❌ ERROR: " + err.message); }
+
         finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.disabled = false; }
     }
 
