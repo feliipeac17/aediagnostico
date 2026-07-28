@@ -1234,14 +1234,14 @@ function agregarRenglon(listaId, desc = '', price = '') {
             const modelo = document.getElementById('in_vehiculo_modelo').value.trim();
             
             if (telCliente !== "") {
-                if(confirm("📲 Presupuesto guardado con éxito. ¿Deseas enviarlo al cliente por WhatsApp ahora mismo?")) {
+                if(confirm("📲 Presupuesto guardado. ¿Deseas enviarlo al cliente por WhatsApp?")) {
                     let telLimpio = telCliente.replace(/\D/g, '');
                     let telefonoFinal = telLimpio.length === 10 ? "52" + telLimpio : telLimpio;
                     
                     // 🔥 NUEVO: Creamos el link limpio con tu dominio
                     const linkLimpio = `https://aediagnostico.com/?pres=${idReporteCortoGlobal}`;
                     
-                    const mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto de servicio para tu vehículo 🚗 *${marca} ${modelo}* (Folio: *${idReporteCortoGlobal}*). \n\n` +
+                    const mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto para tu vehículo 🚗 *${marca} ${modelo}* (Folio: *${idReporteCortoGlobal}*). \n\n` +
                                     `📄 *Ver Presupuesto aquí:* \n${linkLimpio}\n\n` +
                                     `_Quedamos a tus órdenes para cualquier duda o para autorizar el trabajo._`;
                     
