@@ -1223,15 +1223,36 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 })
                 .eq('folio', idReporteCortoGlobal);
 
-            if (updateError) throw updateError;
+                        if (updateError) throw updateError;
 
-                        alert("✅ REGISTRO GUARDADO");
+            alert("✅ PRESUPUESTO GUARDADO");
+
+            // 🔥 NUEVO: Lógica automática para enviar el Presupuesto por WhatsApp
+            const telCliente = document.getElementById('in_cliente_telefono').value.trim();
+            const nomCliente = document.getElementById('in_cliente_nombre').value.trim();
+            const marca = document.getElementById('in_vehiculo_marca').value.trim();
+            const modelo = document.getElementById('in_vehiculo_modelo').value.trim();
+            
+            if (telCliente !== "") {
+                if(confirm("📲 Presupuesto guardado con éxito. ¿Deseas enviarlo al cliente por WhatsApp ahora mismo?")) {
+                    let telLimpio = telCliente.replace(/\D/g, '');
+                    let telefonoFinal = telLimpio.length === 10 ? "52" + telLimpio : telLimpio;
+                    
+                    const mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto de servicio para tu vehículo 🚗 *${marca} ${modelo}* (Folio: *${idReporteCortoGlobal}*). \n\n` +
+                                    `📄 *Ver Presupuesto aquí:* \n${publicURL}\n\n` +
+                                    `_Quedamos a tus órdenes para cualquier duda o para autorizar el trabajo._`;
+                    
+                    window.open(`https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
+            }
+
+            // Después de preguntar (o enviar), regresamos al inicio
             localStorage.setItem('ae_volver_historial', 'true');
             window.location.replace('/');
 
-
         } catch (error) {
             console.error("Error completo:", error);
+
             alert("❌ Ocurrió un error al guardar: " + error.message);
         } finally {
             btn.innerHTML = originalText;
