@@ -1396,10 +1396,11 @@ function restaurarPantalla(estado) {
         document.getElementById('pdf-lbl-hora').innerText = hoy.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
     };
 
-    window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('DOMContentLoaded', async () => {
         const urlParams = new URLSearchParams(window.location.search);
         const scanFolio = urlParams.get('scan'); 
         const pdfFolio = urlParams.get('pdf');
+        const presFolio = urlParams.get('pres'); // 🔥 AGREGAMOS ESTA LÍNEA
 
 if (scanFolio) {
             document.getElementById('pin-lock-screen').style.display = 'none';
@@ -1501,6 +1502,60 @@ if (pdfFolio) {
                 document.getElementById('btnRetryScan2').style.display = 'inline-block';
             } else { 
                 loadingOverlay.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ ERROR</h2><p>El folio ingresado no existe o es inválido.</p></div></div>`; 
+            }
+            return;
+        }
+    // 🔥 LÓGICA PARA DESCARGAR PRESUPUESTO DESDE EL LINK LIMPIO
+        if (presFolio) {
+            document.getElementById('pin-lock-screen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('reportView').style.display = 'none';
+
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'presLoadingOverlay';
+            loadingOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#111; z-index:999999;';
+            loadingOverlay.innerHTML = `
+                <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;">
+                    <div style="margin-bottom: 40px;"><span style="background: #222222; color: #e2e8f0; border: 1px solid #444; font-size: 13pt; font-weight: bold; padding: 10px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px;"> 💰 PRESUPUESTO DE SERVICIO</span></div>
+                    <img src="logo.png" alt="Logo" style="max-height: 80px; width: auto; margin-bottom: 25px;">
+                    <div id="pres-loading-spinner" style="border:4px solid #f3f3f3;border-top:4px solid #0284c7;border-radius:50%;width:45px;height:45px;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
+                    <h2 id="pres-status-title" style="font-size:14pt;font-weight:bold;letter-spacing:0.5px;margin:0 0 10px 0;">DESCARGANDO PRESUPUESTO...</h2>
+                    <p id="pres-status-desc" style="color:#aaa;font-size:10pt;margin:0 0 25px 0;max-width:300px;">Por favor, acepta la descarga en la alerta de tu celular.</p>
+                    <button id="btnRetryPres" style="display:none;background:#0284c7;color:white;border:none;padding:14px 24px;font-size:10.5pt;font-weight:bold;border-radius:6px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,0.2);" onclick="window.location.reload()">🔄 Descargar PDF Nuevamente</button>
+                </div><style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>`;
+            document.body.appendChild(loadingOverlay);
+
+            const { data: reporte, error } = await supabaseClient.from('reportes_servicio').select('link_presupuesto').eq('folio', presFolio.toUpperCase()).single();
+            
+            if (!error && reporte && reporte.link_presupuesto) {
+                const url = reporte.link_presupuesto;
+                try {
+                    const response = await fetch(url); 
+                    const blob = await response.blob(); 
+                    const urlBlob = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a'); 
+                    link.style.display = 'none'; 
+                    link.href = urlBlob; 
+                    link.download = `PRESUPUESTO_${presFolio.toUpperCase()}.pdf`;
+                    document.body.appendChild(link); 
+                    link.click(); 
+                    window.URL.revokeObjectURL(urlBlob); 
+                    document.body.removeChild(link);
+                } catch (e) {
+                    const linkFallback = document.createElement('a'); 
+                    linkFallback.href = url; 
+                    linkFallback.download = `PRESUPUESTO_${presFolio.toUpperCase()}.pdf`; 
+                    linkFallback.target = '_blank'; 
+                    document.body.appendChild(linkFallback);
+                    linkFallback.click();
+                    document.body.removeChild(linkFallback);
+                }
+                document.getElementById('pres-loading-spinner').style.display = 'none'; 
+                document.getElementById('pres-status-title').innerText = "¡PRESUPUESTO DESCARGADO!";
+                document.getElementById('pres-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
+                document.getElementById('btnRetryPres').style.display = 'inline-block';
+            } else { 
+                loadingOverlay.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#fff;text-align:center;font-family:sans-serif;padding:20px;"><div><h2 style="color:#d32f2f;">⚠️ PRESUPUESTO NO ENCONTRADO</h2><p>El folio ingresado no tiene un presupuesto registrado o fue eliminado.</p></div></div>`; 
             }
             return;
         }
