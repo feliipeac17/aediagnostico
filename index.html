@@ -2238,12 +2238,16 @@ function mostrarVistaPreviaDigital(rep) {
         window.scrollTo(0, 0);
     }
     
-function alternarSubVista(vista) {
+    function alternarSubVista(vista) {
         const tabRec = document.getElementById('subTabRecepcion'); 
         const tabReportes = document.getElementById('subTabReportes');
 
         const secRec = document.getElementById('subVistaContenidoRecepcion'); 
         const secReportes = document.getElementById('subVistaContenidoReportes');
+        
+        // Seleccionamos el botón de PDF y la barra que lo contiene
+        const btnPdf = document.getElementById('btnDescargarPDF');
+        const barraAcciones = btnPdf ? btnPdf.parentElement : null;
 
         if (tabRec) tabRec.classList.remove('active'); 
         if (tabReportes) tabReportes.classList.remove('active'); 
@@ -2254,6 +2258,11 @@ function alternarSubVista(vista) {
         if (vista === 'recepcion') { 
             if (tabRec) tabRec.classList.add('active'); 
             if (secRec) secRec.style.display = 'block'; 
+            
+            // Mostramos el botón PDF y dividimos la barra en 2 columnas
+            if (btnPdf) btnPdf.style.display = 'flex';
+            if (barraAcciones) barraAcciones.style.gridTemplateColumns = '1fr 1fr';
+            
         } else if (vista === 'reportes') { 
             if (tabReportes) tabReportes.classList.add('active'); 
             if (secReportes) {
@@ -2264,8 +2273,13 @@ function alternarSubVista(vista) {
                 secReportes.style.minHeight = '350px'; 
                 secReportes.style.padding = '30px 0'; 
             }
+            
+            // Ocultamos el botón PDF y hacemos que "Volver" abarque todo (1 columna)
+            if (btnPdf) btnPdf.style.display = 'none';
+            if (barraAcciones) barraAcciones.style.gridTemplateColumns = '1fr';
         } 
     }
+
     
     function abrirCalidadOriginal(tipoFoto) {
         if(!reportDataGlobal) return; let urlDestino = "";
