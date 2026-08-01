@@ -629,13 +629,19 @@
     </div>
 
     <div id="adminPanel" class="admin-panel">
-<div class="sticky-nav-container" style="border-bottom: none; box-shadow: 0 4px 10px rgba(0,0,0,0.03); padding: 15px 15px;">
-            <div style="display: flex; background: #e2e8f0; border-radius: 12px; padding: 5px; gap: 5px;">
+        <div class="sticky-nav-container" style="border-bottom: none; box-shadow: 0 4px 10px rgba(0,0,0,0.03); padding: 15px 15px;">
+            <div id="navTabsNormales" style="display: flex; background: #e2e8f0; border-radius: 12px; padding: 5px; gap: 5px;">
                 <button id="btnTabDashboard" class="nav-tab-btn tab-active" onclick="cambiarPestana('dashboard')"><i class="fa-solid fa-chart-pie"></i> Inicio</button>
                 <button id="btnTabNuevo" class="nav-tab-btn" onclick="cambiarPestana('nuevo')"><i class="fa-solid fa-file-circle-plus"></i> Nuevo</button>
                 <button id="btnTabHistorial" class="nav-tab-btn" onclick="cambiarPestana('historial')"><i class="fa-solid fa-folder-open"></i> Historial</button>
             </div>
+            
+            <div id="navBotonesEdicion" style="display: none; gap: 10px;">
+                <button class="btn-submit" style="background:#64748b; margin:0; flex:1; padding: 12px;" onclick="cancelarEdicionActiva()"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+                <button class="btn-submit" id="btnGuardarTop" style="background:#10b981; margin:0; flex:1; padding: 12px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);" onclick="guardarYProcesarReporte()"><i class="fa-solid fa-floppy-disk"></i> Actualizar</button>
+            </div>
         </div>
+
 
         <div class="panel-header">
             <div class="panel-title" id="formPanelTitle">Nuevo <span>Reporte</span></div>
@@ -1653,6 +1659,14 @@ function limpiarFormularioCompleto() {
         document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar";
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
 
+        // 🔥 NUEVO: Restauramos las pestañas y el botón Guardar de abajo
+        if(document.getElementById('navTabsNormales')) document.getElementById('navTabsNormales').style.display = 'flex';
+        if(document.getElementById('navBotonesEdicion')) document.getElementById('navBotonesEdicion').style.display = 'none';
+        if(document.getElementById('btnGuardarForm')) {
+            document.getElementById('btnGuardarForm').style.display = 'block';
+            document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar";
+        }
+    
         document.querySelectorAll('#formularioSection input, #formularioSection textarea').forEach(el => el.value = "");
         document.querySelectorAll('#formularioSection input[type="checkbox"]').forEach(el => el.checked = false);
         document.querySelectorAll('.check-icon').forEach(icon => { icon.classList.remove('fa-square-check', 'active'); icon.classList.add('fa-square'); });
@@ -1739,8 +1753,14 @@ async function guardarYProcesarReporte() {
         if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL VIN DEBE TENER 17 CARACTERES."); return; }
 
         const textoOriginal = btnSubmit.innerHTML;
+        const btnTop = document.getElementById('btnGuardarTop'); // Tomamos el botón de arriba
+        const textoOriginalTop = btnTop ? btnTop.innerHTML : "";
+
+        // Deshabilitamos ambos botones y cambiamos su texto
         btnSubmit.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; 
         btnSubmit.disabled = true;
+        if(btnTop) { btnTop.innerHTML = "⏳ GUARDANDO..."; btnTop.disabled = true; }
+
 
         let folioCalculado = document.getElementById('pdf-lbl-folio').innerText.replace("REPORTE ", "");
 
@@ -1835,7 +1855,11 @@ async function guardarYProcesarReporte() {
             
         } catch (err) { alert("❌ ERROR: " + err.message); }
 
-        finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.disabled = false; }
+                } finally { 
+            btnSubmit.innerHTML = textoOriginal; 
+            btnSubmit.disabled = false; 
+            if(btnTop) { btnTop.innerHTML = textoOriginalTop; btnTop.disabled = false; }
+        }
     }
 
 async function cargarHistorialSupabase() {
@@ -2094,8 +2118,14 @@ function cargarRegistroParaEditar(rep) {
         document.getElementById('btnTabHistorial').classList.remove('tab-active');
         document.getElementById('btnTabNuevo').classList.add('tab-active');
         window.scrollTo(0,0);
-        if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'block';
+        
+        // 🔥 NUEVO: Intercambiamos las barras y ocultamos los botones de abajo
+        document.getElementById('navTabsNormales').style.display = 'none';
+        document.getElementById('navBotonesEdicion').style.display = 'flex';
+        document.getElementById('btnGuardarForm').style.display = 'none'; // Oculta el Guardar de abajo
+        if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none'; // Oculta el Cancelar de abajo
     }
+
 
 function mostrarVistaPreviaDigital(rep) {
         reportDataGlobal = rep; 
