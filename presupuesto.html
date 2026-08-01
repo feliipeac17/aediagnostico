@@ -409,19 +409,20 @@ textarea.card-input {
             justify-content: flex-end !important;
         }
 
-                        /* 🚀 REDISEÑO DEL BOTÓN VOLVER (ESTILO PÍLDORA FLOTANTE A LA DERECHA) */
+             /* 🚀 REDISEÑO DEL BOTÓN VOLVER (ESTILO PÍLDORA FLOTANTE A LA DERECHA) */
         .nav-bar {
             position: -webkit-sticky !important;
             position: sticky !important;
-            top: 0 !important; /* 🔥 Ajuste 1: Se pega al techo al hacer scroll */
+            top: 15px !important; /* 🔥 Mantiene 15px exactos de separación del techo */
             z-index: 9999 !important;
             display: flex !important;
             justify-content: flex-end !important; 
+            align-items: flex-start !important; /* 🔥 EL TRUCO: Evita que el botón se centre hacia arriba y se corte */
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0 15px 0 0 !important; /* Separación derecha (15px) */
-            margin-bottom: 0 !important; 
+            padding: 0 15px 0 0 !important; /* Mantiene 15px exactos de separación a la derecha */
+            margin: 0 !important; 
             height: 0 !important; 
             overflow: visible !important; 
             pointer-events: none !important; 
@@ -445,7 +446,7 @@ textarea.card-input {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
-            margin-top: 15px !important; /* 🔥 Ajuste 2: Empuja el botón 15px hacia abajo, igualando la derecha */
+            margin: 0 !important; /* 🔥 Le quitamos el margen porque la barra ya hace todo el trabajo */
         }
 
         .btn-flotante-volver:hover {
