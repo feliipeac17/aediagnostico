@@ -636,10 +636,15 @@
                 <button id="btnTabHistorial" class="nav-tab-btn" onclick="cambiarPestana('historial')"><i class="fa-solid fa-folder-open"></i> Historial</button>
             </div>
             
-            <div id="navBotonesEdicion" style="display: none; gap: 10px;">
-                <button class="btn-submit" style="background:#64748b; margin:0; flex:1; padding: 12px;" onclick="cancelarEdicionActiva()"><i class="fa-solid fa-xmark"></i> Cancelar</button>
-                <button class="btn-submit" id="btnGuardarTop" style="background:#10b981; margin:0; flex:1; padding: 12px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);" onclick="guardarYProcesarReporte()"><i class="fa-solid fa-floppy-disk"></i> Actualizar</button>
+                        <div id="navBotonesEdicion" style="display: none; gap: 12px;">
+                <button class="btn-action-view btn-action-back" onclick="cancelarEdicionActiva()">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </button>
+                <button id="btnGuardarTop" class="btn-action-view btn-action-pdf" onclick="guardarYProcesarReporte()">
+                    <i class="fa-solid fa-floppy-disk"></i> Actualizar
+                </button>
             </div>
+
         </div>
 
 
