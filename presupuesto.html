@@ -409,21 +409,24 @@ textarea.card-input {
             justify-content: flex-end !important;
         }
 
-        /* 🚀 REDISEÑO DEL BOTÓN VOLVER (ESTILO PÍLDORA FLOTANTE) */
+                /* 🚀 REDISEÑO DEL BOTÓN VOLVER (ESTILO PÍLDORA FLOTANTE A LA DERECHA) */
         .nav-bar {
             position: -webkit-sticky !important;
             position: sticky !important;
             top: 15px !important;
             z-index: 9999 !important;
             display: flex !important;
-            justify-content: center !important; /* Centra el botón mágicamente */
+            justify-content: flex-end !important; /* 🔥 Lo carga hacia la derecha */
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0 !important;
-            margin-bottom: 15px !important;
-            pointer-events: none !important; /* Permite hacer clic "a través" de las orillas invisibles */
+            padding: 0 15px 0 0 !important; /* Separación para que no pegue con el borde de la pantalla */
+            margin-bottom: 0 !important; 
+            height: 0 !important; /* 🔥 Truco maestro: elimina el espacio en blanco vertical */
+            overflow: visible !important; /* Deja ver el botón flotante aunque el contenedor mida 0 */
+            pointer-events: none !important; 
         }
+
 
         .btn-flotante-volver {
             pointer-events: auto !important; /* Reactiva el clic solo en la píldora */
@@ -463,7 +466,7 @@ textarea.card-input {
     
         <div class="nav-bar">
         <button onclick="volverAlInicio()" class="btn-flotante-volver">
-            <i class="fa-solid fa-arrow-left"></i> Volver al Historial
+            <i class="fa-solid fa-arrow-left"></i> Volver
         </button>
     </div>
 
