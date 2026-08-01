@@ -1855,7 +1855,7 @@ async function guardarYProcesarReporte() {
             
         } catch (err) { alert("❌ ERROR: " + err.message); }
 
-                } finally { 
+                finally { 
             btnSubmit.innerHTML = textoOriginal; 
             btnSubmit.disabled = false; 
             if(btnTop) { btnTop.innerHTML = textoOriginalTop; btnTop.disabled = false; }
