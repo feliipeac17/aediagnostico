@@ -409,6 +409,51 @@ textarea.card-input {
             justify-content: flex-end !important;
         }
 
+        /* 🚀 REDISEÑO DEL BOTÓN VOLVER (ESTILO PÍLDORA FLOTANTE) */
+        .nav-bar {
+            position: -webkit-sticky !important;
+            position: sticky !important;
+            top: 15px !important;
+            z-index: 9999 !important;
+            display: flex !important;
+            justify-content: center !important; /* Centra el botón mágicamente */
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin-bottom: 15px !important;
+            pointer-events: none !important; /* Permite hacer clic "a través" de las orillas invisibles */
+        }
+
+        .btn-flotante-volver {
+            pointer-events: auto !important; /* Reactiva el clic solo en la píldora */
+            background: rgba(15, 23, 42, 0.85) !important; /* Azul marino oscuro translúcido */
+            backdrop-filter: blur(8px) !important; /* Efecto cristalino moderno */
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 12px 24px !important;
+            font-size: 9.5pt !important;
+            font-weight: 800 !important;
+            border-radius: 50px !important; /* Bordes totalmente redondos */
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        .btn-flotante-volver:hover {
+            background: #d32f2f !important; /* Se ilumina con tu color rojo al pasar el dedo/mouse */
+            transform: translateY(-2px) !important;
+            box-shadow: 0 12px 25px rgba(211, 47, 47, 0.3) !important;
+        }
+
+        .btn-flotante-volver:active {
+            transform: scale(0.95) !important;
+        }
 
     </style>
 </head>
@@ -416,11 +461,12 @@ textarea.card-input {
 
 <div class="wrapper-page">
     
-    <div class="nav-bar">
-        <button onclick="volverAlInicio()" class="btn-back" style="background:none; border:none; cursor:pointer; font-size: 14px; color: inherit; display: flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-arrow-left"></i> Volver al Panel
+        <div class="nav-bar">
+        <button onclick="volverAlInicio()" class="btn-flotante-volver">
+            <i class="fa-solid fa-arrow-left"></i> Volver al Historial
         </button>
     </div>
+
 
     <div class="pdf-header-container">
         <div class="pdf-brand-block">
