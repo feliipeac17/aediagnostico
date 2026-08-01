@@ -409,35 +409,34 @@ textarea.card-input {
             justify-content: flex-end !important;
         }
 
-                /* 🚀 REDISEÑO DEL BOTÓN VOLVER (ESTILO PÍLDORA FLOTANTE A LA DERECHA) */
+                        /* 🚀 REDISEÑO DEL BOTÓN VOLVER (ESTILO PÍLDORA FLOTANTE A LA DERECHA) */
         .nav-bar {
             position: -webkit-sticky !important;
             position: sticky !important;
-            top: 15px !important;
+            top: 0 !important; /* 🔥 Ajuste 1: Se pega al techo al hacer scroll */
             z-index: 9999 !important;
             display: flex !important;
-            justify-content: flex-end !important; /* 🔥 Lo carga hacia la derecha */
+            justify-content: flex-end !important; 
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0 15px 0 0 !important; /* Separación para que no pegue con el borde de la pantalla */
+            padding: 0 15px 0 0 !important; /* Separación derecha (15px) */
             margin-bottom: 0 !important; 
-            height: 0 !important; /* 🔥 Truco maestro: elimina el espacio en blanco vertical */
-            overflow: visible !important; /* Deja ver el botón flotante aunque el contenedor mida 0 */
+            height: 0 !important; 
+            overflow: visible !important; 
             pointer-events: none !important; 
         }
 
-
         .btn-flotante-volver {
-            pointer-events: auto !important; /* Reactiva el clic solo en la píldora */
-            background: rgba(15, 23, 42, 0.85) !important; /* Azul marino oscuro translúcido */
-            backdrop-filter: blur(8px) !important; /* Efecto cristalino moderno */
+            pointer-events: auto !important; 
+            background: rgba(15, 23, 42, 0.85) !important; 
+            backdrop-filter: blur(8px) !important; 
             color: #ffffff !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
             padding: 12px 24px !important;
             font-size: 9.5pt !important;
             font-weight: 800 !important;
-            border-radius: 50px !important; /* Bordes totalmente redondos */
+            border-radius: 50px !important; 
             cursor: pointer !important;
             display: inline-flex !important;
             align-items: center !important;
@@ -446,10 +445,11 @@ textarea.card-input {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
+            margin-top: 15px !important; /* 🔥 Ajuste 2: Empuja el botón 15px hacia abajo, igualando la derecha */
         }
 
         .btn-flotante-volver:hover {
-            background: #d32f2f !important; /* Se ilumina con tu color rojo al pasar el dedo/mouse */
+            background: #d32f2f !important; 
             transform: translateY(-2px) !important;
             box-shadow: 0 12px 25px rgba(211, 47, 47, 0.3) !important;
         }
