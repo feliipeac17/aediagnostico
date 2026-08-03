@@ -741,7 +741,7 @@
                                 </div>
                                 <div class="pdf-data-item">
                                     <span>TELEFONO DE CONTACTO</span>
-                                    <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12">
+                                    <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12" onblur="buscarClienteFrecuente()" onkeyup="if(this.value.replace(/\D/g,'').length===10) buscarClienteFrecuente()">
                                 </div>
                             </div>
                         </div>
@@ -1103,6 +1103,28 @@
         </button>
     </div>
 </div>
+
+  <div id="modalVehiculosCliente" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.75); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 15px;">
+    <div style="background:#ffffff; width:100%; max-width:480px; border-radius:16px; padding:25px 20px; box-sizing:border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align:center;">
+        <div style="display:inline-flex; align-items:center; justify-content:center; width:50px; height:50px; background:#e0f2fe; border-radius:50%; margin-bottom:15px;">
+            <i class="fa-solid fa-user-check" style="font-size:20pt; color:#0284c7;"></i>
+        </div>
+        <h3 style="margin:0 0 6px 0; font-family:'Montserrat', sans-serif; font-size:12pt; font-weight:800; color:#0f172a; text-transform:uppercase;">
+            ¡Cliente Encontrado!
+        </h3>
+        <p id="lblClienteEncontradoNombre" style="margin:0 0 15px 0; font-size:10.5pt; font-weight:700; color:#0284c7; text-transform:uppercase;"></p>
+        <p style="margin:0 0 18px 0; font-size:9pt; color:#64748b;">
+            Selecciona el vehículo que ingresa al taller o registra uno nuevo para este cliente:
+        </p>
+
+        <div id="listaVehiculosExistentes" style="display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto; margin-bottom:15px; padding-right:4px;"></div>
+
+        <button onclick="seleccionarVehiculoAutocompletado(null)" style="width:100%; padding:14px; background:#10b981; color:#ffffff; border:none; border-radius:10px; font-weight:800; font-size:9.5pt; cursor:pointer; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 10px rgba(16, 185, 129, 0.25);">
+            <i class="fa-solid fa-car-tunnel"></i> ➕ Registrar Otro Vehículo
+        </button>
+    </div>
+</div>
+  
 <script>
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
@@ -2380,6 +2402,112 @@ function enviarWhatsApp(repObj) {
             };
         }
     });
+
+        // 🔍 BUSCADOR DE CLIENTES FRECUENTES Y AUTOCOMPLETADO
+    let listaVehiculosEncontrados = [];
+
+    async function buscarClienteFrecuente() {
+        // Si estamos editando un registro activo, no ejecutamos la búsqueda automática
+        if (document.getElementById('edit_record_id').value !== "") return;
+
+        const inputTel = document.getElementById('in_cliente_telefono');
+        if (!inputTel) return;
+
+        const telLimpio = inputTel.value.replace(/\D/g, '').trim();
+
+        // Solo buscar si tiene al menos 10 dígitos
+        if (telLimpio.length < 10) return;
+
+        try {
+            // Consultamos en Supabase buscando por teléfono
+            const { data: registros, error } = await supabaseClient
+                .from('reportes_servicio')
+                .select('*')
+                .ilike('cliente_telefono', `%${telLimpio}%`)
+                .order('id', { ascending: false });
+
+            if (error) throw error;
+
+            if (registros && registros.length > 0) {
+                // 1. Llenamos el nombre con el registro más reciente
+                const clienteNombre = registros[0].cliente_nombre;
+                if (clienteNombre) {
+                    document.getElementById('in_cliente_nombre').value = clienteNombre;
+                }
+
+                // 2. Filtramos vehículos únicos del cliente (agrupados por placas o marca+modelo)
+                const vehiculosMap = new Map();
+                registros.forEach(r => {
+                    const llaveUnica = (r.vehiculo_placas || r.vehiculo_vin || `${r.vehiculo_marca}_${r.vehiculo_modelo}`).toUpperCase().trim();
+                    if (llaveUnica && r.vehiculo_marca && !vehiculosMap.has(llaveUnica)) {
+                        vehiculosMap.set(llaveUnica, {
+                            marca: r.vehiculo_marca || '',
+                            modelo: r.vehiculo_modelo || '',
+                            color: r.vehiculo_color || '',
+                            placas: r.vehiculo_placas || '',
+                            vin: r.vehiculo_vin || ''
+                        });
+                    }
+                });
+
+                listaVehiculosEncontrados = Array.from(vehiculosMap.values());
+
+                if (listaVehiculosEncontrados.length > 0) {
+                    mostrarModalVehiculosCliente(clienteNombre, listaVehiculosEncontrados);
+                }
+            }
+        } catch (err) {
+            console.error("Error al buscar cliente frecuente:", err);
+        }
+    }
+
+    function mostrarModalVehiculosCliente(nombreCliente, vehiculos) {
+        document.getElementById('lblClienteEncontradoNombre').innerText = nombreCliente;
+        const contenedor = document.getElementById('listaVehiculosExistentes');
+        contenedor.innerHTML = "";
+
+        vehiculos.forEach((veh, index) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.style.cssText = "width:100%; padding:12px 14px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; text-align:left; cursor:pointer; transition:all 0.2s ease; display:flex; justify-content:space-between; align-items:center;";
+            btn.innerHTML = `
+                <div>
+                    <div style="font-size:10pt; font-weight:800; color:#0f172a; text-transform:uppercase;">🚗 ${veh.marca} ${veh.modelo}</div>
+                    <div style="font-size:8pt; font-weight:700; color:#64748b; margin-top:2px;">Placas: ${veh.placas || 'S/N'} | Color: ${veh.color || 'S/N'}</div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color:#0284c7; font-size:10pt;"></i>
+            `;
+            btn.onclick = () => seleccionarVehiculoAutocompletado(index);
+            
+            btn.onmouseover = () => { btn.style.background = "#e0f2fe"; btn.style.borderColor = "#0284c7"; };
+            btn.onmouseout = () => { btn.style.background = "#f8fafc"; btn.style.borderColor = "#cbd5e1"; };
+
+            contenedor.appendChild(btn);
+        });
+
+        document.getElementById('modalVehiculosCliente').style.display = 'flex';
+    }
+
+    function seleccionarVehiculoAutocompletado(index) {
+        document.getElementById('modalVehiculosCliente').style.display = 'none';
+
+        if (index !== null && listaVehiculosEncontrados[index]) {
+            const veh = listaVehiculosEncontrados[index];
+            document.getElementById('in_vehiculo_marca').value = veh.marca || '';
+            document.getElementById('in_vehiculo_modelo').value = veh.modelo || '';
+            document.getElementById('in_vehiculo_color').value = veh.color || '';
+            document.getElementById('in_vehiculo_placas').value = veh.placas || '';
+            document.getElementById('in_vehiculo_vin').value = veh.vin || '';
+        } else {
+            // Si elige "Registrar Otro Vehículo", limpiamos solo los datos del carro
+            document.getElementById('in_vehiculo_marca').value = '';
+            document.getElementById('in_vehiculo_modelo').value = '';
+            document.getElementById('in_vehiculo_color').value = '';
+            document.getElementById('in_vehiculo_placas').value = '';
+            document.getElementById('in_vehiculo_vin').value = '';
+        }
+    }
+
 </script>
 </body>
 </html>
