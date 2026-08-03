@@ -741,8 +741,8 @@
                                 </div>
                                 <div class="pdf-data-item">
                                     <span>TELEFONO DE CONTACTO</span>
-                                    <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12" onblur="buscarClienteFrecuente()" onkeyup="if(this.value.replace(/\D/g,'').length===10) buscarClienteFrecuente()">
-                                </div>
+                                    <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12" onblur="buscarClienteFrecuente()">
+ </div>
                             </div>
                         </div>
 
@@ -2405,10 +2405,10 @@ function enviarWhatsApp(repObj) {
     
     // 🔍 BUSCADOR DE CLIENTES FRECUENTES Y AUTOCOMPLETADO
     let listaVehiculosEncontrados = [];
-    let ultimoTelefonoBuscado = ""; // 🔥 NUEVO: Memoria para evitar doble alerta
+    let ultimoTelefonoBuscado = ""; 
 
     async function buscarClienteFrecuente() {
-        // Si estamos editando un registro activo, no ejecutamos la búsqueda automática
+        // Si estamos editando un registro activo, no ejecutamos la búsqueda
         if (document.getElementById('edit_record_id').value !== "") return;
 
         const inputTel = document.getElementById('in_cliente_telefono');
@@ -2416,16 +2416,15 @@ function enviarWhatsApp(repObj) {
 
         const telLimpio = inputTel.value.replace(/\D/g, '').trim();
 
-        // 🔥 NUEVO: Si borra números, reiniciamos la memoria
+        // Si borra o el número es menor a 10 dígitos, limpiamos la memoria
         if (telLimpio.length < 10) {
             ultimoTelefonoBuscado = "";
             return; 
         }
 
-        // 🔥 NUEVO: Evitar que busque dos veces seguidas el mismo número
+        // Si es exactamente el mismo número que ya buscamos, no volvemos a abrir la ventana
         if (telLimpio === ultimoTelefonoBuscado) return; 
         
-        // Guardamos el número en la memoria
         ultimoTelefonoBuscado = telLimpio; 
 
         try {
@@ -2437,18 +2436,15 @@ function enviarWhatsApp(repObj) {
                 .order('id', { ascending: false });
 
             if (error) throw error;
-            
-            // ... (EL RESTO DEL CÓDIGO HACIA ABAJO SE QUEDA EXACTAMENTE IGUAL)
-
 
             if (registros && registros.length > 0) {
-                // 1. Llenamos el nombre con el registro más reciente
+                // Llenamos el nombre del cliente
                 const clienteNombre = registros[0].cliente_nombre;
                 if (clienteNombre) {
                     document.getElementById('in_cliente_nombre').value = clienteNombre;
                 }
 
-                // 2. Filtramos vehículos únicos del cliente (agrupados por placas o marca+modelo)
+                // Obtenemos los vehículos únicos del cliente
                 const vehiculosMap = new Map();
                 registros.forEach(r => {
                     const llaveUnica = (r.vehiculo_placas || r.vehiculo_vin || `${r.vehiculo_marca}_${r.vehiculo_modelo}`).toUpperCase().trim();
@@ -2473,6 +2469,7 @@ function enviarWhatsApp(repObj) {
             console.error("Error al buscar cliente frecuente:", err);
         }
     }
+
 
     function mostrarModalVehiculosCliente(nombreCliente, vehiculos) {
         document.getElementById('lblClienteEncontradoNombre').innerText = nombreCliente;
