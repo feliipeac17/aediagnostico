@@ -2402,9 +2402,10 @@ function enviarWhatsApp(repObj) {
             };
         }
     });
-
-        // 🔍 BUSCADOR DE CLIENTES FRECUENTES Y AUTOCOMPLETADO
+    
+    // 🔍 BUSCADOR DE CLIENTES FRECUENTES Y AUTOCOMPLETADO
     let listaVehiculosEncontrados = [];
+    let ultimoTelefonoBuscado = ""; // 🔥 NUEVO: Memoria para evitar doble alerta
 
     async function buscarClienteFrecuente() {
         // Si estamos editando un registro activo, no ejecutamos la búsqueda automática
@@ -2415,8 +2416,17 @@ function enviarWhatsApp(repObj) {
 
         const telLimpio = inputTel.value.replace(/\D/g, '').trim();
 
-        // Solo buscar si tiene al menos 10 dígitos
-        if (telLimpio.length < 10) return;
+        // 🔥 NUEVO: Si borra números, reiniciamos la memoria
+        if (telLimpio.length < 10) {
+            ultimoTelefonoBuscado = "";
+            return; 
+        }
+
+        // 🔥 NUEVO: Evitar que busque dos veces seguidas el mismo número
+        if (telLimpio === ultimoTelefonoBuscado) return; 
+        
+        // Guardamos el número en la memoria
+        ultimoTelefonoBuscado = telLimpio; 
 
         try {
             // Consultamos en Supabase buscando por teléfono
@@ -2427,6 +2437,9 @@ function enviarWhatsApp(repObj) {
                 .order('id', { ascending: false });
 
             if (error) throw error;
+            
+            // ... (EL RESTO DEL CÓDIGO HACIA ABAJO SE QUEDA EXACTAMENTE IGUAL)
+
 
             if (registros && registros.length > 0) {
                 // 1. Llenamos el nombre con el registro más reciente
