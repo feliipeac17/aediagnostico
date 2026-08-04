@@ -744,7 +744,6 @@ textarea.card-input {
     });
     
     function volverAlInicio() {
-        // Le dejamos una nota al panel para que abra el historial
         localStorage.setItem('ae_volver_historial', 'true');
         window.location.replace('/');
     }
@@ -1266,7 +1265,6 @@ async function guardarPresupuestoNube() {
             const { data: urlData } = supabaseClient.storage.from('reportes').getPublicUrl(fileName);
             const publicURL = urlData.publicUrl + '?t=' + Date.now();
 
-            // 🔥 VEIRIFICACIÓN INTELIGENTE: Validar si el folio ya existe en Supabase antes de guardar
             const { data: existeRegistro } = await supabaseClient
                 .from('reportes_servicio')
                 .select('id')
@@ -1289,14 +1287,12 @@ async function guardarPresupuestoNube() {
             let updateError = null;
 
             if (existeRegistro) {
-                // Si el folio ya existía, actualizamos el registro del taller
                 const { error } = await supabaseClient
                     .from('reportes_servicio')
                     .update(datosPresupuesto)
                     .eq('folio', idReporteCortoGlobal);
                 updateError = error;
             } else {
-                // Si es una Cotización Rápida nueva, la insertamos como registro morado en este momento
                 datosPresupuesto.folio = idReporteCortoGlobal;
                 datosPresupuesto.estado = 'COTIZACION';
                 datosPresupuesto.created_at = new Date().toISOString();
@@ -1311,7 +1307,6 @@ async function guardarPresupuestoNube() {
 
             alert("✅ PRESUPUESTO GUARDADO");
 
-            // 🔥 Lógica automática para enviar el Presupuesto por WhatsApp
             const telCliente = document.getElementById('in_cliente_telefono').value.trim();
             const nomCliente = document.getElementById('in_cliente_nombre').value.trim();
             const marca = document.getElementById('in_vehiculo_marca').value.trim();
@@ -1332,7 +1327,6 @@ async function guardarPresupuestoNube() {
                 }
             }
 
-            // Después de preguntar (o enviar), regresamos al inicio
             localStorage.setItem('ae_volver_historial', 'true');
             window.location.replace('/');
 
