@@ -1270,7 +1270,7 @@ async function guardarPresupuestoNube() {
                 .eq('folio', idReporteCortoGlobal)
                 .maybeSingle();
 
-            const datosPresupuesto = {
+                        const datosPresupuesto = {
                 link_presupuesto: publicURL,
                 datos_presupuesto_json: JSON.stringify(estructuraPresupuesto),
                 cliente_nombre: document.getElementById('in_cliente_nombre').value.trim().toUpperCase() || 'COTIZACION MOSTRADOR',
@@ -1280,8 +1280,13 @@ async function guardarPresupuestoNube() {
                 vehiculo_color: document.getElementById('in_vehiculo_color').value.trim().toUpperCase(),
                 vehiculo_placas: document.getElementById('in_vehiculo_placas').value.trim().toUpperCase(),
                 vehiculo_vin: document.getElementById('in_vehiculo_vin').value.trim().toUpperCase(),
+                
+                // 🔥 SOLUCIÓN: Agregamos la línea para capturar el Odómetro y concatenar la unidad (KM/MI)
+                vehiculo_km: document.getElementById('in_vehiculo_km').value ? `${document.getElementById('in_vehiculo_km').value} ${document.getElementById('in_vehiculo_unidad').value}` : '',
+                
                 motivo_ingreso: document.getElementById('in_falla_reportada').value.trim().toUpperCase()
             };
+
 
             let updateError = null;
 
