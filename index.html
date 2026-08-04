@@ -678,7 +678,7 @@
                 
             </div>
     <button onclick="crearCotizacionRapida(event)" style="width:100%; margin-top:5px; background:linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color:white; border:none; padding:18px; border-radius:12px; font-size:11.5pt; font-weight:800; cursor:pointer; text-transform:uppercase; box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3); display:flex; justify-content:center; align-items:center; gap:10px; transition: transform 0.2s;">
-                <i class="fa-solid fa-bolt"></i> Crear Cotización Rápida
+                <i class="fa-solid fa-bolt"></i> Crear Cotizacion Rapida
             </button>
         </div>
 
@@ -1436,7 +1436,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const urlParams = new URLSearchParams(window.location.search);
         const scanFolio = urlParams.get('scan'); 
         const pdfFolio = urlParams.get('pdf');
-        const presFolio = urlParams.get('pres'); // 🔥 AGREGAMOS ESTA LÍNEA
+        const presFolio = urlParams.get('pres'); 
 
 if (scanFolio) {
             document.getElementById('pin-lock-screen').style.display = 'none';
@@ -1689,7 +1689,6 @@ function limpiarFormularioCompleto() {
         document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar";
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
 
-        // 🔥 NUEVO: Restauramos las pestañas y el botón Guardar de abajo
         if(document.getElementById('navTabsNormales')) document.getElementById('navTabsNormales').style.display = 'flex';
         if(document.getElementById('navBotonesEdicion')) document.getElementById('navBotonesEdicion').style.display = 'none';
         if(document.getElementById('btnGuardarForm')) {
@@ -1783,10 +1782,9 @@ async function guardarYProcesarReporte() {
         if (vinVal.length > 0 && vinVal.length !== 17) { alert("⚠️ EL VIN DEBE TENER 17 CARACTERES."); return; }
 
         const textoOriginal = btnSubmit.innerHTML;
-        const btnTop = document.getElementById('btnGuardarTop'); // Tomamos el botón de arriba
+        const btnTop = document.getElementById('btnGuardarTop'); 
         const textoOriginalTop = btnTop ? btnTop.innerHTML : "";
 
-        // Deshabilitamos ambos botones y cambiamos su texto
         btnSubmit.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; 
         btnSubmit.disabled = true;
         if(btnTop) { btnTop.innerHTML = "⏳ GUARDANDO..."; btnTop.disabled = true; }
@@ -1873,13 +1871,12 @@ async function guardarYProcesarReporte() {
             if(reporteGuardado) {
                 mostrarVistaPreviaDigital(reporteGuardado);
                 
-                // 🔥 NUEVO: Preguntar y redirigir a WhatsApp automáticamente
                 if (reporteGuardado.cliente_telefono && reporteGuardado.cliente_telefono.trim() !== "") {
                     setTimeout(() => {
                         if(confirm("📲 Reporte guardado. ¿Deseas enviarlo al cliente por WhatsApp?")) {
                             enviarWhatsApp(reporteGuardado);
                         }
-                    }, 500); // Pequeña pausa para que cargue la vista previa primero
+                    }, 500); 
                 }
             }
             
@@ -1892,7 +1889,6 @@ async function guardarYProcesarReporte() {
         }
     }
 
-// 🚀 GENERAR COTIZACIÓN EXPRÉS (SIN REGISTROS FANTASMA)
     function crearCotizacionRapida() {
         const folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000);
         const datos = { folio: folioTxt };
@@ -1907,12 +1903,11 @@ async function cargarHistorialSupabase() {
         if (error) { if (contenedor) contenedor.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
         
         listaReportesMemoria = reportes; 
-        listaReportesFiltrada = [...listaReportesMemoria]; // Copia para la paginación
+        listaReportesFiltrada = [...listaReportesMemoria]; 
         paginaActual = 1; 
         
-        renderizarPagina(); // Llamamos al motor de paginación
+        renderizarPagina(); 
 
-        // Calculamos los números del panel superior (Dashboard)
         let enTaller = 0, esperando = 0, terminados = 0;
         reportes.forEach(rep => {
             const est = rep.estado || 'EN REVISION';
@@ -1969,7 +1964,6 @@ function filtrarHistorial() {
         paginaActual += direccion;
         renderizarPagina();
         
-        // Hacemos scroll suavemente hacia el buscador para empezar a ver desde arriba
         const buscador = document.getElementById('buscadorHistorial');
         if (buscador) buscador.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -1987,7 +1981,7 @@ function inyectarTarjetasHistorial(arr) {
         let colorEstado = '#10b981';
         if (estadoActual === 'TE' || estadoActual === 'ENTREGADO') colorEstado = '#ef4444';
         else if (estadoActual === 'TERMINADO') colorEstado = '#3b82f6';
-        else if (estadoActual === 'COTIZACION') colorEstado = '#8b5cf6'; // 🔥 Nuevo color Morado
+        else if (estadoActual === 'COTIZACION') colorEstado = '#8b5cf6'; 
 
         let imagenPortada = `<i class="fa-solid fa-car" style="font-size: 28pt; color: #cbd5e1;"></i>`;
         if (rep.foto_frente_url) {
@@ -2158,11 +2152,10 @@ function cargarRegistroParaEditar(rep) {
         document.getElementById('btnTabNuevo').classList.add('tab-active');
         window.scrollTo(0,0);
         
-        // 🔥 NUEVO: Intercambiamos las barras y ocultamos los botones de abajo
         document.getElementById('navTabsNormales').style.display = 'none';
         document.getElementById('navBotonesEdicion').style.display = 'flex';
-        document.getElementById('btnGuardarForm').style.display = 'none'; // Oculta el Guardar de abajo
-        if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none'; // Oculta el Cancelar de abajo
+        document.getElementById('btnGuardarForm').style.display = 'none'; 
+        if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none'; 
     }
 
 
@@ -2172,7 +2165,6 @@ function mostrarVistaPreviaDigital(rep) {
 
         document.getElementById('web_view_folio').innerText = "FOLIO: " + (rep.folio || 'N/A');
         
-        // 🔥 AQUÍ SE QUEDÓ INTEGRADA LA PARTE 3 (Cargar fecha original en la vista VER)
         if (rep.created_at) {
             const fechaObj = new Date(rep.created_at);
             const fTxt = fechaObj.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
@@ -2196,24 +2188,20 @@ function mostrarVistaPreviaDigital(rep) {
         const txtGas = document.getElementById('web_view_gas_text');
         
         if (arcoSVG && numGas && txtGas) {
-            // Calcular el llenado del arco matemáticamente (251.2 es el tamaño total del arco)
             const longitudArco = 251.2;
             const offset = longitudArco - (fillGas / 100) * longitudArco;
             
-            // Asignar color y textos según el nivel
-            let colorGas = "#10b981"; // Verde (Lleno por defecto)
+            let colorGas = "#10b981"; 
             let labelGas = "LLENO";
             
             if (fillGas <= 25) { 
-                colorGas = "#ef4444"; // Rojo
+                colorGas = "#ef4444"; 
                 labelGas = fillGas === 0 ? "VACÍO" : "1/4 DE TANQUE"; 
             } else if (fillGas <= 75) { 
-                colorGas = "#f59e0b"; // Amarillo / Naranja
+                colorGas = "#f59e0b"; 
                 labelGas = fillGas === 50 ? "MEDIO TANQUE" : "3/4 DE TANQUE"; 
             }
             
-            // Aplicar los cambios visuales con animación
-            // Usamos un ligero retraso (setTimeout) para que el arco tenga efecto de animación al abrir la ventana
             setTimeout(() => {
                 arcoSVG.style.strokeDashoffset = offset;
                 arcoSVG.style.stroke = colorGas;
@@ -2314,7 +2302,6 @@ function mostrarVistaPreviaDigital(rep) {
         const secRec = document.getElementById('subVistaContenidoRecepcion'); 
         const secReportes = document.getElementById('subVistaContenidoReportes');
         
-        // Seleccionamos el botón de PDF y la barra que lo contiene
         const btnPdf = document.getElementById('btnDescargarPDF');
         const barraAcciones = btnPdf ? btnPdf.parentElement : null;
 
@@ -2328,7 +2315,6 @@ function mostrarVistaPreviaDigital(rep) {
             if (tabRec) tabRec.classList.add('active'); 
             if (secRec) secRec.style.display = 'block'; 
             
-            // Mostramos el botón PDF y dividimos la barra en 2 columnas
             if (btnPdf) btnPdf.style.display = 'flex';
             if (barraAcciones) barraAcciones.style.gridTemplateColumns = '1fr 1fr';
             
@@ -2343,7 +2329,6 @@ function mostrarVistaPreviaDigital(rep) {
                 secReportes.style.padding = '30px 0'; 
             }
             
-            // Ocultamos el botón PDF y hacemos que "Volver" abarque todo (1 columna)
             if (btnPdf) btnPdf.style.display = 'none';
             if (barraAcciones) barraAcciones.style.gridTemplateColumns = '1fr';
         } 
@@ -2405,7 +2390,6 @@ function enviarWhatsApp(repObj) {
                 panelCompleto.style.left = '0';
                 panelCompleto.style.top = 'auto';
                 
-                // 🔥 En lugar de regresar al historial, simplemente volvemos a ocultar el panel fantasma
                 panelCompleto.style.display = 'none'; 
                 
                 btnPdfHistorial.innerHTML = btnOriginalText;
@@ -2415,12 +2399,10 @@ function enviarWhatsApp(repObj) {
         }
     });
     
-    // 🔍 BUSCADOR DE CLIENTES FRECUENTES Y AUTOCOMPLETADO
     let listaVehiculosEncontrados = [];
     let ultimoTelefonoBuscado = ""; 
 
     async function buscarClienteFrecuente() {
-        // Si estamos editando un registro activo, no ejecutamos la búsqueda
         if (document.getElementById('edit_record_id').value !== "") return;
 
         const inputTel = document.getElementById('in_cliente_telefono');
@@ -2428,19 +2410,16 @@ function enviarWhatsApp(repObj) {
 
         const telLimpio = inputTel.value.replace(/\D/g, '').trim();
 
-        // Si borra o el número es menor a 10 dígitos, limpiamos la memoria
         if (telLimpio.length < 10) {
             ultimoTelefonoBuscado = "";
             return; 
         }
 
-        // Si es exactamente el mismo número que ya buscamos, no volvemos a abrir la ventana
         if (telLimpio === ultimoTelefonoBuscado) return; 
         
         ultimoTelefonoBuscado = telLimpio; 
 
         try {
-            // Consultamos en Supabase buscando por teléfono
             const { data: registros, error } = await supabaseClient
                 .from('reportes_servicio')
                 .select('*')
@@ -2450,13 +2429,11 @@ function enviarWhatsApp(repObj) {
             if (error) throw error;
 
             if (registros && registros.length > 0) {
-                // Llenamos el nombre del cliente
                 const clienteNombre = registros[0].cliente_nombre;
                 if (clienteNombre) {
                     document.getElementById('in_cliente_nombre').value = clienteNombre;
                 }
 
-                // Obtenemos los vehículos únicos del cliente
                 const vehiculosMap = new Map();
                 registros.forEach(r => {
                     const llaveUnica = (r.vehiculo_placas || r.vehiculo_vin || `${r.vehiculo_marca}_${r.vehiculo_modelo}`).toUpperCase().trim();
@@ -2521,7 +2498,6 @@ function enviarWhatsApp(repObj) {
             document.getElementById('in_vehiculo_placas').value = veh.placas || '';
             document.getElementById('in_vehiculo_vin').value = veh.vin || '';
         } else {
-            // Si elige "Registrar Otro Vehículo", limpiamos solo los datos del carro
             document.getElementById('in_vehiculo_marca').value = '';
             document.getElementById('in_vehiculo_modelo').value = '';
             document.getElementById('in_vehiculo_color').value = '';
