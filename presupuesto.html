@@ -1265,15 +1265,25 @@ function agregarRenglon(listaId, desc = '', price = '') {
 
             const { data: urlData } = supabaseClient.storage.from('reportes').getPublicUrl(fileName);
             const publicURL = urlData.publicUrl + '?t=' + Date.now();
+            // 🔥 NUEVO: Actualizamos las columnas principales para que el Historial se vea completo
             const { error: updateError } = await supabaseClient
                 .from('reportes_servicio')
                 .update({ 
                     link_presupuesto: publicURL,
-                    datos_presupuesto_json: JSON.stringify(estructuraPresupuesto)
+                    datos_presupuesto_json: JSON.stringify(estructuraPresupuesto),
+                    // Inyectamos los datos capturados en el presupuesto hacia el reporte fantasma
+                    cliente_nombre: document.getElementById('in_cliente_nombre').value.trim().toUpperCase() || 'COTIZACION MOSTRADOR',
+                    cliente_telefono: document.getElementById('in_cliente_telefono').value.trim(),
+                    vehiculo_marca: document.getElementById('in_vehiculo_marca').value,
+                    vehiculo_modelo: document.getElementById('in_vehiculo_modelo').value.trim().toUpperCase(),
+                    vehiculo_color: document.getElementById('in_vehiculo_color').value.trim().toUpperCase(),
+                    vehiculo_placas: document.getElementById('in_vehiculo_placas').value.trim().toUpperCase(),
+                    vehiculo_vin: document.getElementById('in_vehiculo_vin').value.trim().toUpperCase(),
+                    motivo_ingreso: document.getElementById('in_falla_reportada').value.trim().toUpperCase()
                 })
                 .eq('folio', idReporteCortoGlobal);
 
-                        if (updateError) throw updateError;
+            if (updateError) throw updateError;
 
             alert("✅ PRESUPUESTO GUARDADO");
 
@@ -1311,6 +1321,7 @@ function agregarRenglon(listaId, desc = '', price = '') {
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
-    }</script>
+    }
+</script>
 </body>
 </html>
