@@ -428,12 +428,12 @@ textarea.card-input {
             pointer-events: none !important; 
         }
 
-        .btn-flotante-volver {
+.btn-flotante-volver {
             pointer-events: auto !important; 
-            background: rgba(15, 23, 42, 0.3) !important; /* 🔥 El secreto: 0.3 lo hace mucho más transparente */
-            backdrop-filter: blur(10px) !important; /* 🔥 Aumenta el efecto de cristal borroso del fondo */
+            background: rgba(15, 23, 42, 0.85) !important; 
+            backdrop-filter: blur(8px) !important; 
             color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important; /* 🔥 Borde un poco más blanco para que resalte */
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
             padding: 12px 24px !important;
             font-size: 9.5pt !important;
             font-weight: 800 !important;
@@ -442,17 +442,17 @@ textarea.card-input {
             display: inline-flex !important;
             align-items: center !important;
             gap: 10px !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25) !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
-            margin: 0 !important; 
+            margin: 0 !important; /* 🔥 Le quitamos el margen porque la barra ya hace todo el trabajo */
         }
 
         .btn-flotante-volver:hover {
-            background: rgba(211, 47, 47, 0.8) !important; /* 🔥 Al pasar el mouse se vuelve rojo translúcido */
+            background: #d32f2f !important; 
             transform: translateY(-2px) !important;
-            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.3) !important;
+            box-shadow: 0 12px 25px rgba(211, 47, 47, 0.3) !important;
         }
 
         .btn-flotante-volver:active {
@@ -466,7 +466,7 @@ textarea.card-input {
     
             <div class="nav-bar" data-html2canvas-ignore="true">
         <button onclick="volverAlInicio()" class="btn-flotante-volver">
-            <i class="fa-solid fa-arrow-left"></i> 
+            <i class="fa-solid fa-arrow-left"></i>
         </button>
     </div>
 
