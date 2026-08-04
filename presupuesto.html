@@ -1179,7 +1179,7 @@ function agregarRenglon(listaId, desc = '', price = '') {
         }
     }
     
-    async function guardarPresupuestoNube() {
+async function guardarPresupuestoNube() {
         if (!idReporteCortoGlobal || !idReporteCortoGlobal.includes("AE-")) {
             alert("⚠️ Error: No se encontró un folio válido de reporte para vincular.");
             return;
@@ -1265,29 +1265,53 @@ function agregarRenglon(listaId, desc = '', price = '') {
 
             const { data: urlData } = supabaseClient.storage.from('reportes').getPublicUrl(fileName);
             const publicURL = urlData.publicUrl + '?t=' + Date.now();
-            // 🔥 NUEVO: Actualizamos las columnas principales para que el Historial se vea completo
-            const { error: updateError } = await supabaseClient
+
+            // 🔥 VEIRIFICACIÓN INTELIGENTE: Validar si el folio ya existe en Supabase antes de guardar
+            const { data: existeRegistro } = await supabaseClient
                 .from('reportes_servicio')
-                .update({ 
-                    link_presupuesto: publicURL,
-                    datos_presupuesto_json: JSON.stringify(estructuraPresupuesto),
-                    // Inyectamos los datos capturados en el presupuesto hacia el reporte fantasma
-                    cliente_nombre: document.getElementById('in_cliente_nombre').value.trim().toUpperCase() || 'COTIZACION MOSTRADOR',
-                    cliente_telefono: document.getElementById('in_cliente_telefono').value.trim(),
-                    vehiculo_marca: document.getElementById('in_vehiculo_marca').value,
-                    vehiculo_modelo: document.getElementById('in_vehiculo_modelo').value.trim().toUpperCase(),
-                    vehiculo_color: document.getElementById('in_vehiculo_color').value.trim().toUpperCase(),
-                    vehiculo_placas: document.getElementById('in_vehiculo_placas').value.trim().toUpperCase(),
-                    vehiculo_vin: document.getElementById('in_vehiculo_vin').value.trim().toUpperCase(),
-                    motivo_ingreso: document.getElementById('in_falla_reportada').value.trim().toUpperCase()
-                })
-                .eq('folio', idReporteCortoGlobal);
+                .select('id')
+                .eq('folio', idReporteCortoGlobal)
+                .maybeSingle();
+
+            const datosPresupuesto = {
+                link_presupuesto: publicURL,
+                datos_presupuesto_json: JSON.stringify(estructuraPresupuesto),
+                cliente_nombre: document.getElementById('in_cliente_nombre').value.trim().toUpperCase() || 'COTIZACION MOSTRADOR',
+                cliente_telefono: document.getElementById('in_cliente_telefono').value.trim(),
+                vehiculo_marca: document.getElementById('in_vehiculo_marca').value,
+                vehiculo_modelo: document.getElementById('in_vehiculo_modelo').value.trim().toUpperCase(),
+                vehiculo_color: document.getElementById('in_vehiculo_color').value.trim().toUpperCase(),
+                vehiculo_placas: document.getElementById('in_vehiculo_placas').value.trim().toUpperCase(),
+                vehiculo_vin: document.getElementById('in_vehiculo_vin').value.trim().toUpperCase(),
+                motivo_ingreso: document.getElementById('in_falla_reportada').value.trim().toUpperCase()
+            };
+
+            let updateError = null;
+
+            if (existeRegistro) {
+                // Si el folio ya existía, actualizamos el registro del taller
+                const { error } = await supabaseClient
+                    .from('reportes_servicio')
+                    .update(datosPresupuesto)
+                    .eq('folio', idReporteCortoGlobal);
+                updateError = error;
+            } else {
+                // Si es una Cotización Rápida nueva, la insertamos como registro morado en este momento
+                datosPresupuesto.folio = idReporteCortoGlobal;
+                datosPresupuesto.estado = 'COTIZACION';
+                datosPresupuesto.created_at = new Date().toISOString();
+
+                const { error } = await supabaseClient
+                    .from('reportes_servicio')
+                    .insert([datosPresupuesto]);
+                updateError = error;
+            }
 
             if (updateError) throw updateError;
 
             alert("✅ PRESUPUESTO GUARDADO");
 
-            // 🔥 NUEVO: Lógica automática para enviar el Presupuesto por WhatsApp
+            // 🔥 Lógica automática para enviar el Presupuesto por WhatsApp
             const telCliente = document.getElementById('in_cliente_telefono').value.trim();
             const nomCliente = document.getElementById('in_cliente_nombre').value.trim();
             const marca = document.getElementById('in_vehiculo_marca').value.trim();
@@ -1298,7 +1322,6 @@ function agregarRenglon(listaId, desc = '', price = '') {
                     let telLimpio = telCliente.replace(/\D/g, '');
                     let telefonoFinal = telLimpio.length === 10 ? "52" + telLimpio : telLimpio;
                     
-                    // 🔥 NUEVO: Creamos el link limpio con tu dominio
                     const linkLimpio = `https://aediagnostico.com/?pres=${idReporteCortoGlobal}`;
                     
                     const mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto para tu vehículo 🚗 *${marca} ${modelo}* (Folio: *${idReporteCortoGlobal}*). \n\n` +
@@ -1315,7 +1338,6 @@ function agregarRenglon(listaId, desc = '', price = '') {
 
         } catch (error) {
             console.error("Error completo:", error);
-
             alert("❌ Ocurrió un error al guardar: " + error.message);
         } finally {
             btn.innerHTML = originalText;
