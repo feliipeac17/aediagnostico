@@ -1892,35 +1892,12 @@ async function guardarYProcesarReporte() {
         }
     }
 
-    // 🚀 GENERAR COTIZACIÓN EXPRÉS (REPORTE FANTASMA)
-    async function crearCotizacionRapida(event) {
-        const btn = event.currentTarget;
-        const textOrig = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PREPARANDO...';
-        btn.disabled = true;
-
+// 🚀 GENERAR COTIZACIÓN EXPRÉS (SIN REGISTROS FANTASMA)
+    function crearCotizacionRapida() {
         const folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000);
-        const payload = {
-            folio: folioTxt,
-            estado: 'COTIZACION',
-            cliente_nombre: 'COTIZACIÓN EXPRÉS',
-            created_at: new Date().toISOString()
-        };
-
-        try {
-            // Creamos el cascarón vacío en la base de datos
-            const { error } = await supabaseClient.from('reportes_servicio').insert([payload]);
-            if (error) throw error;
-            
-            // Mandamos el folio directamente al presupuesto
-            const datos = { folio: folioTxt };
-            localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
-            window.location.href = window.location.origin + '/presupuesto.html';
-        } catch(e) {
-            alert("❌ Error al crear cotización: " + e.message);
-            btn.innerHTML = textOrig;
-            btn.disabled = false;
-        }
+        const datos = { folio: folioTxt };
+        localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify(datos));
+        window.location.href = window.location.origin + '/presupuesto.html';
     }
 
 async function cargarHistorialSupabase() {
