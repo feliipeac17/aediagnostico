@@ -2351,19 +2351,48 @@ function mostrarVistaPreviaDigital(rep) {
         if (urlDestino && urlDestino.includes('http')) { window.open(urlDestino, '_blank'); }
     }
 
-function enviarWhatsApp(repObj) {
+    function enviarWhatsApp(repObj) {
         let rep = repObj || reportDataGlobal;
         if (!rep) { alert("⚠️ No se encontró la información del reporte."); return; }
+        
         let telLimpio = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : "";
-        if (telLimpio.length < 10 || telLimpio.length > 11) { alert("⚠️ El número de telefono del cliente parece inválido o está vacío."); return; }
+        if (telLimpio.length < 10 || telLimpio.length > 11) { 
+            alert("⚠️ El número de telefono del cliente parece inválido o está vacío."); 
+            return; 
+        }
         let telefonoFinal = telLimpio.length === 10 ? "52" + telLimpio : telLimpio;
 
-        const mensaje = `Hola *${(rep.cliente_nombre || '').toUpperCase()}!* Te compartimos los Reportes de tu vehículo 🚗 *${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}* con el folio *${rep.folio}*. \n\n` +
-                        `📊 *Reporte de Escáneo:* \nhttps://aediagnostico.com/?scan=${rep.folio}\n\n` +
-                        `📄 *Reporte de Servicio:* \nhttps://aediagnostico.com/?pdf=${rep.folio}\n\n` +
-                        `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
+        let mensaje = "";
+        const nomCliente = (rep.cliente_nombre || '').toUpperCase();
+        const marcaAuto = rep.vehiculo_marca || '';
+        const modeloAuto = rep.vehiculo_modelo || '';
+
+        // 🔥 LÓGICA INTELIGENTE: Dependiendo del ESTADO, armamos un mensaje diferente
+        if (rep.estado === 'COTIZACION') {
+            
+            // Mensaje exclusivo para Cotizaciones Rápidas
+            mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto para tu vehículo 🚗 *${marcaAuto} ${modeloAuto}* (Folio: *${rep.folio}*). \n\n` +
+                      `📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n` +
+                      `_Quedamos a tus órdenes para cualquier duda o para autorizar el trabajo._`;
+
+        } else {
+            
+            // Mensaje para Reportes de Taller (En Revisión, Terminados, Entregados)
+            mensaje = `Hola *${nomCliente}*! Te compartimos los Reportes de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}* con el folio *${rep.folio}*. \n\n` +
+                      `📊 *Reporte de Escáneo:* \nhttps://aediagnostico.com/?scan=${rep.folio}\n\n` +
+                      `📄 *Reporte de Servicio:* \nhttps://aediagnostico.com/?pdf=${rep.folio}\n\n`;
+            
+            // Si el reporte ya tiene un presupuesto ligado, se lo mandamos también
+            if (rep.link_presupuesto && rep.link_presupuesto.trim() !== "") {
+                mensaje += `💰 *Presupuesto Autorizado:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n`;
+            }
+            
+            mensaje += `_Quedamos a tus órdenes para cualquier duda o aclaración._`;
+        }
+
         window.open(`https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
+
 
     function iniciarEscaneoQR() {
         const readerDiv = document.getElementById('reader'); readerDiv.style.display = 'block';
