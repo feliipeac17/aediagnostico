@@ -1637,12 +1637,17 @@ async function validatePin() {
     }
 
 
-    function regresarAlFormulario() {
+        function regresarAlFormulario() {
         document.getElementById('reportView').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
+        
+        // 🔥 SOLUCIÓN: Le decimos que restaure los botones y limpie el formulario antes de ir al historial
+        limpiarFormularioCompleto(); 
+        
         cambiarPestana('historial');
         cargarHistorialSupabase();
     }
+
     
     function cerrarSesion() { localStorage.removeItem('ae_sesion_valida'); window.location.reload(); }
 
