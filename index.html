@@ -1127,7 +1127,21 @@
         </button>
     </div>
 </div>
-  
+
+    <div id="modalEditorFotos" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:9999999; flex-direction:column;">
+    <div style="padding: 15px 20px; background: #1e293b; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 2;">
+        <span style="font-weight: 800; font-size: 11pt; text-transform: uppercase;"><i class="fa-solid fa-paintbrush" style="color: #ef4444;"></i> Marcar Daños</span>
+        <div style="display:flex; gap: 12px;">
+            <button onclick="limpiarDibujo()" style="background: #475569; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-eraser"></i></button>
+            <button onclick="cerrarEditorFoto(false)" style="background: transparent; color: #94a3b8; border: 1px solid #475569; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">Cancelar</button>
+            <button onclick="cerrarEditorFoto(true)" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer;">Listo <i class="fa-solid fa-check"></i></button>
+        </div>
+    </div>
+    <div id="canvasContainer" style="flex:1; overflow:hidden; display:flex; justify-content:center; align-items:center; background: #000; position: relative;">
+        <canvas id="dibujoCanvas" style="touch-action: none; max-width: 100%; max-height: 100%; object-fit: contain; cursor: crosshair;"></canvas>
+    </div>
+</div>
+    
 <script>
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
@@ -1209,23 +1223,123 @@
         }
     }
 
-function previewImage(input, imgId, textId) {
+// 🔥 NUEVA LÓGICA DE FOTOS: Intercepta la imagen para editarla
+    let imgActualParaEditar = new Image();
+    let inputActivoEditor = null;
+    let imgActivoId = "";
+    let txtActivoId = "";
+
+    function previewImage(input, imgId, textId) {
         if (input.files && input.files[0]) {
-            const objectURL = URL.createObjectURL(input.files[0]);
-            document.getElementById(imgId).src = objectURL; 
-            document.getElementById(imgId).style.display = 'block';
-            document.getElementById(textId).style.display = 'none';
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imgActualParaEditar.onload = function() {
+                    // Preparamos el canvas con el tamaño real de la imagen
+                    const canvas = document.getElementById('dibujoCanvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = imgActualParaEditar.width;
+                    canvas.height = imgActualParaEditar.height;
+                    
+                    // Dibujamos la foto original en el fondo
+                    ctx.drawImage(imgActualParaEditar, 0, 0);
+                    
+                    // Guardamos qué cuadro estamos editando
+                    inputActivoEditor = input;
+                    imgActivoId = imgId;
+                    txtActivoId = textId;
+                    
+                    // Mostramos el editor a pantalla completa
+                    document.getElementById('modalEditorFotos').style.display = 'flex';
+                    if (typeof cerrarModalOrigen === 'function') cerrarModalOrigen();
+                }
+                imgActualParaEditar.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // 🎨 MOTOR DEL EDITOR DE FOTOS (MARCADOR ROJO)
+    let canvasDibujo = document.getElementById('dibujoCanvas');
+    let ctxDibujo = canvasDibujo.getContext('2d');
+    let estaDibujando = false;
+
+    const iniciarDibujo = (e) => {
+        estaDibujando = true;
+        ctxDibujo.beginPath();
+        const rect = canvasDibujo.getBoundingClientRect();
+        const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+        const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+        const scaleX = canvasDibujo.width / rect.width;
+        const scaleY = canvasDibujo.height / rect.height;
+        ctxDibujo.moveTo(x * scaleX, y * scaleY);
+    };
+
+    const dibujarTrazo = (e) => {
+        if (!estaDibujando) return;
+        e.preventDefault(); // Evita que la pantalla se mueva en el celular al dibujar
+        const rect = canvasDibujo.getBoundingClientRect();
+        const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+        const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+        const scaleX = canvasDibujo.width / rect.width;
+        const scaleY = canvasDibujo.height / rect.height;
+        
+        ctxDibujo.lineTo(x * scaleX, y * scaleY);
+        ctxDibujo.strokeStyle = '#ef4444'; // Color Rojo intenso
+        ctxDibujo.lineWidth = canvasDibujo.width * 0.008; // Grosor dinámico (0.8% del ancho)
+        ctxDibujo.lineCap = 'round';
+        ctxDibujo.lineJoin = 'round';
+        ctxDibujo.stroke();
+    };
+
+    const detenerDibujo = () => { estaDibujando = false; };
+
+    // Eventos Mouse (PC)
+    canvasDibujo.addEventListener('mousedown', iniciarDibujo);
+    canvasDibujo.addEventListener('mousemove', dibujarTrazo);
+    canvasDibujo.addEventListener('mouseup', detenerDibujo);
+    canvasDibujo.addEventListener('mouseout', detenerDibujo);
+
+    // Eventos Touch (Celulares/Tablets)
+    canvasDibujo.addEventListener('touchstart', iniciarDibujo, {passive: false});
+    canvasDibujo.addEventListener('touchmove', dibujarTrazo, {passive: false});
+    canvasDibujo.addEventListener('touchend', detenerDibujo);
+
+    function limpiarDibujo() {
+        ctxDibujo.clearRect(0, 0, canvasDibujo.width, canvasDibujo.height);
+        ctxDibujo.drawImage(imgActualParaEditar, 0, 0); // Redibuja la foto limpia
+    }
+
+    function cerrarEditorFoto(guardar) {
+        document.getElementById('modalEditorFotos').style.display = 'none';
+        
+        if (guardar && inputActivoEditor) {
+            // 1. Extraemos la imagen editada (con los trazos)
+            const dataUrl = canvasDibujo.toDataURL('image/jpeg', 0.85);
             
-            const label = input.parentElement.querySelector('.photo-label');
+            // 2. La mostramos en el cuadrito de la app
+            document.getElementById(imgActivoId).src = dataUrl;
+            document.getElementById(imgActivoId).style.display = 'block';
+            document.getElementById(txtActivoId).style.display = 'none';
+            
+            const label = inputActivoEditor.parentElement.querySelector('.photo-label');
             if(label) label.style.display = 'block';
 
-            if(input.nextElementSibling && input.nextElementSibling.classList.contains('btn-del-photo')) {
-                input.nextElementSibling.style.display = 'flex';
+            if(inputActivoEditor.nextElementSibling && inputActivoEditor.nextElementSibling.classList.contains('btn-del-photo')) {
+                inputActivoEditor.nextElementSibling.style.display = 'flex';
             }
 
-            if(typeof cerrarModalOrigen === 'function') {
-                cerrarModalOrigen();
-            }
+            // 3. Truco Maestro: Convertimos el dibujo a un archivo real para engañar a Supabase
+            fetch(dataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                const archivoGenerado = new File([blob], `foto_editada_${Date.now()}.jpg`, { type: "image/jpeg" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(archivoGenerado);
+                inputActivoEditor.files = dataTransfer.files; // Sustituimos el archivo original
+            });
+        } else if (!guardar) {
+            // Si cancela, vaciamos el input para que no se suba la foto equivocada
+            inputActivoEditor.value = ""; 
         }
     }
 
