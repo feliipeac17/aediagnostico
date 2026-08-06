@@ -587,6 +587,41 @@
         .btn-action-pdf:active {
             transform: scale(0.96);
         }
+                /* 🔥 OCULTAR EL TÍTULO REDUNDANTE Y EL BOTÓN VIEJO */
+        .panel-header {
+            display: none !important;
+        }
+
+        /* 🔒 ESTILO DEL NUEVO BOTÓN FLOTANTE PARA BLOQUEAR */
+        .btn-flotante-bloquear {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            font-size: 16pt;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-flotante-bloquear:hover {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-flotante-bloquear:active {
+            transform: scale(0.92);
+        }
+
     </style>
 </head>
 <body>
@@ -629,6 +664,10 @@
     </div>
 
     <div id="adminPanel" class="admin-panel">
+            <button onclick="cerrarSesion()" class="btn-flotante-bloquear" title="Bloquear Sistema">
+        <i class="fa-solid fa-lock"></i>
+    </button>
+
         <div class="sticky-nav-container" style="border-bottom: none; box-shadow: 0 4px 10px rgba(0,0,0,0.03); padding: 15px 15px;">
             <div id="navTabsNormales" style="display: flex; background: #e2e8f0; border-radius: 12px; padding: 5px; gap: 5px;">
                 <button id="btnTabDashboard" class="nav-tab-btn tab-active" onclick="cambiarPestana('dashboard')"><i class="fa-solid fa-chart-pie"></i> Inicio</button>
