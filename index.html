@@ -969,8 +969,7 @@
                 </div>
             </div>
 
-            <div style="background: #fdfdfd; border: 1px solid #eef0f3; border-left: 4px solid #6366f1; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
-                <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; color: #1e293b;">
+<div id="seccion_evidencia_editar" style="display: none; background: #fdfdfd; border: 1px solid #eef0f3; border-left: 4px solid #6366f1; padding: 15px; border-radius: 4px; margin-bottom: 20px;">                <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; color: #1e293b;">
                     <i class="fa-solid fa-camera" style="color: #6366f1;"></i> Evidencia de Reparacion
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
@@ -1890,6 +1889,7 @@ function cambiarPestana(modo) {
 
 function limpiarFormularioCompleto() {
         document.getElementById('edit_record_id').value = "";
+    if(document.getElementById('seccion_evidencia_editar')) document.getElementById('seccion_evidencia_editar').style.display = 'none';
         document.getElementById('formPanelTitle').innerHTML = "Nuevo <span>Reporte</span>";
         document.getElementById('btnGuardarForm').innerHTML = "💾 Guardar";
         if(document.getElementById('btnCancelarEdicion')) document.getElementById('btnCancelarEdicion').style.display = 'none';
@@ -2281,6 +2281,7 @@ function transferirAPresupuesto(rep) {
 function cargarRegistroParaEditar(rep) {
         reportDataGlobal = rep;
         document.getElementById('edit_record_id').value = rep.id;
+    if(document.getElementById('seccion_evidencia_editar')) document.getElementById('seccion_evidencia_editar').style.display = 'block';
         document.getElementById('formPanelTitle').innerHTML = `Editando <span>${rep.folio}</span>`;
         document.getElementById('pdf-lbl-folio').innerText = "REPORTE " + rep.folio;
         document.title = "REPORTE_SERVICIO_" + rep.folio;
