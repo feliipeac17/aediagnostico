@@ -531,7 +531,7 @@
 
     function autoExpandir(textarea) { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
 
-    // 🔥 ESTA ES LA FUNCIÓN MAESTRA QUE REPARA LOS PDF Y LAS ALINEACIONES
+// 🔥 ESTA ES LA FUNCIÓN MAESTRA QUE REPARA LOS PDF Y LAS ALINEACIONES
     function formatearInputsParaCaptura() {
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
@@ -561,7 +561,7 @@
                     if(e) arr.push(`Estado: <strong>${e}</strong>`); if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                     
                     if(arr.length > 0) {
-                        span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:6pt; font-style:italic; font-weight:500; display:block; margin-top:2px;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                        span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:6pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
                     } else { span.innerText = txtPrincipal; }
                 } else { span.innerText = txtPrincipal; }
                 span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
@@ -572,19 +572,31 @@
                 span.style.textTransform = 'uppercase'; span.style.display = 'block';
                 
                 if(input.classList.contains('price-input')) {
-                    // 🔥 AQUÍ OBLIGAMOS A QUE EL PRECIO SE QUEDE A LA DERECHA
-                    span.style.textAlign = 'right'; span.style.width = '100%'; 
+                    span.style.textAlign = 'right'; 
+                    span.style.width = '100%'; 
+                    span.style.paddingRight = '6px'; /* 🔥 Empate milimétrico con el título IMPORTE */
                 }
             }
             input.parentNode.insertBefore(span, input);
             input.style.display = 'none';
             reemplazos.push({ original: input, falso: span });
         });
+
+        // 🔥 EL SECRETO: Colapsamos la 3ra columna (basurero) para que el precio se recorra al extremo derecho
+        document.querySelectorAll('.table-row').forEach(row => {
+            row.style.gridTemplateColumns = '1fr 80px';
+        });
+
         return reemplazos;
     }
 
     function deshacerFormateoCaptura(reemplazos) {
         reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
+        
+        // 🔥 RESTAURAMOS la 3ra columna para que puedas seguir editando en pantalla
+        document.querySelectorAll('.table-row').forEach(row => {
+            row.style.gridTemplateColumns = '1fr 80px 20px';
+        });
     }
 
     function forzarDescargaPNG() {
