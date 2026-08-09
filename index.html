@@ -2689,25 +2689,28 @@ function alternarSubVista(vista) {
         if (rep.estado === 'COTIZACION') {
             
             // Mensaje exclusivo para Cotizaciones Rápidas
-            mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
+            mensaje = `*${nomCliente}*! Te compartimos el Presupuesto de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
                       `📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n` +
                       `_Quedamos a tus órdenes para cualquier duda._`;
 
         } else {
-            
-            // Mensaje para Reportes de Taller (En Revisión, Terminados, Entregados)
-            mensaje = `Hola *${nomCliente}*! Te compartimos los Reportes del Folio: *${rep.folio}* asignado a tu vehículo 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
-                      `📊 *Reporte de Escáneo:* \nhttps://aediagnostico.com/?scan=${rep.folio}\n\n` +
-                      `📄 *Reporte de Servicio:* \nhttps://aediagnostico.com/?pdf=${rep.folio}\n\n`;
+
+            mensaje = `Hola👋 *${nomCliente}* \n` +
+                      `Tenemos lista la información de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}* (Folio: *${rep.folio}*).\n\n` +
+                      `Puedes revisar los detalles desde cualquier dispositivo en los siguientes enlaces:\n\n` +
+                      `📊 *Reporte de Escáner:*\n` +
+                      `https://aediagnostico.com/?scan=${rep.folio}\n\n` +
+                      `📋 *Reporte de Recepción:*\n` +
+                      `https://aediagnostico.com/?pdf=${rep.folio}\n\n`;
             
             // Si el reporte ya tiene un presupuesto ligado, se lo mandamos también
             if (rep.link_presupuesto && rep.link_presupuesto.trim() !== "") {
                 mensaje += `💰 *Presupuesto:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n`;
             }
             
-            mensaje += `_Quedamos a tus órdenes para cualquier duda._`;
+            mensaje += `_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
         }
-
+        
         window.open(`https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
 
