@@ -1330,14 +1330,16 @@ async function cargarHistorialSupabase() {
         paginaActual = 1; 
         renderizarPagina();
         
-        // 🔥 CONTADORES INTELIGENTES (Aceptan estados viejos y nuevos)
+        // 🔥 CONTADORES INTELIGENTES (Aceptan estados viejos y nuevos, IGNORAN Cotizaciones rápidas)
         let cRevision = 0, cReparacion = 0, cTerminados = 0, cEntregados = 0;
         
         reportes.forEach(rep => { 
-            // Limpiamos la palabra para evitar errores de espacios
             const est = (rep.estado || 'EN REVISION').toUpperCase().trim(); 
             
-            if (est === 'EN REVISION' || est === 'ET' || est === 'COTIZACION') {
+            // Las cotizaciones ya no suman a "En Revisión"
+            if (est === 'COTIZACION') {
+                // No hacemos nada, simplemente no lo contamos en las tarjetas principales
+            } else if (est === 'EN REVISION' || est === 'ET') {
                 cRevision++; 
             } else if (est === 'EN REPARACION') {
                 cReparacion++; 
@@ -1346,7 +1348,7 @@ async function cargarHistorialSupabase() {
             } else if (est === 'ENTREGADO' || est === 'TE') {
                 cEntregados++; 
             } else {
-                // Si hay algún estado antiguo irreconocible, lo mandamos a revisión
+                // Cualquier otro estado raro antiguo lo mandamos a revisión
                 cRevision++;
             }
         });
