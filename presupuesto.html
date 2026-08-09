@@ -533,14 +533,14 @@ textarea.card-input {
                         <input type="text" id="in_cliente_nombre" class="card-input" placeholder="...">
                     </div>
                     <div class="pdf-data-item">
-                        <span>TELÉFONO DE CONTACTO</span>
+                        <span>TELEFONO DE CONTACTO</span>
                         <input type="tel" id="in_cliente_telefono" class="card-input" placeholder="..." maxlength="12">
                     </div>
                 </div>
             </div>
 
 <div class="pdf-info-card vehiculo">
-                <div class="pdf-card-title"><i class="fa-solid fa-car-rear"></i> DATOS DEL VEHÍCULO</div>
+                <div class="pdf-card-title"><i class="fa-solid fa-car-rear"></i> DATOS DEL VEHICULO</div>
                 <div class="pdf-card-data">
                     <div class="pdf-data-item">
                         <span>MARCA</span>
@@ -584,11 +584,11 @@ textarea.card-input {
                         <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="...">
                     </div>
                     <div class="pdf-data-item" style="grid-column: span 2;">
-                        <span>NÚMERO DE SERIE (VIN)</span>
+                        <span>NUMERO DE SERIE (VIN)</span>
                         <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
                     </div>
                     <div class="pdf-data-item" style="grid-column: span 2;">
-                        <span>ODÓMETRO</span>
+                        <span>ODOMETRO</span>
                         <div style="display: flex; gap: 4px; align-items: baseline;">
                             <input type="number" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: auto; max-width: 100px;">
                             <select id="in_vehiculo_unidad" class="card-input" style="width: 45px; border: none; background: transparent; outline: none; font-size: 8.5pt; font-weight: 700; color: #0f172a; padding: 0;">
@@ -1053,7 +1053,7 @@ inputs.forEach(input => {
                         if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                         
                         if(arr.length > 0) {
-                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:3.5pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:4pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
                         } else { span.innerText = txtPrincipal; }
                     } else { span.innerText = txtPrincipal; }
                 } else {
@@ -1187,7 +1187,7 @@ inputs.forEach(input => {
                         if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                         
                         if(arr.length > 0) {
-                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:3.5pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:4pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
                         } else { span.innerText = txtPrincipal; }
                     } else { span.innerText = txtPrincipal; }
                 } else {
@@ -1349,7 +1349,7 @@ inputs.forEach(input => {
                             if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                             
                             if(arr.length > 0) {
-                                span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:3.5pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                                span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:4pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
                             } else { span.innerText = txtPrincipal; }
                         } else { span.innerText = txtPrincipal; }
                     } else {
