@@ -323,22 +323,23 @@
         </div>
 
         <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span id="portalFolioTxt" style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: #0f172a; font-size: 11pt;">FOLIO: --</span>
+            <div style="text-align: right; margin-bottom: 8px;">
+                <span id="portalFolioTxt" style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: #d32f2f; background: #fee2e2; padding: 4px 10px; border-radius: 6px; font-size: 10pt; letter-spacing: 0.5px;">FOLIO: --</span>
             </div>
-            <h3 id="portalVehiculoTxt" style="font-size: 12pt; color: #0284c7; margin-bottom: 4px; font-weight: 800;">CARGANDO VEHÍCULO...</h3>
-            <p id="portalClienteTxt" style="font-size: 9pt; color: #64748b; margin: 0;">Cliente: --</p>
+            <h3 id="portalVehiculoTxt" style="font-size: 13pt; color: #0284c7; margin-bottom: 4px; font-weight: 800; text-transform: uppercase;">CARGANDO VEHÍCULO...</h3>
+            <p id="portalClienteTxt" style="font-size: 9.5pt; color: #64748b; margin: 0; text-transform: uppercase;">Cliente: --</p>
             
-            <div style="margin-top: 20px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 7.5pt; font-weight: 800; color: #94a3b8; text-transform: uppercase;">
+            <div style="margin-top: 18px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 7pt; font-weight: 800; color: #94a3b8; text-transform: uppercase;">
                     <span>Revisión</span>
                     <span>Reparación</span>
+                    <span>Terminado</span>
                     <span>Entrega</span>
                 </div>
                 <div style="width: 100%; background: #f1f5f9; height: 10px; border-radius: 10px; overflow: hidden; position: relative; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
                     <div id="portalProgressBar" style="height: 100%; width: 0%; background: #10b981; border-radius: 10px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s;"></div>
                 </div>
-                <div id="portalEstatusDetail" style="text-align: center; font-size: 10pt; font-weight: 800; color: #0f172a; margin-top: 12px; text-transform: uppercase;">
+                <div id="portalEstatusDetail" style="text-align: center; font-size: 10.5pt; font-weight: 800; color: #0f172a; margin-top: 12px; text-transform: uppercase;">
                     --
                 </div>
             </div>
@@ -378,10 +379,6 @@
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </a>
         </div>
-
-        <p style="text-align: center; font-size: 7.5pt; color: #94a3b8; margin-top: 25px;">
-            AE Diagnóstico Automotriz • Piedras Negras, Coah.<br>Tel: 878-116-5910
-        </p>
     </div>
 
     <div id="pin-lock-screen" class="pin-overlay">
@@ -1018,20 +1015,20 @@
 
                 const st = (rep.estado || 'EN REVISION').toUpperCase();
                 
-                // 📊 LÓGICA DE LA BARRA DE PROGRESO
+                // 📊 LÓGICA DE LA BARRA DE PROGRESO CON 4 PASOS
                 const progressBar = document.getElementById('portalProgressBar');
                 const detailTxt = document.getElementById('portalEstatusDetail');
                 
                 let progressWidth = "25%"; let progressColor = "#f59e0b"; let detailMsg = "🔍 Vehículo en Revisión"; 
                 
                 if (st === 'COTIZACION') {
-                    progressWidth = "45%"; progressColor = "#8b5cf6"; detailMsg = "📝 Cotización Generada";
+                    progressWidth = "25%"; progressColor = "#8b5cf6"; detailMsg = "📝 Cotización Generada";
                 } else if (st === 'EN REPARACION') {
-                    progressWidth = "65%"; progressColor = "#3b82f6"; detailMsg = "🔧 Vehículo en Reparación";
+                    progressWidth = "50%"; progressColor = "#3b82f6"; detailMsg = "🔧 Vehículo en Reparación";
                 } else if (st === 'TERMINADO') {
-                    progressWidth = "85%"; progressColor = "#10b981"; detailMsg = "✅ Listo para Entrega";
+                    progressWidth = "75%"; progressColor = "#10b981"; detailMsg = "✅ Listo para Entrega";
                 } else if (st === 'ENTREGADO') {
-                    progressWidth = "100%"; progressColor = "#14b8a6"; detailMsg = "🎉 Vehículo Entregado";
+                    progressWidth = "100%"; progressColor = "#0284c7"; detailMsg = "🎉 Vehículo Entregado";
                 }
 
                 if(progressBar) { progressBar.style.width = progressWidth; progressBar.style.background = progressColor; }
@@ -1048,7 +1045,7 @@
                     btnScan.style.display = 'none'; 
                 }
 
-                // 2. REPORTE DE SERVICIO (SIEMPRE VISIBLE)
+                // 2. REPORTE DE SERVICIO (SIEMPRE VISIBLE PORQUE SE GENERA EN VIVO)
                 btnPdf.href = `/?pdf=${rep.folio}`; 
                 btnPdf.style.display = 'flex';
 
