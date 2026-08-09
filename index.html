@@ -443,29 +443,40 @@
             <button class="btn-logout" onclick="cerrarSesion()">Bloquear</button>
         </div>
 
-        <div id="dashboardSection" style="display: block;">
+<div id="dashboardSection" style="display: block;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
-                    <i class="fa-solid fa-screwdriver-wrench" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #10b981; opacity: 0.1; transform: rotate(-15deg);"></i>
-                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Taller</div>
-                    <div id="dash-taller" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
-                </div>
                 
+                <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #f59e0b; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #f59e0b; opacity: 0.1; transform: rotate(-15deg);"></i>
+                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Revisión</div>
+                    <div id="dash-revision" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
+                </div>
+
                 <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
-                    <i class="fa-solid fa-car-on" style="position: absolute; right: -5px; bottom: -10px; font-size: 50pt; color: #3b82f6; opacity: 0.1;"></i>
-                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">Terminados</div>
-                    <div id="dash-piezas" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
+                    <i class="fa-solid fa-wrench" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #3b82f6; opacity: 0.1; transform: rotate(-15deg);"></i>
+                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Reparación</div>
+                    <div id="dash-reparacion" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
                 </div>
-                
+
+                <div style="background: #fff; padding: 20px 25px; border-radius: 12px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.04); grid-column: span 2; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden;">
+                    <i class="fa-solid fa-car-on" style="position: absolute; right: 20px; font-size: 60pt; color: #10b981; opacity: 0.1;"></i>
+                    <div style="position: relative; z-index: 2;">
+                        <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Terminados / Listos</div>
+                        <div id="dash-terminados" style="font-size: 32pt; font-weight: 800; color: #0f172a; margin-top: 2px;">0</div>
+                    </div>
+                </div>
+
                 <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 20px 25px; border-radius: 12px; border-left: 5px solid #ef4444; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15); grid-column: span 2; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden;">
                     <i class="fa-solid fa-check-double" style="position: absolute; right: 20px; font-size: 60pt; color: #ffffff; opacity: 0.05;"></i>
                     <div style="position: relative; z-index: 2;">
-                        <div style="font-size: 9pt; color: #94a3b8; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Total Entregados</div>
-                        <div id="dash-terminados" style="font-size: 32pt; font-weight: 800; color: #ffffff; margin-top: 2px;">0</div>
+                        <div style="font-size: 9pt; color: #94a3b8; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Entregados</div>
+                        <div id="dash-entregados" style="font-size: 32pt; font-weight: 800; color: #ffffff; margin-top: 2px;">0</div>
                     </div>
                 </div>
+
             </div>
-            <button onclick="crearCotizacionRapida(event)" style="width:100%; margin-top:5px; background:linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color:white; border:none; padding:18px; border-radius:12px; font-size:11.5pt; font-weight:800; cursor:pointer; text-transform:uppercase; box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3); display:flex; justify-content:center; align-items:center; gap:10px;">
+            
+            <button onclick="crearCotizacionRapida(event)" style="width:100%; margin-top:5px; background:linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color:white; border:none; padding:18px; border-radius:12px; font-size:11.5pt; font-weight:800; cursor:pointer; text-transform:uppercase; box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3); display:flex; justify-content:center; align-items:center; gap:10px; transition: transform 0.2s;">
                 <i class="fa-solid fa-bolt"></i> Cotizacion Rapida
             </button>
         </div>
@@ -1007,6 +1018,9 @@
 
         // 📱 INYECTAR LÓGICA DEL PORTAL DEL CLIENTE MÁGICO
         if (folioCliente) {
+            // 🔥 AUTO-REFRESH: Recarga la página sola cada 2 minutos (120,000 milisegundos)
+            setTimeout(() => { window.location.reload(); }, 120000);
+
             if(document.getElementById('pin-lock-screen')) document.getElementById('pin-lock-screen').style.display = 'none';
             if(document.getElementById('adminPanel')) document.getElementById('adminPanel').style.display = 'none';
             if(document.getElementById('reportView')) document.getElementById('reportView').style.display = 'none';
