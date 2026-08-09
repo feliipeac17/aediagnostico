@@ -715,12 +715,20 @@
             
             alert("✅ PRESUPUESTO GUARDADO");
             
-            if (document.getElementById('in_cliente_telefono').value.trim() !== "") {
-                if(confirm("📲 ¿Deseas enviarlo al cliente por WhatsApp?")) {
-                    let tel = document.getElementById('in_cliente_telefono').value.replace(/\D/g, '');
-                    window.open(`https://wa.me/${tel.length===10?"52"+tel:tel}?text=${encodeURIComponent(`*${document.getElementById('in_cliente_nombre').value.trim()}*! Te compartimos el Presupuesto.\n📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${idReporteCortoGlobal}`)}`, '_blank');
-                }
-            }
+if (document.getElementById('in_cliente_telefono').value.trim() !== "") {
+    if(confirm("📲 ¿Deseas enviarlo al cliente por WhatsApp?")) {
+        let tel = document.getElementById('in_cliente_telefono').value.replace(/\D/g, '');
+        let nomCliente = document.getElementById('in_cliente_nombre').value.trim();
+        
+        // Reconstruimos tu mensaje original con los saltos de línea correctos
+        const mensaje = `*${nomCliente}*! Te compartimos el Presupuesto de tu \n 🚘 *${marca} ${modelo}* \n\n` +
+                        `📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${idReporteCortoGlobal}\n\n` +
+                        `_Quedamos a tus órdenes para cualquier duda._`;
+
+        // Abrimos la ventana de WhatsApp con el mensaje completo
+        window.open(`https://wa.me/${tel.length === 10 ? "52" + tel : tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    }
+}
             localStorage.setItem('ae_volver_historial', 'true'); window.location.replace('/');
         } catch (error) { alert("❌ Error: " + error.message); } finally { btn.innerHTML = originalText; btn.disabled = false; }
     }
