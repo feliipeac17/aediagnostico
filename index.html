@@ -1323,9 +1323,13 @@ const valFechaSel = document.getElementById('in_fecha').value;
             const pdfBlob = pdf.output('blob');
             restaurarPantalla(est);
 
-            const fileNamePdf = `REPORTES_PDF/REP_${folioCalculado}_${Math.floor(Date.now() / 1000)}.pdf`;
+            // 🔥 NOMBRE LIMPIO: Solo dirá REPORTE_SERVICIO_AE-XXXX.pdf
+            const fileNamePdf = `REPORTES_PDF/REPORTE_${folioCalculado}.pdf`;
+            
             await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
-            payload.link_pdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl;
+            
+            // El truco anti-caché lo ponemos oculto en el enlace, así el archivo se descarga con el nombre limpio
+            payload.link_pdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
             // 🔥 FIN MAGIA NUEVA
 
             let err = null; if (isEditing) err = (await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId)).error;
