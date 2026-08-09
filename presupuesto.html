@@ -1053,7 +1053,7 @@ inputs.forEach(input => {
                         if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                         
                         if(arr.length > 0) {
-                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:7.5pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:6pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
                         } else { span.innerText = txtPrincipal; }
                     } else { span.innerText = txtPrincipal; }
                 } else {
@@ -1187,7 +1187,7 @@ inputs.forEach(input => {
                         if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                         
                         if(arr.length > 0) {
-                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:7.5pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:6pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
                         } else { span.innerText = txtPrincipal; }
                     } else { span.innerText = txtPrincipal; }
                 } else {
@@ -1310,22 +1310,65 @@ async function guardarPresupuestoNube() {
             const inputs = document.querySelectorAll('input, textarea, select');
             const reemplazos = [];
 
-            inputs.forEach(input => {
+inputs.forEach(input => {
                 if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+                if(input.classList.contains('extra-input')) return; // IGNORAR (se procesan junto con la descripción)
+
+                const esArea = input.tagName.toLowerCase() === 'textarea';
+                const esSelect = input.tagName.toLowerCase() === 'select';
                 const span = document.createElement('div');
-                span.innerText = input.value || '';
-                span.style.width = input.style.width || '100%';
-                span.style.fontSize = window.getComputedStyle(input).fontSize;
-                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
-                span.style.color = '#0f172a';
-                span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-                span.style.display = 'inline-block';
-                if(input.tagName.toLowerCase() === 'textarea') {
-                    span.style.whiteSpace = 'pre-wrap'; span.style.display = 'block';
+                
+                if (esArea) {
+                    span.innerText = input.value || '';
+                    span.style.whiteSpace = 'pre-wrap';
+                    span.style.wordWrap = 'break-word';
+                    span.style.width = '100%';
+                    span.style.fontSize = '8.5pt';
+                    span.style.fontWeight = '700';
+                    span.style.color = '#0f172a';
+                    span.style.textTransform = 'uppercase'; 
+                    span.style.lineHeight = '1.4';
+                    span.style.paddingBottom = '5px';
+                } else {
+                    if (input.classList.contains('desc-input')) {
+                        let txtPrincipal = input.value || '';
+                        const boxExtra = input.parentElement.querySelector('.extra-fields-container');
+                        
+                        if (boxExtra) {
+                            const m = boxExtra.querySelector('.e-marca').value.trim();
+                            const p = boxExtra.querySelector('.e-parte').value.trim();
+                            const s = boxExtra.querySelector('.e-serie').value.trim();
+                            const e = boxExtra.querySelector('.e-estado').value;
+                            const g = boxExtra.querySelector('.e-garantia').value;
+                            
+                            let arr = [];
+                            if(m) arr.push(`Marca: <strong>${m}</strong>`);
+                            if(p) arr.push(`Parte: <strong>${p}</strong>`);
+                            if(s) arr.push(`Serie: <strong>${s}</strong>`);
+                            if(e) arr.push(`Estado: <strong>${e}</strong>`);
+                            if(g) arr.push(`Gtía: <strong>${g}</strong>`);
+                            
+                            if(arr.length > 0) {
+                                span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:6pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                            } else { span.innerText = txtPrincipal; }
+                        } else { span.innerText = txtPrincipal; }
+                    } else {
+                        span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
+                    }
+
+                    span.style.width = input.style.width || '100%';
+                    span.style.fontSize = window.getComputedStyle(input).fontSize;
+                    span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                    span.style.color = '#0f172a';         
+                    span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase'; 
+                    span.style.display = 'inline-block';
+                    
+                    if(input.classList.contains('price-input')) {
+                        span.style.textAlign = 'right';
+                        span.style.width = '100%'; 
+                    }
                 }
-                if(input.classList.contains('price-input')) {
-                    span.style.textAlign = 'right'; span.style.width = '100%'; 
-                }
+
                 input.parentNode.insertBefore(span, input);
                 input.style.display = 'none';
                 reemplazos.push({ original: input, falso: span });
