@@ -2696,7 +2696,7 @@ function alternarSubVista(vista) {
         } else {
             
             // Mensaje para Reportes de Taller (En Revisión, Terminados, Entregados)
-            mensaje = `Hola *${nomCliente}*! Te compartimos los Reportes de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
+            mensaje = `Hola *${nomCliente}*! Te compartimos los Reportes del Folio: *${rep.folio}* asignado a tu vehículo 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
                       `📊 *Reporte de Escáneo:* \nhttps://aediagnostico.com/?scan=${rep.folio}\n\n` +
                       `📄 *Reporte de Servicio:* \nhttps://aediagnostico.com/?pdf=${rep.folio}\n\n`;
             
@@ -2705,7 +2705,7 @@ function alternarSubVista(vista) {
                 mensaje += `💰 *Presupuesto:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n`;
             }
             
-            mensaje += `_Quedamos a tus órdenes para cualquier duda. (Folio: *${rep.folio}*)_`;
+            mensaje += `_Quedamos a tus órdenes para cualquier duda._`;
         }
 
         window.open(`https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`, '_blank');
