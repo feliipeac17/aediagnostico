@@ -561,7 +561,7 @@
                     if(e) arr.push(`Estado: <strong>${e}</strong>`); if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                     
                     if(arr.length > 0) {
-                        span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:6pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                        span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:4pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
                     } else { span.innerText = txtPrincipal; }
                 } else { span.innerText = txtPrincipal; }
                 span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
