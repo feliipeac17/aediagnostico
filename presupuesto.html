@@ -680,12 +680,14 @@
             elemento.style.width = originalW; elemento.style.maxWidth = originalMax;
             els.forEach(el => el.style.display = ''); deshacerFormateoCaptura(reemplazos);
 
-            // 🔥 FIX CACHÉ: Le agregamos la marca de tiempo al nombre del PDF para que siempre baje el nuevo
-            const fileName = `PRESUPUESTOS/PRES_${idReporteCortoGlobal}_${Math.floor(Date.now() / 1000)}.pdf`;
+            // 🔥 NOMBRE LIMPIO: Solo dirá PRES_AE-XXXX.pdf
+            const fileName = `PRESUPUESTOS/PRES_${idReporteCortoGlobal}.pdf`;
+            
             const { error: uploadError } = await supabaseClient.storage.from('reportes').upload(fileName, pdfBlob, { upsert: true, contentType: 'application/pdf' });
             if (uploadError) throw uploadError;
 
-            const publicURL = supabaseClient.storage.from('reportes').getPublicUrl(fileName).data.publicUrl;
+            // El truco anti-caché lo ponemos oculto en el enlace para que descargue limpio
+            const publicURL = supabaseClient.storage.from('reportes').getPublicUrl(fileName).data.publicUrl + '?t=' + Date.now();
             
             const datosPresupuesto = {
                 link_presupuesto: publicURL,
@@ -720,16 +722,13 @@ if (document.getElementById('in_cliente_telefono').value.trim() !== "") {
         let tel = document.getElementById('in_cliente_telefono').value.replace(/\D/g, '');
         let nomCliente = document.getElementById('in_cliente_nombre').value.trim();
         
-        // 🔥 Agregamos de dónde leer la marca y el modelo
         let marca = document.getElementById('in_vehiculo_marca').value.trim();
         let modelo = document.getElementById('in_vehiculo_modelo').value.trim();
         
-        // Reconstruimos tu mensaje original con los saltos de línea correctos
         const mensaje = `*${nomCliente}*! Te compartimos el Presupuesto \n 🚘 *${marca} ${modelo}* \n\n` +
                         `📄 *Ver aquí:* 👇\nhttps://aediagnostico.com/?pres=${idReporteCortoGlobal}\n\n` +
                         `_Quedamos a tus órdenes para cualquier duda._`;
 
-        // Abrimos la ventana de WhatsApp con el mensaje completo
         window.open(`https://wa.me/${tel.length === 10 ? "52" + tel : tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
 }
