@@ -2689,14 +2689,14 @@ function alternarSubVista(vista) {
         if (rep.estado === 'COTIZACION') {
             
             // Mensaje exclusivo para Cotizaciones Rápidas
-            mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto para tu vehículo 🚗 *${marcaAuto} ${modeloAuto}* (Folio: *${rep.folio}*). \n\n` +
+            mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
                       `📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n` +
                       `_Quedamos a tus órdenes para cualquier duda._`;
 
         } else {
             
             // Mensaje para Reportes de Taller (En Revisión, Terminados, Entregados)
-            mensaje = `Hola *${nomCliente}*! Te compartimos los Reportes de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}* con el folio *${rep.folio}*. \n\n` +
+            mensaje = `Hola *${nomCliente}*! Te compartimos los Reportes de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}* (Folio: *${rep.folio}*). \n\n` +
                       `📊 *Reporte de Escáneo:* \nhttps://aediagnostico.com/?scan=${rep.folio}\n\n` +
                       `📄 *Reporte de Servicio:* \nhttps://aediagnostico.com/?pdf=${rep.folio}\n\n`;
             
