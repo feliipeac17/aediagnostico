@@ -1330,32 +1330,58 @@
     let imgActivoId = "";
     let txtActivoId = "";
 
+// 🔥 VISTA PREVIA INTELIGENTE: Rápida en NUEVO, con Editor en EDITAR
+    let imgActualParaEditar = new Image();
+    let inputActivoEditor = null;
+    let imgActivoId = "";
+    let txtActivoId = "";
+
     function previewImage(input, imgId, textId) {
         if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imgActualParaEditar.onload = function() {
-                    // Preparamos el canvas con el tamaño real de la imagen
-                    const canvas = document.getElementById('dibujoCanvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = imgActualParaEditar.width;
-                    canvas.height = imgActualParaEditar.height;
-                    
-                    // Dibujamos la foto original en el fondo
-                    ctx.drawImage(imgActualParaEditar, 0, 0);
-                    
-                    // Guardamos qué cuadro estamos editando
-                    inputActivoEditor = input;
-                    imgActivoId = imgId;
-                    txtActivoId = textId;
-                    
-                    // Mostramos el editor a pantalla completa
-                    document.getElementById('modalEditorFotos').style.display = 'flex';
-                    if (typeof cerrarModalOrigen === 'function') cerrarModalOrigen();
+            const editId = document.getElementById('edit_record_id') ? document.getElementById('edit_record_id').value : "";
+            const esModoEditar = editId !== "";
+
+            if (esModoEditar) {
+                // 🎨 MODO EDITAR: Abre la pantalla completa para señalar fallas/marcar daños
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imgActualParaEditar.onload = function() {
+                        const canvas = document.getElementById('dibujoCanvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = imgActualParaEditar.width;
+                        canvas.height = imgActualParaEditar.height;
+                        
+                        ctx.drawImage(imgActualParaEditar, 0, 0);
+                        
+                        inputActivoEditor = input;
+                        imgActivoId = imgId;
+                        txtActivoId = textId;
+                        
+                        document.getElementById('modalEditorFotos').style.display = 'flex';
+                        if (typeof cerrarModalOrigen === 'function') cerrarModalOrigen();
+                    }
+                    imgActualParaEditar.src = e.target.result;
                 }
-                imgActualParaEditar.src = e.target.result;
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                // ⚡ MODO NUEVO: Carga la foto al instante en el cuadro sin abrir nada
+                const objectURL = URL.createObjectURL(input.files[0]);
+                document.getElementById(imgId).src = objectURL; 
+                document.getElementById(imgId).style.display = 'block';
+                document.getElementById(textId).style.display = 'none';
+                
+                const label = input.parentElement.querySelector('.photo-label');
+                if(label) label.style.display = 'block';
+
+                if(input.nextElementSibling && input.nextElementSibling.classList.contains('btn-del-photo')) {
+                    input.nextElementSibling.style.display = 'flex';
+                }
+
+                if(typeof cerrarModalOrigen === 'function') {
+                    cerrarModalOrigen();
+                }
             }
-            reader.readAsDataURL(input.files[0]);
         }
     }
 
