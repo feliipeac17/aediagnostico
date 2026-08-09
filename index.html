@@ -316,13 +316,13 @@
         <iframe id="iframeFullscreenEscaner" src=""></iframe>
     </div>
 
-    <div id="portalClienteSection" style="display: none; width: 100%; max-width: 500px; margin: 0 auto; padding: 15px;">
+<div id="portalClienteSection" style="display: none; width: 100%; max-width: 500px; margin: 0 auto; padding: 15px;">
         <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 20px; text-align: center; color: white; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
             <img src="logo3.png" alt="AE Diagnóstico" style="max-height: 60px; margin-bottom: 8px;">
             <p style="font-size: 8.5pt; color: #94a3b8; margin: 0;">Portal de Seguimiento para Clientes</p>
         </div>
 
-<div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"> 
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"> 
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
                 <div style="flex: 1;">
                     <div style="margin-bottom: 8px;">
@@ -386,6 +386,16 @@
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </a>
+        </div> <div id="portalGaleriaEvidencia" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-camera-retro" style="color: #6366f1;"></i> Evidencia de Reparación
+            </div>
+            
+            <div id="portalGaleriaGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                </div>
+            <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
+                Toca una imagen para verla en pantalla completa
+            </p>
         </div>
     </div>
 
@@ -1092,6 +1102,38 @@
                     btnPres.href = rep.link_presupuesto; btnPres.style.display = 'flex'; 
                 } else {
                     btnPres.style.display = 'none';
+                }
+                // 🔥 4. LÓGICA PARA INYECTAR LA GALERÍA DE EVIDENCIAS EN EL PORTAL
+                const galeriaSec = document.getElementById('portalGaleriaEvidencia');
+                const galeriaGrid = document.getElementById('portalGaleriaGrid');
+                let tieneEvidencias = false;
+                
+                if (galeriaGrid) galeriaGrid.innerHTML = ''; // Limpiamos por si acaso
+
+                // Recorremos las 4 posibles fotos de evidencia
+                for (let i = 1; i <= 4; i++) {
+                    const imgUrl = rep[`evidencia_${i}`];
+                    const nota = rep[`evidencia_nota_${i}`] || "";
+
+                    if (imgUrl) {
+                        tieneEvidencias = true;
+                        // Creamos un cuadrito por cada foto
+                        galeriaGrid.innerHTML += `
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; text-align: center; display: flex; flex-direction: column;">
+                                <div style="width: 100%; height: 100px; border-radius: 6px; overflow: hidden; background: #cbd5e1; margin-bottom: 8px;">
+                                    <img src="${imgUrl}" onclick="window.open('${imgUrl}', '_blank')" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.2s;">
+                                </div>
+                                <div style="font-size: 7.5pt; font-weight: 700; color: #475569; text-transform: uppercase; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+                                    ${nota}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Solo mostramos la tarjeta si encontró al menos 1 foto
+                if (galeriaSec) {
+                    galeriaSec.style.display = tieneEvidencias ? 'block' : 'none';
                 }
             });
             return;
