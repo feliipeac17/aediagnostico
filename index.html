@@ -1318,15 +1318,44 @@
 
     function crearCotizacionRapida() { const folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000); localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify({ folio: folioTxt })); window.location.href = window.location.origin + '/presupuesto.html'; }
 
-    async function cargarHistorialSupabase() {
-        const contenedor = document.getElementById('listaReportes'); if (contenedor) contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
-        const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false }); if (error) return;
-        listaReportesMemoria = reportes; listaReportesFiltrada = [...listaReportesMemoria]; paginaActual = 1; renderizarPagina();
-        let enTaller = 0, esperando = 0, terminados = 0;
-        reportes.forEach(rep => { const est = rep.estado || 'EN REVISION'; if (est === 'EN REVISION' || est === 'EN REPARACION') enTaller++; else if (est === 'TERMINADO') esperando++; else if (est === 'ENTREGADO') terminados++; });
-        if (document.getElementById('dash-taller')) document.getElementById('dash-taller').innerText = enTaller;
-        if (document.getElementById('dash-piezas')) document.getElementById('dash-piezas').innerText = esperando;
-        if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = terminados;
+async function cargarHistorialSupabase() {
+        const contenedor = document.getElementById('listaReportes'); 
+        if (contenedor) contenedor.innerHTML = '<p style="color:#777; font-size:10pt; text-align:center;">⏳ Cargando historial...</p>';
+        
+        const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false }); 
+        if (error) return;
+        
+        listaReportesMemoria = reportes; 
+        listaReportesFiltrada = [...listaReportesMemoria]; 
+        paginaActual = 1; 
+        renderizarPagina();
+        
+        // 🔥 CONTADORES INTELIGENTES (Aceptan estados viejos y nuevos)
+        let cRevision = 0, cReparacion = 0, cTerminados = 0, cEntregados = 0;
+        
+        reportes.forEach(rep => { 
+            // Limpiamos la palabra para evitar errores de espacios
+            const est = (rep.estado || 'EN REVISION').toUpperCase().trim(); 
+            
+            if (est === 'EN REVISION' || est === 'ET' || est === 'COTIZACION') {
+                cRevision++; 
+            } else if (est === 'EN REPARACION') {
+                cReparacion++; 
+            } else if (est === 'TERMINADO') {
+                cTerminados++; 
+            } else if (est === 'ENTREGADO' || est === 'TE') {
+                cEntregados++; 
+            } else {
+                // Si hay algún estado antiguo irreconocible, lo mandamos a revisión
+                cRevision++;
+            }
+        });
+
+        // Imprimimos en el Dashboard
+        if (document.getElementById('dash-revision')) document.getElementById('dash-revision').innerText = cRevision;
+        if (document.getElementById('dash-reparacion')) document.getElementById('dash-reparacion').innerText = cReparacion;
+        if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = cTerminados;
+        if (document.getElementById('dash-entregados')) document.getElementById('dash-entregados').innerText = cEntregados;
     }
 
     function filtrarHistorial() {
