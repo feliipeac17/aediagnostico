@@ -720,6 +720,10 @@ if (document.getElementById('in_cliente_telefono').value.trim() !== "") {
         let tel = document.getElementById('in_cliente_telefono').value.replace(/\D/g, '');
         let nomCliente = document.getElementById('in_cliente_nombre').value.trim();
         
+        // 🔥 Agregamos de dónde leer la marca y el modelo
+        let marca = document.getElementById('in_vehiculo_marca').value.trim();
+        let modelo = document.getElementById('in_vehiculo_modelo').value.trim();
+        
         // Reconstruimos tu mensaje original con los saltos de línea correctos
         const mensaje = `*${nomCliente}*! Te compartimos el Presupuesto de tu \n 🚘 *${marca} ${modelo}* \n\n` +
                         `📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${idReporteCortoGlobal}\n\n` +
