@@ -302,6 +302,19 @@
         }
         .btn-flotante-bloquear:hover { transform: scale(1.08) translateY(-2px); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5); }
         .btn-flotante-bloquear:active { transform: scale(0.92); }
+        /* 🔥 HOVER PARA BOTONES DEL PORTAL DEL CLIENTE */
+        .btn-portal-doc {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-portal-doc:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08) !important;
+            border-color: #cbd5e1 !important;
+        }
+        .btn-portal-doc:active {
+            transform: translateY(0) scale(0.98) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
+        }
     </style>
 </head>
 <body>
@@ -317,7 +330,8 @@
     </div>
 
 <div id="portalClienteSection" style="display: none; width: 100%; max-width: 500px; margin: 0 auto; padding: 15px;">
-        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 20px; text-align: center; color: white; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        
+        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 20px; text-align: center; color: white; margin-top: 0px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
             <img src="logo3.png" alt="AE Diagnóstico" style="max-height: 60px; margin-bottom: 8px;">
             <p style="font-size: 8.5pt; color: #94a3b8; margin: 0;">Portal de Seguimiento para Clientes</p>
         </div>
@@ -354,7 +368,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 12px;">
-            <a id="btnPortalPdf" href="#" target="_blank" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #d32f2f; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <a id="btnPortalPdf" href="#" target="_blank" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #d32f2f; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-file-pdf" style="font-size: 16pt; color: #d32f2f;"></i>
                     <div>
@@ -365,7 +379,7 @@
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </a>
 
-            <a id="btnPortalEscaner" href="#" target="_blank" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <a id="btnPortalEscaner" href="#" target="_blank" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-laptop-code" style="font-size: 16pt; color: #0284c7;"></i>
                     <div>
@@ -376,7 +390,7 @@
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </a>
 
-            <a id="btnPortalPresupuesto" href="#" target="_blank" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #10b981; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <a id="btnPortalPresupuesto" href="#" target="_blank" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #10b981; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-file-invoice-dollar" style="font-size: 16pt; color: #10b981;"></i>
                     <div>
@@ -386,7 +400,9 @@
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </a>
-        </div> <div id="portalGaleriaEvidencia" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        </div>
+
+        <div id="portalGaleriaEvidencia" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div style="font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-camera-retro" style="color: #6366f1;"></i> Evidencia
             </div>
