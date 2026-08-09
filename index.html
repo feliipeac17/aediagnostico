@@ -364,31 +364,51 @@
         #subVistaContenidoReportes a:active {
             transform: scale(0.96) !important;
         }
+        /* 🔥 NUEVO ESTILO DE MENÚ TIPO APP (CUADROS) */
         .nav-tab-btn {
             flex: 1;
-            border: none;
-            background: transparent;
-            padding: 12px 0;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            padding: 14px 5px;
             font-weight: 700;
             color: #64748b;
-            border-radius: 8px;
-            font-size: 9.5pt;
+            border-radius: 16px;
+            font-size: 8.5pt;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             display: flex;
+            flex-direction: column; /* Coloca el icono arriba del texto */
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
+        
+        .nav-tab-btn i {
+            font-size: 18pt; /* Iconos más grandes */
+            color: #94a3b8;
+            transition: all 0.2s ease;
+        }
+
         .nav-tab-btn.tab-active {
             background: #ffffff !important;
-            color: var(--primary-red) !important;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            color: #0f172a !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.15) !important;
         }
+
+        .nav-tab-btn.tab-active i {
+            color: #0284c7 !important; /* El icono se pinta de azul al estar activo */
+            transform: scale(1.15); /* Efecto de que el icono crece un poquito */
+        }
+
         .nav-tab-btn:hover:not(.tab-active) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
             color: #1e293b;
         }
+        
         .input-buscador-moderno {
             width: 100%; 
             padding: 14px 16px 14px 44px; 
@@ -669,7 +689,7 @@
     </button>
 
         <div class="sticky-nav-container" style="border-bottom: none; box-shadow: 0 4px 10px rgba(0,0,0,0.03); padding: 15px 15px;">
-            <div id="navTabsNormales" style="display: flex; background: #e2e8f0; border-radius: 12px; padding: 5px; gap: 5px;">
+            <div id="navTabsNormales" style="display: flex; gap: 15px; width: 100%;">
                 <button id="btnTabDashboard" class="nav-tab-btn tab-active" onclick="cambiarPestana('dashboard')"><i class="fa-solid fa-chart-pie"></i> Inicio</button>
                 <button id="btnTabNuevo" class="nav-tab-btn" onclick="cambiarPestana('nuevo')"><i class="fa-solid fa-file-circle-plus"></i> Nuevo</button>
                 <button id="btnTabHistorial" class="nav-tab-btn" onclick="cambiarPestana('historial')"><i class="fa-solid fa-folder-open"></i> Historial</button>
