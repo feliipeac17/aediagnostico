@@ -324,31 +324,44 @@
 
         <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span id="portalFolioTxt" style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: #0284c7; font-size: 11pt;">FOLIO: --</span>
-                <span id="portalEstatusBadge" style="padding: 5px 12px; border-radius: 20px; font-size: 8pt; font-weight: 800; text-transform: uppercase;">--</span>
+                <span id="portalFolioTxt" style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: #0f172a; font-size: 11pt;">FOLIO: --</span>
             </div>
-            <h3 id="portalVehiculoTxt" style="font-size: 12pt; color: #0f172a; margin-bottom: 4px; font-weight: 800;">CARGANDO VEHÍCULO...</h3>
+            <h3 id="portalVehiculoTxt" style="font-size: 12pt; color: #0284c7; margin-bottom: 4px; font-weight: 800;">CARGANDO VEHÍCULO...</h3>
             <p id="portalClienteTxt" style="font-size: 9pt; color: #64748b; margin: 0;">Cliente: --</p>
+            
+            <div style="margin-top: 20px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 7.5pt; font-weight: 800; color: #94a3b8; text-transform: uppercase;">
+                    <span>Revisión</span>
+                    <span>Reparación</span>
+                    <span>Entrega</span>
+                </div>
+                <div style="width: 100%; background: #f1f5f9; height: 10px; border-radius: 10px; overflow: hidden; position: relative; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                    <div id="portalProgressBar" style="height: 100%; width: 0%; background: #10b981; border-radius: 10px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s;"></div>
+                </div>
+                <div id="portalEstatusDetail" style="text-align: center; font-size: 10pt; font-weight: 800; color: #0f172a; margin-top: 12px; text-transform: uppercase;">
+                    --
+                </div>
+            </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 12px;">
-            <a id="btnPortalEscaner" href="#" target="_blank" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fa-solid fa-laptop-code" style="font-size: 16pt; color: #0284c7;"></i>
-                    <div>
-                        <strong style="display: block; font-size: 10pt;">Diagnóstico por Escáner</strong>
-                        <span style="font-size: 7.5pt; color: #64748b;">Ver informe técnico de códigos</span>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
-            </a>
-
             <a id="btnPortalPdf" href="#" target="_blank" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #d32f2f; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-file-pdf" style="font-size: 16pt; color: #d32f2f;"></i>
                     <div>
                         <strong style="display: block; font-size: 10pt;">Reporte de Servicio y Fotos</strong>
                         <span style="font-size: 7.5pt; color: #64748b;">Ver recepción y evidencias de trabajo</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+            </a>
+
+            <a id="btnPortalEscaner" href="#" target="_blank" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-laptop-code" style="font-size: 16pt; color: #0284c7;"></i>
+                    <div>
+                        <strong style="display: block; font-size: 10pt;">Diagnóstico por Escáner</strong>
+                        <span style="font-size: 7.5pt; color: #64748b;">Ver informe técnico de códigos</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
@@ -429,7 +442,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                 <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
                     <i class="fa-solid fa-screwdriver-wrench" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #10b981; opacity: 0.1; transform: rotate(-15deg);"></i>
-                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Revision</div>
+                    <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Taller</div>
                     <div id="dash-taller" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
                 </div>
                 
@@ -484,6 +497,7 @@
                                 <td style="text-align: right; font-weight: 800;">
                                     <select id="in_estado" class="pdf-ctrl" style="background: transparent; border: none; font-weight: 800; font-size: 8.5pt; text-align: right; outline: none; cursor: pointer; color: #10b981; padding: 0;">
                                         <option value="EN REVISION" style="color: black;">EN REVISION</option>
+                                        <option value="EN REPARACION" style="color: black;">EN REPARACION</option>
                                         <option value="TERMINADO" style="color: black;">TERMINADO</option>
                                         <option value="ENTREGADO" style="color: black;">ENTREGADO</option>
                                     </select>
@@ -923,7 +937,7 @@
         if(txtGas) { txtGas.innerText = stringGas; txtGas.style.display = 'inline-block'; }
 
         const selEstado = document.getElementById('in_estado'); const lblEstado = document.getElementById('pdf-lbl-estado');
-        if (selEstado && lblEstado) { lblEstado.innerText = selEstado.value; lblEstado.style.color = (selEstado.value === 'ENTREGADO') ? '#ff1100' : ((selEstado.value==='TERMINADO') ? '#3b82f6' : '#10b981'); lblEstado.style.display = 'inline'; }
+        if (selEstado && lblEstado) { lblEstado.innerText = selEstado.value; lblEstado.style.color = (selEstado.value === 'ENTREGADO') ? '#ff1100' : ((selEstado.value==='TERMINADO') ? '#3b82f6' : ((selEstado.value==='EN REPARACION') ? '#f59e0b' : '#10b981')); lblEstado.style.display = 'inline'; }
 
         const elemento = document.querySelector('.wrapper-page');
         const estadoOriginal = { elemento, width: elemento.style.width, maxW: elemento.style.maxWidth, border: elemento.style.border, radius: elemento.style.borderRadius, margin: elemento.style.margin, pos: elemento.style.position, top: elemento.style.top, left: elemento.style.left };
@@ -1002,17 +1016,48 @@
                 document.getElementById('portalVehiculoTxt').innerText = `${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}`.trim() || 'VEHÍCULO';
                 document.getElementById('portalClienteTxt').innerText = `Cliente: ${rep.cliente_nombre || 'N/A'}`;
 
-                const badge = document.getElementById('portalEstatusBadge'); const st = (rep.estado || 'EN REVISIÓN').toUpperCase();
-                badge.innerText = st;
-                if (st === 'TERMINADO') { badge.style.background = '#dcfce7'; badge.style.color = '#15803d'; } 
-                else if (st === 'ENTREGADO') { badge.style.background = '#e0f2fe'; badge.style.color = '#0369a1'; } 
-                else { badge.style.background = '#fef3c7'; badge.style.color = '#b45309'; }
+                const st = (rep.estado || 'EN REVISION').toUpperCase();
+                
+                // 📊 LÓGICA DE LA BARRA DE PROGRESO
+                const progressBar = document.getElementById('portalProgressBar');
+                const detailTxt = document.getElementById('portalEstatusDetail');
+                
+                let progressWidth = "25%"; let progressColor = "#f59e0b"; let detailMsg = "🔍 Vehículo en Revisión"; 
+                
+                if (st === 'COTIZACION') {
+                    progressWidth = "45%"; progressColor = "#8b5cf6"; detailMsg = "📝 Cotización Generada";
+                } else if (st === 'EN REPARACION') {
+                    progressWidth = "65%"; progressColor = "#3b82f6"; detailMsg = "🔧 Vehículo en Reparación";
+                } else if (st === 'TERMINADO') {
+                    progressWidth = "85%"; progressColor = "#10b981"; detailMsg = "✅ Listo para Entrega";
+                } else if (st === 'ENTREGADO') {
+                    progressWidth = "100%"; progressColor = "#14b8a6"; detailMsg = "🎉 Vehículo Entregado";
+                }
 
-                const btnScan = document.getElementById('btnPortalEscaner'); const btnPdf = document.getElementById('btnPortalPdf'); const btnPres = document.getElementById('btnPortalPresupuesto');
-                if (rep.link_escaner && rep.link_escaner.trim() !== '') { btnScan.href = rep.link_escaner; btnScan.style.display = 'flex'; } 
-                else { btnScan.href = `/?scan=${rep.folio}`; btnScan.style.display = 'flex'; }
-                if (rep.link_pdf && rep.link_pdf.trim() !== '') { btnPdf.href = rep.link_pdf; btnPdf.style.display = 'flex'; }
-                if (rep.link_presupuesto && rep.link_presupuesto.trim() !== '') { btnPres.href = rep.link_presupuesto; btnPres.style.display = 'flex'; }
+                if(progressBar) { progressBar.style.width = progressWidth; progressBar.style.background = progressColor; }
+                if(detailTxt) { detailTxt.innerText = detailMsg; detailTxt.style.color = progressColor; }
+
+                const btnScan = document.getElementById('btnPortalEscaner'); 
+                const btnPdf = document.getElementById('btnPortalPdf'); 
+                const btnPres = document.getElementById('btnPortalPresupuesto');
+
+                // 1. ESCÁNER
+                if (rep.link_escaner && rep.link_escaner.trim() !== '') { 
+                    btnScan.href = rep.link_escaner; btnScan.style.display = 'flex'; 
+                } else { 
+                    btnScan.style.display = 'none'; 
+                }
+
+                // 2. REPORTE DE SERVICIO (SIEMPRE VISIBLE)
+                btnPdf.href = `/?pdf=${rep.folio}`; 
+                btnPdf.style.display = 'flex';
+
+                // 3. PRESUPUESTO
+                if (rep.link_presupuesto && rep.link_presupuesto.trim() !== '') { 
+                    btnPres.href = rep.link_presupuesto; btnPres.style.display = 'flex'; 
+                } else {
+                    btnPres.style.display = 'none';
+                }
             });
             return;
         }
@@ -1247,7 +1292,7 @@
         const { data: reportes, error } = await supabaseClient.from('reportes_servicio').select('*').order('id', { ascending: false }); if (error) return;
         listaReportesMemoria = reportes; listaReportesFiltrada = [...listaReportesMemoria]; paginaActual = 1; renderizarPagina();
         let enTaller = 0, esperando = 0, terminados = 0;
-        reportes.forEach(rep => { const est = rep.estado || 'EN REVISION'; if (est === 'EN REVISION') enTaller++; else if (est === 'TERMINADO') esperando++; else if (est === 'ENTREGADO') terminados++; });
+        reportes.forEach(rep => { const est = rep.estado || 'EN REVISION'; if (est === 'EN REVISION' || est === 'EN REPARACION') enTaller++; else if (est === 'TERMINADO') esperando++; else if (est === 'ENTREGADO') terminados++; });
         if (document.getElementById('dash-taller')) document.getElementById('dash-taller').innerText = enTaller;
         if (document.getElementById('dash-piezas')) document.getElementById('dash-piezas').innerText = esperando;
         if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = terminados;
@@ -1267,13 +1312,13 @@
         if(document.getElementById('btnNextPage')) document.getElementById('btnNextPage').disabled = (paginaActual === totP);
     }
 
-    function cambiarPagina(dir) { paginaActual += direccion; renderizarPagina(); const b = document.getElementById('buscadorHistorial'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    function cambiarPagina(dir) { paginaActual += dir; renderizarPagina(); const b = document.getElementById('buscadorHistorial'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 
     function inyectarTarjetasHistorial(arr) {
         const contenedor = document.getElementById('listaReportes'); if (!contenedor) return; contenedor.innerHTML = "";
         arr.forEach(rep => {
             const tarjeta = document.createElement('div'); tarjeta.style.cssText = "background:#ffffff; border:1px solid #e2e8f0; padding:16px; border-radius:14px; margin-bottom:16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 14px;";
-            let est = rep.estado || 'EN REVISION'; let col = est === 'ENTREGADO' ? '#ef4444' : (est === 'TERMINADO' ? '#3b82f6' : (est === 'COTIZACION' ? '#8b5cf6' : '#10b981')); 
+            let est = rep.estado || 'EN REVISION'; let col = est === 'ENTREGADO' ? '#ef4444' : (est === 'TERMINADO' ? '#3b82f6' : (est === 'COTIZACION' ? '#8b5cf6' : (est === 'EN REPARACION' ? '#f59e0b' : '#10b981'))); 
             let imgPort = rep.foto_frente_url ? `<img src="${rep.foto_frente_url}" style="width: 100%; height: 100%; object-fit: cover;">` : (est === 'COTIZACION' ? '<div style="color:#8b5cf6;"><i class="fa-solid fa-file-invoice-dollar" style="font-size:24pt;"></i></div>' : '<i class="fa-solid fa-car" style="font-size:28pt; color:#cbd5e1;"></i>');
             tarjeta.innerHTML = `<div style="display: flex; gap: 15px; align-items: center;"><div style="width: 85px; height: 85px; border-radius: 10px; background: #f8fafc; overflow: hidden; flex-shrink: 0; display: flex; justify-content: center; align-items: center; border: 1px solid #e2e8f0;">${imgPort}</div><div style="flex: 1; min-width: 0;"><strong style="color:#d32f2f; font-size: 11.5pt; font-weight: 800;">${rep.folio || 'N/A'}</strong><div style="font-size: 9pt; color: #334155; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div><div style="font-size: 8.5pt; color: #64748b;"> Placas: <span style="font-weight: 700; color:#0f172a;">${rep.vehiculo_placas || 'S/N'}</span></div><div style="font-size: 9pt; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">👤 ${rep.cliente_nombre || 'S/N'}</div><div><span style="background-color: ${col}; color: white; font-size: 6.5pt; font-weight: 800; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;">${est}</span></div></div></div><div style="display: flex; gap: 6px; margin-top: 8px;"><button id="btn-ver-${rep.folio}" style="flex: 1; height: 40px; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button><button id="btn-edit-${rep.folio}" style="flex: 1; height: 40px; background: #ea580c; color: white; border: none; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-pen"></i></button><button id="btn-cotizar-${rep.folio}" style="flex: 1; height: 40px; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-file-invoice-dollar"></i></button><button id="btn-wa-${rep.folio}" style="flex: 1; height: 40px; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer;"><i class="fa-brands fa-whatsapp" style="font-size: 15pt;"></i></button></div>`;
             contenedor.appendChild(tarjeta);
@@ -1312,7 +1357,7 @@
         document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || ''; document.getElementById('in_link_escaner').value = rep.link_escaner || '';
 
         const selectorEstado = document.getElementById('in_estado');
-        if(selectorEstado) { selectorEstado.value = rep.estado || 'EN REVISION'; selectorEstado.style.color = selectorEstado.value === 'ENTREGADO' ? '#ff1100' : (selectorEstado.value==='TERMINADO' ? '#3b82f6' : '#10b981'); }
+        if(selectorEstado) { selectorEstado.value = rep.estado || 'EN REVISION'; selectorEstado.style.color = selectorEstado.value === 'ENTREGADO' ? '#ff1100' : (selectorEstado.value==='TERMINADO' ? '#3b82f6' : (selectorEstado.value==='EN REPARACION' ? '#f59e0b' : '#10b981')); }
 
         const setFormPrev = (imgId, textId, inputId, url) => {
             const img = document.getElementById(imgId); const txt = document.getElementById(textId); const inp = document.getElementById(inputId);
