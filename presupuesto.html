@@ -1323,10 +1323,10 @@ async function guardarPresupuestoNube() {
                     
                     const linkLimpio = `https://aediagnostico.com/?pres=${idReporteCortoGlobal}`;
                     
-                    const mensaje = `Hola *${nomCliente}*! Te compartimos el Presupuesto de tu vehículo 🚗 *${marca} ${modelo}*. \n\n` +
+                    const mensaje = `*${nomCliente}*! Te compartimos el Presupuesto de tu \n 🚘 *${marca} ${modelo}*. \n\n` +
                                     `📄 *Ver Presupuesto aquí:* \n${linkLimpio}\n\n` +
                                     `_Quedamos a tus órdenes para cualquier duda._`;
-   
+
                     window.open(`https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`, '_blank');
                 }
             }
