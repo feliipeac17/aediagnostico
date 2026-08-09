@@ -1112,7 +1112,7 @@
                     </div>
 
                     <div class="preview-section">
-                        <div class="preview-section-title"><i class="fa-solid fa-car-rear" style="color: #d32f2f; font-size: 14pt;"></i> Ficha del Vehiculo</div>
+                        <div class="preview-section-title"><i class="fa-solid fa-car-rear" style="color: #d32f2f; font-size: 14pt;"></i> Datos del Vehiculo</div>
                         <div class="preview-data-grid">
                             <div class="preview-item"><strong><i class="fa-solid fa-tag"></i> Marca</strong><span id="web_view_marca">--</span></div>
                             <div class="preview-item"><strong><i class="fa-solid fa-calendar-days"></i> Modelo / Año</strong><span id="web_view_modelo">--</span></div>
@@ -2630,10 +2630,10 @@ function alternarSubVista(vista) {
             if (secReportes) {
                 secReportes.style.display = 'flex'; 
                 secReportes.style.flexDirection = 'column';
-                secReportes.style.justifyContent = 'center'; 
+                secReportes.style.justifyContent = 'flex-start'; /* 🔥 Esto alinea el contenido hacia arriba */
                 secReportes.style.alignItems = 'center'; 
-                secReportes.style.minHeight = '350px'; 
-                secReportes.style.padding = '30px 0'; 
+                secReportes.style.minHeight = 'auto'; /* 🔥 Quitamos el alto forzado */
+                secReportes.style.padding = '15px 0 30px 0'; /* 🔥 Reducimos el espacio de arriba */
             }
             if (btnPdf) btnPdf.style.display = 'none';
             if (barraAcciones) barraAcciones.style.gridTemplateColumns = '1fr';
