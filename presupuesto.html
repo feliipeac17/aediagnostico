@@ -212,14 +212,29 @@
             padding: 0 4px !important; 
         }
         .pdf-pillar-table thead tr { display: grid; grid-template-columns: 1fr 80px; gap: 4px; }
+/* 🔥 AJUSTE DE LA TABLA Y LOS MINI-CAMPOS */
         .table-row { 
             display: grid; 
-            grid-template-columns: 1fr 80px; 
+            grid-template-columns: 1fr 80px 20px; /* Hacemos espacio para el bote de basura */
             gap: 6px; 
-            align-items: center; 
-            padding: 4px 0; /* 🔥 Menos separación arriba y abajo entre renglones */
+            align-items: start; /* Alineamos arriba por si hay campos extra */
+            padding: 6px 0; 
             border-bottom: 1px dashed #cbd5e1; 
         }
+        .extra-input {
+            flex: 1 1 18%; 
+            min-width: 65px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            border-radius: 4px;
+            font-size: 6.5pt !important;
+            padding: 3px !important;
+            height: 20px !important;
+            color: #334155 !important;
+            outline: none;
+            text-transform: uppercase;
+        }
+        .extra-input::placeholder { color: #94a3b8; text-transform: none; }
         .table-row input.desc-input { width: 100%; text-align: left; text-transform: none !important; }
         .table-row input.price-input { 
             width: 95px; 
@@ -829,7 +844,7 @@ textarea.card-input {
                         dataPres.servicios.forEach(s => agregarRenglon('listServicios', s.desc, s.price));
                     }
                     if (dataPres.refacciones && Array.isArray(dataPres.refacciones)) {
-                        dataPres.refacciones.forEach(r => agregarRenglon('listRefacciones', r.desc, r.price));
+                        dataPres.refacciones.forEach(r => agregarRenglon('listRefacciones', r.desc, r.price, r.extras));
                     }
                     if (dataPres.manoObra && Array.isArray(dataPres.manoObra)) {
                         dataPres.manoObra.forEach(m => agregarRenglon('listManoObra', m.desc, m.price));
@@ -865,19 +880,48 @@ textarea.card-input {
         document.title = "PRES_" + codigoLimpio;
     });
     
-function agregarRenglon(listaId, desc = '', price = '') {
+function agregarRenglon(listaId, desc = '', price = '', extras = {}) {
         const contenedor = document.getElementById(listaId);
         const div = document.createElement('div');
         div.className = 'table-row';
+        
+        let extraHTML = '';
+        if (listaId === 'listRefacciones') {
+            extraHTML = `
+                <div class="extra-fields-container" data-html2canvas-ignore="true" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;">
+                    <input type="text" class="extra-input e-marca" placeholder="Marca" value="${extras.marca || ''}">
+                    <input type="text" class="extra-input e-parte" placeholder="# Parte" value="${extras.parte || ''}">
+                    <input type="text" class="extra-input e-serie" placeholder="# Serie" value="${extras.serie || ''}">
+                    <select class="extra-input e-estado">
+                        <option value="">Estado...</option>
+                        <option value="NUEVA" ${extras.estado === 'NUEVA' ? 'selected' : ''}>Nueva</option>
+                        <option value="USADA (YONKE)" ${extras.estado === 'USADA (YONKE)' ? 'selected' : ''}>Usada (Yonke)</option>
+                        <option value="REMANUFACTURADA" ${extras.estado === 'REMANUFACTURADA' ? 'selected' : ''}>Remanufacturada</option>
+                        <option value="TRAÍDA POR CLIENTE" ${extras.estado === 'TRAÍDA POR CLIENTE' ? 'selected' : ''}>Traída por Cliente</option>
+                    </select>
+                    <select class="extra-input e-garantia">
+                        <option value="">Garantía...</option>
+                        <option value="SIN GARANTÍA" ${extras.garantia === 'SIN GARANTÍA' ? 'selected' : ''}>Sin Garantía</option>
+                        <option value="15 DÍAS" ${extras.garantia === '15 DÍAS' ? 'selected' : ''}>15 Días</option>
+                        <option value="30 DÍAS" ${extras.garantia === '30 DÍAS' ? 'selected' : ''}>30 Días</option>
+                        <option value="3 MESES" ${extras.garantia === '3 MESES' ? 'selected' : ''}>3 Meses</option>
+                        <option value="6 MESES" ${extras.garantia === '6 MESES' ? 'selected' : ''}>6 Meses</option>
+                        <option value="1 AÑO" ${extras.garantia === '1 AÑO' ? 'selected' : ''}>1 Año</option>
+                    </select>
+                </div>
+            `;
+        }
+
         div.innerHTML = `
-            <input type="text" class="desc-input" placeholder="..." value="${desc}" required style="width:100%;">
-            
-            <input type="text" inputmode="decimal" class="price-input" placeholder="$0.00" value="${price}" style="text-align: right; width:100%;" 
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <input type="text" class="desc-input" placeholder="..." value="${desc}" required style="width:100%; border:none; background:transparent; font-size:9pt; font-weight:500; outline:none; height:28px; color:#0f172a;">
+                ${extraHTML}
+            </div>
+            <input type="text" inputmode="decimal" class="price-input" placeholder="$0.00" value="${price}" style="text-align: right; width:100%; border:none; background:transparent; font-size:9pt; font-weight:800; outline:none; height:28px; color:#0f172a; margin-top:2px;" 
                 onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
                 onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();"
                 required>
-                
-            <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove(); actualizarTotales();"><i class="fa-solid fa-trash"></i></button>
+            <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove(); actualizarTotales();" style="margin-top:8px;"><i class="fa-solid fa-trash"></i></button>
         `;
         contenedor.appendChild(div);
         actualizarTotales();
@@ -970,8 +1014,9 @@ function agregarRenglon(listaId, desc = '', price = '') {
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
-        inputs.forEach(input => {
+inputs.forEach(input => {
             if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+            if(input.classList.contains('extra-input')) return; // IGNORAR (se procesan junto con la descripción)
 
             const esArea = input.tagName.toLowerCase() === 'textarea';
             const esSelect = input.tagName.toLowerCase() === 'select';
@@ -981,27 +1026,46 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 span.innerText = input.value || '';
                 span.style.whiteSpace = 'pre-wrap';
                 span.style.wordWrap = 'break-word';
-                span.style.overflowWrap = 'break-word';
                 span.style.width = '100%';
                 span.style.fontSize = '8.5pt';
                 span.style.fontWeight = '700';
                 span.style.color = '#0f172a';
                 span.style.textTransform = 'uppercase'; 
                 span.style.lineHeight = '1.4';
-                span.style.minHeight = '38px';
                 span.style.paddingBottom = '5px';
-                span.style.display = 'block';
-                span.style.marginTop = '0';
             } else {
-                span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
+                if (input.classList.contains('desc-input')) {
+                    let txtPrincipal = input.value || '';
+                    const boxExtra = input.parentElement.querySelector('.extra-fields-container');
+                    
+                    if (boxExtra) {
+                        const m = boxExtra.querySelector('.e-marca').value.trim();
+                        const p = boxExtra.querySelector('.e-parte').value.trim();
+                        const s = boxExtra.querySelector('.e-serie').value.trim();
+                        const e = boxExtra.querySelector('.e-estado').value;
+                        const g = boxExtra.querySelector('.e-garantia').value;
+                        
+                        let arr = [];
+                        if(m) arr.push(`Marca: <strong>${m}</strong>`);
+                        if(p) arr.push(`Parte: <strong>${p}</strong>`);
+                        if(s) arr.push(`Serie: <strong>${s}</strong>`);
+                        if(e) arr.push(`Estado: <strong>${e}</strong>`);
+                        if(g) arr.push(`Gtía: <strong>${g}</strong>`);
+                        
+                        if(arr.length > 0) {
+                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:7.5pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                        } else { span.innerText = txtPrincipal; }
+                    } else { span.innerText = txtPrincipal; }
+                } else {
+                    span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
+                }
+
                 span.style.width = input.style.width || '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.color = '#0f172a';         
                 span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase'; 
                 span.style.display = 'inline-block';
-                span.style.padding = '2px 0';
-                span.style.fontFamily = window.getComputedStyle(input).fontFamily;
                 
                 if(input.classList.contains('price-input')) {
                     span.style.textAlign = 'right';
@@ -1012,7 +1076,7 @@ function agregarRenglon(listaId, desc = '', price = '') {
             input.parentNode.insertBefore(span, input);
             input.style.display = 'none';
             reemplazos.push({ original: input, falso: span });
-        });       
+        });      
         
         let nombreArchivo = document.title || "Presupuesto";
         const elemento = document.querySelector('.wrapper-page');
@@ -1084,8 +1148,9 @@ function agregarRenglon(listaId, desc = '', price = '') {
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
 
-        inputs.forEach(input => {
+inputs.forEach(input => {
             if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox') return;
+            if(input.classList.contains('extra-input')) return; // IGNORAR (se procesan junto con la descripción)
 
             const esArea = input.tagName.toLowerCase() === 'textarea';
             const esSelect = input.tagName.toLowerCase() === 'select';
@@ -1095,27 +1160,46 @@ function agregarRenglon(listaId, desc = '', price = '') {
                 span.innerText = input.value || '';
                 span.style.whiteSpace = 'pre-wrap';
                 span.style.wordWrap = 'break-word';
-                span.style.overflowWrap = 'break-word';
                 span.style.width = '100%';
                 span.style.fontSize = '8.5pt';
                 span.style.fontWeight = '700';
                 span.style.color = '#0f172a';
                 span.style.textTransform = 'uppercase'; 
                 span.style.lineHeight = '1.4';
-                span.style.minHeight = '38px';
                 span.style.paddingBottom = '5px';
-                span.style.display = 'block';
-                span.style.marginTop = '0';
             } else {
-                span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
+                if (input.classList.contains('desc-input')) {
+                    let txtPrincipal = input.value || '';
+                    const boxExtra = input.parentElement.querySelector('.extra-fields-container');
+                    
+                    if (boxExtra) {
+                        const m = boxExtra.querySelector('.e-marca').value.trim();
+                        const p = boxExtra.querySelector('.e-parte').value.trim();
+                        const s = boxExtra.querySelector('.e-serie').value.trim();
+                        const e = boxExtra.querySelector('.e-estado').value;
+                        const g = boxExtra.querySelector('.e-garantia').value;
+                        
+                        let arr = [];
+                        if(m) arr.push(`Marca: <strong>${m}</strong>`);
+                        if(p) arr.push(`Parte: <strong>${p}</strong>`);
+                        if(s) arr.push(`Serie: <strong>${s}</strong>`);
+                        if(e) arr.push(`Estado: <strong>${e}</strong>`);
+                        if(g) arr.push(`Gtía: <strong>${g}</strong>`);
+                        
+                        if(arr.length > 0) {
+                            span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:7.5pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
+                        } else { span.innerText = txtPrincipal; }
+                    } else { span.innerText = txtPrincipal; }
+                } else {
+                    span.innerText = esSelect ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
+                }
+
                 span.style.width = input.style.width || '100%';
                 span.style.fontSize = window.getComputedStyle(input).fontSize;
                 span.style.fontWeight = window.getComputedStyle(input).fontWeight;
-                span.style.color = '#0f172a';                
-                span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase';
+                span.style.color = '#0f172a';         
+                span.style.textTransform = input.classList.contains('desc-input') ? 'none' : 'uppercase'; 
                 span.style.display = 'inline-block';
-                span.style.padding = '2px 0';
-                span.style.fontFamily = window.getComputedStyle(input).fontFamily;
                 
                 if(input.classList.contains('price-input')) {
                     span.style.textAlign = 'right';
@@ -1189,13 +1273,25 @@ async function guardarPresupuestoNube() {
         btn.disabled = true;
 
         try {
-            const extraerFilas = (listaId) => {
+        const extraerFilas = (listaId) => {
                 const filas = [];
                 document.querySelectorAll(`#${listaId} .table-row`).forEach(row => {
                     const desc = row.querySelector('.desc-input')?.value || '';
                     const price = row.querySelector('.price-input')?.value || '';
+                    
+                    let extras = {};
+                    if (listaId === 'listRefacciones') {
+                        extras = {
+                            marca: row.querySelector('.e-marca')?.value || '',
+                            parte: row.querySelector('.e-parte')?.value || '',
+                            serie: row.querySelector('.e-serie')?.value || '',
+                            estado: row.querySelector('.e-estado')?.value || '',
+                            garantia: row.querySelector('.e-garantia')?.value || ''
+                        };
+                    }
+
                     if (desc.trim() !== '' || price.trim() !== '') {
-                        filas.push({ desc, price });
+                        filas.push({ desc, price, extras });
                     }
                 });
                 return filas;
