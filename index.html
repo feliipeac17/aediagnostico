@@ -2689,7 +2689,7 @@ function alternarSubVista(vista) {
         if (rep.estado === 'COTIZACION') {
             
             // Mensaje exclusivo para Cotizaciones Rápidas
-            mensaje = `*${nomCliente}*! Te compartimos el Presupuesto de tu vehículo 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
+            mensaje = `*${nomCliente}*! Te compartimos el Presupuesto de tu vehículo \n 🚗 *${marcaAuto} ${modeloAuto}*. \n\n` +
                       `📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n` +
                       `_Quedamos a tus órdenes para cualquier duda._`;
 
@@ -2705,7 +2705,7 @@ function alternarSubVista(vista) {
             
             // Si el reporte ya tiene un presupuesto ligado, se lo mandamos también
             if (rep.link_presupuesto && rep.link_presupuesto.trim() !== "") {
-                mensaje += `💰 *Presupuesto:* \nhttps://aediagnostico.com/?pres=${rep.folio}\n\n`;
+                mensaje += `💰 *Presupuesto:* \n https://aediagnostico.com/?pres=${rep.folio}\n\n`;
             }
             
             mensaje += `_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
