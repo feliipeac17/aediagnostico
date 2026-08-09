@@ -1079,8 +1079,12 @@
                     btnScan.style.display = 'none'; 
                 }
 
-                // 2. REPORTE DE SERVICIO (SIEMPRE VISIBLE PORQUE SE GENERA EN VIVO)
-                btnPdf.href = `/?pdf=${rep.folio}`; 
+                // 2. REPORTE DE SERVICIO (ABRE DIRECTO EN EL NAVEGADOR)
+                if (rep.link_pdf && rep.link_pdf.trim() !== '') {
+                    btnPdf.href = rep.link_pdf; 
+                } else {
+                    btnPdf.href = `/?pdf=${rep.folio}`; // Respaldo para los reportes viejos
+                }
                 btnPdf.style.display = 'flex';
 
                 // 3. PRESUPUESTO
@@ -1300,13 +1304,31 @@
             payload.evidencia_nota_3 = document.getElementById('edit_nota_evidencia_3') ? document.getElementById('edit_nota_evidencia_3').value.trim() : '';
             payload.evidencia_nota_4 = document.getElementById('edit_nota_evidencia_4') ? document.getElementById('edit_nota_evidencia_4').value.trim() : '';
 
-            const valFechaSel = document.getElementById('in_fecha').value; 
+const valFechaSel = document.getElementById('in_fecha').value; 
             if (valFechaSel) {
                 const pf = valFechaSel.split('-'); const dLocal = new Date(isEditing ? reportDataGlobal.created_at : Date.now());
                 dLocal.setFullYear(parseInt(pf[0])); dLocal.setMonth(parseInt(pf[1]) - 1); dLocal.setDate(parseInt(pf[2])); payload.created_at = dLocal.toISOString();
             }
 
-            let err = null; if (isEditing) err = (await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId)).error; 
+            // 🔥 MAGIA NUEVA: Crear PDF y subir a la nube al guardar
+            btnSubmit.innerHTML = "⏳ CREANDO PDF...";
+            if(btnTop) btnTop.innerHTML = "⏳ CREANDO PDF...";
+            
+            const est = prepararCaptura();
+            const canvas = await html2canvas(est.elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
+            const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
+            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvas.height * pW) / canvas.width; const maxH = pdf.internal.pageSize.getHeight();
+            if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
+            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
+            const pdfBlob = pdf.output('blob');
+            restaurarPantalla(est);
+
+            const fileNamePdf = `REPORTES_PDF/REP_${folioCalculado}_${Math.floor(Date.now() / 1000)}.pdf`;
+            await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
+            payload.link_pdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl;
+            // 🔥 FIN MAGIA NUEVA
+
+            let err = null; if (isEditing) err = (await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId)).error;
             else { payload.folio = folioCalculado; err = (await supabaseClient.from('reportes_servicio').insert([payload])).error; }
             if (err) throw err;
 
