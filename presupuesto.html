@@ -725,8 +725,8 @@ if (document.getElementById('in_cliente_telefono').value.trim() !== "") {
         let modelo = document.getElementById('in_vehiculo_modelo').value.trim();
         
         // Reconstruimos tu mensaje original con los saltos de línea correctos
-        const mensaje = `*${nomCliente}*! Te compartimos el Presupuesto de tu \n 🚘 *${marca} ${modelo}* \n\n` +
-                        `📄 *Ver Presupuesto aquí:* \nhttps://aediagnostico.com/?pres=${idReporteCortoGlobal}\n\n` +
+        const mensaje = `*${nomCliente}*! Te compartimos el Presupuesto \n 🚘 *${marca} ${modelo}* \n\n` +
+                        `📄 *Ver aquí:* 👇\nhttps://aediagnostico.com/?pres=${idReporteCortoGlobal}\n\n` +
                         `_Quedamos a tus órdenes para cualquier duda._`;
 
         // Abrimos la ventana de WhatsApp con el mensaje completo
