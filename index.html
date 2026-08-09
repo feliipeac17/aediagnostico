@@ -358,7 +358,7 @@
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-file-pdf" style="font-size: 16pt; color: #d32f2f;"></i>
                     <div>
-                        <strong style="display: block; font-size: 10pt;">Reporte de Servicio y Fotos</strong>
+                        <strong style="display: block; font-size: 10pt;">Reporte de Servicio</strong>
                         <span style="font-size: 7.5pt; color: #64748b;">Ver recepción</span>
                     </div>
                 </div>
@@ -1043,7 +1043,7 @@
                 
                 document.getElementById('portalFolioTxt').innerText = `FOLIO: ${rep.folio}`;
                 document.getElementById('portalVehiculoTxt').innerText = `${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}`.trim() || 'VEHÍCULO';
-                document.getElementById('portalClienteTxt').innerText = `Cliente: ${rep.cliente_nombre || 'N/A'}`;
+                document.getElementById('portalClienteTxt').innerText = `${rep.cliente_nombre || 'N/A'}`;
 
                 const st = (rep.estado || 'EN REVISION').toUpperCase();
                 
