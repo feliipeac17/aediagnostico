@@ -2263,11 +2263,22 @@ function inyectarTarjetasHistorial(arr) {
                 </div>
             </div>
 
-            <div style="display: flex; gap: 6px; margin-top: 4px;">
-                <button id="btn-ver-${rep.folio}" style="flex: 1; background: #64748b; color: white; border: none; padding: 11px 2px; border-radius: 8px; font-weight: 700; font-size: 8.5pt; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;"><i class="fa-solid fa-eye"></i></button>
-                <button id="btn-edit-${rep.folio}" style="flex: 1; background: #ea580c; color: white; border: none; padding: 11px 2px; border-radius: 8px; font-weight: 700; font-size: 8.5pt; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;"><i class="fa-solid fa-pen"></i></button>
-                <button id="btn-cotizar-${rep.folio}" style="flex: 1; background: #0284c7; color: white; border: none; padding: 11px 2px; border-radius: 8px; font-weight: 700; font-size: 8.5pt; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;"><i class="fa-solid fa-file-invoice-dollar"></i></button>
-                <button id="btn-wa-${rep.folio}" style="background: #25D366; color: white; border: none; padding: 11px 14px; border-radius: 8px; font-weight: 700; font-size: 12pt; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-brands fa-whatsapp"></i></button>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button id="btn-ver-${rep.folio}" style="flex: 1; aspect-ratio: 1 / 0.9; max-height: 55px; background: #64748b; color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+                    <i class="fa-solid fa-eye" style="font-size: 15pt;"></i>
+                </button>
+                
+                <button id="btn-edit-${rep.folio}" style="flex: 1; aspect-ratio: 1 / 0.9; max-height: 55px; background: #ea580c; color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+                    <i class="fa-solid fa-pen" style="font-size: 15pt;"></i>
+                </button>
+                
+                <button id="btn-cotizar-${rep.folio}" style="flex: 1; aspect-ratio: 1 / 0.9; max-height: 55px; background: #0284c7; color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+                    <i class="fa-solid fa-file-invoice-dollar" style="font-size: 15pt;"></i>
+                </button>
+                
+                <button id="btn-wa-${rep.folio}" style="flex: 1; aspect-ratio: 1 / 0.9; max-height: 55px; background: #25D366; color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 18pt;"></i>
+                </button>
             </div>
         `;
         contenedor.appendChild(tarjeta);
