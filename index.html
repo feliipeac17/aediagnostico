@@ -394,13 +394,13 @@
             </p>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
             <a id="btnPortalPdf" href="#" target="_blank" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #d32f2f; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-file-pdf" style="font-size: 16pt; color: #d32f2f;"></i>
                     <div>
-                        <strong style="display: block; font-size: 10pt;">Reporte de Servicio</strong>
-                        <span style="font-size: 7.5pt; color: #64748b;">Ver recepción</span>
+                        <strong style="display: block; font-size: 10pt;">Reporte de Servicio y Fotos</strong>
+                        <span style="font-size: 7.5pt; color: #64748b;">Ver recepción y evidencias de trabajo</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
@@ -410,7 +410,7 @@
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-laptop-code" style="font-size: 16pt; color: #0284c7;"></i>
                     <div>
-                        <strong style="display: block; font-size: 10pt;">Reporte de Escáner</strong>
+                        <strong style="display: block; font-size: 10pt;">Diagnóstico por Escáner</strong>
                         <span style="font-size: 7.5pt; color: #64748b;">Ver informe técnico de códigos</span>
                     </div>
                 </div>
@@ -427,9 +427,8 @@
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </a>
-        </div>
 
-        <a id="btnPortalEvidencia" href="javascript:void(0)" onclick="toggleGaleriaEvidencia()" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #6366f1; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <a id="btnPortalEvidencia" href="javascript:void(0)" onclick="toggleGaleriaEvidencia()" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #6366f1; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-camera-retro" style="font-size: 16pt; color: #6366f1;"></i>
                     <div>
@@ -440,13 +439,14 @@
                 <i id="iconoFlechaEvidencia" class="fa-solid fa-chevron-down" style="color: #cbd5e1; transition: transform 0.3s;"></i>
             </a>
 
-            <div id="portalGaleriaEvidencia" style="display: none; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px; margin-top: -4px;">
-                <div id="portalGaleriaGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    </div>
-                <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
-                    Toca una imagen para abrirla en tamaño completo
-                </p>
-            </div>
+        </div> 
+        <div id="portalGaleriaEvidencia" style="display: none; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px; margin-top: 12px;">
+            <div id="portalGaleriaGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                </div>
+            <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
+                Toca una imagen para abrirla en tamaño completo
+            </p>
+        </div>
     </div>
 
     <div id="pin-lock-screen" class="pin-overlay">
