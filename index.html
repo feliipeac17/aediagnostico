@@ -1645,7 +1645,7 @@ async function cargarHistorialSupabase() {
         if (rep.estado === 'COTIZACION') {
             mensaje = `Hola *${nom}*, ¡excelente día! 👋\nEn *AE Diagnóstico* tenemos listo el presupuesto para tu vehículo 🚗 *${m} ${mo}* (Folio: *${rep.folio}*).\n\nPuedes revisarlo en el siguiente enlace: 👇\nhttps://aediagnostico.com/?pres=${rep.folio}\n\n Quedamos a tu entera disposición para resolver cualquier duda. ¡Gracias! 🛠️`;
         } else {
-            mensaje = `Hola *${nom}* 👋 \nTu registro se creó con éxito. Tu número de Folio es: _*${rep.folio}*_ \n🚗 *${m} ${mo}* \n\nPuedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\n_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
+            mensaje = `Hola *${nom}* 🤝 \n Tu registro se creó con éxito. El Folio es: _*${rep.folio}*_ \n🚗 *${m} ${mo}* \n\nPuedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\n_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
         }
         window.open(`https://wa.me/${tel.length===10?"52"+tel:tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
