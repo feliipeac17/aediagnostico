@@ -1252,7 +1252,10 @@
                 } catch (e) {
                     const lf = document.createElement('a'); lf.href = url; lf.target = '_blank'; document.body.appendChild(lf); lf.click(); document.body.removeChild(lf);
                 }
-                document.getElementById('pres-loading-spinner').style.display = 'none'; document.getElementById('pres-status-title').innerText = "¡PRESUPUESTO DESCARGADO!"; document.getElementById('btnRetryPres').style.display = 'inline-block';
+                document.getElementById('pres-loading-spinner').style.display = 'none'; 
+                document.getElementById('pres-status-title').innerText = "¡PRESUPUESTO DESCARGADO!";
+                document.getElementById('pres-status-desc').innerText = "Si la descarga no inició automáticamente, presiona el botón de abajo.";
+                document.getElementById('btnRetryPres').style.display = 'inline-block';                
             } else { overlay.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#fff;"><h2>⚠️ PRESUPUESTO NO ENCONTRADO</h2></div>'; }
             return;
         }
