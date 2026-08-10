@@ -666,17 +666,89 @@
                 </div>
             </div>
 
-            <div id="seccion_evidencia_editar" style="display: none; background: #fdfdfd; border: 1px solid #eef0f3; border-left: 4px solid #6366f1; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+<div id="seccion_evidencia_editar" style="display: none; background: #fdfdfd; border: 1px solid #eef0f3; border-left: 4px solid #6366f1; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
                 <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; color: #1e293b;"><i class="fa-solid fa-camera" style="color: #6366f1;"></i> Evidencia de Reparacion</div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_1" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_1" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 1<br></span><input type="file" accept="image/*" id="edit_file_evidencia_1" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_1', 'edit_txt_evidencia_1')"></label><input type="text" id="edit_nota_evidencia_1" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_2" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_2" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 2<br></span><input type="file" accept="image/*" id="edit_file_evidencia_2" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_2', 'edit_txt_evidencia_2')"></label><input type="text" id="edit_nota_evidencia_2" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_3" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_3" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 3<br></span><input type="file" accept="image/*" id="edit_file_evidencia_3" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_3', 'edit_txt_evidencia_3')"></label><input type="text" id="edit_nota_evidencia_3" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_4" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_4" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 4<br></span><input type="file" accept="image/*" id="edit_file_evidencia_4" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_4', 'edit_txt_evidencia_4')"></label><input type="text" id="edit_nota_evidencia_4" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_5" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_5" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 5<br></span><input type="file" accept="image/*" id="edit_file_evidencia_5" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_5', 'edit_txt_evidencia_5')"></label><input type="text" id="edit_nota_evidencia_5" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_6" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_6" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 6<br></span><input type="file" accept="image/*" id="edit_file_evidencia_6" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_6', 'edit_txt_evidencia_6')"></label><input type="text" id="edit_nota_evidencia_6" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_7" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_7" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 7<br></span><input type="file" accept="image/*" id="edit_file_evidencia_7" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_7', 'edit_txt_evidencia_7')"></label><input type="text" id="edit_nota_evidencia_7" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
-                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;"><label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;"><img id="edit_img_evidencia_8" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="edit_txt_evidencia_8" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 8<br></span><input type="file" accept="image/*" id="edit_file_evidencia_8" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_8', 'edit_txt_evidencia_8')"></label><input type="text" id="edit_nota_evidencia_8" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;"></div>
+                    
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_1" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_1" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 1<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_1" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_1', 'edit_txt_evidencia_1')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_1', 'edit_img_evidencia_1', 'edit_txt_evidencia_1')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_1" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_2" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_2" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 2<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_2" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_2', 'edit_txt_evidencia_2')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_2', 'edit_img_evidencia_2', 'edit_txt_evidencia_2')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_2" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_3" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_3" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 3<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_3" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_3', 'edit_txt_evidencia_3')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_3', 'edit_img_evidencia_3', 'edit_txt_evidencia_3')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_3" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_4" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_4" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 4<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_4" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_4', 'edit_txt_evidencia_4')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_4', 'edit_img_evidencia_4', 'edit_txt_evidencia_4')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_4" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_5" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_5" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 5<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_5" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_5', 'edit_txt_evidencia_5')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_5', 'edit_img_evidencia_5', 'edit_txt_evidencia_5')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_5" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_6" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_6" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 6<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_6" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_6', 'edit_txt_evidencia_6')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_6', 'edit_img_evidencia_6', 'edit_txt_evidencia_6')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_6" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_7" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_7" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 7<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_7" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_7', 'edit_txt_evidencia_7')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_7', 'edit_img_evidencia_7', 'edit_txt_evidencia_7')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_7" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                        <label class="photo-container" style="height: 110px; position:relative; display:flex; justify-content:center; align-items:center; background:#e2e8f0; border-radius:6px; overflow:hidden; cursor:pointer;">
+                            <img id="edit_img_evidencia_8" style="width:100%; height:100%; object-fit:cover; display:none;">
+                            <span id="edit_txt_evidencia_8" style="font-size:8pt; font-weight:700; color:#475569; text-align:center;">📸 Evidencia 8<br></span>
+                            <input type="file" accept="image/*" id="edit_file_evidencia_8" style="display:none;" onchange="previewImage(this, 'edit_img_evidencia_8', 'edit_txt_evidencia_8')">
+                            <button type="button" class="btn-del-photo pdf-ctrl" onclick="borrarFoto(event, 'edit_file_evidencia_8', 'edit_img_evidencia_8', 'edit_txt_evidencia_8')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <input type="text" id="edit_nota_evidencia_8" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
+                    </div>
                 </div>
             </div>
             
@@ -1430,21 +1502,27 @@ if (presFolio) {
                 estado: document.getElementById('in_estado') ? document.getElementById('in_estado').value : 'EN REVISION'
             };
 
-            const uF = await subirFotoOriginal(inputsFotos.frente, folioCalculado); if(uF) payload.foto_frente_url = uF;
-            const uT = await subirFotoOriginal(inputsFotos.trasera, folioCalculado); if(uT) payload.foto_trasera_url = uT;
-            const uI = await subirFotoOriginal(inputsFotos.izq, folioCalculado); if(uI) payload.foto_izquierdo_url = uI;
-            const uD = await subirFotoOriginal(inputsFotos.der, folioCalculado); if(uD) payload.foto_derecho_url = uD;
-            const uM = await subirFotoOriginal(inputsFotos.motor, folioCalculado); if(uM) payload.foto_motor_url = uM;
-            const uC = await subirFotoOriginal(inputsFotos.cluster, folioCalculado); if(uC) payload.foto_cluster_url = uC;
+// 🔥 FUNCIÓN INTELIGENTE: Sabe si subiste foto nueva, o si le picaste a la "X" para borrarla
+            const fueBorrada = (imgId) => {
+                const img = document.getElementById(imgId);
+                return img && img.style.display === 'none';
+            };
 
-            const uE1 = await subirFotoOriginal('edit_file_evidencia_1', folioCalculado); if(uE1) payload.evidencia_1 = uE1;
-            const uE2 = await subirFotoOriginal('edit_file_evidencia_2', folioCalculado); if(uE2) payload.evidencia_2 = uE2;
-            const uE3 = await subirFotoOriginal('edit_file_evidencia_3', folioCalculado); if(uE3) payload.evidencia_3 = uE3;
-            const uE4 = await subirFotoOriginal('edit_file_evidencia_4', folioCalculado); if(uE4) payload.evidencia_4 = uE4;
-            const uE5 = await subirFotoOriginal('edit_file_evidencia_5', folioCalculado); if(uE5) payload.evidencia_5 = uE5;
-            const uE6 = await subirFotoOriginal('edit_file_evidencia_6', folioCalculado); if(uE6) payload.evidencia_6 = uE6;
-            const uE7 = await subirFotoOriginal('edit_file_evidencia_7', folioCalculado); if(uE7) payload.evidencia_7 = uE7;
-            const uE8 = await subirFotoOriginal('edit_file_evidencia_8', folioCalculado); if(uE8) payload.evidencia_8 = uE8;
+            const uF = await subirFotoOriginal(inputsFotos.frente, folioCalculado); if(uF) payload.foto_frente_url = uF; else if(fueBorrada('prev_frente')) payload.foto_frente_url = null;
+            const uT = await subirFotoOriginal(inputsFotos.trasera, folioCalculado); if(uT) payload.foto_trasera_url = uT; else if(fueBorrada('prev_trasera')) payload.foto_trasera_url = null;
+            const uI = await subirFotoOriginal(inputsFotos.izq, folioCalculado); if(uI) payload.foto_izquierdo_url = uI; else if(fueBorrada('prev_izq')) payload.foto_izquierdo_url = null;
+            const uD = await subirFotoOriginal(inputsFotos.der, folioCalculado); if(uD) payload.foto_derecho_url = uD; else if(fueBorrada('prev_der')) payload.foto_derecho_url = null;
+            const uM = await subirFotoOriginal(inputsFotos.motor, folioCalculado); if(uM) payload.foto_motor_url = uM; else if(fueBorrada('prev_motor')) payload.foto_motor_url = null;
+            const uC = await subirFotoOriginal(inputsFotos.cluster, folioCalculado); if(uC) payload.foto_cluster_url = uC; else if(fueBorrada('prev_cluster')) payload.foto_cluster_url = null;
+
+            const uE1 = await subirFotoOriginal('edit_file_evidencia_1', folioCalculado); if(uE1) payload.evidencia_1 = uE1; else if(fueBorrada('edit_img_evidencia_1')) payload.evidencia_1 = null;
+            const uE2 = await subirFotoOriginal('edit_file_evidencia_2', folioCalculado); if(uE2) payload.evidencia_2 = uE2; else if(fueBorrada('edit_img_evidencia_2')) payload.evidencia_2 = null;
+            const uE3 = await subirFotoOriginal('edit_file_evidencia_3', folioCalculado); if(uE3) payload.evidencia_3 = uE3; else if(fueBorrada('edit_img_evidencia_3')) payload.evidencia_3 = null;
+            const uE4 = await subirFotoOriginal('edit_file_evidencia_4', folioCalculado); if(uE4) payload.evidencia_4 = uE4; else if(fueBorrada('edit_img_evidencia_4')) payload.evidencia_4 = null;
+            const uE5 = await subirFotoOriginal('edit_file_evidencia_5', folioCalculado); if(uE5) payload.evidencia_5 = uE5; else if(fueBorrada('edit_img_evidencia_5')) payload.evidencia_5 = null;
+            const uE6 = await subirFotoOriginal('edit_file_evidencia_6', folioCalculado); if(uE6) payload.evidencia_6 = uE6; else if(fueBorrada('edit_img_evidencia_6')) payload.evidencia_6 = null;
+            const uE7 = await subirFotoOriginal('edit_file_evidencia_7', folioCalculado); if(uE7) payload.evidencia_7 = uE7; else if(fueBorrada('edit_img_evidencia_7')) payload.evidencia_7 = null;
+            const uE8 = await subirFotoOriginal('edit_file_evidencia_8', folioCalculado); if(uE8) payload.evidencia_8 = uE8; else if(fueBorrada('edit_img_evidencia_8')) payload.evidencia_8 = null;
 
             payload.evidencia_nota_1 = document.getElementById('edit_nota_evidencia_1') ? document.getElementById('edit_nota_evidencia_1').value.trim() : '';
             payload.evidencia_nota_2 = document.getElementById('edit_nota_evidencia_2') ? document.getElementById('edit_nota_evidencia_2').value.trim() : '';
@@ -1610,7 +1688,16 @@ async function cargarHistorialSupabase() {
             let iu = rep[`evidencia_${i}`]; let nt = rep[`evidencia_nota_${i}`] || "";
             if(document.getElementById(`edit_nota_evidencia_${i}`)) document.getElementById(`edit_nota_evidencia_${i}`).value = nt;
             let it = document.getElementById(`edit_img_evidencia_${i}`); let tt = document.getElementById(`edit_txt_evidencia_${i}`);
-            if(it && tt) { if(iu) { it.src = iu; it.style.display = "block"; tt.style.display = "none"; } else { it.src = ""; it.style.display = "none"; tt.style.display = "block"; } }
+            let btnDel = it ? it.parentElement.querySelector('.btn-del-photo') : null; // 🔥 Buscamos el botón de borrar
+            if(it && tt) { 
+                if(iu) { 
+                    it.src = iu; it.style.display = "block"; tt.style.display = "none"; 
+                    if(btnDel) btnDel.style.display = "flex"; // Mostramos la X
+                } else { 
+                    it.src = ""; it.style.display = "none"; tt.style.display = "block"; 
+                    if(btnDel) btnDel.style.display = "none"; // Ocultamos la X
+                } 
+            }
             if(document.getElementById(`edit_file_evidencia_${i}`)) document.getElementById(`edit_file_evidencia_${i}`).value = "";
         }
     
