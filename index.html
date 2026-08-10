@@ -339,13 +339,13 @@
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
                     <div>
-                        <span style="font-size: 7pt; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 2px;">
+                        <span style="font-size: 10pt; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 2px;">
                             <i class="fa-solid fa-car-rear" style="color: #cbd5e1; margin-right: 3px;"></i>
                         </span>
                         <span id="portalVehiculoTxt" style="font-size: 12pt; color: #0284c7; font-weight: 800; text-transform: uppercase; line-height: 1.2;">CARGANDO...</span>
                     </div>
                     <div>
-                        <span style="font-size: 7pt; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 2px;">
+                        <span style="font-size: 10pt; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 2px;">
                             <i class="fa-solid fa-user-tie" style="color: #cbd5e1; margin-right: 3px;"></i>
                         </span>
                         <span id="portalClienteTxt" style="font-size: 10pt; color: #1e293b; font-weight: 700; text-transform: uppercase; line-height: 1.2;">--</span>
@@ -1645,7 +1645,7 @@ async function cargarHistorialSupabase() {
         if (rep.estado === 'COTIZACION') {
             mensaje = `Hola *${nom}*, ¡excelente día! 👋\nEn *AE Diagnóstico* tenemos listo el presupuesto para tu vehículo 🚗 *${m} ${mo}* (Folio: *${rep.folio}*).\n\nPuedes revisarlo en el siguiente enlace: 👇\nhttps://aediagnostico.com/?pres=${rep.folio}\n\n Quedamos a tu entera disposición para resolver cualquier duda. ¡Gracias! 🛠️`;
         } else {
-            mensaje = `Hola *${nom}* 🤝 \n Se te asignó el Folio: _*${rep.folio}*_ \n🚗 *${m} ${mo}* \n\nPuedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\n_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
+            mensaje = `Hola! *${nom}* 🤝 \n Se te asignó el Folio: _*${rep.folio}*_ \n🚗 *${m} ${mo}* \n\nPuedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\n_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
         }
         window.open(`https://wa.me/${tel.length===10?"52"+tel:tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
