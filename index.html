@@ -356,22 +356,22 @@
 
                     <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 60px;">
                         <div id="step-dot-1" style="width: 28px; height: 28px; border-radius: 50%; background: #e2e8f0; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 10pt; font-weight: 800; border: 3px solid white; transition: all 0.4s ease;">1</div>
-                        <span id="step-txt-1" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">Revisión</span>
+                        <span id="step-txt-1" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">1</span>
                     </div>
 
                     <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 60px;">
                         <div id="step-dot-2" style="width: 28px; height: 28px; border-radius: 50%; background: #e2e8f0; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 10pt; font-weight: 800; border: 3px solid white; transition: all 0.4s ease;">2</div>
-                        <span id="step-txt-2" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">Reparación</span>
+                        <span id="step-txt-2" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">2</span>
                     </div>
 
                     <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 60px;">
                         <div id="step-dot-3" style="width: 28px; height: 28px; border-radius: 50%; background: #e2e8f0; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 10pt; font-weight: 800; border: 3px solid white; transition: all 0.4s ease;">3</div>
-                        <span id="step-txt-3" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">Terminado</span>
+                        <span id="step-txt-3" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">3</span>
                     </div>
 
                     <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 60px;">
                         <div id="step-dot-4" style="width: 28px; height: 28px; border-radius: 50%; background: #e2e8f0; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 10pt; font-weight: 800; border: 3px solid white; transition: all 0.4s ease;">4</div>
-                        <span id="step-txt-4" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">Entrega</span>
+                        <span id="step-txt-4" style="font-size: 6.5pt; font-weight: 800; color: #94a3b8; margin-top: 6px; text-transform: uppercase; text-align: center; transition: all 0.4s ease;">4</span>
                     </div>
                 </div>
 
@@ -1085,7 +1085,7 @@
                 const progressLine = document.getElementById('portalProgressLine');
                 const detailTxt = document.getElementById('portalEstatusDetail');
                 
-                let progressWidth = "0%"; let activeColor = "#f59e0b"; let detailMsg = "🔍 Vehículo en Revisión"; 
+                let progressWidth = "0%"; let activeColor = "#f59e0b"; let detailMsg = "🔍 Vehiculo en Revision"; 
                 let activeSteps = 1; // Determina cuántas bolitas se pintan
 
                 if (st === 'COTIZACION') {
@@ -1093,9 +1093,9 @@
                 } else if (st === 'EN REPARACION') {
                     progressWidth = "33.33%"; activeColor = "#3b82f6"; detailMsg = "🔧 Vehiculo en Reparacion"; activeSteps = 2;
                 } else if (st === 'TERMINADO') {
-                    progressWidth = "66.66%"; activeColor = "#10b981"; detailMsg = "✅ Listo para Entrega"; activeSteps = 3;
+                    progressWidth = "66.66%"; activeColor = "#10b981"; detailMsg = "🎉 Listo para Entrega"; activeSteps = 3;
                 } else if (st === 'ENTREGADO') {
-                    progressWidth = "100%"; activeColor = "#0284c7"; detailMsg = "🎉 Vehiculo Entregado"; activeSteps = 4;
+                    progressWidth = "100%"; activeColor = "#0284c7"; detailMsg = "✅ Vehiculo Entregado"; activeSteps = 4;
                 }
 
                 if (progressLine) { progressLine.style.width = progressWidth; progressLine.style.background = activeColor; }
