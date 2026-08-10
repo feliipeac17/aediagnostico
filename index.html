@@ -429,17 +429,24 @@
             </a>
         </div>
 
-        <div id="portalGaleriaEvidencia" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <div style="font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-camera-retro" style="color: #6366f1;"></i> Evidencia
-            </div>
-            
-            <div id="portalGaleriaGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <a id="btnPortalEvidencia" href="javascript:void(0)" onclick="toggleGaleriaEvidencia()" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #6366f1; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-camera-retro" style="font-size: 16pt; color: #6366f1;"></i>
+                    <div>
+                        <strong style="display: block; font-size: 10pt;">Evidencia de Reparación</strong>
+                        <span style="font-size: 7.5pt; color: #64748b;">Ver fotos del proceso de trabajo</span>
+                    </div>
                 </div>
-            <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
-                Toca una imagen para verla en pantalla completa
-            </p>
-        </div>
+                <i id="iconoFlechaEvidencia" class="fa-solid fa-chevron-down" style="color: #cbd5e1; transition: transform 0.3s;"></i>
+            </a>
+
+            <div id="portalGaleriaEvidencia" style="display: none; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px; margin-top: -4px;">
+                <div id="portalGaleriaGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    </div>
+                <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
+                    Toca una imagen para abrirla en tamaño completo
+                </p>
+            </div>
     </div>
 
     <div id="pin-lock-screen" class="pin-overlay">
@@ -1298,10 +1305,16 @@
                     }
                 }
 
-                // Solo mostramos la tarjeta si encontró al menos 1 foto
-                if (galeriaSec) {
-                    galeriaSec.style.display = tieneEvidencias ? 'block' : 'none';
+// 🔥 En vez de mostrar la galería de golpe, mostramos EL BOTÓN si hay fotos
+                const btnEvidencia = document.getElementById('btnPortalEvidencia');
+                if (btnEvidencia) {
+                    btnEvidencia.style.display = tieneEvidencias ? 'flex' : 'none';
                 }
+                
+                // Aseguramos que la caja de fotos inicie cerrada
+                if (galeriaSec) galeriaSec.style.display = 'none';
+                const flechaEvi = document.getElementById('iconoFlechaEvidencia');
+                if (flechaEvi) flechaEvi.style.transform = 'rotate(0deg)';
             });
             return;
         }
@@ -1859,6 +1872,20 @@ async function cargarHistorialSupabase() {
                 galeria.style.display = 'block';
             } else {
                 galeria.style.display = 'none';
+            }
+        }
+    }
+    // 🔥 Función para desplegar / ocultar la galería de Evidencia desde el botón
+    function toggleGaleriaEvidencia() {
+        const galeria = document.getElementById('portalGaleriaEvidencia');
+        const flecha = document.getElementById('iconoFlechaEvidencia');
+        if (galeria) {
+            if (galeria.style.display === 'none' || galeria.style.display === '') {
+                galeria.style.display = 'block';
+                if(flecha) flecha.style.transform = 'rotate(180deg)'; // Gira la flechita hacia arriba
+            } else {
+                galeria.style.display = 'none';
+                if(flecha) flecha.style.transform = 'rotate(0deg)'; // Regresa la flechita
             }
         }
     }
