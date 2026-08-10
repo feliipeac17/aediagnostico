@@ -1617,7 +1617,7 @@ async function cargarHistorialSupabase() {
         if (secEvi) {
             secEvi.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;width:100%;"></div>`; const grid = secEvi.firstElementChild; let tE = false;
             for (let i = 1; i <= 8; i++) { let iu = rep[`evidencia_${i}`]; let nt = rep[`evidencia_nota_${i}`] || ""; if (iu) { tE = true; grid.innerHTML += `<div style="background:#fff;border:1px solid #e2e8f0;padding:10px;border-radius:12px;"><img src="${iu}" onclick="window.open('${iu}','_blank')" style="width:100%;height:160px;object-fit:cover;border-radius:8px;cursor:pointer;"><p style="margin-top:8px;font-size:9pt;font-weight:700;color:#334155;text-align:center;text-transform:uppercase;">"${nt}"</p></div>`; } }
-            if (!tE) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8;font-weight:700;"><i class="fa-solid fa-folder-open" style="font-size:30pt;margin-bottom:10px;"></i><br>No se ha cargado ninguna evidencia fotográfica de reparación.</div>`;
+            if (!tE) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8;font-weight:700;"><i class="fa-solid fa-folder-open" style="font-size:30pt;margin-bottom:10px;"></i><br>No se ha cargado ninguna evidencia fotográfica.</div>`;
         }
         document.getElementById('adminPanel').style.display = 'none'; document.getElementById('reportView').style.display = 'block'; window.scrollTo(0, 0);
     }
@@ -1643,9 +1643,9 @@ async function cargarHistorialSupabase() {
         
         let mensaje = ""; const nom = (rep.cliente_nombre || '').toUpperCase(); const m = rep.vehiculo_marca || ''; const mo = rep.vehiculo_modelo || '';
         if (rep.estado === 'COTIZACION') {
-            mensaje = `Hola *${nom}*, ¡excelente día! 👋\nEn *AE Diagnóstico* tenemos listo el presupuesto para tu vehículo 🚗 *${m} ${mo}* (Folio: *${rep.folio}*).\n\nPuedes revisarlo en el siguiente enlace: 👇\nhttps://aediagnostico.com/?pres=${rep.folio}\n\nQuedamos a tu entera disposición para resolver cualquier duda. ¡Gracias! 🛠️`;
+            mensaje = `Hola *${nom}*, ¡excelente día! 👋\nEn *AE Diagnóstico* tenemos listo el presupuesto para tu vehículo 🚗 *${m} ${mo}* (Folio: *${rep.folio}*).\n\nPuedes revisarlo en el siguiente enlace: 👇\nhttps://aediagnostico.com/?pres=${rep.folio}\n\n Quedamos a tu entera disposición para resolver cualquier duda. ¡Gracias! 🛠️`;
         } else {
-            mensaje = `Hola *${nom}*, ¡excelente día! 👋\nEn *AE Diagnóstico* hemos actualizado el estatus de tu vehículo 🚗 *${m} ${mo}* (Folio: *${rep.folio}*).\n\nPuedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\nQuedamos a tu entera disposición para cualquier duda. ¡Gracias! 🛠️`;
+            mensaje = `Hola *${nom}* 👋, Tu registro se creó con éxito. Tu número de Folio es: _*${rep.folio}.*_ \n 🚗 *${m} ${mo}* \n\n Puedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\n _Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
         }
         window.open(`https://wa.me/${tel.length===10?"52"+tel:tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
