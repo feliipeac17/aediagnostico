@@ -1643,9 +1643,9 @@ async function cargarHistorialSupabase() {
         
         let mensaje = ""; const nom = (rep.cliente_nombre || '').toUpperCase(); const m = rep.vehiculo_marca || ''; const mo = rep.vehiculo_modelo || '';
         if (rep.estado === 'COTIZACION') {
-            mensaje = `Hola! 🤝 *${nom}* \n Tenemos listo tu presupuesto \n🚘 *${m} ${mo}* \n\nPuedes descargarlo aquí: 👇\nhttps://aediagnostico.com/?pres=${rep.folio} \n\n_Quedamos a tus órdenes para cualquier duda._`;
+            mensaje = `Hola! *${nom}*\nTenemos listo tu presupuesto \n🚘 *${m} ${mo}*\n\nPuedes descargarlo aquí: 👇\nhttps://aediagnostico.com/?pres=${rep.folio} \n\n_Quedamos a tus órdenes para cualquier duda._`;
         } else {
-            mensaje = `Hola! 🤝 *${nom}* \n Se te asignó el Folio: _*${rep.folio}*_ \n🚗 *${m} ${mo}* \n\nPuedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\n_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
+            mensaje = `Hola! *${nom}*\nSe te asignó el Folio: _*${rep.folio}*_ \n🚗 *${m} ${mo}*\n\nPuedes consultar el progreso y tus documentos desde tu portal personal: 👇\nhttps://aediagnostico.com/?folio=${rep.folio}\n\n_Por favor revísalos y avísanos si tienes alguna duda. Que tenga un excelente día!_`;
         }
         window.open(`https://wa.me/${tel.length===10?"52"+tel:tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
