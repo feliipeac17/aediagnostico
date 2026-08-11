@@ -607,7 +607,7 @@
         const originalW = elemento.style.width; const originalMax = elemento.style.maxWidth;
         elemento.style.width = '840px'; elemento.style.maxWidth = 'none';
 
-        html2canvas(elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840 }).then(canvas => {
+        html2canvas(elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840 }).then(canvas => {
             elemento.style.width = originalW; elemento.style.maxWidth = originalMax;
             const enlace = document.createElement('a'); enlace.download = (document.title || "Presupuesto") + ".png"; enlace.href = canvas.toDataURL('image/png');
             document.body.appendChild(enlace); enlace.click(); document.body.removeChild(enlace);
@@ -679,28 +679,22 @@ async function guardarPresupuestoNube() {
             elemento.style.width = '840px'; 
             elemento.style.maxWidth = 'none';
 
-            // 🔥 MAGIA AUTOMÁTICA: Escala 4 y bloqueo estricto de coordenadas X,Y en 0
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> RENDEREANDO...";
-            const canvas = await html2canvas(elemento, { 
-                scale: 4, 
-                useCORS: true, 
-                logging: false, 
-                width: 840, 
-                windowWidth: 840,
-                scrollX: 0,
-                scrollY: 0,
-                x: 0,
-                y: 0
-            });
             
-            // ARCHIVO 1: Armar el PDF
+            // 1️⃣ RENDERIZADO EXCLUSIVO PARA EL PDF (Escala 4: Calidad Máxima Intacta)
+            const canvasPdf = await html2canvas(elemento, { 
+                scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+            });
             const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
-            const pdfWidth = pdf.internal.pageSize.getWidth(); const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
-            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
+            const pdfWidth = pdf.internal.pageSize.getWidth(); const pdfHeight = (canvasPdf.height * pdfWidth) / canvasPdf.width; 
+            pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
-            // ARCHIVO 2: Armar el PNG directo del lienzo
-            const dataUrlPng = canvas.toDataURL('image/png');
+            // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5: Ligero, rápido y fluido al abrir)
+            const canvasPng = await html2canvas(elemento, { 
+                scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+            });
+            const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
             const pngResponse = await fetch(dataUrlPng);
             const pngBlob = await pngResponse.blob();
 
@@ -719,7 +713,7 @@ async function guardarPresupuestoNube() {
             if (uploadError) throw uploadError;
             const publicURLPdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
 
-            // SUBIDA 2: PNG al Storage
+            // SUBIDA 2: PNG ligero al Storage
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO PREVIEW...";
             const fileNamePng = `PRESUPUESTOS_PREVIEW/PREVIEW_PRES_${idReporteCortoGlobal}.png`;
             await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
