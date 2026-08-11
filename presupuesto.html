@@ -207,7 +207,14 @@
 
         body.modo-app .pdf-card-data { grid-template-columns: 1fr !important; gap: 15px !important; }
         body.modo-app .pdf-data-item span { font-size: 7.5pt !important; padding-left: 4px !important; letter-spacing: 0.5px !important; margin-bottom: 6px !important; }
+        
         body.modo-app input.card-input, body.modo-app textarea.card-input, body.modo-app select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
+        
+        /* 🔥 FIX 1: Que la Marca no se corte */
+        body.modo-app select.card-input { padding-right: 32px !important; text-overflow: ellipsis !important; }
+        /* 🔥 FIX 2: Unidad de Odómetro visible y acomodada */
+        body.modo-app #in_vehiculo_km { width: 100% !important; max-width: 100% !important; flex: 1 !important; }
+        body.modo-app #in_vehiculo_unidad { width: 75px !important; padding: 14px 8px !important; text-align: center !important; }
 
         body.modo-app .pdf-pillars-grid { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
         body.modo-app .pdf-pillar-card { border: none !important; border-radius: 16px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; margin-bottom: 20px !important; background: #ffffff !important; }
@@ -220,13 +227,15 @@
         body.modo-app .table-container { padding: 10px !important; }
         body.modo-app #listServicios, body.modo-app #listRefacciones, body.modo-app #listManoObra { gap: 10px !important; }
         
-        body.modo-app .table-row { grid-template-columns: 1fr 90px 45px !important; gap: 10px !important; padding: 12px 10px !important; border-bottom: 1px solid #f1f5f9 !important; background: #ffffff !important; border-radius: 12px !important;}
+        /* 🔥 FIX 3: Renglones estirados y Botón de Borrar centrado perfecto */
+        body.modo-app .table-row { grid-template-columns: 1fr 90px 48px !important; gap: 8px !important; padding: 12px 10px !important; border-bottom: 1px solid #f1f5f9 !important; background: #ffffff !important; border-radius: 12px !important; align-items: stretch !important; }
         body.modo-app .table-row input.desc-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 12px !important; height: auto !important; font-size: 10pt !important; }
         body.modo-app .table-row input.price-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 12px !important; height: auto !important; font-size: 10.5pt !important; text-align: center !important; }
         
         body.modo-app .extra-input { border: 1px solid #e2e8f0 !important; background: #ffffff !important; border-radius: 6px !important; padding: 6px !important; height: 28px !important; font-size: 7pt !important; box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important; }
         body.modo-app .btn-add-item { background: #1e293b !important; color: #ffffff !important; border: none !important; padding: 16px !important; font-size: 9.5pt !important; border-radius: 10px !important; width: calc(100% - 20px) !important; margin: 10px auto 15px auto !important; box-shadow: 0 4px 10px rgba(30, 41, 59, 0.2) !important; }
-        body.modo-app .btn-del-item { background: #fee2e2 !important; color: #ef4444 !important; border-radius: 8px !important; width: 100% !important; height: 42px !important; margin-top: 0 !important; font-size: 11pt !important; }
+        
+        body.modo-app .btn-del-item { background: #fee2e2 !important; color: #ef4444 !important; border-radius: 8px !important; width: 100% !important; height: auto !important; margin: 0 !important; font-size: 12pt !important; display: flex !important; justify-content: center !important; align-items: center !important; border: none !important; box-shadow: none !important; }
 
         body.modo-app .pdf-footer-section { grid-template-columns: 1fr !important; gap: 20px !important; margin-top: 10px !important; }
         body.modo-app .pdf-terms-card { border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; }
@@ -702,9 +711,9 @@ function forzarDescargaPNG() {
             pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
-            // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5 para buena calidad pero rápida)
+            // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1 para buena calidad pero rápida)
             const canvasPng = await html2canvas(elemento, { 
-                scale: 1.5, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+                scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
             const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
             const pngResponse = await fetch(dataUrlPng);
