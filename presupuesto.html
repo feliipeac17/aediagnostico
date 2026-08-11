@@ -496,7 +496,7 @@
         document.title = "PRES_" + idReporteCorto;
     });
     
-    function agregarRenglon(listaId, desc = '', price = '', extras = {}) {
+function agregarRenglon(listaId, desc = '', price = '', extras = {}) {
         const contenedor = document.getElementById(listaId);
         const div = document.createElement('div');
         div.className = 'table-row';
@@ -505,6 +505,9 @@
         if (listaId === 'listRefacciones') {
             extraHTML = `
                 <div class="extra-fields-container" data-html2canvas-ignore="true" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;">
+                    <input type="number" class="extra-input e-qty" placeholder="CANT." value="${extras.qty || '1'}" oninput="recalcularFila(this)" style="max-width: 60px; text-align: center; font-weight: 800 !important; color: #0284c7 !important; background: #e0f2fe !important; border-color: #bae6fd !important;">
+                    <input type="text" inputmode="decimal" class="extra-input e-unit" placeholder="$ UNIT." value="${extras.unit || ''}" onblur="let num = parseFloat(this.value.replace(/[^0-9.]/g, '')); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; recalcularFila(this)" style="max-width: 80px; text-align: center; font-weight: 700 !important;">
+                    
                     <input type="text" class="extra-input e-marca" placeholder="Marca" value="${extras.marca || ''}">
                     <input type="text" class="extra-input e-parte" placeholder="# Parte" value="${extras.parte || ''}">
                     <input type="text" class="extra-input e-serie" placeholder="# Serie" value="${extras.serie || ''}">
@@ -527,6 +530,10 @@
                 </div>`;
         }
 
+        // 🔥 Hacemos que el "Total" sea automático solo en refacciones
+        let isRefaccion = listaId === 'listRefacciones';
+        let priceAttr = isRefaccion ? 'readonly style="background: #e2e8f0 !important; cursor: not-allowed;"' : '';
+
         div.innerHTML = `
             <div style="display: flex; flex-direction: column; width: 100%;">
                 <input type="text" class="desc-input" placeholder="..." value="${desc}" required>
@@ -534,8 +541,9 @@
             </div>
             <div>
                 <input type="text" inputmode="decimal" class="price-input" placeholder="$0.00" value="${price}" 
-                    onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
-                    onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();" required>
+                    onfocus="if(!this.hasAttribute('readonly')) this.value = this.value.replace(/[^0-9.]/g, '')"
+                    onblur="if(!this.hasAttribute('readonly')) { let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales(); }" 
+                    ${priceAttr} required>
             </div>
             <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove(); actualizarTotales();"><i class="fa-solid fa-trash"></i></button>
         `;
@@ -566,6 +574,28 @@
 
     function autoExpandir(textarea) { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
 
+    // 🔥 NUEVO: Motor que multiplica Cantidad x Precio Unitario automáticamente
+    window.recalcularFila = function(elemento) {
+        const fila = elemento.closest('.table-row');
+        if (!fila) return;
+        
+        const qtyInp = fila.querySelector('.e-qty');
+        const unitInp = fila.querySelector('.e-unit');
+        const priceInp = fila.querySelector('.price-input');
+        
+        if (qtyInp && unitInp && priceInp) {
+            let qty = parseFloat(qtyInp.value) || 0;
+            let unit = parseFloat(unitInp.value.replace(/[^0-9.]/g, '')) || 0;
+            
+            if (qty > 0 && unit > 0) {
+                priceInp.value = '$ ' + (qty * unit).toFixed(2);
+            } else {
+                priceInp.value = '';
+            }
+            actualizarTotales();
+        }
+    };
+
 // 🔥 ESTA ES LA FUNCIÓN MAESTRA QUE REPARA LOS PDF Y LAS ALINEACIONES
     function formatearInputsParaCaptura() {
         const inputs = document.querySelectorAll('input, textarea, select');
@@ -587,13 +617,24 @@
                 let txtPrincipal = input.value || '';
                 const boxExtra = input.parentElement.querySelector('.extra-fields-container');
                 
-                if (boxExtra) {
-                    const m = boxExtra.querySelector('.e-marca').value.trim(); const p = boxExtra.querySelector('.e-parte').value.trim();
-                    const s = boxExtra.querySelector('.e-serie').value.trim(); const e = boxExtra.querySelector('.e-estado').value;
+if (boxExtra) {
+                    const q = boxExtra.querySelector('.e-qty') ? boxExtra.querySelector('.e-qty').value.trim() : '1';
+                    const u = boxExtra.querySelector('.e-unit') ? boxExtra.querySelector('.e-unit').value.trim() : '';
+                    const m = boxExtra.querySelector('.e-marca').value.trim(); 
+                    const p = boxExtra.querySelector('.e-parte').value.trim();
+                    const s = boxExtra.querySelector('.e-serie').value.trim(); 
+                    const e = boxExtra.querySelector('.e-estado').value;
                     const g = boxExtra.querySelector('.e-garantia').value;
+                    
                     let arr = [];
-                    if(m) arr.push(`Marca: <strong>${m}</strong>`); if(p) arr.push(`Parte: <strong>${p}</strong>`); if(s) arr.push(`Serie: <strong>${s}</strong>`);
-                    if(e) arr.push(`Estado: <strong>${e}</strong>`); if(g) arr.push(`Gtía: <strong>${g}</strong>`);
+                    // 🔥 Imprime la cantidad en rojo SI es mayor a 1
+                    if(q && parseFloat(q) > 1 && u) arr.push(`<span style="color:#d32f2f; font-weight:800;">${q} PIEZAS</span> x ${u}`);
+                    
+                    if(m) arr.push(`Marca: <strong>${m}</strong>`); 
+                    if(p) arr.push(`Parte: <strong>${p}</strong>`); 
+                    if(s) arr.push(`Serie: <strong>${s}</strong>`);
+                    if(e) arr.push(`Estado: <strong>${e}</strong>`); 
+                    if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                     
                     if(arr.length > 0) {
                         span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:4pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
@@ -690,10 +731,15 @@ function forzarDescargaPNG() {
                     const desc = row.querySelector('.desc-input')?.value || '';
                     const price = row.querySelector('.price-input')?.value || '';
                     let extras = {};
-                    if (listaId === 'listRefacciones') {
+if (listaId === 'listRefacciones') {
                         extras = {
-                            marca: row.querySelector('.e-marca')?.value || '', parte: row.querySelector('.e-parte')?.value || '',
-                            serie: row.querySelector('.e-serie')?.value || '', estado: row.querySelector('.e-estado')?.value || '', garantia: row.querySelector('.e-garantia')?.value || ''
+                            qty: row.querySelector('.e-qty')?.value || '1',
+                            unit: row.querySelector('.e-unit')?.value || '',
+                            marca: row.querySelector('.e-marca')?.value || '', 
+                            parte: row.querySelector('.e-parte')?.value || '',
+                            serie: row.querySelector('.e-serie')?.value || '', 
+                            estado: row.querySelector('.e-estado')?.value || '', 
+                            garantia: row.querySelector('.e-garantia')?.value || ''
                         };
                     }
                     if (desc.trim() !== '' || price.trim() !== '') filas.push({ desc, price, extras });
