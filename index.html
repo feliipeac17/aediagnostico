@@ -445,7 +445,7 @@
         </div>
 
         <div id="portalGaleriaRecepcion" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <div style="font-family: 'Montserrat', sans-serif; font-size: 10.5pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;">
                 <span><i class="fa-solid fa-images" style="color: #0284c7;"></i> Fotos de Recepcion</span>
                 <i class="fa-solid fa-xmark" onclick="toggleGaleriaRecepcion()" style="cursor: pointer; color: #94a3b8; font-size: 12pt; padding: 4px;"></i>
             </div>
@@ -1375,7 +1375,6 @@
                 
                 if (galeriaGrid) galeriaGrid.innerHTML = ''; // Limpiamos por si acaso
 
-                // Recorremos las 8 posibles fotos de evidencia
                 for (let i = 1; i <= 8; i++) {
                     const imgUrl = rep[`evidencia_${i}`];
                     const nota = rep[`evidencia_nota_${i}`] || "";
