@@ -441,29 +441,37 @@
         </div>
     </div>
 
-    <div id="modalVisorDoc" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);">
-            <div style="background: #ffffff; width: 100%; max-width: 420px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; animation: modalSubir 0.3s ease-out;">
+<div id="modalVisorDoc" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);">
+            
+            <div style="background: #ffffff; width: 100%; max-width: 380px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; animation: modalSubir 0.3s ease-out;">
                 
                 <div style="background: #0f172a; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 10px; color: white;">
                         <i id="modalDocIcon" class="fa-solid fa-file-pdf" style="font-size: 15pt; color: #38bdf8;"></i>
                         <h3 id="modalDocTitle" style="margin: 0; font-size: 11.5pt; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">DOCUMENTO</h3>
                     </div>
-                    <button onclick="cerrarModalDocumento()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
+                    <button onclick="cerrarModalDocumento()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: background 0.2s;">
                         <i class="fa-solid fa-xmark" style="font-size: 14pt;"></i>
                     </button>
                 </div>
 
-                <div style="padding: 20px; background: #f1f5f9; display: flex; justify-content: center; align-items: center;">
-                    <div style="width: 100%; height: 260px; background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #cbd5e1; position: relative;">
-                         <iframe id="modalDocIframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
-                         <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 5;"></div>
+                <div style="padding: 35px 20px; background: #f8fafc; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-bottom: 1px solid #e2e8f0;">
+                    
+                    <div style="width: 85px; height: 85px; background: #ffffff; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; position: relative;">
+                        <i id="modalDocCenterIcon" class="fa-solid fa-file-lines" style="font-size: 35pt; color: #0284c7;"></i>
+                        
+                        <div style="position: absolute; bottom: -2px; right: -2px; background: #10b981; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 3px solid #f8fafc; font-size: 11pt; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
                     </div>
+
+                    <h4 style="margin: 0 0 6px 0; font-size: 13pt; color: #0f172a; font-weight: 800;">¡ARCHIVO LISTO!</h4>
+                    <p style="margin: 0; font-size: 9.5pt; color: #64748b; max-width: 250px;">Presiona el botón rojo para abrir tu documento en tamaño completo.</p>
                 </div>
 
                 <div style="padding: 20px; display: flex; flex-direction: column; background: white;">
-                    <a id="modalDocBtnDescargar" href="#" target="_blank" style="background: #d32f2f; color: white; text-align: center; padding: 16px; border-radius: 10px; font-weight: 800; text-decoration: none; font-size: 11.5pt; text-transform: uppercase; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); display: flex; justify-content: center; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-file-pdf"></i> DESCARGAR PDF
+                    <a id="modalDocBtnDescargar" href="#" target="_blank" style="background: #d32f2f; color: white; text-align: center; padding: 16px; border-radius: 10px; font-weight: 800; text-decoration: none; font-size: 11.5pt; text-transform: uppercase; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); transition: transform 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-folder-open"></i> ABRIR PDF
                     </a>
                 </div>
             </div>
@@ -1913,21 +1921,18 @@ async function cargarHistorialSupabase() {
             }
         }
     }
-    // 🔥 5. FUNCIONES GLOBALES DE LA VENTANA MODAL Y EVIDENCIAS
+// 🔥 Funciones para abrir y cerrar la ventana del PDF (Diseño Limpio)
     function abrirModalDocumento(titulo, urlPdf, colorIcono) {
         document.getElementById('modalDocTitle').innerText = titulo;
         document.getElementById('modalDocIcon').style.color = colorIcono;
+        document.getElementById('modalDocCenterIcon').style.color = colorIcono; // Pinta el ícono central del mismo color
         document.getElementById('modalDocBtnDescargar').href = urlPdf;
-        
-        let previewUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(urlPdf)}&embedded=true`;
-        document.getElementById('modalDocIframe').src = previewUrl;
         
         document.getElementById('modalVisorDoc').style.display = 'flex';
     }
 
     function cerrarModalDocumento() {
         document.getElementById('modalVisorDoc').style.display = 'none';
-        document.getElementById('modalDocIframe').src = ""; // Limpiamos iframe
     }
 
     function toggleGaleriaEvidencia() {
