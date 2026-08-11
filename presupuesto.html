@@ -506,7 +506,7 @@ function agregarRenglon(listaId, desc = '', price = '', extras = {}) {
             extraHTML = `
                 <div class="extra-fields-container" data-html2canvas-ignore="true" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;">
                     <input type="number" class="extra-input e-qty" placeholder="CANT." value="${extras.qty || '1'}" oninput="recalcularFila(this)" style="max-width: 60px; text-align: center; font-weight: 800 !important; color: #0284c7 !important; background: #e0f2fe !important; border-color: #bae6fd !important;">
-                    <input type="text" inputmode="decimal" class="extra-input e-unit" placeholder="$UNIT." value="${extras.unit || ''}" onblur="let num = parseFloat(this.value.replace(/[^0-9.]/g, '')); this.value = !isNaN(num) ? '$' + num.toFixed(2) : ''; recalcularFila(this)" style="max-width: 80px; text-align: center; font-weight: 700 !important;">
+                    <input type="text" inputmode="decimal" class="extra-input e-unit" placeholder="$ UNIT." value="${extras.unit || ''}" onblur="let num = parseFloat(this.value.replace(/[^0-9.]/g, '')); this.value = !isNaN(num) ? '$' + num.toFixed(2) : ''; recalcularFila(this)" style="max-width: 80px; text-align: center; font-weight: 700 !important;">
                     
                     <input type="text" class="extra-input e-marca" placeholder="Marca" value="${extras.marca || ''}">
                     <input type="text" class="extra-input e-parte" placeholder="# Parte" value="${extras.parte || ''}">
