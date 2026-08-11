@@ -1535,7 +1535,7 @@ if (presFolio) {
     function abrirGaleriaDirecta() { cerrarModalOrigen(); if (inputGaleriaActual) inputGaleriaActual.click(); }
     function cerrarModalOrigen() { document.getElementById('modalOrigenFoto').style.display = 'none'; }
     
-    async function guardarYProcesarReporte() {
+async function guardarYProcesarReporte() {
         const btnSubmit = document.getElementById('btnGuardarForm'); const editId = document.getElementById('edit_record_id').value; const isEditing = editId !== "";
         const fileInput = document.getElementById('pdfUploader'); const file = fileInput ? fileInput.files[0] : null;
         let linkEscanerFinal = document.getElementById('in_link_escaner').value;
@@ -1578,7 +1578,6 @@ if (presFolio) {
                 estado: document.getElementById('in_estado') ? document.getElementById('in_estado').value : 'EN REVISION'
             };
 
-// 🔥 FUNCIÓN INTELIGENTE: Sabe si subiste foto nueva, o si le picaste a la "X" para borrarla
             const fueBorrada = (imgId) => {
                 const img = document.getElementById(imgId);
                 return img && img.style.display === 'none';
@@ -1609,34 +1608,47 @@ if (presFolio) {
             payload.evidencia_nota_7 = document.getElementById('edit_nota_evidencia_7') ? document.getElementById('edit_nota_evidencia_7').value.trim() : '';
             payload.evidencia_nota_8 = document.getElementById('edit_nota_evidencia_8') ? document.getElementById('edit_nota_evidencia_8').value.trim() : '';
 
-const valFechaSel = document.getElementById('in_fecha').value; 
+            const valFechaSel = document.getElementById('in_fecha').value; 
             if (valFechaSel) {
                 const pf = valFechaSel.split('-'); const dLocal = new Date(isEditing ? reportDataGlobal.created_at : Date.now());
                 dLocal.setFullYear(parseInt(pf[0])); dLocal.setMonth(parseInt(pf[1]) - 1); dLocal.setDate(parseInt(pf[2])); payload.created_at = dLocal.toISOString();
             }
 
-            // 🔥 MAGIA NUEVA: Crear PDF y subir a la nube al guardar
-            btnSubmit.innerHTML = "⏳ CREANDO PDF...";
-            if(btnTop) btnTop.innerHTML = "⏳ CREANDO PDF...";
+            // 🔥 SECCIÓN AUTOMÁTICA EXTRA: CREAR ARCHIVOS DIGITALES EN MÁXIMA CALIDAD
+            btnSubmit.innerHTML = "⏳ RENDEREANDO DOCUMENTOS...";
+            if(btnTop) btnTop.innerHTML = "⏳ RENDEREANDO...";
             
             const est = prepararCaptura();
-            const canvas = await html2canvas(est.elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
+            // Escalamos a 4 para nitidez de texto perfecta
+            const canvas = await html2canvas(est.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
+            
+            // ARCHIVO 1: Armar el PDF contenedor
             const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
             let pW = pdf.internal.pageSize.getWidth(); let pH = (canvas.height * pW) / canvas.width; const maxH = pdf.internal.pageSize.getHeight();
             if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
             pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
+
+            // ARCHIVO 2: Armar el preview PNG directo del lienzo canvas
+            const dataUrlPng = canvas.toDataURL('image/png');
+            const pngResponse = await fetch(dataUrlPng);
+            const pngBlob = await pngResponse.blob();
+
             restaurarPantalla(est);
 
-            // 🔥 NOMBRE LIMPIO: Solo dirá REPORTE_SERVICIO_AE-XXXX.pdf
+            // SUBIDA 1: Guardar PDF en el Storage
+            btnSubmit.innerHTML = "⏳ SUBIENDO PDF...";
             const fileNamePdf = `REPORTES_PDF/REPORTE_${folioCalculado}.pdf`;
-            
             await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
-            
-            // El truco anti-caché lo ponemos oculto en el enlace, así el archivo se descarga con el nombre limpio
             payload.link_pdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
-            // 🔥 FIN MAGIA NUEVA
+            
+            // SUBIDA 2: Guardar Captura PNG en el Storage
+            btnSubmit.innerHTML = "⏳ SUBIENDO PREVIEW...";
+            const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folioCalculado}.png`;
+            await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
+            payload.link_png = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePng).data.publicUrl + '?t=' + Date.now();
 
+            // GUARDAR DATOS EN LA TABLA
             let err = null; if (isEditing) err = (await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId)).error;
             else { payload.folio = folioCalculado; err = (await supabaseClient.from('reportes_servicio').insert([payload])).error; }
             if (err) throw err;
