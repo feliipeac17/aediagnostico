@@ -315,6 +315,15 @@
             transform: translateY(0) scale(0.98) !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
         }
+        .portal-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; box-sizing: border-box; }
+        .btn-portal-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 12px; text-decoration: none; color: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: all 0.25s ease; min-height: 105px; box-sizing: border-box; }
+        .btn-portal-card.b-pdf { border-top: 5px solid #d32f2f; }
+        .btn-portal-card.b-scan { border-top: 5px solid #0284c7; }
+        .btn-portal-card.b-pres { border-top: 5px solid #10b981; }
+        .btn-portal-card.b-evi { border-top: 5px solid #6366f1; }
+        .btn-portal-card:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.08); border-color: #cbd5e1; }
+        
+        @keyframes modalSubir { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -394,60 +403,71 @@
             </p>
         </div>
 
-<div style="display: flex; flex-direction: column; gap: 12px;">
-            <a id="btnPortalPdf" href="#" target="_blank" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #d32f2f; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fa-solid fa-file-pdf" style="font-size: 16pt; color: #d32f2f;"></i>
-                    <div>
-                        <strong style="display: block; font-size: 10pt;">Reporte de Servicio</strong>
-                        <span style="font-size: 7.5pt; color: #64748b;">Ver recepción</span>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+<div class="portal-grid-container">
+            
+            <a id="btnPortalPdf" href="javascript:void(0)" class="btn-portal-card b-pdf" style="display: none;">
+                <i class="fa-solid fa-file-pdf" style="font-size: 20pt; color: #d32f2f; margin-bottom: 8px;"></i>
+                <strong style="font-size: 9.5pt; line-height: 1.2; text-transform: uppercase;">Reporte de Servicio</strong>
             </a>
 
-            <a id="btnPortalEscaner" href="#" target="_blank" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fa-solid fa-laptop-code" style="font-size: 16pt; color: #0284c7;"></i>
-                    <div>
-                        <strong style="display: block; font-size: 10pt;">Reporte de Escáner</strong>
-                        <span style="font-size: 7.5pt; color: #64748b;">Ver informe técnico de códigos</span>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+            <a id="btnPortalEscaner" href="#" target="_blank" class="btn-portal-card b-scan" style="display: none;">
+                <i class="fa-solid fa-laptop-code" style="font-size: 20pt; color: #0284c7; margin-bottom: 8px;"></i>
+                <strong style="font-size: 9.5pt; line-height: 1.2; text-transform: uppercase;">Reporte Escáner</strong>
             </a>
 
-            <a id="btnPortalPresupuesto" href="#" target="_blank" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #10b981; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fa-solid fa-file-invoice-dollar" style="font-size: 16pt; color: #10b981;"></i>
-                    <div>
-                        <strong style="display: block; font-size: 10pt;">Presupuesto de Reparación</strong>
-                        <span style="font-size: 7.5pt; color: #64748b;">Ver desglose de refacciones y mano de obra</span>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+            <a id="btnPortalPresupuesto" href="javascript:void(0)" class="btn-portal-card b-pres" style="display: none;">
+                <i class="fa-solid fa-file-invoice-dollar" style="font-size: 20pt; color: #10b981; margin-bottom: 8px;"></i>
+                <strong style="font-size: 9.5pt; line-height: 1.2; text-transform: uppercase;">Presupuesto</strong>
             </a>
 
-            <a id="btnPortalEvidencia" href="javascript:void(0)" onclick="toggleGaleriaEvidencia()" class="btn-portal-doc" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #6366f1; padding: 14px 18px; border-radius: 10px; text-decoration: none; color: #0f172a; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fa-solid fa-camera-retro" style="font-size: 16pt; color: #6366f1;"></i>
-                    <div>
-                        <strong style="display: block; font-size: 10pt;">Evidencia</strong>
-                        <span style="font-size: 7.5pt; color: #64748b;">Ver fotos del trabajo</span>
-                    </div>
-                </div>
-                <i id="iconoFlechaEvidencia" class="fa-solid fa-chevron-down" style="color: #cbd5e1; transition: transform 0.3s;"></i>
+            <a id="btnPortalEvidencia" href="javascript:void(0)" onclick="toggleGaleriaEvidencia()" class="btn-portal-card b-evi" style="display: none;">
+                <i class="fa-solid fa-camera-retro" style="font-size: 20pt; color: #6366f1; margin-bottom: 8px;"></i>
+                <strong style="font-size: 9.5pt; line-height: 1.2; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+                    Evidencias <i id="iconoFlechaEvidencia" class="fa-solid fa-chevron-down" style="font-size: 8pt; color: #6366f1; transition: transform 0.3s;"></i>
+                </strong>
             </a>
 
-        </div> 
-        <div id="portalGaleriaEvidencia" style="display: none; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px; margin-top: 12px;">
+        </div>
+
+        <div id="portalGaleriaEvidencia" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-images" style="color: #6366f1;"></i> Fotos de Trabajo
+            </div>
             <div id="portalGaleriaGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 </div>
             <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
-                Toca una imagen para abrirla en tamaño completo
+                Toca una imagen para verla en pantalla completa
             </p>
         </div>
     </div>
+
+    <div id="modalVisorDoc" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);">
+            <div style="background: #ffffff; width: 100%; max-width: 420px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; animation: modalSubir 0.3s ease-out;">
+                
+                <div style="background: #0f172a; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 10px; color: white;">
+                        <i id="modalDocIcon" class="fa-solid fa-file-pdf" style="font-size: 15pt; color: #38bdf8;"></i>
+                        <h3 id="modalDocTitle" style="margin: 0; font-size: 11.5pt; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">DOCUMENTO</h3>
+                    </div>
+                    <button onclick="cerrarModalDocumento()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center;">
+                        <i class="fa-solid fa-xmark" style="font-size: 14pt;"></i>
+                    </button>
+                </div>
+
+                <div style="padding: 20px; background: #f1f5f9; display: flex; justify-content: center; align-items: center;">
+                    <div style="width: 100%; height: 260px; background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #cbd5e1; position: relative;">
+                         <iframe id="modalDocIframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+                         <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 5;"></div>
+                    </div>
+                </div>
+
+                <div style="padding: 20px; display: flex; flex-direction: column; background: white;">
+                    <a id="modalDocBtnDescargar" href="#" target="_blank" style="background: #d32f2f; color: white; text-align: center; padding: 16px; border-radius: 10px; font-weight: 800; text-decoration: none; font-size: 11.5pt; text-transform: uppercase; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); display: flex; justify-content: center; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-file-pdf"></i> DESCARGAR PDF
+                    </a>
+                </div>
+            </div>
+        </div>
 
     <div id="pin-lock-screen" class="pin-overlay">
         <div class="pin-container">
@@ -1224,28 +1244,32 @@
                     fotoContenedor.style.display = 'none';
                 }
 
+               // 🔥 4. ASIGNAR ACCIONES A LOS BOTONES
                 const btnScan = document.getElementById('btnPortalEscaner'); 
                 const btnPdf = document.getElementById('btnPortalPdf'); 
                 const btnPres = document.getElementById('btnPortalPresupuesto');
 
-                // 1. ESCÁNER
+                // ESCÁNER (Abre en pestaña nueva, NO es ventana modal)
                 if (rep.link_escaner && rep.link_escaner.trim() !== '') { 
-                    btnScan.href = rep.link_escaner; btnScan.style.display = 'flex'; 
+                    btnScan.href = rep.link_escaner;
+                    btnScan.target = "_blank";
+                    btnScan.onclick = null; 
+                    btnScan.style.display = 'flex'; 
                 } else { 
                     btnScan.style.display = 'none'; 
                 }
 
-                // 2. REPORTE DE SERVICIO (ABRE DIRECTO EN EL NAVEGADOR)
-                if (rep.link_pdf && rep.link_pdf.trim() !== '') {
-                    btnPdf.href = rep.link_pdf; 
-                } else {
-                    btnPdf.href = `/?pdf=${rep.folio}`; // Respaldo para los reportes viejos
-                }
+                // REPORTE DE SERVICIO (Abre Ventana Modal)
+                let linkRep = (rep.link_pdf && rep.link_pdf.trim() !== '') ? rep.link_pdf : `/?pdf=${rep.folio}`;
+                btnPdf.onclick = () => abrirModalDocumento('REPORTE DE SERVICIO', linkRep, '#d32f2f');
+                btnPdf.href = "javascript:void(0)";
                 btnPdf.style.display = 'flex';
 
-                // 3. PRESUPUESTO
+                // PRESUPUESTO (Abre Ventana Modal)
                 if (rep.link_presupuesto && rep.link_presupuesto.trim() !== '') { 
-                    btnPres.href = rep.link_presupuesto; btnPres.style.display = 'flex'; 
+                    btnPres.onclick = () => abrirModalDocumento('PRESUPUESTO', rep.link_presupuesto, '#10b981');
+                    btnPres.href = "javascript:void(0)";
+                    btnPres.style.display = 'flex'; 
                 } else {
                     btnPres.style.display = 'none';
                 }
@@ -1886,6 +1910,36 @@ async function cargarHistorialSupabase() {
             } else {
                 galeria.style.display = 'none';
                 if(flecha) flecha.style.transform = 'rotate(0deg)'; // Regresa la flechita
+            }
+        }
+    }
+    // 🔥 5. FUNCIONES GLOBALES DE LA VENTANA MODAL Y EVIDENCIAS
+    function abrirModalDocumento(titulo, urlPdf, colorIcono) {
+        document.getElementById('modalDocTitle').innerText = titulo;
+        document.getElementById('modalDocIcon').style.color = colorIcono;
+        document.getElementById('modalDocBtnDescargar').href = urlPdf;
+        
+        let previewUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(urlPdf)}&embedded=true`;
+        document.getElementById('modalDocIframe').src = previewUrl;
+        
+        document.getElementById('modalVisorDoc').style.display = 'flex';
+    }
+
+    function cerrarModalDocumento() {
+        document.getElementById('modalVisorDoc').style.display = 'none';
+        document.getElementById('modalDocIframe').src = ""; // Limpiamos iframe
+    }
+
+    function toggleGaleriaEvidencia() {
+        const galeria = document.getElementById('portalGaleriaEvidencia');
+        const flecha = document.getElementById('iconoFlechaEvidencia');
+        if (galeria) {
+            if (galeria.style.display === 'none' || galeria.style.display === '') {
+                galeria.style.display = 'block';
+                if(flecha) flecha.style.transform = 'rotate(180deg)';
+            } else {
+                galeria.style.display = 'none';
+                if(flecha) flecha.style.transform = 'rotate(0deg)';
             }
         }
     }
