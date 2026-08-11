@@ -366,6 +366,18 @@
             transform: scale(0.80); /* Se encoge un 20% para que se note mucho el toque */
             background: #dc2626; /* Se pone un rojo un poco más oscuro */
         }
+        /* 🔥 EFECTO TÁCTIL E INTERACTIVO PARA LA FOTO DEL VEHÍCULO */
+        #portalFotoContenedor {
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+        #portalFotoContenedor:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.25) !important;
+            border-color: #0369a1 !important;
+        }
+        #portalFotoContenedor:active {
+            transform: scale(0.95);
+        }  
     </style>
 </head>
 <body>
