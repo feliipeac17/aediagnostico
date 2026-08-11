@@ -455,18 +455,22 @@
                     </button>
                 </div>
 
-                <div style="padding: 35px 20px; background: #f8fafc; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-bottom: 1px solid #e2e8f0;">
-                    
+                <div id="modalPreviewContainer" style="padding: 20px; background: #f1f5f9; display: none; justify-content: center; align-items: center; border-bottom: 1px solid #e2e8f0;">
+                    <div style="width: 100%; height: 320px; background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #cbd5e1; position: relative;">
+                         <img id="modalDocPreviewImg" src="" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+                         <div style="position: absolute; top:0; left:0; width:100%; height:100%; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); pointer-events: none;"></div>
+                    </div>
+                </div>
+
+                <div id="modalIconContainer" style="padding: 35px 20px; background: #f8fafc; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-bottom: 1px solid #e2e8f0;">
                     <div style="width: 85px; height: 85px; background: #ffffff; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; position: relative;">
                         <i id="modalDocCenterIcon" class="fa-solid fa-file-lines" style="font-size: 35pt; color: #0284c7;"></i>
-                        
                         <div style="position: absolute; bottom: -2px; right: -2px; background: #10b981; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 3px solid #f8fafc; font-size: 11pt; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <i class="fa-solid fa-check"></i>
                         </div>
                     </div>
-
                     <h4 style="margin: 0 0 6px 0; font-size: 13pt; color: #0f172a; font-weight: 800;">¡ARCHIVO LISTO!</h4>
-                    <p style="margin: 0; font-size: 9.5pt; color: #64748b; max-width: 250px;">Presiona el botón rojo para abrir tu documento en tamaño completo.</p>
+                    <p style="margin: 0; font-size: 9.5pt; color: #64748b; max-width: 250px;">Presiona el botón rojo para abrir tu documento.</p>
                 </div>
 
                 <div style="padding: 20px; display: flex; flex-direction: column; background: white;">
@@ -1252,7 +1256,7 @@
                     fotoContenedor.style.display = 'none';
                 }
 
-               // 🔥 4. ASIGNAR ACCIONES A LOS BOTONES
+// 🔥 4. ASIGNAR ACCIONES A LOS BOTONES
                 const btnScan = document.getElementById('btnPortalEscaner'); 
                 const btnPdf = document.getElementById('btnPortalPdf'); 
                 const btnPres = document.getElementById('btnPortalPresupuesto');
@@ -1267,15 +1271,17 @@
                     btnScan.style.display = 'none'; 
                 }
 
-                // REPORTE DE SERVICIO (Abre Ventana Modal)
+                // REPORTE DE SERVICIO (Abre Modal Inteligente)
                 let linkRep = (rep.link_pdf && rep.link_pdf.trim() !== '') ? rep.link_pdf : `/?pdf=${rep.folio}`;
-                btnPdf.onclick = () => abrirModalDocumento('REPORTE DE SERVICIO', linkRep, '#d32f2f');
+                let imgRep = rep.link_png || null; // 🔥 AQUÍ jalamos la imagen que guardaste
+                btnPdf.onclick = () => abrirModalDocumento('REPORTE DE SERVICIO', linkRep, '#d32f2f', imgRep);
                 btnPdf.href = "javascript:void(0)";
                 btnPdf.style.display = 'flex';
 
-                // PRESUPUESTO (Abre Ventana Modal)
+                // PRESUPUESTO (Abre Modal Inteligente)
                 if (rep.link_presupuesto && rep.link_presupuesto.trim() !== '') { 
-                    btnPres.onclick = () => abrirModalDocumento('PRESUPUESTO', rep.link_presupuesto, '#10b981');
+                    let imgPres = rep.link_png_presupuesto || null; // Listo para cuando haya PNG de presupuesto
+                    btnPres.onclick = () => abrirModalDocumento('PRESUPUESTO', rep.link_presupuesto, '#10b981', imgPres);
                     btnPres.href = "javascript:void(0)";
                     btnPres.style.display = 'flex'; 
                 } else {
@@ -1933,18 +1939,33 @@ async function cargarHistorialSupabase() {
             }
         }
     }
-// 🔥 Funciones para abrir y cerrar la ventana del PDF (Diseño Limpio)
-    function abrirModalDocumento(titulo, urlPdf, colorIcono) {
+// 🔥 Funciones para abrir y cerrar la ventana del PDF (Con Previsualización de PNG Inteligente)
+    function abrirModalDocumento(titulo, urlPdf, colorIcono, urlImagen = null) {
         document.getElementById('modalDocTitle').innerText = titulo;
         document.getElementById('modalDocIcon').style.color = colorIcono;
-        document.getElementById('modalDocCenterIcon').style.color = colorIcono; // Pinta el ícono central del mismo color
         document.getElementById('modalDocBtnDescargar').href = urlPdf;
         
+        const previewContainer = document.getElementById('modalPreviewContainer');
+        const iconContainer = document.getElementById('modalIconContainer');
+        const previewImg = document.getElementById('modalDocPreviewImg');
+
+        // Lógica inteligente: Si mandaste una imagen PNG, la mostramos. Si no, mostramos el ícono.
+        if (urlImagen && urlImagen.trim() !== '') {
+            previewImg.src = urlImagen;
+            previewContainer.style.display = 'flex';
+            iconContainer.style.display = 'none';
+        } else {
+            document.getElementById('modalDocCenterIcon').style.color = colorIcono;
+            previewContainer.style.display = 'none';
+            iconContainer.style.display = 'flex';
+        }
+
         document.getElementById('modalVisorDoc').style.display = 'flex';
     }
 
     function cerrarModalDocumento() {
         document.getElementById('modalVisorDoc').style.display = 'none';
+        document.getElementById('modalDocPreviewImg').src = ""; // Limpia la imagen al cerrar
     }
 
     function toggleGaleriaEvidencia() {
