@@ -542,7 +542,7 @@ function agregarRenglon(listaId, desc = '', price = '', extras = {}) {
             <div>
                 <input type="text" inputmode="decimal" class="price-input" placeholder="$0.00" value="${price}" 
                     onfocus="if(!this.hasAttribute('readonly')) this.value = this.value.replace(/[^0-9.]/g, '')"
-                    onblur="if(!this.hasAttribute('readonly')) { let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales(); }" 
+                    onblur="if(!this.hasAttribute('readonly')) { let num = parseFloat(this.value); this.value = !isNaN(num) ? '$' + num.toFixed(2) : ''; actualizarTotales(); }" 
                     ${priceAttr} required>
             </div>
             <button class="btn-del-item btn-ctrl-col" onclick="this.parentElement.remove(); actualizarTotales();"><i class="fa-solid fa-trash"></i></button>
@@ -628,7 +628,7 @@ if (boxExtra) {
                     
                     let arr = [];
                     // 🔥 Imprime la cantidad en rojo SI es mayor a 1
-                    if(q && parseFloat(q) > 1 && u) arr.push(`<span style="color:#d32f2f; font-weight:800;">${q} PIEZAS</span> - ${u}c/u`);
+                    if(q && parseFloat(q) > 1 && u) arr.push(`<span style="color:#d32f2f; font-weight:800;">${q} PIEZAS</span> - ${u} c/u`);
                     
                     if(m) arr.push(`Marca: <strong>${m}</strong>`); 
                     if(p) arr.push(`Parte: <strong>${p}</strong>`); 
