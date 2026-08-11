@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        :root {
+:root {
             --primary-blue: #0284c7;
             --primary-red: #d32f2f;
             --dark-navy: #0f172a;
@@ -45,11 +45,11 @@
             max-width: 100% !important;    
             height: auto !important;       
             margin: 0 !important;          
-            background: #f1f5f9 !important; /* Fondo gris claro general para App */
+            background: #ffffff !important;
             overflow: hidden !important;
             display: block !important;
             position: relative !important;
-            padding: 15px 15px 30px 15px !important; /* Más margen para App */
+            padding: 5px 20px 15px 20px !important; 
         }
 
         .pdf-header-container { 
@@ -88,166 +88,88 @@
         .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; text-transform: uppercase; }
         .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }        
         
-        .pdf-title-row { display: none; } /* Ocultamos el título "Presupuesto" en la App para ahorrar espacio */
+        .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0px !important; margin-bottom: 12px; }
+        .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; text-transform: uppercase; }
         
-        /* 🔥 1. TARJETAS PRINCIPALES (VISTA APP) */
-        .pdf-grid-boxes { display: grid; grid-template-columns: 1fr; gap: 0; margin-bottom: 15px; }
-        .pdf-info-card { background-color: #ffffff; border: none; border-radius: 16px; padding: 22px 18px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 20px; }
-        .pdf-info-card.cliente { border-top: 5px solid #0284c7; border-left: none; }
+        .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .pdf-info-card { background-color: var(--gray-light); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 15px; position: relative; }
+        .pdf-info-card.cliente { border-left: 5px solid #0284c7; }
         .pdf-info-card.cliente .pdf-card-title { color: #0284c7 !important; }
-        .pdf-info-card.vehiculo { border-top: 5px solid var(--primary-red); border-left: none; }
+        .pdf-info-card.vehiculo { border-left: 5px solid var(--primary-red); }
         .pdf-info-card.vehiculo .pdf-card-title { color: var(--primary-red) !important; }
-        .pdf-info-card.diagnostico { border-top: 5px solid #64748b; border-left: none; }
+        .pdf-info-card.diagnostico { border-left: 5px solid #64748b; }
         .pdf-info-card.diagnostico .pdf-card-title { color: #64748b !important; }
-        .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; }
+        .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; }
         
-        /* 🔥 2. CAMPOS BURBUJA (VISTA APP) */
-        .pdf-card-data { display: grid; grid-template-columns: 1fr; gap: 15px; align-items: start; }
+        .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
         .pdf-data-item { font-size: 10pt; display: flex; flex-direction: column; justify-content: flex-start; }
-        .pdf-data-item span { display: block; color: #64748b; font-weight: 800; text-transform: uppercase; font-size: 7.5pt; margin-bottom: 6px; padding-left: 4px; letter-spacing: 0.5px; } 
+        .pdf-data-item span { display: block; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 6.5pt; margin-bottom: 2px; } 
         
         input.card-input, textarea.card-input, select.card-input { 
-            width: 100%; border: 1px solid #e2e8f0; border-radius: 10px; 
-            background: #f8fafc; font-size: 10.5pt; font-weight: 700; 
+            width: 100%; border: none; border-bottom: 1px dashed var(--border-color); 
+            background: transparent; font-size: 8.5pt; font-weight: 700; 
             color: #0f172a; outline: none; text-transform: uppercase; 
-            padding: 14px 16px !important; height: auto !important;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        textarea.card-input { white-space: pre-wrap !important; word-wrap: break-word !important; overflow-wrap: break-word !important; line-height: 1.4 !important; }
+        input.card-input, select.card-input { height: 24px !important; line-height: 22px !important; padding: 0 0 2px 0 !important; }
+        textarea.card-input { height: auto !important; white-space: pre-wrap !important; word-wrap: break-word !important; overflow-wrap: break-word !important; line-height: 1.4 !important; }
 
-        /* 🔥 3. ENCABEZADOS OSCUROS DE COSTOS (VISTA APP) */
-        .pdf-pillars-grid { display: grid; grid-template-columns: 1fr; gap: 0; margin-bottom: 15px; }
-        .pdf-pillar-card { border: none; border-radius: 16px; overflow: hidden; background-color: #ffffff; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .pdf-pillar-header { background-color: #1e293b; color: #ffffff; padding: 18px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 16px 16px 0 0; }
-        .pdf-pillar-title { display: flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .pdf-pillar-num { background-color: #0284c7; color: white; width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9pt; font-weight: 800; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .pdf-pillar-total { font-size: 10.5pt; font-weight: 800; background: #ffffff; color: #0284c7; padding: 6px 14px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }        
+        .pdf-pillars-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .pdf-pillar-card { border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; background-color: #ffffff; display: flex; flex-direction: column; height: 100%; }
+        .pdf-pillar-header { background-color: #0f172a; color: #ffffff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+        .pdf-pillar-title { display: flex; align-items: center; gap: 6px; font-family: 'Montserrat', sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; }
+        .pdf-pillar-num { background-color: #0284c7; color: white; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; font-weight: 800; }
+        .pdf-pillar-total { font-size: 8pt; font-weight: 700; background: #ffffff; color: #0f172a; padding: 2px 8px; border-radius: 4px; }        
         
-        .table-container { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .table-header-row { display: none; } /* Oculto en App, lo manejamos limpio */
+        .table-container { padding: 5px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        .table-header-row {
+            display: grid; grid-template-columns: 1fr 80px; gap: 6px; font-size: 8pt; 
+            text-transform: uppercase; color: #0284c7; padding: 10px 6px; 
+            border-bottom: 2px solid #e2e8f0; background: #f8fafc; font-weight: 800; margin-bottom: 0px;
+        }
 
-        #listServicios, #listRefacciones, #listManoObra { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; gap: 10px; }
+        #listServicios, #listRefacciones, #listManoObra { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; gap: 6px; }
 
-        /* 🔥 4. INPUTS DE TABLA Y BOTONES (VISTA APP) */
         .table-row { 
-            display: grid; 
-            grid-template-columns: 1fr 90px 45px; 
-            gap: 10px; 
-            align-items: center; 
-            padding: 12px 10px; 
-            border-bottom: 1px solid #f1f5f9; 
-            background: #ffffff;
+            display: grid; grid-template-columns: 1fr 80px 20px; gap: 6px; align-items: start; 
+            padding: 6px 0; border-bottom: 1px dashed #cbd5e1; 
         }
-        
-        .table-row input.desc-input { 
-            width: 100%; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 8px;
-            font-size: 9.5pt; font-family: 'Roboto', sans-serif !important; font-weight: 500 !important; 
-            height: auto !important; outline: none; color: #0f172a !important; padding: 12px !important;
-        }
-        
-        .table-row input.price-input { 
-            width: 100%; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 8px;
-            font-size: 10.5pt; font-weight: 800 !important; text-align: center; 
-            height: auto !important; outline: none; color: #0f172a !important; padding: 12px !important;
-        }
+        .table-row input.desc-input { width: 100%; border: none; background: transparent; font-size: 9pt; font-family: 'Roboto', sans-serif !important; font-weight: 500 !important; height: 28px !important; outline: none; color: #0f172a !important; padding: 0 4px !important; }
+        .table-row input.price-input { width: 100%; border: none; background: transparent; font-size: 9pt; font-weight: 800 !important; text-align: right; height: 28px !important; outline: none; color: #0f172a !important; padding-right: 4px !important; }
 
         .extra-input {
-            flex: 1 1 18%; 
-            min-width: 55px;
-            border: 1px solid #e2e8f0 !important; 
-            background: #ffffff !important; 
-            border-radius: 6px;
-            font-size: 7pt !important; 
-            font-weight: 600 !important;
-            padding: 6px !important; 
-            height: 28px !important; 
-            color: #475569 !important;
-            outline: none;
-            text-transform: uppercase;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            flex: 1 1 18%; min-width: 55px; border: 1px dashed #94a3b8 !important; background: transparent !important; 
+            border-radius: 4px; font-size: 6pt !important; padding: 0px 4px !important; height: 18px !important; 
+            color: #475569 !important; outline: none; text-transform: uppercase;
         }
         .extra-input::placeholder { color: #94a3b8; text-transform: none; }
 
-        .btn-add-item { background: #1e293b; border: none; color: #ffffff; width: calc(100% - 20px); margin: 10px auto; padding: 16px; font-size: 9.5pt; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 10px; display: block; box-shadow: 0 4px 10px rgba(30, 41, 59, 0.2); transition: transform 0.2s; }
-        .btn-add-item:active { transform: scale(0.97); }
-        .btn-del-item { background: #fee2e2; border: none; color: #ef4444; border-radius: 8px; width: 100%; height: 42px; display: flex; justify-content: center; align-items: center; margin-top: 0; font-size: 11pt; cursor: pointer; transition: transform 0.2s; }
-        .btn-del-item:active { transform: scale(0.9); }
+        .btn-add-item { background: none; border: 1px dashed var(--border-color); color: var(--text-color); width: 100%; padding: 6px; font-size: 7.5pt; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 5px; }
+        .btn-del-item { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 8pt; text-align: center; margin-top: 4px; }
         
-        .pdf-footer-section { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; margin-top: 10px; }
-        .pdf-terms-card { border: none; border-radius: 16px; padding: 22px 18px; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .pdf-terms-card h4 { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; color: #0f172a; letter-spacing: 0.5px; }
-        .pdf-terms-card ol { padding-left: 15px; font-size: 8pt; color: #64748b; line-height: 1.6; }
-        .pdf-terms-card ol li { margin-bottom: 6px; }
-        .pdf-note-red { margin-top: 12px; font-size: 7.5pt; font-weight: 800; color: var(--primary-red); }
-        .pdf-totals-container { background-color: #0f172a; border-radius: 16px; padding: 22px 18px; color: #ffffff; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25); margin-bottom: 20px; }
-        .pdf-totals-table { width: 100%; font-size: 10pt; margin-bottom: 15px; border-collapse: collapse; }
-        .pdf-totals-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .pdf-totals-table td:last-child { text-align: right; font-weight: 800; color: #38bdf8; }
-        .pdf-rest-box { background-color: #0284c7; border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
-        .pdf-rest-box span { font-size: 10pt; font-weight: 800; text-transform: uppercase; font-family: 'Montserrat', sans-serif; color: white; letter-spacing: 0.5px; }
-        .pdf-rest-box strong { font-size: 16pt; font-weight: 800; font-family: 'Montserrat', sans-serif; color: white; }
+        .pdf-footer-section { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; align-items: start; }
+        .pdf-terms-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; background-color: #ffffff; }
+        .pdf-terms-card h4 { font-family: 'Montserrat', sans-serif; font-size: 8.5pt; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #0f172a; }
+        .pdf-terms-card ol { padding-left: 15px; font-size: 7pt; color: #64748b; line-height: 1.5; }
+        .pdf-terms-card ol li { margin-bottom: 4px; }
+        .pdf-note-red { margin-top: 8px; font-size: 6.5pt; font-weight: 700; color: var(--primary-red); }
+        .pdf-totals-container { background-color: #0f172a; border-radius: 10px; padding: 18px; color: #ffffff; border-top: 4px solid var(--primary-red); }
+        .pdf-totals-table { width: 100%; font-size: 8.5pt; margin-bottom: 12px; border-collapse: collapse; }
+        .pdf-totals-table td { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pdf-totals-table td:last-child { text-align: right; font-weight: 700; color: #38bdf8; }
+        .pdf-rest-box { background-color: #0284c7; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .pdf-rest-box span { font-size: 8.5pt; font-weight: 700; text-transform: uppercase; font-family: 'Montserrat', sans-serif; color: white; }
+        .pdf-rest-box strong { font-size: 12pt; font-weight: 800; font-family: 'Montserrat', sans-serif; color: white; }
 
         .nav-bar { position: -webkit-sticky !important; position: sticky !important; top: 15px !important; z-index: 9999 !important; display: flex !important; justify-content: flex-end !important; align-items: flex-start !important; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 15px 0 0 !important; margin: 0 !important; height: 0 !important; overflow: visible !important; pointer-events: none !important; }
         .btn-flotante-volver { pointer-events: auto !important; background: rgba(15, 23, 42, 0.85) !important; backdrop-filter: blur(8px) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; padding: 12px 24px !important; font-size: 9.5pt !important; font-weight: 800 !important; border-radius: 50px !important; cursor: pointer !important; display: inline-flex !important; align-items: center !important; gap: 10px !important; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25) !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; margin: 0 !important; }
         .btn-flotante-volver:hover { background: #d32f2f !important; transform: translateY(-2px) !important; box-shadow: 0 12px 25px rgba(211, 47, 47, 0.3) !important; }
 
-        .btn-download-image, .btn-download-image2 { display: flex; align-items: center; justify-content: center; gap: 8px; color: #ffffff; font-weight: 800; font-size: 11pt; padding: 16px; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-transform: uppercase; }
+        .btn-download-image, .btn-download-image2 { display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: #ffffff; font-weight: 600; font-size: 11pt; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
         .btn-download-image { background-color: #0284c7; } .btn-download-image:hover { background-color: #0369a1; }
         .btn-download-image2 { background-color: #dc2626; } .btn-download-image2:hover { background-color: #bd0d00; }
         #btnGuardarPresupuesto { transition: background-color 0.2s ease, transform 0.1s ease !important; }
         #btnGuardarPresupuesto:hover { background-color: #059669 !important; }
-
-
-        /* =========================================================
-           🛡️ MODO "CAMALEÓN" (PDF PERFECTO AL GUARDAR) 🛡️ 
-           ========================================================= */
-        body.modo-captura-pdf #printable-canvas { background: #ffffff !important; padding: 5px 20px 15px 20px !important; }
-        body.modo-captura-pdf .pdf-title-row { display: flex !important; margin-bottom: 12px !important; }
-        
-        /* Regresamos las tarjetas al modo clásico */
-        body.modo-captura-pdf .pdf-grid-boxes { grid-template-columns: 1fr 1fr !important; gap: 15px !important; margin-bottom: 15px !important; }
-        body.modo-captura-pdf .pdf-info-card { background-color: var(--gray-light) !important; border: 1px solid var(--border-color) !important; border-top: none !important; border-radius: 10px !important; padding: 12px 15px !important; box-shadow: none !important; margin-bottom: 0 !important; }
-        body.modo-captura-pdf .pdf-info-card.cliente { border-left: 5px solid #0284c7 !important; }
-        body.modo-captura-pdf .pdf-info-card.vehiculo { border-left: 5px solid var(--primary-red) !important; }
-        body.modo-captura-pdf .pdf-info-card.diagnostico { border-left: 5px solid #64748b !important; }
-        body.modo-captura-pdf .pdf-card-title { font-size: 10pt !important; margin-bottom: 8px !important; }
-        
-        /* Regresamos los inputs al modo línea clásica */
-        body.modo-captura-pdf .pdf-card-data { grid-template-columns: 1fr 1fr !important; gap: 8px 12px !important; }
-        body.modo-captura-pdf .pdf-data-item { margin-bottom: 0 !important; }
-        body.modo-captura-pdf .pdf-data-item span { font-size: 6.5pt !important; margin-bottom: 2px !important; padding-left: 0 !important; }
-        body.modo-captura-pdf input.card-input, body.modo-captura-pdf select.card-input, body.modo-captura-pdf textarea.card-input { background: transparent !important; border: none !important; border-bottom: 1px dashed var(--border-color) !important; border-radius: 0 !important; padding: 0 0 2px 0 !important; height: 24px !important; box-shadow: none !important; margin-top: 0 !important; font-size: 8.5pt !important; }
-        
-        /* Regresamos los 3 pilares a columnas */
-        body.modo-captura-pdf .pdf-pillars-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 12px !important; margin-bottom: 15px !important; }
-        body.modo-captura-pdf .pdf-pillar-card { border: 1px solid var(--border-color) !important; border-radius: 10px !important; box-shadow: none !important; margin-bottom: 0 !important; }
-        body.modo-captura-pdf .pdf-pillar-header { background-color: #0f172a !important; padding: 8px 12px !important; border-radius: 0 !important; }
-        body.modo-captura-pdf .pdf-pillar-title { font-size: 8pt !important; }
-        body.modo-captura-pdf .pdf-pillar-num { width: 16px !important; height: 16px !important; font-size: 7.5pt !important; box-shadow: none !important; }
-        body.modo-captura-pdf .pdf-pillar-total { font-size: 8pt !important; padding: 2px 8px !important; box-shadow: none !important; color: #0f172a !important;}
-        body.modo-captura-pdf .table-container { padding: 5px !important; }
-        body.modo-captura-pdf .table-header-row { display: grid !important; }
-
-        /* Regresamos las filas de tabla al diseño invisible */
-        body.modo-captura-pdf .table-row { grid-template-columns: 1fr 80px 20px !important; padding: 6px 0 !important; border-bottom: 1px dashed #cbd5e1 !important; gap: 6px !important; background: transparent !important; }
-        body.modo-captura-pdf .table-row input.desc-input { background: transparent !important; border: none !important; padding: 0 4px !important; height: 28px !important; font-size: 9pt !important; }
-        body.modo-captura-pdf .table-row input.price-input { background: transparent !important; border: none !important; padding: 0 4px 0 0 !important; height: 28px !important; font-size: 9pt !important; text-align: right !important; }
-        body.modo-captura-pdf .extra-input { border: 1px dashed #94a3b8 !important; background: transparent !important; border-radius: 4px !important; padding: 0px 4px !important; height: 18px !important; font-size: 6pt !important; box-shadow: none !important; }
-        body.modo-captura-pdf .btn-del-item { background: transparent !important; height: auto !important; margin-top: 4px !important; }
-
-        /* Regresamos el Footer */
-        body.modo-captura-pdf .pdf-footer-section { grid-template-columns: 1.2fr 1fr !important; gap: 15px !important; margin-top: 0 !important; }
-        body.modo-captura-pdf .pdf-terms-card { border: 1px solid var(--border-color) !important; border-radius: 10px !important; padding: 12px !important; box-shadow: none !important; }
-        body.modo-captura-pdf .pdf-terms-card h4 { font-size: 8.5pt !important; margin-bottom: 10px !important; }
-        body.modo-captura-pdf .pdf-terms-card ol { font-size: 7pt !important; }
-        body.modo-captura-pdf .pdf-note-red { font-size: 6.5pt !important; margin-top: 8px !important; }
-        body.modo-captura-pdf .pdf-totals-container { border-radius: 10px !important; padding: 18px !important; border-top: 4px solid var(--primary-red) !important; box-shadow: none !important; margin-bottom: 0 !important; }
-        body.modo-captura-pdf .pdf-totals-table { font-size: 8.5pt !important; margin-bottom: 12px !important; }
-        body.modo-captura-pdf .pdf-totals-table td { padding: 5px 0 !important; }
-        body.modo-captura-pdf .pdf-rest-box { border-radius: 8px !important; padding: 8px 12px !important; box-shadow: none !important; }
-        body.modo-captura-pdf .pdf-rest-box span { font-size: 8.5pt !important; }
-        body.modo-captura-pdf .pdf-rest-box strong { font-size: 12pt !important; }
-
 
         @media print {
             @page { size: letter portrait; margin: 0mm !important; }
@@ -262,11 +184,63 @@
         @media screen and (max-width: 768px) {
             .pdf-header-container { flex-direction: column !important; gap: 15px !important; padding: 20px 15px !important; }
             .pdf-folio-container { width: 100% !important; }
-            /* Se comentan estas reglas porque ahora la App Móvil es la vista por defecto a 1 columna */
+            body:not(.modo-app) .pdf-grid-boxes, body:not(.modo-app) .pdf-pillars-grid, body:not(.modo-app) .pdf-footer-section { grid-template-columns: 1fr !important; }
+            body:not(.modo-app) .pdf-info-card.diagnostico .pdf-card-data { grid-template-columns: 1fr !important; }
         }
+
+        /* =========================================================
+           🔥 CAPA MÁGICA: MODO APP MÓVIL (VISTA DE PANTALLA) 🔥
+           ========================================================= */
+        body.modo-app { background-color: #f1f5f9; }
+        body.modo-app #printable-canvas { background: #f1f5f9 !important; padding: 15px 15px 30px 15px !important; }
+        body.modo-app .pdf-title-row { display: none !important; }
+
+        body.modo-app .pdf-grid-boxes { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
+        body.modo-app .pdf-info-card { background-color: #ffffff !important; border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; margin-bottom: 20px !important; }
+        body.modo-app .pdf-info-card.cliente { border-top: 5px solid #0284c7 !important; border-left: none !important; }
+        body.modo-app .pdf-info-card.cliente .pdf-card-title { color: #0284c7 !important; }
+        body.modo-app .pdf-info-card.vehiculo { border-top: 5px solid var(--primary-red) !important; border-left: none !important; }
+        body.modo-app .pdf-info-card.vehiculo .pdf-card-title { color: var(--primary-red) !important; }
+        body.modo-app .pdf-info-card.diagnostico { border-top: 5px solid #64748b !important; border-left: none !important; }
+        body.modo-app .pdf-info-card.diagnostico .pdf-card-title { color: #64748b !important; }
+        body.modo-app .pdf-card-title { font-size: 11pt !important; margin-bottom: 15px !important; letter-spacing: 0.5px !important; }
+
+        body.modo-app .pdf-card-data { grid-template-columns: 1fr !important; gap: 15px !important; }
+        body.modo-app .pdf-data-item span { font-size: 7.5pt !important; padding-left: 4px !important; letter-spacing: 0.5px !important; margin-bottom: 6px !important; }
+        body.modo-app input.card-input, body.modo-app textarea.card-input, body.modo-app select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
+
+        body.modo-app .pdf-pillars-grid { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
+        body.modo-app .pdf-pillar-card { border: none !important; border-radius: 16px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; margin-bottom: 20px !important; background: #ffffff !important; }
+        body.modo-app .pdf-pillar-header { padding: 18px 16px !important; border-radius: 16px 16px 0 0 !important; }
+        body.modo-app .pdf-pillar-title { font-size: 10pt !important; letter-spacing: 0.5px !important; }
+        body.modo-app .pdf-pillar-num { width: 26px !important; height: 26px !important; font-size: 9pt !important; border-radius: 6px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important; }
+        body.modo-app .pdf-pillar-total { font-size: 10.5pt !important; padding: 6px 14px !important; border-radius: 8px !important; box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important; }
+
+        body.modo-app .table-header-row { display: none !important; }
+        body.modo-app .table-container { padding: 10px !important; }
+        body.modo-app #listServicios, body.modo-app #listRefacciones, body.modo-app #listManoObra { gap: 10px !important; }
+        
+        body.modo-app .table-row { grid-template-columns: 1fr 90px 45px !important; gap: 10px !important; padding: 12px 10px !important; border-bottom: 1px solid #f1f5f9 !important; background: #ffffff !important; border-radius: 12px !important;}
+        body.modo-app .table-row input.desc-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 12px !important; height: auto !important; font-size: 10pt !important; }
+        body.modo-app .table-row input.price-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 12px !important; height: auto !important; font-size: 10.5pt !important; text-align: center !important; }
+        
+        body.modo-app .extra-input { border: 1px solid #e2e8f0 !important; background: #ffffff !important; border-radius: 6px !important; padding: 6px !important; height: 28px !important; font-size: 7pt !important; box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important; }
+        body.modo-app .btn-add-item { background: #1e293b !important; color: #ffffff !important; border: none !important; padding: 16px !important; font-size: 9.5pt !important; border-radius: 10px !important; width: calc(100% - 20px) !important; margin: 10px auto 15px auto !important; box-shadow: 0 4px 10px rgba(30, 41, 59, 0.2) !important; }
+        body.modo-app .btn-del-item { background: #fee2e2 !important; color: #ef4444 !important; border-radius: 8px !important; width: 100% !important; height: 42px !important; margin-top: 0 !important; font-size: 11pt !important; }
+
+        body.modo-app .pdf-footer-section { grid-template-columns: 1fr !important; gap: 20px !important; margin-top: 10px !important; }
+        body.modo-app .pdf-terms-card { border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; }
+        body.modo-app .pdf-terms-card h4 { font-size: 10pt !important; letter-spacing: 0.5px !important; }
+        body.modo-app .pdf-terms-card ol { font-size: 8pt !important; line-height: 1.6 !important; }
+        body.modo-app .pdf-totals-container { border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25) !important; margin-bottom: 20px !important; }
+        body.modo-app .pdf-totals-table { font-size: 10pt !important; margin-bottom: 15px !important; }
+        body.modo-app .pdf-totals-table td { padding: 8px 0 !important; }
+        body.modo-app .pdf-rest-box { border-radius: 10px !important; padding: 14px 18px !important; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3) !important; margin-bottom: 5px !important; }
+        body.modo-app .pdf-rest-box span { font-size: 10pt !important; letter-spacing: 0.5px !important; }
+        body.modo-app .pdf-rest-box strong { font-size: 16pt !important; }
     </style>
 </head>
-<body>
+<body class="modo-app">
 
 <div class="wrapper-page">
     <div class="nav-bar" data-html2canvas-ignore="true">
@@ -628,7 +602,7 @@
     }
 
 function forzarDescargaPNG() {
-        document.body.classList.add('modo-captura-pdf'); // 🔥 Activa modo PDF
+        document.body.classList.remove('modo-app'); // 🔥 QUITAMOS la capa de App Móvil para revelar el PDF original
         const els = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         els.forEach(el => el.style.display = 'none');
         const reemplazos = formatearInputsParaCaptura();
@@ -643,14 +617,14 @@ function forzarDescargaPNG() {
             setTimeout(() => { 
                 els.forEach(el => el.style.display = el.classList.contains('nav-bar') || el.classList.contains('pdf-actions-bar') ? 'flex' : 'inline-flex'); 
                 deshacerFormateoCaptura(reemplazos); 
-                document.body.classList.remove('modo-captura-pdf'); // 🔥 Regresa a App Móvil
+                document.body.classList.add('modo-app'); // 🔥 REGRESAMOS la capa de App Móvil
             }, 500);
         });
     }
 
-async function forzarDescargaPDF() {
+    async function forzarDescargaPDF() {
         if (!window.jspdf.jsPDF) return alert("Falta librería PDF.");
-        document.body.classList.add('modo-captura-pdf'); // 🔥 Activa modo PDF
+        document.body.classList.remove('modo-app'); // 🔥 QUITAMOS la capa de App Móvil para revelar el PDF original
         
         const els = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
         els.forEach(el => el.style.display = 'none');
@@ -668,10 +642,10 @@ async function forzarDescargaPDF() {
         elemento.style.width = originalW; elemento.style.maxWidth = originalMax;
         els.forEach(el => el.style.display = el.classList.contains('nav-bar') || el.classList.contains('pdf-actions-bar') ? 'flex' : 'inline-flex');
         deshacerFormateoCaptura(reemplazos);
-        document.body.classList.remove('modo-captura-pdf'); // 🔥 Regresa a App Móvil
+        document.body.classList.add('modo-app'); // 🔥 REGRESAMOS la capa de App Móvil
     }
     
-async function guardarPresupuestoNube() {
+    async function guardarPresupuestoNube() {
         if (!idReporteCortoGlobal) return alert("⚠️ Error de folio.");
         const btn = document.getElementById('btnGuardarPresupuesto');
         const originalText = btn.innerHTML; btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO..."; btn.disabled = true;
@@ -702,7 +676,7 @@ async function guardarPresupuestoNube() {
             const els = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
             els.forEach(el => el.style.display = 'none');
             
-            document.body.classList.add('modo-captura-pdf'); // 🔥 Activa el modo PDF invisible
+            document.body.classList.remove('modo-app'); // 🔥 QUITAMOS la capa de App Móvil para revelar el PDF original
             const reemplazos = formatearInputsParaCaptura();
 
             const elemento = document.querySelector('.wrapper-page');
@@ -730,7 +704,7 @@ async function guardarPresupuestoNube() {
 
             // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5 para buena calidad pero rápida)
             const canvasPng = await html2canvas(elemento, { 
-                scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+                scale: 1.5, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
             const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
             const pngResponse = await fetch(dataUrlPng);
@@ -745,7 +719,7 @@ async function guardarPresupuestoNube() {
             els.forEach(el => el.style.display = ''); 
             deshacerFormateoCaptura(reemplazos);
             
-            document.body.classList.remove('modo-captura-pdf'); // 🔥 ¡Vuelve a su estado de App Móvil aquí!
+            document.body.classList.add('modo-app'); // 🔥 REGRESAMOS la capa de App Móvil
 
             // SUBIDA 1: PDF al Storage
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO PDF...";
