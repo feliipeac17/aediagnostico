@@ -669,11 +669,29 @@ async function guardarPresupuestoNube() {
 
             const elemento = document.querySelector('.wrapper-page');
             const originalW = elemento.style.width; const originalMax = elemento.style.maxWidth;
-            elemento.style.width = '840px'; elemento.style.maxWidth = 'none';
+            const originalPos = elemento.style.position; const originalTop = elemento.style.top; const originalLeft = elemento.style.left;
 
-            // 🔥 MAGIA AUTOMÁTICA: Escala 4 para máxima nitidez
+            // 🔥 TRUCO ANTI-RECORTE: Anclamos el documento a la esquina exacta (0,0)
+            window.scrollTo(0, 0);
+            elemento.style.position = 'absolute';
+            elemento.style.top = '0px';
+            elemento.style.left = '0px';
+            elemento.style.width = '840px'; 
+            elemento.style.maxWidth = 'none';
+
+            // 🔥 MAGIA AUTOMÁTICA: Escala 4 y bloqueo estricto de coordenadas X,Y en 0
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> RENDEREANDO...";
-            const canvas = await html2canvas(elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840 });
+            const canvas = await html2canvas(elemento, { 
+                scale: 4, 
+                useCORS: true, 
+                logging: false, 
+                width: 840, 
+                windowWidth: 840,
+                scrollX: 0,
+                scrollY: 0,
+                x: 0,
+                y: 0
+            });
             
             // ARCHIVO 1: Armar el PDF
             const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
@@ -686,7 +704,12 @@ async function guardarPresupuestoNube() {
             const pngResponse = await fetch(dataUrlPng);
             const pngBlob = await pngResponse.blob();
 
-            elemento.style.width = originalW; elemento.style.maxWidth = originalMax;
+            // Restaurar diseño original al celular
+            elemento.style.position = originalPos;
+            elemento.style.top = originalTop;
+            elemento.style.left = originalLeft;
+            elemento.style.width = originalW; 
+            elemento.style.maxWidth = originalMax;
             els.forEach(el => el.style.display = ''); deshacerFormateoCaptura(reemplazos);
 
             // SUBIDA 1: PDF al Storage
@@ -704,7 +727,7 @@ async function guardarPresupuestoNube() {
             
             const datosPresupuesto = {
                 link_presupuesto: publicURLPdf,
-                link_png_presupuesto: publicURLPng, // 🔥 Aquí guardamos la imagen nueva
+                link_png_presupuesto: publicURLPng,
                 datos_presupuesto_json: JSON.stringify(estructuraPresupuesto),
                 cliente_nombre: document.getElementById('in_cliente_nombre').value.trim().toUpperCase() || 'COTIZACION MOSTRADOR',
                 cliente_telefono: document.getElementById('in_cliente_telefono').value.trim(),
@@ -735,9 +758,6 @@ async function guardarPresupuestoNube() {
                 if(confirm("📲 ¿Deseas enviarlo al cliente por WhatsApp?")) {
                     let tel = document.getElementById('in_cliente_telefono').value.replace(/\D/g, '');
                     let nomCliente = document.getElementById('in_cliente_nombre').value.trim();
-                    
-                    let marca = document.getElementById('in_vehiculo_marca').value.trim();
-                    let modelo = document.getElementById('in_vehiculo_modelo').value.trim();
                     
                     const mensaje = `⭐*${nomCliente}!* Tenemos listo tu presupuesto 📋 _*${idReporteCortoGlobal}*_\n\n` +
                                     `Puedes revisarlo aquí: 👇\nhttps://aediagnostico.com/?folio=${idReporteCortoGlobal}\n\n` +
