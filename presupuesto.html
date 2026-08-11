@@ -210,11 +210,35 @@
         
         body.modo-app input.card-input, body.modo-app textarea.card-input, body.modo-app select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
         
-        /* 🔥 FIX 1: Que la Marca no se corte */
-        body.modo-app select.card-input { padding-right: 32px !important; text-overflow: ellipsis !important; }
-        /* 🔥 FIX 2: Unidad de Odómetro visible y acomodada */
-        body.modo-app #in_vehiculo_km { width: 100% !important; max-width: 100% !important; flex: 1 !important; }
-        body.modo-app #in_vehiculo_unidad { width: 75px !important; padding: 14px 8px !important; text-align: center !important; }
+        /* 🔥 FIX 1: Forzar 1 campo por renglón en Datos del Vehículo */
+        body.modo-app .pdf-info-card.vehiculo .pdf-card-data { 
+            display: flex !important; 
+            flex-direction: column !important; 
+            gap: 15px !important; 
+        }
+        body.modo-app .pdf-info-card.vehiculo .pdf-data-item { 
+            width: 100% !important; 
+        }
+        
+        /* 🔥 FIX 2: Selector de Marca completo y sin cortarse */
+        body.modo-app select.card-input { 
+            width: 100% !important; 
+            display: block !important; 
+            padding-right: 25px !important; 
+            text-overflow: clip !important; 
+        }
+
+        /* 🔥 FIX 3: Odómetro y Unidad juntos en el mismo renglón */
+        body.modo-app #in_vehiculo_km { 
+            width: 100% !important; 
+            flex: 1 !important; 
+        }
+        body.modo-app #in_vehiculo_unidad { 
+            width: 75px !important; 
+            flex: none !important; 
+            padding: 14px 8px !important; 
+            text-align: center !important; 
+        }
 
         body.modo-app .pdf-pillars-grid { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
         body.modo-app .pdf-pillar-card { border: none !important; border-radius: 16px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; margin-bottom: 20px !important; background: #ffffff !important; }
@@ -227,7 +251,7 @@
         body.modo-app .table-container { padding: 10px !important; }
         body.modo-app #listServicios, body.modo-app #listRefacciones, body.modo-app #listManoObra { gap: 10px !important; }
         
-        /* 🔥 FIX 3: Renglones estirados y Botón de Borrar centrado perfecto */
+        /* 🔥 FIX 4: Renglones estirados y Botón de Borrar centrado perfecto */
         body.modo-app .table-row { grid-template-columns: 1fr 90px 48px !important; gap: 8px !important; padding: 12px 10px !important; border-bottom: 1px solid #f1f5f9 !important; background: #ffffff !important; border-radius: 12px !important; align-items: stretch !important; }
         body.modo-app .table-row input.desc-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 12px !important; height: auto !important; font-size: 10pt !important; }
         body.modo-app .table-row input.price-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 12px !important; height: auto !important; font-size: 10.5pt !important; text-align: center !important; }
