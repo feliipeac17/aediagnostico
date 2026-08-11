@@ -1260,7 +1260,7 @@
 
                 const st = (rep.estado || 'EN REVISION').toUpperCase();
                 
-            // 📊 LÓGICA DEL STEPPER (BOLITAS Y LÍNEA)
+// 📊 LÓGICA DEL STEPPER (BOLITAS Y LÍNEA)
                 const progressLine = document.getElementById('portalProgressLine');
                 const detailTxt = document.getElementById('portalEstatusDetail');
                 
@@ -1268,7 +1268,8 @@
                 let activeSteps = 1; // Determina cuántas bolitas se pintan
 
                 if (st === 'COTIZACION') {
-                    progressWidth = "0%"; activeColor = "#8b5cf6"; detailMsg = "📝 Cotizacion Generada"; activeSteps = 1;
+                    // 🔥 CAMBIO 1: Barra al 100% y los 4 pasos iluminados
+                    progressWidth = "100%"; activeColor = "#8b5cf6"; detailMsg = "📝 Cotizacion Generada"; activeSteps = 4;
                 } else if (st === 'EN REPARACION') {
                     progressWidth = "33.33%"; activeColor = "#3b82f6"; detailMsg = "🔧 En Reparacion"; activeSteps = 2;
                 } else if (st === 'TERMINADO') {
@@ -1311,7 +1312,7 @@
                     fotoContenedor.style.display = 'none';
                 }
 
-// 🔥 4. ASIGNAR ACCIONES A LOS BOTONES
+                // 🔥 4. ASIGNAR ACCIONES A LOS BOTONES
                 const btnScan = document.getElementById('btnPortalEscaner'); 
                 const btnPdf = document.getElementById('btnPortalPdf'); 
                 const btnPres = document.getElementById('btnPortalPresupuesto');
@@ -1327,15 +1328,20 @@
                 }
 
                 // REPORTE DE SERVICIO (Abre Modal Inteligente)
-                let linkRep = (rep.link_pdf && rep.link_pdf.trim() !== '') ? rep.link_pdf : `/?pdf=${rep.folio}`;
-                let imgRep = rep.link_png || null; // 🔥 AQUÍ jalamos la imagen que guardaste
-                btnPdf.onclick = () => abrirModalDocumento('REPORTE DE SERVICIO', linkRep, '#d32f2f', imgRep);
-                btnPdf.href = "javascript:void(0)";
-                btnPdf.style.display = 'flex';
+                // 🔥 CAMBIO 2: Si el estado es COTIZACION, ocultamos el botón de reporte vacío
+                if (st === 'COTIZACION') {
+                    btnPdf.style.display = 'none';
+                } else {
+                    let linkRep = (rep.link_pdf && rep.link_pdf.trim() !== '') ? rep.link_pdf : `/?pdf=${rep.folio}`;
+                    let imgRep = rep.link_png || null; 
+                    btnPdf.onclick = () => abrirModalDocumento('REPORTE DE SERVICIO', linkRep, '#d32f2f', imgRep);
+                    btnPdf.href = "javascript:void(0)";
+                    btnPdf.style.display = 'flex';
+                }
 
                 // PRESUPUESTO (Abre Modal Inteligente)
                 if (rep.link_presupuesto && rep.link_presupuesto.trim() !== '') { 
-                    let imgPres = rep.link_png_presupuesto || null; // Listo para cuando haya PNG de presupuesto
+                    let imgPres = rep.link_png_presupuesto || null; 
                     btnPres.onclick = () => abrirModalDocumento('PRESUPUESTO', rep.link_presupuesto, '#10b981', imgPres);
                     btnPres.href = "javascript:void(0)";
                     btnPres.style.display = 'flex'; 
