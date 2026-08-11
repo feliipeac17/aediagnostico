@@ -635,7 +635,7 @@
         deshacerFormateoCaptura(reemplazos);
     }
     
-    async function guardarPresupuestoNube() {
+async function guardarPresupuestoNube() {
         if (!idReporteCortoGlobal) return alert("⚠️ Error de folio.");
         const btn = document.getElementById('btnGuardarPresupuesto');
         const originalText = btn.innerHTML; btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO..."; btn.disabled = true;
@@ -671,26 +671,40 @@
             const originalW = elemento.style.width; const originalMax = elemento.style.maxWidth;
             elemento.style.width = '840px'; elemento.style.maxWidth = 'none';
 
-            const canvas = await html2canvas(elemento, { scale: 3, useCORS: true, logging: false, width: 840, windowWidth: 840 });
+            // 🔥 MAGIA AUTOMÁTICA: Escala 4 para máxima nitidez
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> RENDEREANDO...";
+            const canvas = await html2canvas(elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840 });
+            
+            // ARCHIVO 1: Armar el PDF
             const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
             const pdfWidth = pdf.internal.pageSize.getWidth(); const pdfHeight = (canvas.height * pdfWidth) / canvas.width; 
             pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
+            // ARCHIVO 2: Armar el PNG directo del lienzo
+            const dataUrlPng = canvas.toDataURL('image/png');
+            const pngResponse = await fetch(dataUrlPng);
+            const pngBlob = await pngResponse.blob();
+
             elemento.style.width = originalW; elemento.style.maxWidth = originalMax;
             els.forEach(el => el.style.display = ''); deshacerFormateoCaptura(reemplazos);
 
-            // 🔥 NOMBRE LIMPIO: Solo dirá PRES_AE-XXXX.pdf
-            const fileName = `PRESUPUESTOS/PRES_${idReporteCortoGlobal}.pdf`;
-            
-            const { error: uploadError } = await supabaseClient.storage.from('reportes').upload(fileName, pdfBlob, { upsert: true, contentType: 'application/pdf' });
+            // SUBIDA 1: PDF al Storage
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO PDF...";
+            const fileNamePdf = `PRESUPUESTOS/PRES_${idReporteCortoGlobal}.pdf`;
+            const { error: uploadError } = await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
             if (uploadError) throw uploadError;
+            const publicURLPdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
 
-            // El truco anti-caché lo ponemos oculto en el enlace para que descargue limpio
-            const publicURL = supabaseClient.storage.from('reportes').getPublicUrl(fileName).data.publicUrl + '?t=' + Date.now();
+            // SUBIDA 2: PNG al Storage
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO PREVIEW...";
+            const fileNamePng = `PRESUPUESTOS_PREVIEW/PREVIEW_PRES_${idReporteCortoGlobal}.png`;
+            await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
+            const publicURLPng = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePng).data.publicUrl + '?t=' + Date.now();
             
             const datosPresupuesto = {
-                link_presupuesto: publicURL,
+                link_presupuesto: publicURLPdf,
+                link_png_presupuesto: publicURLPng, // 🔥 Aquí guardamos la imagen nueva
                 datos_presupuesto_json: JSON.stringify(estructuraPresupuesto),
                 cliente_nombre: document.getElementById('in_cliente_nombre').value.trim().toUpperCase() || 'COTIZACION MOSTRADOR',
                 cliente_telefono: document.getElementById('in_cliente_telefono').value.trim(),
@@ -717,21 +731,21 @@
             
             alert("✅ PRESUPUESTO GUARDADO");
             
-if (document.getElementById('in_cliente_telefono').value.trim() !== "") {
-    if(confirm("📲 ¿Deseas enviarlo al cliente por WhatsApp?")) {
-        let tel = document.getElementById('in_cliente_telefono').value.replace(/\D/g, '');
-        let nomCliente = document.getElementById('in_cliente_nombre').value.trim();
-        
-        let marca = document.getElementById('in_vehiculo_marca').value.trim();
-        let modelo = document.getElementById('in_vehiculo_modelo').value.trim();
-        
-        const mensaje = `⭐*${nomCliente}!* Tenemos listo tu presupuesto 📋 _*${idReporteCortoGlobal}*_\n\n` +
-                        `Puedes descargarlo aquí: 👇\nhttps://aediagnostico.com/?pres=${idReporteCortoGlobal}\n\n` +
-                        `_Quedamos a tus órdenes para cualquier duda._`;
+            if (document.getElementById('in_cliente_telefono').value.trim() !== "") {
+                if(confirm("📲 ¿Deseas enviarlo al cliente por WhatsApp?")) {
+                    let tel = document.getElementById('in_cliente_telefono').value.replace(/\D/g, '');
+                    let nomCliente = document.getElementById('in_cliente_nombre').value.trim();
+                    
+                    let marca = document.getElementById('in_vehiculo_marca').value.trim();
+                    let modelo = document.getElementById('in_vehiculo_modelo').value.trim();
+                    
+                    const mensaje = `⭐*${nomCliente}!* Tenemos listo tu presupuesto 📋 _*${idReporteCortoGlobal}*_\n\n` +
+                                    `Puedes revisarlo aquí: 👇\nhttps://aediagnostico.com/?folio=${idReporteCortoGlobal}\n\n` +
+                                    `_Quedamos a tus órdenes para cualquier duda._`;
 
-        window.open(`https://wa.me/${tel.length === 10 ? "52" + tel : tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
-    }
-}
+                    window.open(`https://wa.me/${tel.length === 10 ? "52" + tel : tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
+            }
             localStorage.setItem('ae_volver_historial', 'true'); window.location.replace('/');
         } catch (error) { alert("❌ Error: " + error.message); } finally { btn.innerHTML = originalText; btn.disabled = false; }
     }
