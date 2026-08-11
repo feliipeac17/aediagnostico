@@ -1673,34 +1673,28 @@ async function guardarYProcesarReporte() {
                 dLocal.setFullYear(parseInt(pf[0])); dLocal.setMonth(parseInt(pf[1]) - 1); dLocal.setDate(parseInt(pf[2])); payload.created_at = dLocal.toISOString();
             }
 
-            btnSubmit.innerHTML = "⏳ RENDEREANDO DOCUMENTOS...";
-            if(btnTop) btnTop.innerHTML = "⏳ RENDEREANDO...";
+            btnSubmit.innerHTML = "⏳ EN PROCESO...";
+            if(btnTop) btnTop.innerHTML = "⏳ PROCESANDO...";
             
             // 🔥 TRUCO ANTI-RECORTE: Anclamos el documento arriba a la izquierda antes de capturar
             window.scrollTo(0, 0);
-
             const est = prepararCaptura();
-            const canvas = await html2canvas(est.elemento, { 
-                scale: 4, 
-                useCORS: true, 
-                logging: false, 
-                width: 840, 
-                windowWidth: 840,
-                scrollX: 0,
-                scrollY: 0,
-                x: 0,
-                y: 0
+
+            // 1️⃣ RENDERIZADO EXCLUSIVO PARA EL PDF (Escala 4: Calidad Máxima Intacta)
+            const canvasPdf = await html2canvas(est.elemento, { 
+                scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
-            
-            // ARCHIVO 1: Armar el PDF contenedor
             const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
-            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvas.height * pW) / canvas.width; const maxH = pdf.internal.pageSize.getHeight();
+            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvasPdf.height * pW) / canvasPdf.width; const maxH = pdf.internal.pageSize.getHeight();
             if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
-            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
+            pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
-            // ARCHIVO 2: Armar el preview PNG directo del lienzo canvas
-            const dataUrlPng = canvas.toDataURL('image/png');
+            // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5: Ligero, rápido y fluido al abrir)
+            const canvasPng = await html2canvas(est.elemento, { 
+                scale: 1.5, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+            });
+            const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
             const pngResponse = await fetch(dataUrlPng);
             const pngBlob = await pngResponse.blob();
 
@@ -1712,7 +1706,7 @@ async function guardarYProcesarReporte() {
             await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
             payload.link_pdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
             
-            // SUBIDA 2: Guardar Captura PNG en el Storage
+            // SUBIDA 2: Guardar Captura PNG ligera en el Storage
             btnSubmit.innerHTML = "⏳ SUBIENDO PREVIEW...";
             const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folioCalculado}.png`;
             await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
