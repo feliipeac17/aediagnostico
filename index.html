@@ -345,6 +345,27 @@
         #modalDocPreviewImg:hover {
             transform: scale(1.02); /* Efecto de acercamiento al pasar el dedo/mouse */
         }
+        /* 🔥 EFECTO TÁCTIL PARA EL BOTÓN DE CERRAR (LA X) */
+        .btn-cerrar-modal {
+            background: #ef4444; 
+            border: none; 
+            color: white; 
+            width: 34px; 
+            height: 34px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4); 
+            transition: transform 0.15s ease, background 0.15s ease;
+        }
+        
+        /* Esto es lo que lee el celular cuando pones el dedo encima */
+        .btn-cerrar-modal:active {
+            transform: scale(0.80); /* Se encoge un 20% para que se note mucho el toque */
+            background: #dc2626; /* Se pone un rojo un poco más oscuro */
+        }
     </style>
 </head>
 <body>
@@ -433,7 +454,7 @@
 
             <a id="btnPortalEscaner" href="#" target="_blank" class="btn-portal-card b-scan" style="display: none;">
                 <i class="fa-solid fa-laptop-code" style="font-size: 20pt; color: #0284c7; margin-bottom: 8px;"></i>
-                <strong style="font-size: 9.5pt; line-height: 1.2; text-transform: uppercase;">Reporte Escáner</strong>
+                <strong style="font-size: 9.5pt; line-height: 1.2; text-transform: uppercase;">Diagnostico De Escaner</strong>
             </a>
 
             <a id="btnPortalPresupuesto" href="javascript:void(0)" class="btn-portal-card b-pres" style="display: none;">
@@ -471,9 +492,9 @@
                         <i id="modalDocIcon" class="fa-solid fa-file-pdf" style="font-size: 15pt; color: #38bdf8;"></i>
                         <h3 id="modalDocTitle" style="margin: 0; font-size: 11.5pt; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">DOCUMENTO</h3>
                     </div>
-                    <button onclick="cerrarModalDocumento()" style="background: #ef4444; border: none; color: white; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4); transition: transform 0.2s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">
-                                <i class="fa-solid fa-xmark" style="font-size: 14pt;"></i>
-                    </button>
+<button onclick="cerrarModalDocumento()" class="btn-cerrar-modal">
+    <i class="fa-solid fa-xmark" style="font-size: 14pt;"></i>
+</button>
                 </div>
 
                 <div id="modalPreviewContainer" style="padding: 20px; background: #f1f5f9; display: none; justify-content: center; align-items: center; border-bottom: 1px solid #e2e8f0;">
