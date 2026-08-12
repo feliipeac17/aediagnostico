@@ -13,8 +13,7 @@
     <meta name="theme-color" content="#111111">
 
     <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -1216,6 +1215,7 @@
     async function forzarDescargaPDF() {
         if (!window.jspdf.jsPDF) return alert("Librería PDF no lista.");
         const est = prepararCaptura();
+        await document.fonts.ready;
         try {
             const canvas = await html2canvas(est.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
             const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
@@ -1685,6 +1685,8 @@ async function guardarYProcesarReporte() {
             // 🔥 TRUCO ANTI-RECORTE: Anclamos el documento arriba a la izquierda antes de capturar
             window.scrollTo(0, 0);
             const est = prepararCaptura();
+
+            await document.fonts.ready;
 
             // 1️⃣ RENDERIZADO EXCLUSIVO PARA EL PDF (Escala 4: Calidad Máxima Intacta)
             const canvasPdf = await html2canvas(est.elemento, { 
