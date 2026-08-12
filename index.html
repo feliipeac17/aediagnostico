@@ -176,7 +176,9 @@
         .btn-portal-doc { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; }
         .btn-portal-doc:hover { transform: translateY(-3px) !important; box-shadow: 0 8px 18px rgba(0,0,0,0.08) !important; border-color: #cbd5e1 !important; }
         .btn-portal-doc:active { transform: translateY(0) scale(0.98) !important; box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important; }
-        .portal-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; box-sizing: border-box; }
+        /* 🔥 FIX: Matar el contenedor fantasma para que no empuje el panel hacia abajo */
+        .portal-grid-container { display: none !important; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; box-sizing: border-box; }
+        body:has(#portalClienteSection[style*="display: block"]) .portal-grid-container { display: grid !important; }    
         .btn-portal-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 12px; text-decoration: none; color: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: all 0.25s ease; min-height: 105px; box-sizing: border-box; }
         .btn-portal-card.b-pdf { border-top: 5px solid #d32f2f; }
         .btn-portal-card.b-scan { border-top: 5px solid #0284c7; }
