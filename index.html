@@ -430,7 +430,14 @@
             margin: 0 !important;
             height: 48px !important; /* 🔥 Amarramos la altura para que sean idénticos */
         }        
-</style>
+/* 🎛️ NUEVOS BOTONES TIPO SWITCH iOS */
+        .check-item-toggle { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 12px 15px; margin-bottom: 8px; cursor: pointer; font-size: 8.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
+        .check-item-toggle .toggle-input { display: none; }
+        .check-item-toggle .toggle-slider { position: relative; width: 46px; height: 26px; background-color: #cbd5e1; border-radius: 34px; transition: background-color 0.3s; flex-shrink: 0; }
+        .check-item-toggle .toggle-slider::before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: transform 0.3s; }
+        .check-item-toggle .toggle-input:checked + .toggle-slider { background-color: #10b981; }
+        .check-item-toggle .toggle-input:checked + .toggle-slider::before { transform: translateX(20px); }
+    </style>
 </head>
 <body class="modo-app">    
 <script>
@@ -784,10 +791,21 @@
                                 <div id="pdf_visual_gas_fill" style="height: 100%; width: 50%; background: #ff9800; border-radius: 3px;"></div>
                             </div>
                             <div class="pdf-data-item" style="margin-bottom: 5px; margin-top: 10px;"><span>CHECKLIST ELECTRICO INICIAL</span></div>
-                            <input type="checkbox" id="chk_luces" style="display:none;"><input type="checkbox" id="chk_elevadores" style="display:none;"><input type="checkbox" id="chk_tablero" style="display:none;">
-                            <div class="check-item" onclick="toggleCheck('chk_luces', this)"><i class="fa-regular fa-square check-icon"></i> Luces Principales (Altas/ Bajas/ Direccionales)</div>
-                            <div class="check-item" onclick="toggleCheck('chk_elevadores', this)"><i class="fa-regular fa-square check-icon"></i> Elevadores Y Seguros de Puertas</div>
-                            <div class="check-item" onclick="toggleCheck('chk_tablero', this)"><i class="fa-regular fa-square check-icon"></i> Testigos en Tablero (Check, ABS, Airbag)</div>
+<label class="check-item-toggle">
+                                <span>Luces Principales (Altas/ Bajas/ Direccionales)</span>
+                                <input type="checkbox" id="chk_luces" class="toggle-input">
+                                <div class="toggle-slider"></div>
+                            </label>
+                            <label class="check-item-toggle">
+                                <span>Elevadores Y Seguros de Puertas</span>
+                                <input type="checkbox" id="chk_elevadores" class="toggle-input">
+                                <div class="toggle-slider"></div>
+                            </label>
+                            <label class="check-item-toggle">
+                                <span>Testigos en Tablero (Check, ABS, Airbag)</span>
+                                <input type="checkbox" id="chk_tablero" class="toggle-input">
+                                <div class="toggle-slider"></div>
+                            </label>
                             <div class="pdf-data-item" style="margin-top: 10px;"><span>NOTAS DEL CHECKLIST</span><input type="text" id="in_obs_electrico" class="card-input" placeholder="..." style="color:#64748b;"></div>
                         </div>
 
@@ -1116,11 +1134,8 @@
         botones[index].classList.add('active');
     }
 
-    function toggleCheck(inputId, divElement) {
-        const checkbox = document.getElementById(inputId); checkbox.checked = !checkbox.checked;
-        const icon = divElement.querySelector('.check-icon');
-        if (checkbox.checked) { icon.classList.remove('fa-square'); icon.classList.add('fa-square-check', 'active'); } 
-        else { icon.classList.add('fa-square'); icon.classList.remove('fa-square-check', 'active'); }
+function toggleCheck(inputId, divElement) {
+        // Obsoleto: Los nuevos switches nativos no requieren Javascript para cambiar de estado visual.
     }
 
     let imgActualParaEditar = new Image(); let inputActivoEditor = null; let imgActivoId = ""; let txtActivoId = "";
@@ -1877,10 +1892,8 @@ async function cargarHistorialSupabase() {
         seleccionarCombustible(rep.vehiculo_gas_nivel ?? 50);
         document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || ''; document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
         
-        const setChkVisual = (id, val) => {
+const setChkVisual = (id, val) => {
             const chk = document.getElementById(id); if(chk) chk.checked = !!val;
-            const divItem = document.querySelector(`.check-item[onclick*="${id}"]`);
-            if (divItem) { const icon = divItem.querySelector('.check-icon'); if(val) { icon.classList.remove('fa-square'); icon.classList.add('fa-square-check', 'active'); } else { icon.classList.add('fa-square'); icon.classList.remove('fa-square-check', 'active'); } }
         };
         setChkVisual('chk_luces', rep.chk_luces); setChkVisual('chk_elevadores', rep.chk_elevadores); setChkVisual('chk_tablero', rep.chk_tablero);
         document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || ''; document.getElementById('in_link_escaner').value = rep.link_escaner || '';
