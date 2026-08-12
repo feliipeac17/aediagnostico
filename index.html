@@ -50,7 +50,7 @@
         .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 20px 15px; min-height: 100vh; display: none; }
         @media (min-width: 768px) { .admin-panel { margin: 30px auto; min-height: auto; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); } }
         
-        /* 🛡️ SE MANTIENE ELIMINADO EL ENCABEZADO VIEJO QUE YA HABÍAMOS QUITADO */
+        /* 🛡️ SE MANTIENE ELIMINADO EL ENCABEZADO VIEJO COMO LO TENÍAS */
         .panel-header { display: none !important; }
         
         .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 10px 0; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; }
@@ -92,7 +92,6 @@
 
         .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 6px; } 
         .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
-        .pdf-info-card:not(.check) .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
         .pdf-data-item { font-size: 10pt; display: flex; flex-direction: column; justify-content: flex-start; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; font-size: 6.5pt; margin-bottom: 2px; }
 
@@ -134,25 +133,23 @@
         .web-check-item { display: flex; align-items: center; font-size: 10pt; font-weight: bold; }
         .web-check-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
 
-        .web-photo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-        .web-photo-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 6px; text-align: center; }
-        .web-photo-wrapper { width: 100%; height: 150px; background: #eaeded; border-radius: 4px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
-        .web-photo-wrapper:hover { transform: scale(1.02); }
+        .web-photo-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; margin-top: 10px !important; }
+        .web-photo-card { border: 1px solid #e2e8f0 !important; background: #f8fafc !important; border-radius: 12px !important; padding: 8px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important; }
+        .web-photo-wrapper { border-radius: 8px !important; height: 120px !important; background: #e2e8f0 !important; }
         .web-photo-wrapper img { width: 100%; height: 100%; object-fit: contain; }
-        .web-photo-title { font-size: 8.5pt; font-weight: bold; color: #444; margin-top: 6px; }
-
-        .view-sub-tabs { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; gap: 5px; }
-        .view-sub-btn { background: none; border: none; padding: 10px 15px; font-size: 10pt; font-weight: bold; color: #666; cursor: pointer; border-radius: 4px 4px 0 0; text-transform: uppercase; }
-        .view-sub-btn.active { color: #d32f2f; border-bottom: 3px solid #d32f2f; background: #f8fafc; }
-
-        .scanner-frame-container { width: 100%; height: 700px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #fff; display: block; }
-        .scanner-frame-container iframe { width: 100%; height: 100%; border: none; }
-
-        .mask-fullscreen-view { display: none; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: #fff; z-index: 99999; }
-        .mask-fullscreen-view iframe { width: 100%; height: 100%; border: none; }
+        .web-photo-title { color: #334155 !important; font-size: 8pt !important; text-transform: uppercase; }
         
-        /* 🛡️ PANTALLA DE PIN ORIGINAL RESTAURADA COMPLETA */
-        .pin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111111; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .sticky-actions-bar { position: -webkit-sticky; position: sticky; top: 0; background-color: rgba(244, 246, 249, 0.9); backdrop-filter: blur(8px); padding: 12px 5px !important; z-index: 1000; }
+        .btn-action-view { border: none; padding: 14px 18px; font-size: 10pt; font-weight: 800; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease; width: 100%; }
+        .btn-action-back { background: #334155; color: #ffffff; box-shadow: 0 4px 10px rgba(51, 65, 85, 0.25); }
+        .btn-action-back:hover { background: #1e293b; }
+        .btn-action-back:active { transform: scale(0.96); }
+        .btn-action-pdf { background: #d32f2f; color: #ffffff; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.35); }
+        .btn-action-pdf:hover { background: #b71c1c; }
+        .btn-action-pdf:active { transform: scale(0.96); }
+
+        /* 🛡️ REPARACIÓN: PANEL DE PIN ORIGINAL PREMIUM RESTAURADO AL 100% */
+        .pin-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #111111; z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .pin-container { text-align: center; width: 100%; max-width: 290px; padding: 10px; }
         .pin-instruction { color: #888; font-size: 10.5pt; margin-bottom: 25px; }
         .pin-dots-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
@@ -164,133 +161,6 @@
         .pin-btn:active { background: #333; color: #d32f2f; }
         .pin-btn.btn-clear, .pin-btn.btn-backspace { background: transparent; color: #555; font-size: 13pt; }
 
-        .sticky-actions-bar { position: -webkit-sticky; position: sticky; top: 0; background-color: rgba(244, 246, 249, 0.9); backdrop-filter: blur(8px); padding: 12px 5px !important; z-index: 1000; }
-        .btn-card-cotizar { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
-
-        .pdf-actions-bar { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-download-image { flex: 1; background: #0284c7; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(2,132,199,0.2); text-transform: uppercase;}
-        .btn-download-pdf { flex: 1; background: #d32f2f; color: white; border: none; padding: 14px; font-size: 10.5pt; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); text-transform: uppercase;}
-        
-        @media screen and (max-width: 768px) {
-            .pdf-header-container { flex-direction: column !important; gap: 15px !important; padding: 20px 15px !important; }
-            .pdf-folio-container { width: 100% !important; }
-            body:not(.modo-app) .pdf-grid-boxes { grid-template-columns: 1fr !important; }
-            .photo-grid { grid-template-columns: 1fr 1fr !important; }
-            #printable-canvas { padding: 10px !important; }
-            .pdf-actions-bar { flex-direction: column; }
-        }
-                
-        .btn-download-image:hover { background-color: #0369a1; }
-        .btn-download-image:active { transform: scale(0.98); }
-        .btn-download-pdf:hover { background-color: #bd0d00; }
-        .btn-download-pdf:active { transform: scale(0.98); }
-
-        .btn-modal-foto {
-            flex: 1; padding: 20px 10px; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 11pt; 
-            cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-        .btn-modal-foto i { font-size: 20pt; }
-        .btn-camara { background: #0284c7; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2); }
-        .btn-camara:hover { background: #0369a1; }
-        .btn-camara:active { transform: scale(0.97); }
-        .btn-galeria { background: #334155; box-shadow: 0 4px 6px rgba(51, 65, 85, 0.2); }
-        .btn-galeria:hover { background: #1e293b; }
-        .btn-galeria:active { transform: scale(0.97); }
-
-        .btn-modal-cancelar {
-            width: 100%; padding: 12px; background: #f1f5f9; color: #64748b; border: none; border-radius: 10px; 
-            font-weight: 700; font-size: 9.5pt; cursor: pointer; transition: background-color 0.2s ease;
-        }
-        .btn-modal-cancelar:hover { background: #e2e8f0; }
-                
-        button[id^="btn-ver-"] { transition: background-color 0.2s ease, transform 0.1s ease !important; }
-        button[id^="btn-ver-"]:hover { background-color: #475569 !important; }
-        button[id^="btn-ver-"]:active { transform: scale(0.95) !important; }
-
-        button[id^="btn-edit-"] { transition: background-color 0.2s ease, transform 0.1s ease !important; }
-        button[id^="btn-edit-"]:hover { background-color: #c2410c !important; }
-        button[id^="btn-edit-"]:active { transform: scale(0.95) !important; }
-
-        button[id^="btn-cotizar-"] { transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease !important; }
-        button[id^="btn-cotizar-"]:hover { background-color: #0369a1 !important; box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3) !important; }
-        button[id^="btn-cotizar-"]:active { transform: scale(0.96) !important; }
-
-        #btnGuardarForm { transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease !important; }
-        #btnGuardarForm:hover { background-color: #059669 !important; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4) !important; }
-        #btnGuardarForm:active { transform: scale(0.97) !important; }
-
-        #btnCancelarEdicion { transition: background-color 0.2s ease, transform 0.1s ease !important; }
-        #btnCancelarEdicion:hover { background-color: #334155 !important; }
-        #btnCancelarEdicion:active { transform: scale(0.97) !important; }
-
-        .btn-logout { 
-            background: transparent !important; color: #94a3b8 !important; border: 1px solid #e2e8f0 !important; padding: 8px 14px; 
-            border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 9pt; transition: all 0.2s ease, transform 0.1s ease !important;
-        }
-        .btn-logout:hover { background: #fee2e2 !important; color: #ef4444 !important; border-color: #fca5a5 !important; }
-        .btn-logout:active { transform: scale(0.93) !important; }
-
-        #btnDescargarPDF { transition: background-color 0.2s ease, transform 0.1s ease !important; }
-        #btnDescargarPDF:hover { background-color: #b71c1c !important; }
-        #btnDescargarPDF:active { transform: scale(0.96) !important; }
-
-        #btnEnviarWhatsApp { transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease !important; }
-        #btnEnviarWhatsApp:hover { background-color: #1da851 !important; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4) !important; }
-        #btnEnviarWhatsApp:active { transform: scale(0.97) !important; }
-
-        .nav-tab-btn {
-            flex: 1; border: 1px solid #e2e8f0; background: #f8fafc; padding: 14px 5px; font-weight: 700; color: #64748b; 
-            border-radius: 16px; font-size: 8.5pt; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            text-transform: uppercase; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .nav-tab-btn i { font-size: 18pt; color: #94a3b8; transition: all 0.2s ease; }
-        .nav-tab-btn.tab-active { background: #ffffff !important; color: #0f172a !important; border-color: #0284c7 !important; box-shadow: 0 6px 15px rgba(2, 132, 199, 0.15) !important; }
-        .nav-tab-btn.tab-active i { color: #0284c7 !important; transform: scale(1.15); }
-        .nav-tab-btn:hover:not(.tab-active) { background: #f1f5f9; border-color: #cbd5e1; color: #1e293b; }
-        
-        .input-buscador-moderno {
-            width: 100%; padding: 14px 16px 14px 44px; font-size: 10.5pt; font-weight: 600; border-radius: 12px; 
-            border: 1px solid #e2e8f0; background-color: #ffffff; color: #0f172a; outline: none; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); transition: all 0.25s ease; 
-        }
-        .input-buscador-moderno:hover { border-color: #cbd5e1; }
-        .input-buscador-moderno:focus { border-color: #0284c7; background-color: #ffffff; box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.08); }
-        .input-buscador-moderno::placeholder { color: #94a3b8; font-weight: 500; text-transform: none !important; }
-        
-        button[id^="btn-wa-"] { transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease !important; }
-        button[id^="btn-wa-"]:hover { background-color: #1da851 !important; box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3) !important; }
-        button[id^="btn-wa-"]:active { transform: scale(0.95) !important; }
-        
-        .btn-paginacion { border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 9.5pt; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; }
-        .btn-paginacion.prev, .btn-paginacion.next { background: #0284c7; color: #ffffff; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2); border: none; }
-        .btn-paginacion.prev:hover, .btn-paginacion.next:hover { background: #0369a1; }
-        .btn-paginacion:active { transform: scale(0.95); }
-        .btn-paginacion:disabled { opacity: 0.5; pointer-events: none; }
-
-        .preview-card-view { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
-        .preview-header-block { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; border-left: none !important; border-radius: 16px !important; box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2) !important; margin-bottom: 20px !important; padding: 25px 20px !important; }
-        #web_view_folio { color: #ffffff !important; font-weight: 800 !important; }
-        
-        .preview-section { background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 16px !important; padding: 20px !important; margin-bottom: 16px !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03) !important; text-transform: none !important; }
-        .preview-section-title { color: #0f172a !important; font-size: 12pt !important; font-weight: 800 !important; text-transform: uppercase !important; border-bottom: 2px solid #f1f5f9 !important; padding-bottom: 12px !important; margin-bottom: 16px !important; display: flex !important; align-items: center !important; gap: 10px !important; }
-        .preview-item { margin-bottom: 8px; }
-        .preview-item strong { color: #64748b !important; font-size: 7.5pt !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; margin-bottom: 4px !important; display: flex !important; align-items: center !important; gap: 6px !important; }
-        .preview-item span { font-size: 10.5pt !important; font-weight: 800 !important; color: #1e293b !important; display: block !important; text-transform: uppercase !important; }
-        
-        .web-photo-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; margin-top: 10px !important; }
-        .web-photo-card { border: 1px solid #e2e8f0 !important; background: #f8fafc !important; border-radius: 12px !important; padding: 8px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important; }
-        .web-photo-wrapper { border-radius: 8px !important; height: 120px !important; background: #e2e8f0 !important; }
-        .web-photo-title { color: #334155 !important; font-size: 8pt !important; text-transform: uppercase; }
-        
-        .btn-action-view { border: none; padding: 14px 18px; font-size: 10pt; font-weight: 800; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease; width: 100%; }
-        .btn-action-back { background: #334155; color: #ffffff; box-shadow: 0 4px 10px rgba(51, 65, 85, 0.25); }
-        .btn-action-back:hover { background: #1e293b; }
-        .btn-action-back:active { transform: scale(0.96); }
-        .btn-action-pdf { background: #d32f2f; color: #ffffff; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.35); }
-        .btn-action-pdf:hover { background: #b71c1c; }
-        .btn-action-pdf:active { transform: scale(0.96); }
-        
         .btn-flotante-bloquear {
             position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white; border: none; width: 55px; height: 55px; border-radius: 50%; font-size: 16pt;
@@ -325,8 +195,42 @@
         #portalFotoContenedor:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(2, 132, 199, 0.25) !important; border-color: #0369a1 !important; }
         #portalFotoContenedor:active { transform: scale(0.95); }  
 
+        @media screen and (max-width: 768px) {
+            .pdf-header-container { flex-direction: column !important; gap: 15px !important; padding: 20px 15px !important; }
+            .pdf-folio-container { width: 100% !important; }
+            body:not(.modo-app) .pdf-grid-boxes { grid-template-columns: 1fr !important; }
+            .photo-grid { grid-template-columns: 1fr 1fr !important; }
+            #printable-canvas { padding: 10px !important; }
+            .pdf-actions-bar { flex-direction: column; }
+        }
+
+        /* 🔥 BOTONES DE PESTAÑAS ORIGINALES (MANTENIDOS GRANDES Y LIMPIOS) */
+        .nav-tab-btn { flex: 1; border: 1px solid #e2e8f0; background: #f8fafc; padding: 14px 5px; font-weight: 700; color: #64748b; border-radius: 16px; font-size: 8.5pt; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .nav-tab-btn i { font-size: 18pt; color: #94a3b8; transition: all 0.2s ease; }
+        .nav-tab-btn.tab-active { background: #ffffff !important; color: #0f172a !important; border-color: #0284c7 !important; box-shadow: 0 6px 15px rgba(2, 132, 199, 0.15) !important; }
+        .nav-tab-btn.tab-active i { color: #0284c7 !important; transform: scale(1.15); }
+        .nav-tab-btn:hover:not(.tab-active) { background: #f1f5f9; border-color: #cbd5e1; color: #1e293b; }
+
+        /* 🔥 REPARACIÓN: EL BOTÓN DE GUARDAR EN REPORTE NUEVO REGRESA A SU FORMATO ANCHO ORIGINAL */
+        .btn-submit#btnGuardarForm { 
+            background: #10b981 !important; 
+            color: #fff !important; 
+            border: none !important; 
+            padding: 16px !important; 
+            font-size: 12pt !important; 
+            font-weight: bold !important; 
+            border-radius: 6px !important; 
+            cursor: pointer !important; 
+            width: 100% !important; 
+            text-transform: uppercase !important; 
+            margin-top: 10px !important; 
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4) !important;
+            display: block !important;
+            visibility: visible !important;
+        }
+
         /* =========================================================
-           🔥 CAPA MÁGICA ISO-COMPATIBLE: SÓLO AFECTA AL FORMULARIO DE NUEVO REPORTE 🔥
+           🔥 CAPA MÁGICA INTELIGENTE: SÓLO AFECTA AL MOLDE DE LA HOJA INTERNA 🔥
            ========================================================= */
         body.modo-app #formularioSection #printable-canvas { background: #f1f5f9 !important; padding: 15px 15px 30px 15px !important; }
         body.modo-app #formularioSection .pdf-title-row { display: none !important; }
@@ -360,9 +264,7 @@
         body.modo-app #formularioSection #in_vehiculo_km { width: 100% !important; flex: 1 !important; margin: 0 !important; height: 48px !important; }
         body.modo-app #formularioSection #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 0 8px !important; text-align: center !important; margin: 0 !important; height: 48px !important; }        
 
-        /* =========================================================
-           🎛️ INTERRUPTORES MODERNOS (SWITCH TOGGLES) 🎛️
-           ========================================================= */
+        /* 🎛️ INTERRUPTORES MODERNOS (SWITCH TOGGLES) */
         body.modo-app #formularioSection .check-item { display: flex !important; justify-content: space-between !important; align-items: center !important; background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important; padding: 14px 16px !important; margin-bottom: 10px !important; cursor: pointer; }
         body.modo-app #formularioSection .check-item input[type="checkbox"] { display: none !important; }
         body.modo-app #formularioSection .switch-slider { position: relative; display: inline-block; width: 50px; height: 28px; background-color: #cbd5e1; border-radius: 34px; transition: background-color 0.25s ease; }
