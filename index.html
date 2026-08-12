@@ -47,10 +47,12 @@
         * { box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
         body { margin: 0; padding: 0; background-color: #f4f6f9; color: var(--text-color); -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
         
-        /* 🔥 SE ELIMINÓ EL ESPACIO EN BLANCO SUPERIOR AQUÍ */
-        .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 5px 15px 20px 15px; min-height: 100vh; display: none; }
+       /* 🔥 SE ELIMINÓ EL ESPACIO EN BLANCO SUPERIOR AQUÍ */
+        .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 5px 15px 20px 15px; min-height: 100vh; display: none; position: relative !important; z-index: 10; }
         @media (min-width: 768px) { .admin-panel { margin: 0 auto 30px auto !important; min-height: auto; border-radius: 8px; padding: 5px 30px 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); } }
-        
+        /* Candado estricto: Si el portal del cliente está oculto, destruye su espacio para que no empuje el panel de control */
+        body:not(:has(#portalClienteSection[style*="display: block"])) #portalClienteSection,
+        body:not(:has(#portalClienteSection[style*="display: block"])) .portal-grid-container { display: none !important; height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
         .panel-header { display: none !important; }
         
         /* 🔥 SE AJUSTÓ LA BARRA PARA QUE QUEDE PEGADA ARRIBA */
@@ -247,10 +249,11 @@
         body.modo-app #formularioSection input.card-input, body.modo-app #formularioSection textarea.card-input, body.modo-app #formularioSection select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
         body.modo-app #formularioSection select.card-input { width: 100% !important; display: block !important; padding-right: 25px !important; }
 
-        body.modo-app #formularioSection .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: flex-end !important; width: 100% !important; }
-        body.modo-app #formularioSection #in_vehiculo_km { width: 100% !important; flex: 1 !important; margin: 0 !important; height: 48px !important; }
-        body.modo-app #formularioSection #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 0 8px !important; text-align: center !important; margin: 0 !important; height: 48px !important; }        
-
+        body.modo-app #formularioSection .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 10px !important; align-items: flex-end !important; width: 100% !important; }
+        body.modo-app #formularioSection .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] > div { flex: 1 !important; display: flex !important; flex-direction: column !important; justify-content: flex-end !important; }
+        body.modo-app #formularioSection #in_vehiculo_km, body.modo-app #formularioSection #in_vehiculo_unidad { height: 46px !important; margin: 0 !important; }
+        body.modo-app #formularioSection #in_vehiculo_unidad { width: 80px !important; flex: none !important; padding: 0 10px !important; text-align: center !important; }
+    
         /* 🎛️ INTERRUPTORES MODERNOS */
         body.modo-app #formularioSection .check-item { display: flex !important; justify-content: space-between !important; align-items: center !important; background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important; padding: 14px 16px !important; margin-bottom: 10px !important; cursor: pointer; }
         body.modo-app #formularioSection .check-item input[type="checkbox"] { display: none !important; }
