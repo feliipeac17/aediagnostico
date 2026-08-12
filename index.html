@@ -403,8 +403,7 @@
 
 /* Odómetro y Unidad juntos */
             body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: flex-end !important; width: 100% !important; }
-            body.modo-app #caja-odometro { flex: 1 !important; width: 100% !important; }
-            body.modo-app #in_vehiculo_km { height: 48px !important; flex: 1 !important; margin: 0 !important; }
+body.modo-app #in_vehiculo_km { height: 48px !important; width: 100% !important; max-width: 100% !important; flex: 1 !important; margin: 0 !important; }
             body.modo-app #in_vehiculo_unidad { height: 48px !important; width: 75px !important; padding: 0 8px !important; flex: none !important; margin: 0 !important; }
             
             body.modo-app .pdf-title-row { display: none !important; }
@@ -736,12 +735,15 @@
                                 <div class="pdf-data-item"><span>COLOR</span><input type="text" id="in_vehiculo_color" class="card-input" placeholder="..."></div>
                                 <div class="pdf-data-item"><span>PLACAS</span><input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..."></div>
                                 <div class="pdf-data-item" style="grid-column: span 2;"><span>NUMERO DE SERIE (VIN)</span><input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17"></div>
-<div class="pdf-data-item" style="grid-column: span 2; display: flex; flex-direction: row; align-items: flex-end; justify-content: flex-start; gap: 8px;">
-                                    <div style="width: 90px;"><span>ODOMETRO</span><input type="number" id="in_vehiculo_km" class="card-input" placeholder="..."></div>
-                                    <select id="in_vehiculo_unidad" class="card-input" style="width: 45px; height: 24px; font-size: 8.5pt; font-weight: 700; color: #0f172a; border-bottom: 1px dashed #cbd5e1; background: transparent; outline: none; padding: 0;">
-                                        <option value="KM">KM</option><option value="MI">MI</option>
-                                    </select>
-                                </div>
+<div class="pdf-data-item" style="grid-column: span 2;">
+                        <span>ODOMETRO</span>
+                        <div style="display: flex; gap: 4px; align-items: baseline;">
+                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: auto; max-width: 100px;">
+                            <select id="in_vehiculo_unidad" class="card-input" style="width: 45px; border: none; padding: 0; height: 24px !important; line-height: 22px !important; font-size: 8.5pt; font-weight: 700; color: #0f172a; border-bottom: 1px dashed #cbd5e1; background: transparent; outline: none; cursor: pointer;">
+                                <option value="KM">KM</option><option value="MI">MI</option>
+                            </select>
+                        </div>
+                    </div>
                             </div>
                         </div>
                     </div>
