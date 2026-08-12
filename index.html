@@ -50,9 +50,11 @@
         .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 20px 15px; min-height: 100vh; display: none; }
         @media (min-width: 768px) { .admin-panel { margin: 30px auto; min-height: auto; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); } }
         
+        /* 🔥 ESTE ES EL ENCABEZADO QUE ESTABA OCULTO. ¡YA ESTÁ VISIBLE! */
         .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a1a1a; padding-bottom: 15px; margin-bottom: 20px; }
         .panel-title { font-size: 15pt; font-weight: bold; color: #1a1a1a; }
         .panel-title span { color: #d32f2f; }
+        
         .btn-submit { background: #1a1a1a; color: #fff; border: none; padding: 16px; font-size: 12pt; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-submit:hover { background: #d32f2f; }
         .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 10px 0; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; }
@@ -148,8 +150,6 @@
         .btn-action-pdf { background: #d32f2f; color: #ffffff; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.35); }
         .btn-action-pdf:hover { background: #b71c1c; }
         .btn-action-pdf:active { transform: scale(0.96); }
-        
-        .panel-header { display: none !important; }
 
         .btn-flotante-bloquear {
             position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
@@ -192,14 +192,63 @@
             .photo-grid { grid-template-columns: 1fr 1fr !important; }
             #printable-canvas { padding: 10px !important; }
             .pdf-actions-bar { flex-direction: column; }
-        } /* 🔥 FIX: Se cerró la llave de la media-query clásica correctamente aquí */
+        }
+
+        .btn-download-image, .btn-download-image2 { display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: #ffffff; font-weight: 600; font-size: 11pt; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+        .btn-download-image { background-color: #0284c7; } .btn-download-image:hover { background-color: #0369a1; }
+        .btn-download-image2 { background-color: #dc2626; } .btn-download-image2:hover { background-color: #bd0d00; }
+        #btnGuardarForm { transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease !important; }
+        #btnGuardarForm:hover { background-color: #059669 !important; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4) !important; }
+        #btnGuardarForm:active { transform: scale(0.97) !important; }
+        #btnCancelarEdicion { transition: background-color 0.2s ease, transform 0.1s ease !important; }
+        #btnCancelarEdicion:hover { background-color: #334155 !important; }
+        #btnCancelarEdicion:active { transform: scale(0.97) !important; }
+
+        .btn-logout { background: transparent !important; color: #94a3b8 !important; border: 1px solid #e2e8f0 !important; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 9pt; transition: all 0.2s ease, transform 0.1s ease !important; }
+        .btn-logout:hover { background: #fee2e2 !important; color: #ef4444 !important; border-color: #fca5a5 !important; }
+        .btn-logout:active { transform: scale(0.93) !important; }
+
+        .btn-modal-foto { flex: 1; padding: 20px 10px; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 11pt; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.2s ease, transform 0.1s ease; }
+        .btn-modal-foto i { font-size: 20pt; }
+        .btn-camara { background: #0284c7; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2); }
+        .btn-camara:hover { background: #0369a1; }
+        .btn-camara:active { transform: scale(0.97); }
+        .btn-galeria { background: #334155; box-shadow: 0 4px 6px rgba(51, 65, 85, 0.2); }
+        .btn-galeria:hover { background: #1e293b; }
+        .btn-galeria:active { transform: scale(0.97); }
+
+        .btn-modal-cancelar { width: 100%; padding: 12px; background: #f1f5f9; color: #64748b; border: none; border-radius: 10px; font-weight: 700; font-size: 9.5pt; cursor: pointer; transition: background-color 0.2s ease; }
+        .btn-modal-cancelar:hover { background: #e2e8f0; }
+
+        button[id^="btn-ver-"], button[id^="btn-edit-"] { transition: background-color 0.2s ease, transform 0.1s ease !important; }
+        button[id^="btn-ver-"]:hover { background-color: #475569 !important; }
+        button[id^="btn-ver-"]:active, button[id^="btn-edit-"]:active { transform: scale(0.95) !important; }
+        button[id^="btn-edit-"]:hover { background-color: #c2410c !important; }
+        button[id^="btn-cotizar-"] { transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease !important; }
+        button[id^="btn-cotizar-"]:hover { background-color: #0369a1 !important; box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3) !important; }
+        button[id^="btn-cotizar-"]:active { transform: scale(0.96) !important; }
+
+        .nav-tab-btn { flex: 1; border: 1px solid #e2e8f0; background: #f8fafc; padding: 14px 5px; font-weight: 700; color: #64748b; border-radius: 16px; font-size: 8.5pt; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .nav-tab-btn i { font-size: 18pt; color: #94a3b8; transition: all 0.2s ease; }
+        .nav-tab-btn.tab-active { background: #ffffff !important; color: #0f172a !important; border-color: #0284c7 !important; box-shadow: 0 6px 15px rgba(2, 132, 199, 0.15) !important; }
+        .nav-tab-btn.tab-active i { color: #0284c7 !important; transform: scale(1.15); }
+        .nav-tab-btn:hover:not(.tab-active) { background: #f1f5f9; border-color: #cbd5e1; color: #1e293b; }
+        
+        .input-buscador-moderno { width: 100%; padding: 14px 16px 14px 44px; font-size: 10.5pt; font-weight: 600; border-radius: 12px; border: 1px solid #e2e8f0; background-color: #ffffff; color: #0f172a; outline: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); transition: all 0.25s ease; }
+        .input-buscador-moderno:hover { border-color: #cbd5e1; }
+        .input-buscador-moderno:focus { border-color: #0284c7; background-color: #ffffff; box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.08); }
+        .input-buscador-moderno::placeholder { color: #94a3b8; font-weight: 500; text-transform: none !important; }
 
         /* =========================================================
            🔥 CAPA MÁGICA: MODO APP MÓVIL PARA RECEPCIÓN (INDEX) 🔥
            ========================================================= */
         body.modo-app { background-color: #f1f5f9; }
+        body.modo-app .wrapper-page { background: transparent !important; border: none !important; box-shadow: none !important; }
         body.modo-app #printable-canvas { background: #f1f5f9 !important; padding: 15px 15px 30px 15px !important; }
         body.modo-app .pdf-title-row { display: none !important; }
+
+        body.modo-app .pdf-header-container { border-radius: 16px !important; margin-bottom: 20px !important; box-shadow: 0 6px 20px rgba(15,23,42,0.15) !important; }
+        body.modo-app .pdf-divider { display: none !important; }
 
         body.modo-app .pdf-grid-boxes { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
         body.modo-app .pdf-info-card { background-color: #ffffff !important; border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; margin-bottom: 20px !important; }
@@ -221,77 +270,21 @@
         body.modo-app select.card-input { width: 100% !important; display: block !important; padding-right: 25px !important; }
 
         body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { 
-            display: flex !important; 
-            flex-direction: row !important; 
-            gap: 8px !important; 
-            align-items: flex-end !important; 
-            width: 100% !important; 
+            display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: flex-end !important; width: 100% !important; 
         }
-        body.modo-app #in_vehiculo_km { 
-            width: 100% !important; 
-            flex: 1 !important; 
-            margin: 0 !important;
-            height: 48px !important; 
-        }
-        body.modo-app #in_vehiculo_unidad { 
-            width: 75px !important; 
-            flex: none !important; 
-            padding: 0 8px !important; 
-            text-align: center !important; 
-            margin: 0 !important;
-            height: 48px !important; 
-        }        
+        body.modo-app #in_vehiculo_km { width: 100% !important; flex: 1 !important; margin: 0 !important; height: 48px !important; }
+        body.modo-app #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 0 8px !important; text-align: center !important; margin: 0 !important; height: 48px !important; }        
 
         /* =========================================================
            🎛️ INTERRUPTORES MODERNOS (SWITCH TOGGLES) 🎛️
            ========================================================= */
-        body.modo-app .check-item {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            background: #f8fafc !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 12px !important;
-            padding: 14px 16px !important;
-            margin-bottom: 10px !important;
-            cursor: pointer;
-        }
-
-        body.modo-app .check-item input[type="checkbox"] {
-            display: none !important;
-        }
-
-        body.modo-app .switch-slider {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 28px;
-            background-color: #cbd5e1; 
-            border-radius: 34px;
-            transition: background-color 0.25s ease;
-        }
-
-        body.modo-app .switch-slider::before {
-            content: "";
-            position: absolute;
-            height: 22px;
-            width: 22px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        body.modo-app .check-item input[type="checkbox"]:checked + .switch-slider {
-            background-color: #10b981; 
-        }
-
-        body.modo-app .check-item input[type="checkbox"]:checked + .switch-slider::before {
-            transform: translateX(22px);
-        }
-</style>
+        body.modo-app .check-item { display: flex !important; justify-content: space-between !important; align-items: center !important; background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important; padding: 14px 16px !important; margin-bottom: 10px !important; cursor: pointer; }
+        body.modo-app .check-item input[type="checkbox"] { display: none !important; }
+        body.modo-app .switch-slider { position: relative; display: inline-block; width: 50px; height: 28px; background-color: #cbd5e1; border-radius: 34px; transition: background-color 0.25s ease; }
+        body.modo-app .switch-slider::before { content: ""; position: absolute; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        body.modo-app .check-item input[type="checkbox"]:checked + .switch-slider { background-color: #10b981; }
+        body.modo-app .check-item input[type="checkbox"]:checked + .switch-slider::before { transform: translateX(22px); }
+    </style>
 </head>
 <body class="modo-app">    
 <script>
