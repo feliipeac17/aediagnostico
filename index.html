@@ -35,7 +35,7 @@
     };
     </script>
 
-<style>
+    <style>
         :root {
             --primary-blue: #0284c7;
             --primary-red: #d32f2f;
@@ -83,7 +83,7 @@
         .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }
         
         .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0px !important; margin-bottom: 10px; } 
-        .pdf-title-row h2 { font-family: 'Montserrat', sans-serif !important; font-size: 14pt !important; font-weight: 900 !important; color: #0f172a !important; margin: 0 !important; letter-spacing: 0.5px !important; }
+        .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; margin: 0;}
 
         .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px; } 
         .pdf-info-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 15px; position: relative; } 
@@ -92,7 +92,7 @@
         .pdf-info-card.tecnico { border-left: 5px solid #f59e0b; }
         .pdf-info-card.check { border-left: 5px solid #8b5cf6; }
 
-        .pdf-card-title { font-family: 'Montserrat', sans-serif !important; font-size: 10.5pt !important; font-weight: 800 !important; color: #0f172a !important; text-transform: uppercase !important; margin-bottom: 8px !important; letter-spacing: 0.5px !important; }
+        .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 6px; } 
         .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
         .pdf-data-item { font-size: 10pt; display: flex; flex-direction: column; justify-content: flex-start; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; font-size: 6.5pt; margin-bottom: 2px; }
@@ -174,7 +174,7 @@
         @media screen and (max-width: 768px) {
             .pdf-header-container { flex-direction: column !important; gap: 15px !important; padding: 20px 15px !important; }
             .pdf-folio-container { width: 100% !important; }
-            body:not(.modo-app) .pdf-grid-boxes { grid-template-columns: 1fr !important; }
+            .pdf-grid-boxes { grid-template-columns: 1fr !important; }
             .photo-grid { grid-template-columns: 1fr 1fr !important; }
             #printable-canvas { padding: 10px !important; }
             .pdf-actions-bar { flex-direction: column; }
@@ -366,55 +366,10 @@
             transform: scale(0.80); /* Se encoge un 20% para que se note mucho el toque */
             background: #dc2626; /* Se pone un rojo un poco más oscuro */
         }
-        /* 🔥 EFECTO TÁCTIL E INTERACTIVO PARA LA FOTO DEL VEHÍCULO */
-        #portalFotoContenedor {
-            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-        }
-        #portalFotoContenedor:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.25) !important;
-            border-color: #0369a1 !important;
-        }
-        #portalFotoContenedor:active {
-            transform: scale(0.95);
-        }  
-
-        /* =========================================================
-           🔥 CAPA MÁGICA: MODO APP MÓVIL PARA RECEPCIÓN (INDEX) 🔥
-           ========================================================= */
-        body.modo-app { background-color: #f1f5f9; }
-        body.modo-app #printable-canvas { background: #f1f5f9 !important; padding: 15px 15px 30px 15px !important; }
-        body.modo-app .pdf-title-row { display: none !important; }
-
-        /* Hacer que las tarjetas se vean como App */
-        body.modo-app .pdf-grid-boxes { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
-        body.modo-app .pdf-info-card { background-color: #ffffff !important; border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; margin-bottom: 20px !important; }
-        body.modo-app .pdf-info-card.cliente { border-top: 5px solid #0284c7 !important; border-left: none !important; }
-        body.modo-app .pdf-info-card.cliente .pdf-card-title { color: #0284c7 !important; }
-        body.modo-app .pdf-info-card.vehiculo { border-top: 5px solid var(--primary-red) !important; border-left: none !important; }
-        body.modo-app .pdf-info-card.vehiculo .pdf-card-title { color: var(--primary-red) !important; }
-        body.modo-app .pdf-info-card.tecnico { border-top: 5px solid #f59e0b !important; border-left: none !important; }
-        body.modo-app .pdf-info-card.tecnico .pdf-card-title { color: #f59e0b !important; }
-        body.modo-app .pdf-info-card.check { border-top: 5px solid #8b5cf6 !important; border-left: none !important; }
-        body.modo-app .pdf-info-card.check .pdf-card-title { color: #8b5cf6 !important; }
-        body.modo-app .pdf-card-title { font-size: 11pt !important; margin-bottom: 15px !important; letter-spacing: 0.5px !important; }
-
-        /* 🔥 Un campo por renglón completo en pantalla (App) */
-        body.modo-app .pdf-info-card:not(.check) .pdf-card-data { display: flex !important; flex-direction: column !important; gap: 15px !important; }
-        body.modo-app .pdf-info-card:not(.check) .pdf-data-item { width: 100% !important; }
-        body.modo-app .pdf-data-item span { font-size: 7.5pt !important; padding-left: 4px !important; letter-spacing: 0.5px !important; margin-bottom: 6px !important; }
-        
-        /* Inputs tipo Burbuja */
-        body.modo-app input.card-input, body.modo-app textarea.card-input, body.modo-app select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
-        body.modo-app select.card-input { width: 100% !important; display: block !important; padding-right: 25px !important; }
-
-        /* Odómetro y su unidad juntos en el mismo renglón */
-        body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: center !important; width: 100% !important; }
-        body.modo-app #in_vehiculo_km { width: 100% !important; flex: 1 !important; }
-        body.modo-app #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 14px 8px !important; text-align: center !important; }
     </style>
 </head>
-<body class="modo-app">    
+<body>
+    
 <script>
     if (window.location.pathname.endsWith('index.html') && !window.location.search) {
         window.history.replaceState(null, '', '/');
@@ -478,19 +433,17 @@
         </div>
 
         <div id="portalGaleriaRecepcion" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-                <span style="display: flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif !important; font-size: 10pt; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-images" style="color: #0284c7;"></i> Fotos de Recepcion</span>
+            <div style="font-family: 'Montserrat', sans-serif; font-size: 10.5pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fa-solid fa-images" style="color: #0284c7;"></i> Fotos de Recepcion</span>
                 <i class="fa-solid fa-xmark" onclick="toggleGaleriaRecepcion()" style="cursor: pointer; color: #94a3b8; font-size: 12pt; padding: 4px;"></i>
             </div>
             
             <div id="portalRecepcionGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 </div>
-            
-            <p style="font-family: 'Open Sans', sans-serif; font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
-                Toca una imagen para verla en pantalla completa
+            <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
+                Toca una imagen para abrirla en tamaño completo
             </p>
         </div>
-
 
 <div class="portal-grid-container">
             
@@ -518,19 +471,20 @@
 
         </div>
 
-                <div id="portalGaleriaEvidencia" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <div style="margin-bottom: 12px; display: flex; align-items: center;">
-                <span style="display: flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif !important; font-size: 10pt; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-images" style="color: #6366f1;"></i> Fotos de Trabajo</span>
+        <div id="portalGaleriaEvidencia" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-images" style="color: #6366f1;"></i> Fotos de Trabajo
             </div>
             <div id="portalGaleriaGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 </div>
-            <p style="font-family: 'Open Sans', sans-serif; font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
+            <p style="font-size: 7.5pt; color: #94a3b8; margin: 10px 0 0 0; text-align: center; font-style: italic;">
                 Toca una imagen para verla en pantalla completa
             </p>
         </div>
     </div>
 
-<div id="modalVisorDoc" onclick="if(event.target === this) cerrarModalDocumento()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);">            
+<div id="modalVisorDoc" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);">
+            
             <div style="background: #ffffff; width: 100%; max-width: 380px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; animation: modalSubir 0.3s ease-out;">
                 
                 <div style="background: #0f172a; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
@@ -738,17 +692,11 @@
                                 <div class="pdf-data-item"><span>COLOR</span><input type="text" id="in_vehiculo_color" class="card-input" placeholder="..."></div>
                                 <div class="pdf-data-item"><span>PLACAS</span><input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..."></div>
                                 <div class="pdf-data-item" style="grid-column: span 2;"><span>NUMERO DE SERIE (VIN)</span><input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17"></div>
-                                <div class="pdf-data-item" style="grid-column: span 2; display: flex; flex-direction: row; align-items: flex-end; gap: 10px;">
-                                    <div style="flex: 1; min-width: 0;">
-                                        <span style="display: block; margin-bottom: 2px;">ODOMETRO</span>
-                                        <input type="number" id="in_vehiculo_km" class="card-input" placeholder="...">
-                                    </div>
-                                    <div style="width: 85px; flex-shrink: 0;">
-                                        <span style="display: block; visibility: hidden; margin-bottom: 2px;">U</span>
-                                        <select id="in_vehiculo_unidad" class="card-input" style="width: 100%; outline: none; cursor: pointer;">
-                                            <option value="KM">KM</option><option value="MI">MI</option>
-                                        </select>
-                                    </div>
+                                <div class="pdf-data-item" style="grid-column: span 2; display: flex; flex-direction: row; align-items: flex-end; gap: 5px;">
+                                    <div style="flex:1;"><span>ODOMETRO</span><input type="number" id="in_vehiculo_km" class="card-input" placeholder="..."></div>
+                                    <select id="in_vehiculo_unidad" class="card-input" style="width: 55px; height: 24px; font-size: 8.5pt; font-weight: 700; color: #0f172a; border-bottom: 1px dashed #cbd5e1; background: transparent; outline: none;">
+                                        <option value="KM">KM</option><option value="MI">MI</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -776,7 +724,7 @@
                             <div class="check-item" onclick="toggleCheck('chk_luces', this)"><i class="fa-regular fa-square check-icon"></i> Luces Principales (Altas/ Bajas/ Direccionales)</div>
                             <div class="check-item" onclick="toggleCheck('chk_elevadores', this)"><i class="fa-regular fa-square check-icon"></i> Elevadores Y Seguros de Puertas</div>
                             <div class="check-item" onclick="toggleCheck('chk_tablero', this)"><i class="fa-regular fa-square check-icon"></i> Testigos en Tablero (Check, ABS, Airbag)</div>
-                            <div class="pdf-data-item" style="margin-top: 10px;"><span>NOTAS DEL CHECKLIST</span><input type="text" id="in_obs_electrico" class="card-input" placeholder="..."></div>
+                            <div class="pdf-data-item" style="margin-top: 10px;"><span>NOTAS DEL CHECKLIST</span><input type="text" id="in_obs_electrico" class="card-input" placeholder="..." style="color:#64748b;"></div>
                         </div>
 
                         <div class="pdf-info-card tecnico">
@@ -1299,7 +1247,7 @@
 
                 const st = (rep.estado || 'EN REVISION').toUpperCase();
                 
-// 📊 LÓGICA DEL STEPPER (BOLITAS Y LÍNEA)
+            // 📊 LÓGICA DEL STEPPER (BOLITAS Y LÍNEA)
                 const progressLine = document.getElementById('portalProgressLine');
                 const detailTxt = document.getElementById('portalEstatusDetail');
                 
@@ -1307,8 +1255,7 @@
                 let activeSteps = 1; // Determina cuántas bolitas se pintan
 
                 if (st === 'COTIZACION') {
-                    // 🔥 CAMBIO 1: Barra al 100% y los 4 pasos iluminados
-                    progressWidth = "100%"; activeColor = "#8b5cf6"; detailMsg = "📝 Cotizacion Generada"; activeSteps = 4;
+                    progressWidth = "0%"; activeColor = "#8b5cf6"; detailMsg = "📝 Cotizacion Generada"; activeSteps = 1;
                 } else if (st === 'EN REPARACION') {
                     progressWidth = "33.33%"; activeColor = "#3b82f6"; detailMsg = "🔧 En Reparacion"; activeSteps = 2;
                 } else if (st === 'TERMINADO') {
@@ -1351,7 +1298,7 @@
                     fotoContenedor.style.display = 'none';
                 }
 
-                // 🔥 4. ASIGNAR ACCIONES A LOS BOTONES
+// 🔥 4. ASIGNAR ACCIONES A LOS BOTONES
                 const btnScan = document.getElementById('btnPortalEscaner'); 
                 const btnPdf = document.getElementById('btnPortalPdf'); 
                 const btnPres = document.getElementById('btnPortalPresupuesto');
@@ -1367,20 +1314,15 @@
                 }
 
                 // REPORTE DE SERVICIO (Abre Modal Inteligente)
-                // 🔥 CAMBIO 2: Si el estado es COTIZACION, ocultamos el botón de reporte vacío
-                if (st === 'COTIZACION') {
-                    btnPdf.style.display = 'none';
-                } else {
-                    let linkRep = (rep.link_pdf && rep.link_pdf.trim() !== '') ? rep.link_pdf : `/?pdf=${rep.folio}`;
-                    let imgRep = rep.link_png || null; 
-                    btnPdf.onclick = () => abrirModalDocumento('REPORTE DE SERVICIO', linkRep, '#d32f2f', imgRep);
-                    btnPdf.href = "javascript:void(0)";
-                    btnPdf.style.display = 'flex';
-                }
+                let linkRep = (rep.link_pdf && rep.link_pdf.trim() !== '') ? rep.link_pdf : `/?pdf=${rep.folio}`;
+                let imgRep = rep.link_png || null; // 🔥 AQUÍ jalamos la imagen que guardaste
+                btnPdf.onclick = () => abrirModalDocumento('REPORTE DE SERVICIO', linkRep, '#d32f2f', imgRep);
+                btnPdf.href = "javascript:void(0)";
+                btnPdf.style.display = 'flex';
 
                 // PRESUPUESTO (Abre Modal Inteligente)
                 if (rep.link_presupuesto && rep.link_presupuesto.trim() !== '') { 
-                    let imgPres = rep.link_png_presupuesto || null; 
+                    let imgPres = rep.link_png_presupuesto || null; // Listo para cuando haya PNG de presupuesto
                     btnPres.onclick = () => abrirModalDocumento('PRESUPUESTO', rep.link_presupuesto, '#10b981', imgPres);
                     btnPres.href = "javascript:void(0)";
                     btnPres.style.display = 'flex'; 
@@ -1422,6 +1364,7 @@
                 
                 if (galeriaGrid) galeriaGrid.innerHTML = ''; // Limpiamos por si acaso
 
+                // Recorremos las 8 posibles fotos de evidencia
                 for (let i = 1; i <= 8; i++) {
                     const imgUrl = rep[`evidencia_${i}`];
                     const nota = rep[`evidencia_nota_${i}`] || "";
@@ -1650,7 +1593,7 @@ async function guardarYProcesarReporte() {
         if (vinVal.length > 0 && vinVal.length !== 17) return alert("⚠️ EL VIN DEBE TENER 17 CARACTERES.");
 
         const txtOrig = btnSubmit.innerHTML; const btnTop = document.getElementById('btnGuardarTop'); const txtOrigTop = btnTop ? btnTop.innerHTML : "";
-        btnSubmit.innerHTML = "⏳ PROCESANDO..."; btnSubmit.disabled = true;
+        btnSubmit.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; btnSubmit.disabled = true;
         if(btnTop) { btnTop.innerHTML = "⏳ GUARDANDO..."; btnTop.disabled = true; }
 
         let folioCalculado = document.getElementById('pdf-lbl-folio').innerText.replace("REPORTE ", "");
@@ -1719,35 +1662,38 @@ async function guardarYProcesarReporte() {
                 dLocal.setFullYear(parseInt(pf[0])); dLocal.setMonth(parseInt(pf[1]) - 1); dLocal.setDate(parseInt(pf[2])); payload.created_at = dLocal.toISOString();
             }
 
-            btnSubmit.innerHTML = "⏳ EN PROCESO...";
-            if(btnTop) btnTop.innerHTML = "⏳ PROCESANDO...";
+            btnSubmit.innerHTML = "⏳ RENDEREANDO DOCUMENTOS...";
+            if(btnTop) btnTop.innerHTML = "⏳ RENDEREANDO...";
             
             // 🔥 TRUCO ANTI-RECORTE: Anclamos el documento arriba a la izquierda antes de capturar
             window.scrollTo(0, 0);
-            
-            document.body.classList.remove('modo-app'); // 🛡️ QUITAMOS el diseño de App para que el PDF salga original
-            const est = prepararCaptura();
 
-            // 1️⃣ RENDERIZADO EXCLUSIVO PARA EL PDF (Escala 4: Calidad Máxima Intacta)
-            const canvasPdf = await html2canvas(est.elemento, { 
-                scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+            const est = prepararCaptura();
+            const canvas = await html2canvas(est.elemento, { 
+                scale: 4, 
+                useCORS: true, 
+                logging: false, 
+                width: 840, 
+                windowWidth: 840,
+                scrollX: 0,
+                scrollY: 0,
+                x: 0,
+                y: 0
             });
+            
+            // ARCHIVO 1: Armar el PDF contenedor
             const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
-            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvasPdf.height * pW) / canvasPdf.width; const maxH = pdf.internal.pageSize.getHeight();
+            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvas.height * pW) / canvas.width; const maxH = pdf.internal.pageSize.getHeight();
             if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
-            pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
+            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
-            // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5: Ligero, rápido y fluido al abrir)
-            const canvasPng = await html2canvas(est.elemento, { 
-                scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
-            });
-            const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
+            // ARCHIVO 2: Armar el preview PNG directo del lienzo canvas
+            const dataUrlPng = canvas.toDataURL('image/png');
             const pngResponse = await fetch(dataUrlPng);
             const pngBlob = await pngResponse.blob();
 
             restaurarPantalla(est);
-            document.body.classList.add('modo-app'); // 🔥 REGRESAMOS al diseño de App Móvil burbuja inmediatamente
 
             // SUBIDA 1: Guardar PDF en el Storage
             btnSubmit.innerHTML = "⏳ SUBIENDO PDF...";
@@ -1755,7 +1701,7 @@ async function guardarYProcesarReporte() {
             await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
             payload.link_pdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
             
-            // SUBIDA 2: Guardar Captura PNG ligera en el Storage
+            // SUBIDA 2: Guardar Captura PNG en el Storage
             btnSubmit.innerHTML = "⏳ SUBIENDO PREVIEW...";
             const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folioCalculado}.png`;
             await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
@@ -1976,18 +1922,15 @@ async function cargarHistorialSupabase() {
 
     function iniciarEscaneoQR() { const r = document.getElementById('reader'); r.style.display = 'block'; const s = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }); s.render((txt) => { document.getElementById('in_link_escaner').value = txt; s.clear(); r.style.display = 'none'; alert("¡Código QR escaneado!"); }, () => {}); }
     
-document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
         const b = document.getElementById('btnDescargarPDF');
         if (b) {
             b.onclick = async function() {
-                const t = b.innerHTML; b.innerHTML = "⏳ GENERANDO..."; b.disabled = true;    
-                document.body.classList.remove('modo-app'); // 🛡️ QUITAMOS modo app antes de renderizar
+                const t = b.innerHTML; b.innerHTML = "⏳ GENERANDO..."; b.disabled = true;
                 cargarRegistroParaEditar(reportDataGlobal); const p = document.getElementById('adminPanel');
                 p.style.display = 'block'; p.style.position = 'absolute'; p.style.left = '-9999px'; p.style.top = '0';
                 await forzarDescargaPDF();
                 p.style.position = 'relative'; p.style.left = '0'; p.style.top = 'auto'; p.style.display = 'none'; 
-                
-                document.body.classList.add('modo-app'); // 🔥 REGRESAMOS a modo app
                 b.innerHTML = t; b.disabled = false;
             };
         }
