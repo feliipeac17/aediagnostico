@@ -35,7 +35,7 @@
     };
     </script>
 
-    <style>
+<style>
         :root {
             --primary-blue: #0284c7;
             --primary-red: #d32f2f;
@@ -174,7 +174,7 @@
         @media screen and (max-width: 768px) {
             .pdf-header-container { flex-direction: column !important; gap: 15px !important; padding: 20px 15px !important; }
             .pdf-folio-container { width: 100% !important; }
-            .pdf-grid-boxes { grid-template-columns: 1fr !important; }
+            body:not(.modo-app) .pdf-grid-boxes { grid-template-columns: 1fr !important; }
             .photo-grid { grid-template-columns: 1fr 1fr !important; }
             #printable-canvas { padding: 10px !important; }
             .pdf-actions-bar { flex-direction: column; }
@@ -378,10 +378,43 @@
         #portalFotoContenedor:active {
             transform: scale(0.95);
         }  
+
+        /* =========================================================
+           🔥 CAPA MÁGICA: MODO APP MÓVIL PARA RECEPCIÓN (INDEX) 🔥
+           ========================================================= */
+        body.modo-app { background-color: #f1f5f9; }
+        body.modo-app #printable-canvas { background: #f1f5f9 !important; padding: 15px 15px 30px 15px !important; }
+        body.modo-app .pdf-title-row { display: none !important; }
+
+        /* Hacer que las tarjetas se vean como App */
+        body.modo-app .pdf-grid-boxes { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
+        body.modo-app .pdf-info-card { background-color: #ffffff !important; border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; margin-bottom: 20px !important; }
+        body.modo-app .pdf-info-card.cliente { border-top: 5px solid #0284c7 !important; border-left: none !important; }
+        body.modo-app .pdf-info-card.cliente .pdf-card-title { color: #0284c7 !important; }
+        body.modo-app .pdf-info-card.vehiculo { border-top: 5px solid var(--primary-red) !important; border-left: none !important; }
+        body.modo-app .pdf-info-card.vehiculo .pdf-card-title { color: var(--primary-red) !important; }
+        body.modo-app .pdf-info-card.tecnico { border-top: 5px solid #f59e0b !important; border-left: none !important; }
+        body.modo-app .pdf-info-card.tecnico .pdf-card-title { color: #f59e0b !important; }
+        body.modo-app .pdf-info-card.check { border-top: 5px solid #8b5cf6 !important; border-left: none !important; }
+        body.modo-app .pdf-info-card.check .pdf-card-title { color: #8b5cf6 !important; }
+        body.modo-app .pdf-card-title { font-size: 11pt !important; margin-bottom: 15px !important; letter-spacing: 0.5px !important; }
+
+        /* 🔥 Un campo por renglón completo en pantalla (App) */
+        body.modo-app .pdf-info-card:not(.check) .pdf-card-data { display: flex !important; flex-direction: column !important; gap: 15px !important; }
+        body.modo-app .pdf-info-card:not(.check) .pdf-data-item { width: 100% !important; }
+        body.modo-app .pdf-data-item span { font-size: 7.5pt !important; padding-left: 4px !important; letter-spacing: 0.5px !important; margin-bottom: 6px !important; }
+        
+        /* Inputs tipo Burbuja */
+        body.modo-app input.card-input, body.modo-app textarea.card-input, body.modo-app select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
+        body.modo-app select.card-input { width: 100% !important; display: block !important; padding-right: 25px !important; }
+
+        /* Odómetro y su unidad juntos en el mismo renglón */
+        body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: center !important; width: 100% !important; }
+        body.modo-app #in_vehiculo_km { width: 100% !important; flex: 1 !important; }
+        body.modo-app #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 14px 8px !important; text-align: center !important; }
     </style>
 </head>
-<body>
-    
+<body class="modo-app">    
 <script>
     if (window.location.pathname.endsWith('index.html') && !window.location.search) {
         window.history.replaceState(null, '', '/');
@@ -1611,7 +1644,7 @@ async function guardarYProcesarReporte() {
         if (vinVal.length > 0 && vinVal.length !== 17) return alert("⚠️ EL VIN DEBE TENER 17 CARACTERES.");
 
         const txtOrig = btnSubmit.innerHTML; const btnTop = document.getElementById('btnGuardarTop'); const txtOrigTop = btnTop ? btnTop.innerHTML : "";
-        btnSubmit.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; btnSubmit.disabled = true;
+        btnSubmit.innerHTML = "⏳ PROCESANDO..."; btnSubmit.disabled = true;
         if(btnTop) { btnTop.innerHTML = "⏳ GUARDANDO..."; btnTop.disabled = true; }
 
         let folioCalculado = document.getElementById('pdf-lbl-folio').innerText.replace("REPORTE ", "");
@@ -1685,6 +1718,8 @@ async function guardarYProcesarReporte() {
             
             // 🔥 TRUCO ANTI-RECORTE: Anclamos el documento arriba a la izquierda antes de capturar
             window.scrollTo(0, 0);
+            
+            document.body.classList.remove('modo-app'); // 🛡️ QUITAMOS el diseño de App para que el PDF salga original
             const est = prepararCaptura();
 
             // 1️⃣ RENDERIZADO EXCLUSIVO PARA EL PDF (Escala 4: Calidad Máxima Intacta)
@@ -1706,6 +1741,7 @@ async function guardarYProcesarReporte() {
             const pngBlob = await pngResponse.blob();
 
             restaurarPantalla(est);
+            document.body.classList.add('modo-app'); // 🔥 REGRESAMOS al diseño de App Móvil burbuja inmediatamente
 
             // SUBIDA 1: Guardar PDF en el Storage
             btnSubmit.innerHTML = "⏳ SUBIENDO PDF...";
@@ -1934,15 +1970,18 @@ async function cargarHistorialSupabase() {
 
     function iniciarEscaneoQR() { const r = document.getElementById('reader'); r.style.display = 'block'; const s = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }); s.render((txt) => { document.getElementById('in_link_escaner').value = txt; s.clear(); r.style.display = 'none'; alert("¡Código QR escaneado!"); }, () => {}); }
     
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
         const b = document.getElementById('btnDescargarPDF');
         if (b) {
             b.onclick = async function() {
-                const t = b.innerHTML; b.innerHTML = "⏳ GENERANDO..."; b.disabled = true;
+                const t = b.innerHTML; b.innerHTML = "⏳ GENERANDO..."; b.disabled = true;    
+                document.body.classList.remove('modo-app'); // 🛡️ QUITAMOS modo app antes de renderizar
                 cargarRegistroParaEditar(reportDataGlobal); const p = document.getElementById('adminPanel');
                 p.style.display = 'block'; p.style.position = 'absolute'; p.style.left = '-9999px'; p.style.top = '0';
                 await forzarDescargaPDF();
                 p.style.position = 'relative'; p.style.left = '0'; p.style.top = 'auto'; p.style.display = 'none'; 
+                
+                document.body.classList.add('modo-app'); // 🔥 REGRESAMOS a modo app
                 b.innerHTML = t; b.disabled = false;
             };
         }
