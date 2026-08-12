@@ -418,8 +418,8 @@
             height: 48px !important; /* 🔥 Amarramos la altura para que sean idénticos */
         }        
 /* 🎛️ NUEVOS BOTONES TIPO SWITCH iOS ALINEADOS 🎛️ */
-        .check-item-toggle { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; background: #f8fafc !important; border: 1px dashed #cbd5e1 !important; border-radius: 10px !important; padding: 12px 15px !important; margin-bottom: 8px !important; cursor: pointer; gap: 15px !important; width: 100% !important; box-sizing: border-box !important; }
-        .check-item-toggle span { flex: 1 !important; text-align: left !important; font-size: 8.5pt !important; font-weight: 700 !important; color: #0f172a !important; text-transform: uppercase !important; line-height: 1.3 !important; margin: 0 !important; }
+.check-item-toggle { display: flex; flex-direction: row; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 12px 15px; margin-bottom: 8px; cursor: pointer; font-size: 8.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase; gap: 15px; }
+        .check-item-toggle span { flex: 1; text-align: left; line-height: 1.3; margin: 0; }
         .check-item-toggle .toggle-input { display: none !important; }
         .check-item-toggle .toggle-slider { position: relative; width: 46px; height: 26px; background-color: #cbd5e1; border-radius: 34px; transition: background-color 0.3s; flex-shrink: 0; }
         .check-item-toggle .toggle-slider::before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: transform 0.3s; }
@@ -1302,10 +1302,8 @@ function restaurarPantalla(est) {
         const est = prepararCaptura();
         try {
             const canvas = await html2canvas(est.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
-            const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
-            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvas.height * pW) / canvas.width; const maxH = pdf.internal.pageSize.getHeight();
-            if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
-            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
+            const pdf = new window.jspdf.jsPDF('p', 'pt', [canvas.width, canvas.height]);
+            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, canvas.width, canvas.height, undefined, 'SLOW');
             pdf.save((document.title || "REPORTE_SERVICIO_AE") + ".pdf");
         } catch (error) { console.error(error); } finally { restaurarPantalla(est); }
     }
@@ -1776,10 +1774,8 @@ async function guardarYProcesarReporte() {
             const canvasPdf = await html2canvas(est.elemento, { 
                 scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
-            const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
-            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvasPdf.height * pW) / canvasPdf.width; const maxH = pdf.internal.pageSize.getHeight();
-            if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
-            pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
+            const pdf = new window.jspdf.jsPDF('p', 'pt', [canvasPdf.width, canvasPdf.height]);
+            pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, canvasPdf.width, canvasPdf.height, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
             // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5: Ligero, rápido y fluido al abrir)
