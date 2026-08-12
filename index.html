@@ -409,10 +409,28 @@
         body.modo-app select.card-input { width: 100% !important; display: block !important; padding-right: 25px !important; }
 
         /* Odómetro y su unidad juntos en el mismo renglón */
-        body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: center !important; width: 100% !important; }
-        body.modo-app #in_vehiculo_km { width: 100% !important; flex: 1 !important; }
-        body.modo-app #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 14px 8px !important; text-align: center !important; }
-    </style>
+        body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { 
+            display: flex !important; 
+            flex-direction: row !important; 
+            gap: 8px !important; 
+            align-items: flex-end !important; /* 🔥 ESTA ES LA CLAVE: Los alinea al ras del piso */
+            width: 100% !important; 
+        }
+        body.modo-app #in_vehiculo_km { 
+            width: 100% !important; 
+            flex: 1 !important; 
+            margin: 0 !important;
+            height: 48px !important; /* 🔥 Amarramos la altura para que sean idénticos */
+        }
+        body.modo-app #in_vehiculo_unidad { 
+            width: 75px !important; 
+            flex: none !important; 
+            padding: 0 8px !important; 
+            text-align: center !important; 
+            margin: 0 !important;
+            height: 48px !important; /* 🔥 Amarramos la altura para que sean idénticos */
+        }        
+</style>
 </head>
 <body class="modo-app">    
 <script>
