@@ -47,13 +47,15 @@
         * { box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
         body { margin: 0; padding: 0; background-color: #f4f6f9; color: var(--text-color); -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
         
-        .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 20px 15px; min-height: 100vh; display: none; }
-        @media (min-width: 768px) { .admin-panel { margin: 30px auto; min-height: auto; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); } }
+        /* 🔥 SE CORRIGIÓ: Eliminamos el margen superior y el espacio fantasma de arriba */
+        .admin-panel { width: 100%; max-width: 860px; margin: 0 auto; background: #fff; padding: 10px 15px; min-height: 100vh; display: none; }
+        @media (min-width: 768px) { .admin-panel { margin: 5px auto 30px auto !important; min-height: auto; border-radius: 8px; padding: 20px 30px 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); } }
         
-        /* 🛡️ SE MANTIENE ELIMINADO EL ENCABEZADO VIEJO COMO LO TENÍAS */
-        .panel-header { display: none !important; }
+        /* 🛡️ SE MANTIENE COMPLETAMENTE ELIMINADO EL PANEL-HEADER VIEJO Y SU ESPACIO */
+        .panel-header { display: none !important; margin: 0 !important; padding: 0 !important; height: 0 !important; overflow: hidden !important; }
         
-        .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 10px 0; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; }
+        /* 🔥 SE AJUSTÓ: Reducimos el margen superior de la barra de navegación para pegarla al borde */
+        .sticky-nav-container { position: -webkit-sticky; position: sticky; top: 0; background-color: #fff; padding: 5px 0 10px 0 !important; z-index: 1000; border-bottom: 1px solid #eee; margin-bottom: 15px; margin-top: 0 !important; }
         .wrapper-page { width: 100%; max-width: 840px; margin: 0 auto; box-sizing: border-box; background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 20px;}
         #printable-canvas { width: 100% !important; max-width: 100% !important; height: auto !important; margin: 0 !important; background: #ffffff !important; overflow: hidden !important; display: block !important; position: relative !important; padding: 15px 20px 15px 20px !important; }
        
@@ -92,6 +94,7 @@
 
         .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 6px; } 
         .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
+        .pdf-info-card:not(.check) .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
         .pdf-data-item { font-size: 10pt; display: flex; flex-direction: column; justify-content: flex-start; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; font-size: 6.5pt; margin-bottom: 2px; }
 
@@ -137,7 +140,7 @@
         .web-photo-card { border: 1px solid #e2e8f0 !important; background: #f8fafc !important; border-radius: 12px !important; padding: 8px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important; }
         .web-photo-wrapper { border-radius: 8px !important; height: 120px !important; background: #e2e8f0 !important; }
         .web-photo-wrapper img { width: 100%; height: 100%; object-fit: contain; }
-        .web-photo-title { color: #334155 !important; font-size: 8pt !important; text-transform: uppercase; }
+        .web-photo-title { font-size: 8.5pt; font-weight: bold; color: #334155 !important; font-size: 8pt !important; text-transform: uppercase; }
         
         .sticky-actions-bar { position: -webkit-sticky; position: sticky; top: 0; background-color: rgba(244, 246, 249, 0.9); backdrop-filter: blur(8px); padding: 12px 5px !important; z-index: 1000; }
         .btn-action-view { border: none; padding: 14px 18px; font-size: 10pt; font-weight: 800; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease; width: 100%; }
@@ -148,7 +151,7 @@
         .btn-action-pdf:hover { background: #b71c1c; }
         .btn-action-pdf:active { transform: scale(0.96); }
 
-        /* 🛡️ REPARACIÓN: PANEL DE PIN ORIGINAL PREMIUM RESTAURADO AL 100% */
+        /* 🛡️ PANTALLA DE PIN ORIGINAL COMPLETAMENTE INTRACTABLE Y CENTRADA */
         .pin-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #111111; z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .pin-container { text-align: center; width: 100%; max-width: 290px; padding: 10px; }
         .pin-instruction { color: #888; font-size: 10.5pt; margin-bottom: 25px; }
@@ -204,14 +207,19 @@
             .pdf-actions-bar { flex-direction: column; }
         }
 
-        /* 🔥 BOTONES DE PESTAÑAS ORIGINALES (MANTENIDOS GRANDES Y LIMPIOS) */
+        /* 📊 PESTAÑAS DE NAVEGACIÓN PRINCIPALES RESPETADAS AL 100% */
         .nav-tab-btn { flex: 1; border: 1px solid #e2e8f0; background: #f8fafc; padding: 14px 5px; font-weight: 700; color: #64748b; border-radius: 16px; font-size: 8.5pt; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .nav-tab-btn i { font-size: 18pt; color: #94a3b8; transition: all 0.2s ease; }
         .nav-tab-btn.tab-active { background: #ffffff !important; color: #0f172a !important; border-color: #0284c7 !important; box-shadow: 0 6px 15px rgba(2, 132, 199, 0.15) !important; }
         .nav-tab-btn.tab-active i { color: #0284c7 !important; transform: scale(1.15); }
         .nav-tab-btn:hover:not(.tab-active) { background: #f1f5f9; border-color: #cbd5e1; color: #1e293b; }
+        
+        .input-buscador-moderno { width: 100%; padding: 14px 16px 14px 44px; font-size: 10.5pt; font-weight: 600; border-radius: 12px; border: 1px solid #e2e8f0; background-color: #ffffff; color: #0f172a; outline: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); transition: all 0.25s ease; }
+        .input-buscador-moderno:hover { border-color: #cbd5e1; }
+        .input-buscador-moderno:focus { border-color: #0284c7; background-color: #ffffff; box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.08); }
+        .input-buscador-moderno::placeholder { color: #94a3b8; font-weight: 500; text-transform: none !important; }
 
-        /* 🔥 REPARACIÓN: EL BOTÓN DE GUARDAR EN REPORTE NUEVO REGRESA A SU FORMATO ANCHO ORIGINAL */
+        /* 💾 REPARACIÓN INTEGRAL: BOTÓN DE GUARDAR GRANDE Y ESTILIZADO ORIGINAL */
         .btn-submit#btnGuardarForm { 
             background: #10b981 !important; 
             color: #fff !important; 
@@ -223,14 +231,14 @@
             cursor: pointer !important; 
             width: 100% !important; 
             text-transform: uppercase !important; 
-            margin-top: 10px !important; 
+            margin-top: 15px !important; 
             box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4) !important;
             display: block !important;
             visibility: visible !important;
         }
 
         /* =========================================================
-           🔥 CAPA MÁGICA INTELIGENTE: SÓLO AFECTA AL MOLDE DE LA HOJA INTERNA 🔥
+           🔥 CAPA MÁGICA DE APLICACIÓN MÓVIL (MOLDE DE LA HOJA INTERNA) 🔥
            ========================================================= */
         body.modo-app #formularioSection #printable-canvas { background: #f1f5f9 !important; padding: 15px 15px 30px 15px !important; }
         body.modo-app #formularioSection .pdf-title-row { display: none !important; }
@@ -264,7 +272,7 @@
         body.modo-app #formularioSection #in_vehiculo_km { width: 100% !important; flex: 1 !important; margin: 0 !important; height: 48px !important; }
         body.modo-app #formularioSection #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 0 8px !important; text-align: center !important; margin: 0 !important; height: 48px !important; }        
 
-        /* 🎛️ INTERRUPTORES MODERNOS (SWITCH TOGGLES) */
+        /* 🎛️ COMODIDAD DE INTERRUPTORES (SWITCH TOGGLES) */
         body.modo-app #formularioSection .check-item { display: flex !important; justify-content: space-between !important; align-items: center !important; background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important; padding: 14px 16px !important; margin-bottom: 10px !important; cursor: pointer; }
         body.modo-app #formularioSection .check-item input[type="checkbox"] { display: none !important; }
         body.modo-app #formularioSection .switch-slider { position: relative; display: inline-block; width: 50px; height: 28px; background-color: #cbd5e1; border-radius: 34px; transition: background-color 0.25s ease; }
