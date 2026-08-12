@@ -377,6 +377,35 @@
         #portalFotoContenedor:active {
             transform: scale(0.95);
         }  
+        /* =========================================================
+           🔥 CAPA MÁGICA: MODO APP MÓVIL (1 RENGLON) 🔥
+           ========================================================= */
+        @media screen and (max-width: 768px) {
+            body.modo-app .pdf-grid-boxes { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
+            body.modo-app .pdf-info-card { background-color: #ffffff !important; border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; margin-bottom: 20px !important; }
+            body.modo-app .pdf-info-card.cliente { border-top: 5px solid #0284c7 !important; border-left: none !important; }
+            body.modo-app .pdf-info-card.vehiculo { border-top: 5px solid #d32f2f !important; border-left: none !important; }
+            body.modo-app .pdf-info-card.tecnico { border-top: 5px solid #f59e0b !important; border-left: none !important; }
+            body.modo-app .pdf-info-card.check { border-top: 5px solid #8b5cf6 !important; border-left: none !important; }
+            
+            body.modo-app .pdf-card-title { font-size: 11pt !important; margin-bottom: 15px !important; letter-spacing: 0.5px !important; }
+            
+            /* Un campo por renglón */
+            body.modo-app .pdf-info-card:not(.check) .pdf-card-data { display: flex !important; flex-direction: column !important; gap: 15px !important; }
+            body.modo-app .pdf-info-card:not(.check) .pdf-data-item { width: 100% !important; }
+            body.modo-app .pdf-data-item span { font-size: 7.5pt !important; padding-left: 4px !important; letter-spacing: 0.5px !important; margin-bottom: 6px !important; }
+            
+            /* Inputs tipo Burbuja */
+            body.modo-app input.card-input, body.modo-app textarea.card-input, body.modo-app select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
+            body.modo-app select.card-input { padding-right: 25px !important; }
+            
+            /* Odómetro alineado */
+            body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: flex-end !important; width: 100% !important; }
+            body.modo-app #in_vehiculo_km { height: 48px !important; flex: 1 !important; margin: 0 !important; }
+            body.modo-app #in_vehiculo_unidad { height: 48px !important; width: 75px !important; padding: 0 8px !important; flex: none !important; margin: 0 !important; }
+            
+            body.modo-app .pdf-title-row { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -405,7 +434,7 @@
                         <h3 id="portalVehiculoTxt" style="font-size: 13.5pt; color: #0f172a; margin: 0; font-weight: 700; text-transform: uppercase; line-height: 1.1;">CARGANDO...</h3>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-user" style="color: #94a3b8; font-size: 9.5pt; margin-left: 2px;"></i>
+                        <i class="fa-solid fa-user" style="color: #94a3b8; font-size: 9pt; margin-left: 2px;"></i>
                         <p id="portalClienteTxt" style="font-size: 10.5pt; color: #64748b; margin: 0; font-weight: 600; text-transform: uppercase;">CLIENTE: --</p>
                     </div>
                 </div>
@@ -1146,7 +1175,8 @@
         event.target.closest('.btn-del-photo').style.display = 'none';
     }
 
-    function prepararCaptura() {
+function prepararCaptura() {
+        document.body.classList.remove('modo-app'); // 🔥 APAGA EL MODO APP PARA EL PDF
         const inputs = document.querySelectorAll('#printable-canvas input.card-input, #printable-canvas textarea.card-input, #printable-canvas select.card-input');
         const reemplazos = [];
         inputs.forEach(input => {
@@ -1201,6 +1231,7 @@
         if(document.getElementById('pdf-lbl-estado')) document.getElementById('pdf-lbl-estado').style.display = 'none';
         est.reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
         if(document.getElementById('pdf-lbl-fecha-text')) document.getElementById('pdf-lbl-fecha-text').style.display = 'none';
+        document.body.classList.add('modo-app'); // 🔥 ENCIENDE EL MODO APP OTRA VEZ
     }
 
     async function forzarDescargaPNG() {
