@@ -76,14 +76,14 @@
         .photo-label { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.8); color: white; font-size: 7.5pt; font-weight: 800; padding: 5px 0; text-align: center; z-index: 3; text-transform: uppercase; display: none; backdrop-filter: blur(2px); }
         .pdf-brand-block p { color: #94a3b8; margin: 0; font-size: 8.5pt; line-height: 1.4;}
         .pdf-folio-container { background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 12px 18px; min-width: 220px; }
-        .pdf-folio-badge { background-color: #ef4444; color: #ffffff; font-size: 8.5pt; font-weight: 800; padding: 5px; border-radius: 5px; text-align: center; font-family: 'Montserrat', sans-serif; margin-bottom: 8px; }
+        .pdf-folio-badge { background-color: #ef4444; color: #ffffff; font-size: 8.5pt !important; font-weight: 900 !important; padding: 5px; border-radius: 5px; text-align: center; font-family: 'Montserrat', sans-serif !important; margin-bottom: 8px; letter-spacing: 0.5px !important; }
         .pdf-meta-table { width: 100%; font-size: 8.5pt; border-collapse: collapse; color: white; }
         .pdf-meta-table td { padding: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .pdf-meta-table td:first-child { color: #94a3b8; font-weight: 600; }
         .pdf-meta-table td:last-child { text-align: right; font-weight: 700; }
         
         .pdf-title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0px !important; margin-bottom: 10px; } 
-        .pdf-title-row h2 { font-family: 'Montserrat', sans-serif; font-size: 13pt; font-weight: 800; color: #0f172a; margin: 0;}
+        .pdf-title-row h2 { font-family: 'Montserrat', sans-serif !important; font-size: 14pt !important; font-weight: 900 !important; color: #0f172a !important; margin: 0 !important; letter-spacing: 0.5px !important; }
 
         .pdf-grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px; } 
         .pdf-info-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 15px; position: relative; } 
@@ -92,7 +92,8 @@
         .pdf-info-card.tecnico { border-left: 5px solid #f59e0b; }
         .pdf-info-card.check { border-left: 5px solid #8b5cf6; }
 
-        .pdf-card-title { font-family: 'Montserrat', sans-serif; font-size: 10pt; font-weight: 700; color: #0f172a; text-transform: uppercase; margin-bottom: 6px; } 
+        .pdf-card-title { font-family: 'Montserrat', sans-serif !important; font-size: 10.5pt !important; font-weight: 800 !important; color: #0f172a !important; text-transform: uppercase !important; margin-bottom: 8px !important; letter-spacing: 0.5px !important; }
+        
         .pdf-card-data { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: start; }
         .pdf-data-item { font-size: 10pt; display: flex; flex-direction: column; justify-content: flex-start; }
         .pdf-data-item span { display: block; color: #64748b; font-weight: 700; font-size: 6.5pt; margin-bottom: 2px; }
@@ -737,8 +738,7 @@
                             <div class="check-item" onclick="toggleCheck('chk_luces', this)"><i class="fa-regular fa-square check-icon"></i> Luces Principales (Altas/ Bajas/ Direccionales)</div>
                             <div class="check-item" onclick="toggleCheck('chk_elevadores', this)"><i class="fa-regular fa-square check-icon"></i> Elevadores Y Seguros de Puertas</div>
                             <div class="check-item" onclick="toggleCheck('chk_tablero', this)"><i class="fa-regular fa-square check-icon"></i> Testigos en Tablero (Check, ABS, Airbag)</div>
-                            <div class="pdf-data-item" style="margin-top: 10px;"><span>NOTAS DEL CHECKLIST</span><input type="text" id="in_obs_electrico" class="card-input" placeholder="..." style="color:#64748b;"></div>
-                        </div>
+                        <div class="pdf-data-item" style="margin-top: 10px;"><span>NOTAS DEL CHECKLIST</span><input type="text" id="in_obs_electrico" class="card-input" placeholder="..."></div>                        </div>
 
                         <div class="pdf-info-card tecnico">
                             <div class="pdf-card-title"><i class="fa-solid fa-screwdriver-wrench"></i> DIAGNOSTICO TECNICO</div>
