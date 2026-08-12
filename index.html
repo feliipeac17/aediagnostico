@@ -377,19 +377,21 @@
         #portalFotoContenedor:active {
             transform: scale(0.95);
         }  
-        /* =========================================================
-           🔥 CAPA MÁGICA: MODO APP MÓVIL (1 RENGLON) 🔥
-           ========================================================= */
+        
+/* 🔥 MODO APP MÓVIL (1 RENGLÓN, BURBUJAS) 🔥 */
         @media screen and (max-width: 768px) {
             body.modo-app .pdf-grid-boxes { grid-template-columns: 1fr !important; gap: 0 !important; margin-bottom: 15px !important; }
             body.modo-app .pdf-info-card { background-color: #ffffff !important; border: none !important; border-radius: 16px !important; padding: 22px 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; margin-bottom: 20px !important; }
             body.modo-app .pdf-info-card.cliente { border-top: 5px solid #0284c7 !important; border-left: none !important; }
+            body.modo-app .pdf-info-card.cliente .pdf-card-title { color: #0284c7 !important; }
             body.modo-app .pdf-info-card.vehiculo { border-top: 5px solid #d32f2f !important; border-left: none !important; }
+            body.modo-app .pdf-info-card.vehiculo .pdf-card-title { color: #d32f2f !important; }
             body.modo-app .pdf-info-card.tecnico { border-top: 5px solid #f59e0b !important; border-left: none !important; }
+            body.modo-app .pdf-info-card.tecnico .pdf-card-title { color: #f59e0b !important; }
             body.modo-app .pdf-info-card.check { border-top: 5px solid #8b5cf6 !important; border-left: none !important; }
-            
+            body.modo-app .pdf-info-card.check .pdf-card-title { color: #8b5cf6 !important; }
             body.modo-app .pdf-card-title { font-size: 11pt !important; margin-bottom: 15px !important; letter-spacing: 0.5px !important; }
-            
+
             /* Un campo por renglón */
             body.modo-app .pdf-info-card:not(.check) .pdf-card-data { display: flex !important; flex-direction: column !important; gap: 15px !important; }
             body.modo-app .pdf-info-card:not(.check) .pdf-data-item { width: 100% !important; }
@@ -398,7 +400,7 @@
             /* Inputs tipo Burbuja */
             body.modo-app input.card-input, body.modo-app textarea.card-input, body.modo-app select.card-input { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 10px !important; padding: 14px 16px !important; height: auto !important; font-size: 10.5pt !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important; }
             body.modo-app select.card-input { padding-right: 25px !important; }
-            
+
             /* Odómetro alineado */
             body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: flex-end !important; width: 100% !important; }
             body.modo-app #in_vehiculo_km { height: 48px !important; flex: 1 !important; margin: 0 !important; }
@@ -408,7 +410,7 @@
         }
     </style>
 </head>
-<body>
+<body class="modo-app">
     
 <script>
     if (window.location.pathname.endsWith('index.html') && !window.location.search) {
