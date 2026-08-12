@@ -21,6 +21,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    
+    <script>
+    window.convertUrlToImageElement = async function(url) {
+        return new Promise((resolve) => {
+            if (!url || url === "" || url === "undefined") { resolve(null); return; }
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => resolve(img);
+            img.onerror = () => { resolve(null); };
+            img.src = url;
+        });
+    };
+    </script>
 
 <style>
         :root {
@@ -396,39 +409,9 @@
         body.modo-app select.card-input { width: 100% !important; display: block !important; padding-right: 25px !important; }
 
         /* Odómetro y su unidad juntos en el mismo renglón */
-        body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { 
-            display: flex !important; 
-            flex-direction: row !important; 
-            gap: 8px !important; 
-            align-items: flex-end !important; /* 🔥 ESTA ES LA CLAVE: Los alinea al ras del piso */
-            width: 100% !important; 
-        }
-        body.modo-app #in_vehiculo_km { 
-            width: 100% !important; 
-            flex: 1 !important; 
-            margin: 0 !important;
-            height: 48px !important; /* 🔥 Amarramos la altura para que sean idénticos */
-        }
-        body.modo-app #in_vehiculo_unidad { 
-            width: 75px !important; 
-            flex: none !important; 
-            padding: 0 8px !important; 
-            text-align: center !important; 
-            margin: 0 !important;
-            height: 48px !important; /* 🔥 Amarramos la altura para que sean idénticos */
-        }        
-/* 🎛️ NUEVOS BOTONES TIPO SWITCH iOS ALINEADOS 🎛️ */
-.check-item-toggle { display: flex; flex-direction: row; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 12px 15px; margin-bottom: 8px; cursor: pointer; font-size: 8.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase; gap: 15px; }
-        .check-item-toggle span { flex: 1; text-align: left; line-height: 1.3; margin: 0; }
-        .check-item-toggle .toggle-input { display: none !important; }
-        .check-item-toggle .toggle-slider { position: relative; width: 46px; height: 26px; background-color: #cbd5e1; border-radius: 34px; transition: background-color 0.3s; flex-shrink: 0; }
-        .check-item-toggle .toggle-slider::before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: transform 0.3s; }
-        .check-item-toggle .toggle-input:checked + .toggle-slider { background-color: #10b981; }
-        .check-item-toggle .toggle-input:checked + .toggle-slider::before { transform: translateX(20px); }
-
-/* 🛡️ CORRECCIÓN DE BORDES BLANCOS LATERALES EN PDF */
-        body:not(.modo-app) #printable-canvas { padding: 0 !important; }
-        body:not(.modo-app) .wrapper-page { border: none !important; border-radius: 0 !important; box-shadow: none !important; margin: 0 !important; max-width: none !important; }
+        body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: center !important; width: 100% !important; }
+        body.modo-app #in_vehiculo_km { width: 100% !important; flex: 1 !important; }
+        body.modo-app #in_vehiculo_unidad { width: 75px !important; flex: none !important; padding: 14px 8px !important; text-align: center !important; }
     </style>
 </head>
 <body class="modo-app">    
@@ -741,7 +724,7 @@
                                 <div class="pdf-data-item">
                                     <span>MARCA</span>
                                     <select id="in_vehiculo_marca" class="card-input">
-                                        <option value="">SELECCIONE..</option><option value="NISSAN">NISSAN</option><option value="CHEVROLET">CHEVROLET</option>
+                                        <option value="">SELECCIONE...</option><option value="NISSAN">NISSAN</option><option value="CHEVROLET">CHEVROLET</option>
                                         <option value="FORD">FORD</option><option value="TOYOTA">TOYOTA</option><option value="HONDA">HONDA</option>
                                         <option value="VOLKSWAGEN">VOLKSWAGEN</option><option value="KIA">KIA</option><option value="HYUNDAI">HYUNDAI</option>
                                         <option value="MAZDA">MAZDA</option><option value="JEEP">JEEP</option><option value="RAM">RAM</option>
@@ -782,23 +765,12 @@
                             <div id="pdf_visual_gas" style="display:none; width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-bottom:15px; position: relative;">
                                 <div id="pdf_visual_gas_fill" style="height: 100%; width: 50%; background: #ff9800; border-radius: 3px;"></div>
                             </div>
-<div class="pdf-data-item" style="margin-bottom: 5px; margin-top: 10px;"><span>CHECKLIST ELECTRICO INICIAL</span></div>
-                            <label class="check-item-toggle">
-                                <span>Luces Principales (Altas/ Bajas/ Direccionales)</span>
-                                <input type="checkbox" id="chk_luces" class="toggle-input">
-                                <div class="toggle-slider"></div>
-                            </label>
-                            <label class="check-item-toggle">
-                                <span>Elevadores Y Seguros de Puertas</span>
-                                <input type="checkbox" id="chk_elevadores" class="toggle-input">
-                                <div class="toggle-slider"></div>
-                            </label>
-                            <label class="check-item-toggle">
-                                <span>Testigos en Tablero (Check, ABS, Airbag)</span>
-                                <input type="checkbox" id="chk_tablero" class="toggle-input">
-                                <div class="toggle-slider"></div>
-                            </label>
-                            <div class="pdf-data-item" style="margin-top: 10px;"><span>NOTAS DEL CHECKLIST</span><input type="text" id="in_obs_electrico" class="card-input" placeholder="..."></div>
+                            <div class="pdf-data-item" style="margin-bottom: 5px; margin-top: 10px;"><span>CHECKLIST ELECTRICO INICIAL</span></div>
+                            <input type="checkbox" id="chk_luces" style="display:none;"><input type="checkbox" id="chk_elevadores" style="display:none;"><input type="checkbox" id="chk_tablero" style="display:none;">
+                            <div class="check-item" onclick="toggleCheck('chk_luces', this)"><i class="fa-regular fa-square check-icon"></i> Luces Principales (Altas/ Bajas/ Direccionales)</div>
+                            <div class="check-item" onclick="toggleCheck('chk_elevadores', this)"><i class="fa-regular fa-square check-icon"></i> Elevadores Y Seguros de Puertas</div>
+                            <div class="check-item" onclick="toggleCheck('chk_tablero', this)"><i class="fa-regular fa-square check-icon"></i> Testigos en Tablero (Check, ABS, Airbag)</div>
+                            <div class="pdf-data-item" style="margin-top: 10px;"><span>NOTAS DEL CHECKLIST</span><input type="text" id="in_obs_electrico" class="card-input" placeholder="..." style="color:#64748b;"></div>
                         </div>
 
                         <div class="pdf-info-card tecnico">
@@ -1089,17 +1061,6 @@
     </div>
     
 <script>
-    window.convertUrlToImageElement = async function(url) {
-        return new Promise((resolve) => {
-            if (!url || url === "" || url === "undefined") { resolve(null); return; }
-            const img = new Image();
-            img.crossOrigin = "Anonymous";
-            img.onload = () => resolve(img);
-            img.onerror = () => { resolve(null); };
-            img.src = url;
-        });
-    };
-    
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
     document.addEventListener('keydown', function(e) {
         if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && e.keyCode === 85)) {
@@ -1137,8 +1098,11 @@
         botones[index].classList.add('active');
     }
 
-function toggleCheck(inputId, divElement) {
-        // Obsoleto: Los nuevos switches nativos no requieren Javascript para cambiar de estado visual.
+    function toggleCheck(inputId, divElement) {
+        const checkbox = document.getElementById(inputId); checkbox.checked = !checkbox.checked;
+        const icon = divElement.querySelector('.check-icon');
+        if (checkbox.checked) { icon.classList.remove('fa-square'); icon.classList.add('fa-square-check', 'active'); } 
+        else { icon.classList.add('fa-square'); icon.classList.remove('fa-square-check', 'active'); }
     }
 
     let imgActualParaEditar = new Image(); let inputActivoEditor = null; let imgActivoId = ""; let txtActivoId = "";
@@ -1248,22 +1212,10 @@ function toggleCheck(inputId, divElement) {
         if (selEstado && lblEstado) { lblEstado.innerText = selEstado.value; lblEstado.style.color = (selEstado.value === 'ENTREGADO') ? '#ff1100' : ((selEstado.value==='TERMINADO') ? '#3b82f6' : ((selEstado.value==='EN REPARACION') ? '#f59e0b' : '#10b981')); lblEstado.style.display = 'inline'; }
 
         const elemento = document.querySelector('.wrapper-page');
-        const canvasPadre = document.getElementById('printable-canvas');
-        
-        const estadoOriginal = { 
-            elemento, 
-            width: elemento.style.width, maxW: elemento.style.maxWidth, border: elemento.style.border, 
-            radius: elemento.style.borderRadius, margin: elemento.style.margin, pos: elemento.style.position, 
-            top: elemento.style.top, left: elemento.style.left, boxS: elemento.style.boxShadow,
-            padC: canvasPadre.style.padding
-        };
+        const estadoOriginal = { elemento, width: elemento.style.width, maxW: elemento.style.maxWidth, border: elemento.style.border, radius: elemento.style.borderRadius, margin: elemento.style.margin, pos: elemento.style.position, top: elemento.style.top, left: elemento.style.left };
 
-        elemento.style.position = 'absolute'; elemento.style.top = '0px'; elemento.style.left = '0px'; 
-        elemento.style.width = '840px'; elemento.style.maxWidth = 'none';
-        elemento.style.border = 'none'; elemento.style.borderRadius = '0'; 
-        elemento.style.margin = '0'; elemento.style.boxShadow = 'none';
-        
-        canvasPadre.style.padding = '0';
+        elemento.style.position = 'absolute'; elemento.style.top = '0px'; elemento.style.left = '0px'; elemento.style.width = '840px'; elemento.style.maxWidth = 'none';
+        elemento.style.border = 'none'; elemento.style.borderRadius = '0'; elemento.style.margin = '0';
 
         const valFecha = document.getElementById('in_fecha').value; const txtFecha = document.getElementById('pdf-lbl-fecha-text');
         if (valFecha && txtFecha) { const partes = valFecha.split('-'); txtFecha.innerText = `${partes[2]}/${partes[1]}/${partes[0]}`; txtFecha.style.display = 'inline'; }
@@ -1271,11 +1223,9 @@ function toggleCheck(inputId, divElement) {
         return { elementosAOcultar, reemplazos, ...estadoOriginal };
     }
 
-function restaurarPantalla(est) {
+    function restaurarPantalla(est) {
         est.elemento.style.width = est.width; est.elemento.style.maxWidth = est.maxW; est.elemento.style.border = est.border; est.elemento.style.borderRadius = est.radius;
         est.elemento.style.margin = est.margin; est.elemento.style.position = est.pos; est.elemento.style.top = est.top; est.elemento.style.left = est.left;
-        est.elemento.style.boxShadow = est.boxS;
-        document.getElementById('printable-canvas').style.padding = est.padC;
         
         est.elementosAOcultar.forEach(el => {
             if (el.classList.contains('btn-del-photo')) { const img = el.previousElementSibling; if(img && img.src && img.style.display === 'block') el.style.display = 'flex'; } 
@@ -1302,8 +1252,10 @@ function restaurarPantalla(est) {
         const est = prepararCaptura();
         try {
             const canvas = await html2canvas(est.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollY: 0, y: 0 });
-            const pdf = new window.jspdf.jsPDF('p', 'pt', [canvas.width, canvas.height]);
-            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, canvas.width, canvas.height, undefined, 'SLOW');
+            const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
+            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvas.height * pW) / canvas.width; const maxH = pdf.internal.pageSize.getHeight();
+            if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
+            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
             pdf.save((document.title || "REPORTE_SERVICIO_AE") + ".pdf");
         } catch (error) { console.error(error); } finally { restaurarPantalla(est); }
     }
@@ -1774,8 +1726,10 @@ async function guardarYProcesarReporte() {
             const canvasPdf = await html2canvas(est.elemento, { 
                 scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
-            const pdf = new window.jspdf.jsPDF('p', 'pt', [canvasPdf.width, canvasPdf.height]);
-            pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, canvasPdf.width, canvasPdf.height, undefined, 'SLOW');
+            const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
+            let pW = pdf.internal.pageSize.getWidth(); let pH = (canvasPdf.height * pW) / canvasPdf.width; const maxH = pdf.internal.pageSize.getHeight();
+            if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
+            pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
             // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5: Ligero, rápido y fluido al abrir)
@@ -1905,8 +1859,10 @@ async function cargarHistorialSupabase() {
         seleccionarCombustible(rep.vehiculo_gas_nivel ?? 50);
         document.getElementById('in_motivo_ingreso').value = rep.motivo_ingreso || ''; document.getElementById('in_obs_diagnostico').value = rep.observaciones_diagnostico || '';
         
-const setChkVisual = (id, val) => {
+        const setChkVisual = (id, val) => {
             const chk = document.getElementById(id); if(chk) chk.checked = !!val;
+            const divItem = document.querySelector(`.check-item[onclick*="${id}"]`);
+            if (divItem) { const icon = divItem.querySelector('.check-icon'); if(val) { icon.classList.remove('fa-square'); icon.classList.add('fa-square-check', 'active'); } else { icon.classList.add('fa-square'); icon.classList.remove('fa-square-check', 'active'); } }
         };
         setChkVisual('chk_luces', rep.chk_luces); setChkVisual('chk_elevadores', rep.chk_elevadores); setChkVisual('chk_tablero', rep.chk_tablero);
         document.getElementById('in_obs_electrico').value = rep.observaciones_electrico || ''; document.getElementById('in_link_escaner').value = rep.link_escaner || '';
