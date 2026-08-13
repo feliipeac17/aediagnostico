@@ -1647,7 +1647,7 @@ async function guardarYProcesarReporte() {
         if (vinVal.length > 0 && vinVal.length !== 17) return alert("⚠️ EL VIN DEBE TENER 17 CARACTERES.");
 
         const txtOrig = btnSubmit.innerHTML; const btnTop = document.getElementById('btnGuardarTop'); const txtOrigTop = btnTop ? btnTop.innerHTML : "";
-        btnSubmit.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; btnSubmit.disabled = true;
+        btnSubmit.innerHTML = "⏳ GUARDANDO..."; btnSubmit.disabled = true;
         if(btnTop) { btnTop.innerHTML = "⏳ GUARDANDO..."; btnTop.disabled = true; }
 
         let folioCalculado = document.getElementById('pdf-lbl-folio').innerText.replace("REPORTE ", "");
@@ -1737,7 +1737,7 @@ async function guardarYProcesarReporte() {
 
             // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5: Ligero, rápido y fluido al abrir)
             const canvasPng = await html2canvas(est.elemento, { 
-                scale: 0.5, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+                scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
             const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
             const pngResponse = await fetch(dataUrlPng);
