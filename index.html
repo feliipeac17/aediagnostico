@@ -1839,18 +1839,17 @@ tarjeta.innerHTML = `<div style="display: flex; gap: 15px; align-items: center;"
 
 async function actualizarEstadoRapido(folio, selectElement) {
         const nuevoEstado = selectElement.value;
-        // Asignamos el color dependiendo del nuevo estado elegido
         const col = nuevoEstado === 'ENTREGADO' ? '#ef4444' : (nuevoEstado === 'TERMINADO' ? '#3b82f6' : (nuevoEstado === 'COTIZACION' ? '#8b5cf6' : (nuevoEstado === 'EN REPARACION' ? '#f59e0b' : '#10b981')));
         
         selectElement.style.backgroundColor = col;
-        selectElement.style.opacity = '0.5'; // Opacidad mientras guarda
+        selectElement.style.opacity = '0.5';
 
         try {
-            // 1. Guardamos en Supabase
+            // 1. Guardamos el nuevo estado en la tabla de Supabase
             const { error } = await supabaseClient.from('reportes_servicio').update({ estado: nuevoEstado }).eq('folio', folio);
             if (error) throw error;
             
-            // 2. Extraemos la información del cliente desde la memoria
+            // 2. Extraemos la información completa desde la memoria local
             let repInfo = null;
             const index = listaReportesMemoria.findIndex(r => r.folio === folio);
             if (index !== -1) {
@@ -1858,7 +1857,7 @@ async function actualizarEstadoRapido(folio, selectElement) {
                 repInfo = listaReportesMemoria[index];
             }
 
-            // 3. Recalculamos los números del Dashboard de arriba automáticamente
+            // 3. Recalculamos contadores del Dashboard
             let cRev = 0, cRep = 0, cTer = 0, cEnt = 0;
             listaReportesMemoria.forEach(rep => { 
                 const e = (rep.estado || 'EN REVISION').toUpperCase().trim(); 
@@ -1874,12 +1873,74 @@ async function actualizarEstadoRapido(folio, selectElement) {
             if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = cTer;
             if (document.getElementById('dash-entregados')) document.getElementById('dash-entregados').innerText = cEnt;
 
-            // 4. LÓGICA DE WHATSAPP AUTOMÁTICO
+            // 🔥 4. PROCESO DE RE-RENDERIZADO AUTOMÁTICO AL MARCAR "ENTREGADO"
+            if (nuevoEstado === 'ENTREGADO' && repInfo) {
+                // Almacenamos el modo actual en el que está trabajando la pantalla para restaurarlo después
+                const panelOriginalDashboard = document.getElementById('dashboardSection').style.display;
+                const panelOriginalHistorial = document.getElementById('historialSection').style.display;
+
+                // Cargamos temporalmente los datos en el lienzo interactivo oculto para armar la estructura correcta
+                cargarRegistroParaEditar(repInfo);
+                
+                // Forzamos el selector del formulario a reflejar el estado actual antes de tomar la captura
+                if (document.getElementById('in_estado')) {
+                    document.getElementById('in_estado').value = 'ENTREGADO';
+                }
+
+                window.scrollTo(0, 0);
+                const est = prepararCaptura();
+                await document.fonts.ready;
+
+                // Renderizado Calidad Escala 4 para el PDF
+                const canvasPdf = await html2canvas(est.elemento, { scale: 4, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0 });
+                const pdf = new window.jspdf.jsPDF('p', 'mm', 'letter');
+                let pW = pdf.internal.pageSize.getWidth(); let pH = (canvasPdf.height * pW) / canvasPdf.width; const maxH = pdf.internal.pageSize.getHeight();
+                if (pH > maxH) { const ratio = maxH / pH; pH = maxH; pW = pW * ratio; }
+                pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
+                const pdfBlob = pdf.output('blob');
+
+                // Renderizado Escala 1 para el PNG del portal del cliente
+                const canvasPng = await html2canvas(est.elemento, { scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0 });
+                const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
+                const pngResponse = await fetch(dataUrlPng);
+                const pngBlob = await pngResponse.blob();
+
+                restaurarPantalla(est);
+
+                // Sobreescribimos los archivos en el Storage de Supabase
+                const fileNamePdf = `REPORTES_PDF/REPORTE_${folio}.pdf`;
+                await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
+                
+                const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folio}.png`;
+                await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
+
+                // Hacemos un update silencioso de los links para romper la caché del navegador (?t=)
+                const nuevosLinks = {
+                    link_pdf: supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now(),
+                    link_png: supabaseClient.storage.from('reportes').getPublicUrl(fileNamePng).data.publicUrl + '?t=' + Date.now()
+                };
+                await supabaseClient.storage.from('reportes_servicio').update(nuevosLinks).eq('folio', folio);
+
+                // Devolvemos la pantalla del administrador al punto donde estaba sin alterar su vista
+                limpiarFormularioCompleto();
+                document.getElementById('dashboardSection').style.display = panelOriginalDashboard;
+                document.getElementById('historialSection').style.display = panelOriginalHistorial;
+                document.getElementById('formularioSection').style.display = 'none';
+                if (panelOriginalHistorial === 'block') {
+                    document.getElementById('btnTabHistorial').classList.add('tab-active');
+                    document.getElementById('btnTabNuevo').classList.remove('tab-active');
+                } else {
+                    document.getElementById('btnTabDashboard').classList.add('tab-active');
+                    document.getElementById('btnTabNuevo').classList.remove('tab-active');
+                }
+            }
+
+            // 5. LÓGICA DE WHATSAPP AUTOMÁTICO
             if (repInfo && repInfo.cliente_telefono && repInfo.cliente_telefono.trim() !== "") {
                 const nom = (repInfo.cliente_nombre || 'Cliente').toUpperCase();
                 const marca = repInfo.vehiculo_marca || '';
                 const modelo = repInfo.vehiculo_modelo || '';
-                let tel = repInfo.cliente_telefono.replace(/\D/g, ''); // Limpiar el número
+                let tel = repInfo.cliente_telefono.replace(/\D/g, '');
                 
                 if (tel.length >= 10) {
                     let mensajePersonalizado = "";
@@ -1897,9 +1958,17 @@ async function actualizarEstadoRapido(folio, selectElement) {
                         }
                     }
 
-                    // Si el usuario dijo que "Sí" en la ventanita, abrimos el WhatsApp
                     if (enviarWA) {
-                        window.open(`https://wa.me/${tel.length === 10 ? "52" + tel : tel}?text=${encodeURIComponent(mensajePersonalizado)}`, '_blank');
+                        // Soporte para números de USA con lada de Texas o México de forma automática
+                        let numeroFinal = tel;
+                        if (tel.length === 10) {
+                            if (tel.startsWith('830') || tel.startsWith('210') || tel.startsWith('956')) {
+                                numeroFinal = "1" + tel;
+                            } else {
+                                numeroFinal = "52" + tel;
+                            }
+                        }
+                        window.open(`https://wa.me/${numeroFinal}?text=${encodeURIComponent(mensajePersonalizado)}`, '_blank');
                     }
                 }
             }
