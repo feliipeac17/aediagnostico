@@ -1305,9 +1305,9 @@ function prepararCaptura() {
                 } else if (st === 'EN REPARACION') {
                     progressWidth = "33.33%"; activeColor = "#3b82f6"; detailMsg = "🔧 En Reparacion"; activeSteps = 2;
                 } else if (st === 'TERMINADO') {
-                    progressWidth = "66.66%"; activeColor = "#10b981"; detailMsg = "✅ Listo para Entrega"; activeSteps = 3;
+                    progressWidth = "66.66%"; activeColor = "#10b981"; detailMsg = "🔑 Listo para Entrega"; activeSteps = 3;
                 } else if (st === 'ENTREGADO') {
-                    progressWidth = "100%"; activeColor = "#0284c7"; detailMsg = "🔑 Vehiculo Entregado"; activeSteps = 4;
+                    progressWidth = "100%"; activeColor = "#0284c7"; detailMsg = "✅ Vehiculo Entregado"; activeSteps = 4;
                 }
 
                 if (progressLine) { progressLine.style.width = progressWidth; progressLine.style.background = activeColor; }
