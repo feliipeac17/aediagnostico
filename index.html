@@ -1885,19 +1885,14 @@ async function actualizarEstadoRapido(folio, selectElement) {
                     let mensajePersonalizado = "";
                     let enviarWA = false;
 
-                    if (nuevoEstado === 'EN REPARACION') {
-                        if (confirm(`¿Deseas enviar un WhatsApp a ${nom} avisando que su vehículo entró a reparación?`)) {
-                            mensajePersonalizado = `Hola *${nom}*, te informamos que tu 🚗 *${marca} ${modelo}* ya se encuentra *EN REPARACIÓN* 🔧.\n\nPuedes ver los detalles y el progreso en tu portal: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_Cualquier novedad te mantendremos al tanto._`;
-                            enviarWA = true;
-                        }
-                    } else if (nuevoEstado === 'TERMINADO') {
+                    } if (nuevoEstado === 'TERMINADO') {
                         if (confirm(`¿Deseas enviar un WhatsApp a ${nom} para avisar que su vehículo está listo?`)) {
-                            mensajePersonalizado = `Hola *${nom}*, te informamos que tu 🚗 *${marca} ${modelo}* ya está listo para su entrega ✅.\n\nPuedes ver el reporte final en tu portal: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_Te esperamos para hacer la entrega._`;
+                            mensajePersonalizado = `Hola *${nom}*, te informamos que tu 🚗 *${marca} ${modelo}* ya está listo para su entrega ✅.\n\nPuedes ver los detalles y evidencias en tu portal: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_Te esperamos para la entrega._`;
                             enviarWA = true;
                         }
                     } else if (nuevoEstado === 'ENTREGADO') {
                         if (confirm(`¿Deseas enviar un WhatsApp de agradecimiento a ${nom} por su visita?`)) {
-                            mensajePersonalizado = `Hola *${nom}*, tu 🚗 *${marca} ${modelo}* ha sido *ENTREGADO* 🔑.\n\nAgradecemos profundamente tu preferencia y tu confianza en AE Diagnóstico. Puedes conservar este enlace para revisar tu expediente: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_¡Que tengas un excelente viaje!_ 🚘✨`;
+                            mensajePersonalizado = `Hola *${nom}*, tu 🚗 *${marca} ${modelo}* ha sido *ENTREGADO* 🔑.\n\nAgradecemos profundamente tu preferencia y tu confianza en AE Diagnóstico. Puedes conservar este enlace para revisar tu expediente: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_¡Que tengas un excelente dia!_ ✨`;
                             enviarWA = true;
                         }
                     }
