@@ -1837,7 +1837,7 @@ tarjeta.innerHTML = `<div style="display: flex; gap: 15px; align-items: center;"
         });
     }
 
-    async function actualizarEstadoRapido(folio, selectElement) {
+async function actualizarEstadoRapido(folio, selectElement) {
         const nuevoEstado = selectElement.value;
         // Asignamos el color dependiendo del nuevo estado elegido
         const col = nuevoEstado === 'ENTREGADO' ? '#ef4444' : (nuevoEstado === 'TERMINADO' ? '#3b82f6' : (nuevoEstado === 'COTIZACION' ? '#8b5cf6' : (nuevoEstado === 'EN REPARACION' ? '#f59e0b' : '#10b981')));
@@ -1846,15 +1846,19 @@ tarjeta.innerHTML = `<div style="display: flex; gap: 15px; align-items: center;"
         selectElement.style.opacity = '0.5'; // Opacidad mientras guarda
 
         try {
-            // Guardamos en Supabase
+            // 1. Guardamos en Supabase
             const { error } = await supabaseClient.from('reportes_servicio').update({ estado: nuevoEstado }).eq('folio', folio);
             if (error) throw error;
             
-            // Actualizamos la memoria local para no recargar la página entera
+            // 2. Extraemos la información del cliente desde la memoria
+            let repInfo = null;
             const index = listaReportesMemoria.findIndex(r => r.folio === folio);
-            if (index !== -1) listaReportesMemoria[index].estado = nuevoEstado;
+            if (index !== -1) {
+                listaReportesMemoria[index].estado = nuevoEstado;
+                repInfo = listaReportesMemoria[index];
+            }
 
-            // Recalculamos los números del Dashboard de arriba automáticamente
+            // 3. Recalculamos los números del Dashboard de arriba automáticamente
             let cRev = 0, cRep = 0, cTer = 0, cEnt = 0;
             listaReportesMemoria.forEach(rep => { 
                 const e = (rep.estado || 'EN REVISION').toUpperCase().trim(); 
@@ -1869,6 +1873,41 @@ tarjeta.innerHTML = `<div style="display: flex; gap: 15px; align-items: center;"
             if (document.getElementById('dash-reparacion')) document.getElementById('dash-reparacion').innerText = cRep;
             if (document.getElementById('dash-terminados')) document.getElementById('dash-terminados').innerText = cTer;
             if (document.getElementById('dash-entregados')) document.getElementById('dash-entregados').innerText = cEnt;
+
+            // 4. LÓGICA DE WHATSAPP AUTOMÁTICO
+            if (repInfo && repInfo.cliente_telefono && repInfo.cliente_telefono.trim() !== "") {
+                const nom = (repInfo.cliente_nombre || 'Cliente').toUpperCase();
+                const marca = repInfo.vehiculo_marca || '';
+                const modelo = repInfo.vehiculo_modelo || '';
+                let tel = repInfo.cliente_telefono.replace(/\D/g, ''); // Limpiar el número
+                
+                if (tel.length >= 10) {
+                    let mensajePersonalizado = "";
+                    let enviarWA = false;
+
+                    if (nuevoEstado === 'EN REPARACION') {
+                        if (confirm(`¿Deseas enviar un WhatsApp a ${nom} avisando que su vehículo entró a reparación?`)) {
+                            mensajePersonalizado = `Hola *${nom}*, te informamos que tu 🚗 *${marca} ${modelo}* ya se encuentra *EN REPARACIÓN* 🔧.\n\nPuedes ver los detalles y el progreso en tu portal: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_Cualquier novedad te mantendremos al tanto._`;
+                            enviarWA = true;
+                        }
+                    } else if (nuevoEstado === 'TERMINADO') {
+                        if (confirm(`¿Deseas enviar un WhatsApp a ${nom} para avisar que su vehículo está listo?`)) {
+                            mensajePersonalizado = `Hola *${nom}*, te informamos que tu 🚗 *${marca} ${modelo}* ya está listo para su entrega ✅.\n\nPuedes ver el reporte final en tu portal: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_Te esperamos para hacer la entrega._`;
+                            enviarWA = true;
+                        }
+                    } else if (nuevoEstado === 'ENTREGADO') {
+                        if (confirm(`¿Deseas enviar un WhatsApp de agradecimiento a ${nom} por su visita?`)) {
+                            mensajePersonalizado = `Hola *${nom}*, tu 🚗 *${marca} ${modelo}* ha sido *ENTREGADO* 🔑.\n\nAgradecemos profundamente tu preferencia y tu confianza en AE Diagnóstico. Puedes conservar este enlace para revisar tu expediente: 👇\nhttps://aediagnostico.com/?folio=${folio}\n\n_¡Que tengas un excelente viaje!_ 🚘✨`;
+                            enviarWA = true;
+                        }
+                    }
+
+                    // Si el usuario dijo que "Sí" en la ventanita, abrimos el WhatsApp
+                    if (enviarWA) {
+                        window.open(`https://wa.me/${tel.length === 10 ? "52" + tel : tel}?text=${encodeURIComponent(mensajePersonalizado)}`, '_blank');
+                    }
+                }
+            }
 
         } catch (err) {
             alert("❌ Error al actualizar estado: " + err.message);
