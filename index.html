@@ -402,9 +402,9 @@
             body.modo-app select.card-input { padding-right: 25px !important; }
 
 /* Odómetro y Unidad juntos */
-            body.modo-app .pdf-info-card.vehiculo .pdf-card-data div[style*="display: flex"] { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: flex-end !important; width: 100% !important; }
-body.modo-app #in_vehiculo_km { height: 48px !important; width: 100% !important; max-width: 100% !important; flex: 1 !important; margin: 0 !important; }
-            body.modo-app #in_vehiculo_unidad { height: 48px !important; width: 75px !important; padding: 0 8px !important; flex: none !important; margin: 0 !important; }
+            body.modo-app #odometro-container-grupo { display: flex !important; flex-direction: row !important; gap: 10px !important; align-items: center !important; width: 100% !important; }
+            body.modo-app #in_vehiculo_km { height: 48px !important; width: 100% !important; max-width: 100% !important; flex: 1 !important; margin: 0 !important; }
+            body.modo-app #in_vehiculo_unidad { height: 48px !important; width: 90px !important; padding: 0 14px !important; flex: none !important; margin: 0 !important; }
             
             body.modo-app .pdf-title-row { display: none !important; }
         }
@@ -737,8 +737,8 @@ body.modo-app #in_vehiculo_km { height: 48px !important; width: 100% !important;
                                 <div class="pdf-data-item" style="grid-column: span 2;"><span>NUMERO DE SERIE (VIN)</span><input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17"></div>
 <div class="pdf-data-item" style="grid-column: span 2;">
                                     <span>ODOMETRO</span>
-                                    <div style="display: flex; gap: 2px; align-items: baseline; width: auto;">
-                                        <input type="text" inputmode="numeric" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: 80px !important;">
+                                    <div id="odometro-container-grupo" style="display: flex; gap: 4px; align-items: baseline; width: auto;">
+                                        <input type="text" inputmode="numeric" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: 70px !important;">
                                         <select id="in_vehiculo_unidad" class="card-input" style="width: 40px !important; height: 24px !important; font-size: 8.5pt; font-weight: 700; color: #0f172a; border: none; background: transparent; outline: none; padding: 0; cursor: pointer;">
                                             <option value="KM">KM</option><option value="MI">MI</option>
                                         </select>
@@ -1190,9 +1190,10 @@ function prepararCaptura() {
             if (esArea) {
                 span.innerText = input.value || ''; span.style.whiteSpace = 'pre-wrap'; span.style.wordWrap = 'break-word';
                 span.style.width = '100%'; span.style.fontSize = '8.5pt'; span.style.fontWeight = '700'; span.style.textTransform = 'uppercase'; span.style.display = 'block';
-            } else {
+} else {
                 span.innerText = esSelect ? input.options[input.selectedIndex].text : (input.value || '');
-                span.style.width = '100%'; span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                span.style.width = (input.id === 'in_vehiculo_km' || input.id === 'in_vehiculo_unidad') ? 'auto' : '100%';
+                span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.display = 'inline-block'; span.style.textTransform = 'uppercase';
             }
             input.parentNode.insertBefore(span, input); input.style.display = 'none'; reemplazos.push({ original: input, falso: span });
