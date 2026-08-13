@@ -1914,12 +1914,12 @@ async function actualizarEstadoRapido(folio, selectElement) {
                 const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folio}.png`;
                 await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
 
-                // Hacemos un update silencioso de los links para romper la caché del navegador (?t=)
+// Hacemos un update silencioso de los links para romper la caché del navegador (?t=)
                 const nuevosLinks = {
                     link_pdf: supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now(),
                     link_png: supabaseClient.storage.from('reportes').getPublicUrl(fileNamePng).data.publicUrl + '?t=' + Date.now()
                 };
-                await supabaseClient.storage.from('reportes_servicio').update(nuevosLinks).eq('folio', folio);
+                await supabaseClient.from('reportes_servicio').update(nuevosLinks).eq('folio', folio);
 
                 // Devolvemos la pantalla del administrador al punto donde estaba sin alterar su vista
                 limpiarFormularioCompleto();
