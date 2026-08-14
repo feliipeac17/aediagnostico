@@ -331,12 +331,15 @@
                     <div class="pdf-data-item"><span>MODELO / AÑO</span><input type="text" id="in_vehiculo_modelo" class="card-input" placeholder="..."></div>
                     <div class="pdf-data-item"><span>COLOR</span><input type="text" id="in_vehiculo_color" class="card-input" placeholder="..."></div>
                     <div class="pdf-data-item"><span>PLACAS</span><input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..."></div>
-                    <div class="pdf-data-item" style="grid-column: span 2;"><span>NUMERO DE SERIE (VIN)</span><input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17"></div>
-                    <div class="pdf-data-item" style="grid-column: span 2;">
+                    <div class="pdf-data-item">
+                        <span>NUMERO DE SERIE (VIN)</span>
+                        <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17">
+                    </div>
+                    <div class="pdf-data-item">
                         <span>ODOMETRO</span>
-                        <div style="display: flex; gap: 4px; align-items: baseline;">
-                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: auto; max-width: 100px;">
-                            <select id="in_vehiculo_unidad" class="card-input" style="width: 45px; border: none; padding: 0;">
+                        <div style="display: flex; gap: 4px; align-items: stretch;">
+                            <input type="number" id="in_vehiculo_km" class="card-input" placeholder="..." style="width: 100%;">
+                            <select id="in_vehiculo_unidad" class="card-input" style="width: 55px; border: none; padding: 0;">
                                 <option value="KM">KM</option><option value="MI">MI</option>
                             </select>
                         </div>
