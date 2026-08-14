@@ -441,9 +441,13 @@
                     </div>
                 </div>
                 
-                <div id="portalFotoContenedor" onclick="toggleGaleriaRecepcion()" style="width: 65px; height: 65px; border-radius: 8px; background: #f1f5f9; border: 2px solid #0284c7; overflow: hidden; display: none; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;">
-                    <img id="portalFotoVehiculo" src="" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
+<div id="portalFotoContenedor" onclick="toggleGaleriaRecepcion()" style="width: 65px; height: 65px; border-radius: 8px; background: #f1f5f9; border: 2px solid #0284c7; overflow: hidden; display: none; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; position: relative;">
+    <img id="portalFotoVehiculo" src="" style="width: 100%; height: 100%; object-fit: cover;">
+    <!-- 🔥 Lupa indicadora interactiva -->
+    <div style="position: absolute; bottom: 2px; right: 2px; background: rgba(15, 23, 42, 0.75); color: #38bdf8; width: 22px; height: 22px; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 9pt; backdrop-filter: blur(2px);">
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+</div>
             </div>
             
             <div style="margin-top: 18px; border-top: 1px dashed #cbd5e1; padding-top: 20px;">
