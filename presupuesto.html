@@ -412,14 +412,29 @@
                 <div class="pdf-note-red">▲ NOTA IMPORTANTE: El precio puede variar en caso de requerir piezas adicionales no visibles.</div>
             </div>
 
-            <div class="pdf-totals-container">
+<div class="pdf-totals-container">
                 <table class="pdf-totals-table">
                     <tr><td style="color: #94a3b8;">Servicios</td><td id="pdf-val-tservicios" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
                     <tr><td style="color: #94a3b8;">Refacciones</td><td id="pdf-val-trefacciones" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
                     <tr><td style="color: #94a3b8;">Mano de Obra</td><td id="pdf-val-tmanoobra" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
+                    
+                    <!-- NUEVOS CAMPOS: TOTAL BRUTO Y ANTICIPO -->
+                    <tr style="border-top: 1px solid rgba(255,255,255,0.1);">
+                        <td style="color: #cbd5e1; font-weight: 700; padding-top: 10px;">Total</td>
+                        <td id="pdf-val-subtotal" style="font-size: 11pt; font-weight: 700; color: #ffffff; padding-top: 10px;">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #10b981; font-weight: 700;">Anticipo (-)</td>
+                        <td style="text-align: right;">
+                            <input type="text" inputmode="decimal" id="in_anticipo" class="total-input" placeholder="$ 0.00" 
+                                   style="width: 100px; background: transparent; border: none; border-bottom: 1px dashed #10b981; color: #10b981; text-align: right; font-size: 11pt; font-weight: 700; outline: none; padding: 2px 0;"
+                                   onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
+                                   onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();">
+                        </td>
+                    </tr>
                 </table>
                 <div class="pdf-rest-box">
-                    <span style="font-size: 12pt; font-weight: 700; color: #ffffff;">Total</span>
+                    <span style="font-size: 12pt; font-weight: 700; color: #ffffff;">Restante</span>
                     <strong id="pdf-val-gtotal" style="font-size: 16pt; font-weight: 700; color: #ffffff;">$0.00</strong>
                 </div>
             </div>
@@ -491,6 +506,7 @@
                     if (dataPres.manoObra) dataPres.manoObra.forEach(m => agregarRenglon('listManoObra', m.desc, m.price));
                     if (dataPres.falla_reportada) document.getElementById('in_falla_reportada').value = dataPres.falla_reportada;
                     if (dataPres.codigo_fallas) document.getElementById('in_codigo_fallas').value = dataPres.codigo_fallas;
+                    if (dataPres.anticipo) document.getElementById('in_anticipo').value = dataPres.anticipo;
                     actualizarTotales();
                 } catch(e) { console.error("Error presupuesto:", e); }
             }
@@ -563,16 +579,32 @@ function agregarRenglon(listaId, desc = '', price = '', extras = {}) {
         return total;
     }
 
-    function actualizarTotales() {
+function actualizarTotales() {
         const tS = calcularSumaColumna('listServicios'); const tR = calcularSumaColumna('listRefacciones'); const tM = calcularSumaColumna('listManoObra');
         const subtotal = tS + tR + tM;
+        
+        // Calcular anticipo
+        const inputAnticipo = document.getElementById('in_anticipo');
+        let anticipo = 0;
+        if (inputAnticipo && inputAnticipo.value) {
+            anticipo = parseFloat(inputAnticipo.value.replace(/[^0-9.-]/g, ''));
+            if (isNaN(anticipo)) anticipo = 0;
+        }
+        
+        // Resta para obtener el restante final
+        const restante = subtotal - anticipo;
+
         if(document.getElementById('pdf-tot-servicios')) document.getElementById('pdf-tot-servicios').innerText = `$${tS.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-tot-refacciones')) document.getElementById('pdf-tot-refacciones').innerText = `$${tR.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-tot-manoobra')) document.getElementById('pdf-tot-manoobra').innerText = `$${tM.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        
         if(document.getElementById('pdf-val-tservicios')) document.getElementById('pdf-val-tservicios').innerText = `$${tS.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-trefacciones')) document.getElementById('pdf-val-trefacciones').innerText = `$${tR.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-tmanoobra')) document.getElementById('pdf-val-tmanoobra').innerText = `$${tM.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-        if(document.getElementById('pdf-val-gtotal')) document.getElementById('pdf-val-gtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        
+        // Actualizamos los nuevos campos
+        if(document.getElementById('pdf-val-subtotal')) document.getElementById('pdf-val-subtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-val-gtotal')) document.getElementById('pdf-val-gtotal').innerText = `$${Math.max(0, restante).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     }
 
     function autoExpandir(textarea) { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
@@ -650,10 +682,14 @@ if (boxExtra) {
                 span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.textTransform = 'uppercase'; span.style.display = 'block';
                 
-                if(input.classList.contains('price-input')) {
+                if(input.classList.contains('price-input') || input.classList.contains('total-input')) {
                     span.style.textAlign = 'right'; 
                     span.style.width = '100%'; 
-                    span.style.paddingRight = '6px'; /* 🔥 Empate milimétrico con el título IMPORTE */
+                    if(input.classList.contains('price-input')) span.style.paddingRight = '6px';
+                    if(input.classList.contains('total-input')) {
+                        span.style.color = '#10b981'; // Color verde para el anticipo en PDF
+                        span.style.paddingRight = '2px';
+                    }
                 }
             }
             input.parentNode.insertBefore(span, input);
@@ -752,7 +788,8 @@ if (listaId === 'listRefacciones') {
 
             const estructuraPresupuesto = {
                 servicios: extraerFilas('listServicios'), refacciones: extraerFilas('listRefacciones'), manoObra: extraerFilas('listManoObra'),
-                falla_reportada: document.getElementById('in_falla_reportada')?.value || '', codigo_fallas: document.getElementById('in_codigo_fallas')?.value || ''
+                falla_reportada: document.getElementById('in_falla_reportada')?.value || '', codigo_fallas: document.getElementById('in_codigo_fallas')?.value || '',
+                anticipo: document.getElementById('in_anticipo')?.value || ''
             };
 
             const els = document.querySelectorAll('.btn-ctrl-col, .nav-bar, .pdf-actions-bar');
