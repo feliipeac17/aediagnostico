@@ -418,19 +418,27 @@
                     <tr><td style="color: #94a3b8;">Refacciones</td><td id="pdf-val-trefacciones" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
                     <tr><td style="color: #94a3b8;">Mano de Obra</td><td id="pdf-val-tmanoobra" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
                     
-                    <!-- RENGLÓN OCULTO DE TOTAL Y ANTICIPO (Ahorra espacio) -->
+<!-- RENGLÓN OCULTO DE TOTAL Y ANTICIPO (Ahorra espacio) -->
                     <tr id="row-anticipo" style="display: none; border-top: 1px dashed rgba(255,255,255,0.1);">
                         <td colspan="2" style="padding-top: 10px; padding-bottom: 0px;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div style="font-size: 9.5pt;"><span style="color: #cbd5e1; font-weight: 600;">Total Bruto:</span> <span id="pdf-val-subtotal" style="font-weight: 700; color: #ffffff;">$0.00</span></div>
+                                
+                                <!-- AHORA A LA IZQUIERDA: ANTICIPO -->
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="color: #10b981; font-weight: 700; font-size: 9.5pt;">Anticipo (-)</span>
+                                    <span style="color: #10b981; font-weight: 700; font-size: 9.5pt; white-space: nowrap;">Anticipo (-)</span>
                                     <input type="text" inputmode="decimal" id="in_anticipo" class="total-input" placeholder="$ 0.00" 
-                                           style="width: 80px; background: transparent; border: none; border-bottom: 1px dashed #10b981; color: #10b981; text-align: right; font-size: 10.5pt; font-weight: 700; outline: none; padding: 0;"
+                                           style="width: 80px; background: transparent; border: none; border-bottom: 1px dashed #10b981; color: #10b981; text-align: center; font-size: 10.5pt; font-weight: 700; outline: none; padding: 0;"
                                            onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
                                            onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();">
                                     <button class="btn-del-item btn-ctrl-col" onclick="ocultarAnticipo()" style="margin:0; padding:0; font-size:11pt; color:#ef4444;" title="Quitar Anticipo"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
+
+                                <!-- AHORA A LA DERECHA: TOTAL BRUTO -->
+                                <div style="font-size: 10.5pt; text-align: right; white-space: nowrap;">
+                                    <span style="color: #cbd5e1; font-weight: 600;">Total Bruto:</span> 
+                                    <span id="pdf-val-subtotal" style="font-weight: 700; color: #ffffff;">$0.00</span>
+                                </div>
+
                             </div>
                         </td>
                     </tr>
