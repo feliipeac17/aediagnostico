@@ -413,28 +413,36 @@
             </div>
 
 <div class="pdf-totals-container">
-                <table class="pdf-totals-table">
+                <table class="pdf-totals-table" style="margin-bottom: 8px;">
                     <tr><td style="color: #94a3b8;">Servicios</td><td id="pdf-val-tservicios" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
                     <tr><td style="color: #94a3b8;">Refacciones</td><td id="pdf-val-trefacciones" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
                     <tr><td style="color: #94a3b8;">Mano de Obra</td><td id="pdf-val-tmanoobra" style="font-size: 11pt; font-weight: 700; color: #ffffff;">$0.00</td></tr>
                     
-                    <!-- NUEVOS CAMPOS: TOTAL BRUTO Y ANTICIPO -->
-                    <tr style="border-top: 1px solid rgba(255,255,255,0.1);">
-                        <td style="color: #cbd5e1; font-weight: 700; padding-top: 10px;">Total</td>
-                        <td id="pdf-val-subtotal" style="font-size: 11pt; font-weight: 700; color: #ffffff; padding-top: 10px;">$0.00</td>
-                    </tr>
-                    <tr>
-                        <td style="color: #10b981; font-weight: 700;">Anticipo (-)</td>
-                        <td style="text-align: right;">
-                            <input type="text" inputmode="decimal" id="in_anticipo" class="total-input" placeholder="$ 0.00" 
-                                   style="width: 100px; background: transparent; border: none; border-bottom: 1px dashed #10b981; color: #10b981; text-align: right; font-size: 11pt; font-weight: 700; outline: none; padding: 2px 0;"
-                                   onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
-                                   onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();">
+                    <!-- RENGLÓN OCULTO DE TOTAL Y ANTICIPO (Ahorra espacio) -->
+                    <tr id="row-anticipo" style="display: none; border-top: 1px dashed rgba(255,255,255,0.1);">
+                        <td colspan="2" style="padding-top: 10px; padding-bottom: 0px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 9.5pt;"><span style="color: #cbd5e1; font-weight: 600;">Total Bruto:</span> <span id="pdf-val-subtotal" style="font-weight: 700; color: #ffffff;">$0.00</span></div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="color: #10b981; font-weight: 700; font-size: 9.5pt;">Anticipo (-)</span>
+                                    <input type="text" inputmode="decimal" id="in_anticipo" class="total-input" placeholder="$ 0.00" 
+                                           style="width: 80px; background: transparent; border: none; border-bottom: 1px dashed #10b981; color: #10b981; text-align: right; font-size: 10.5pt; font-weight: 700; outline: none; padding: 0;"
+                                           onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
+                                           onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();">
+                                    <button class="btn-del-item btn-ctrl-col" onclick="ocultarAnticipo()" style="margin:0; padding:0; font-size:11pt; color:#ef4444;" title="Quitar Anticipo"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </table>
+
+                <!-- BOTÓN PARA ACTIVAR ANTICIPO (No sale en el PDF) -->
+                <button id="btn-mostrar-anticipo" class="btn-ctrl-col" onclick="mostrarAnticipo()" style="background: transparent; border: 1px dashed #475569; color: #94a3b8; width: 100%; padding: 6px; border-radius: 6px; font-size: 8pt; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: 0.2s;">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Agregar Anticipo
+                </button>
+
                 <div class="pdf-rest-box">
-                    <span style="font-size: 12pt; font-weight: 700; color: #ffffff;">Restante</span>
+                    <span id="lbl-total-restante" style="font-size: 12pt; font-weight: 700; color: #ffffff;">Total</span>
                     <strong id="pdf-val-gtotal" style="font-size: 16pt; font-weight: 700; color: #ffffff;">$0.00</strong>
                 </div>
             </div>
@@ -506,7 +514,10 @@
                     if (dataPres.manoObra) dataPres.manoObra.forEach(m => agregarRenglon('listManoObra', m.desc, m.price));
                     if (dataPres.falla_reportada) document.getElementById('in_falla_reportada').value = dataPres.falla_reportada;
                     if (dataPres.codigo_fallas) document.getElementById('in_codigo_fallas').value = dataPres.codigo_fallas;
-                    if (dataPres.anticipo) document.getElementById('in_anticipo').value = dataPres.anticipo;
+                    if (dataPres.anticipo && dataPres.anticipo.trim() !== '' && dataPres.anticipo !== '$ 0.00') {
+                        document.getElementById('in_anticipo').value = dataPres.anticipo;
+                        mostrarAnticipo();
+                    }
                     actualizarTotales();
                 } catch(e) { console.error("Error presupuesto:", e); }
             }
@@ -583,15 +594,16 @@ function actualizarTotales() {
         const tS = calcularSumaColumna('listServicios'); const tR = calcularSumaColumna('listRefacciones'); const tM = calcularSumaColumna('listManoObra');
         const subtotal = tS + tR + tM;
         
-        // Calcular anticipo
-        const inputAnticipo = document.getElementById('in_anticipo');
+        // Calcular anticipo solo si la fila está visible
         let anticipo = 0;
-        if (inputAnticipo && inputAnticipo.value) {
+        const rowAnticipo = document.getElementById('row-anticipo');
+        const inputAnticipo = document.getElementById('in_anticipo');
+        
+        if (rowAnticipo && rowAnticipo.style.display !== 'none' && inputAnticipo && inputAnticipo.value) {
             anticipo = parseFloat(inputAnticipo.value.replace(/[^0-9.-]/g, ''));
             if (isNaN(anticipo)) anticipo = 0;
         }
         
-        // Resta para obtener el restante final
         const restante = subtotal - anticipo;
 
         if(document.getElementById('pdf-tot-servicios')) document.getElementById('pdf-tot-servicios').innerText = `$${tS.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
@@ -602,9 +614,29 @@ function actualizarTotales() {
         if(document.getElementById('pdf-val-trefacciones')) document.getElementById('pdf-val-trefacciones').innerText = `$${tR.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-tmanoobra')) document.getElementById('pdf-val-tmanoobra').innerText = `$${tM.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         
-        // Actualizamos los nuevos campos
         if(document.getElementById('pdf-val-subtotal')) document.getElementById('pdf-val-subtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        
+        // Cambiar palabra Total a Restante automáticamente
+        const lblTotal = document.getElementById('lbl-total-restante');
+        if(lblTotal) {
+            lblTotal.innerText = (rowAnticipo && rowAnticipo.style.display !== 'none') ? 'Restante' : 'Total';
+        }
+
         if(document.getElementById('pdf-val-gtotal')) document.getElementById('pdf-val-gtotal').innerText = `$${Math.max(0, restante).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+    }
+
+    function mostrarAnticipo() {
+        document.getElementById('row-anticipo').style.display = 'table-row';
+        document.getElementById('btn-mostrar-anticipo').style.display = 'none';
+        document.getElementById('in_anticipo').focus();
+        actualizarTotales();
+    }
+
+    function ocultarAnticipo() {
+        document.getElementById('row-anticipo').style.display = 'none';
+        document.getElementById('btn-mostrar-anticipo').style.display = 'block';
+        document.getElementById('in_anticipo').value = ''; 
+        actualizarTotales();
     }
 
     function autoExpandir(textarea) { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
