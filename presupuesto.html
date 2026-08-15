@@ -928,11 +928,13 @@ if (listaId === 'listRefacciones') {
             pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
-            // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1 para buena calidad pero rápida)
+                       // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PREVIEW DEL CLIENTE (Súper Ligero)
             const canvasPng = await html2canvas(elemento, { 
-                scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+                scale: 0.5, // 🔥 CAMBIO: Reducimos resolución a la mitad
+                useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
-            const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
+            // 🔥 TRUCO PRO: Exportamos como JPEG al 60% de calidad para reducir dramáticamente el peso
+            const dataUrlPng = canvasPng.toDataURL('image/jpeg', 0.6);
             const pngResponse = await fetch(dataUrlPng);
             const pngBlob = await pngResponse.blob();
 
@@ -945,21 +947,21 @@ if (listaId === 'listRefacciones') {
             els.forEach(el => el.style.display = ''); 
             deshacerFormateoCaptura(reemplazos);
             
-            document.body.classList.add('modo-app'); // 🔥 REGRESAMOS la capa de App Móvil
+            document.body.classList.add('modo-app'); 
 
-            // SUBIDA 1: PDF al Storage
+            // SUBIDA 1: PDF al Storage (Mantiene su máxima calidad)
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO PDF...";
             const fileNamePdf = `PRESUPUESTOS/PRES_${idReporteCortoGlobal}.pdf`;
             const { error: uploadError } = await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
             if (uploadError) throw uploadError;
             const publicURLPdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
 
-            // SUBIDA 2: PNG ligero al Storage
+            // SUBIDA 2: Preview ultra ligero al Storage (Como JPG)
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> SUBIENDO PREVIEW...";
-            const fileNamePng = `PRESUPUESTOS_PREVIEW/PREVIEW_PRES_${idReporteCortoGlobal}.png`;
-            await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
+            const fileNamePng = `PRESUPUESTOS_PREVIEW/PREVIEW_PRES_${idReporteCortoGlobal}.jpg`; // 🔥 Guardamos como .jpg
+            await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/jpeg' }); // 🔥 Subimos como JPEG
             const publicURLPng = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePng).data.publicUrl + '?t=' + Date.now();
-            
+
             const datosPresupuesto = {
                 link_presupuesto: publicURLPdf,
                 link_png_presupuesto: publicURLPng,
