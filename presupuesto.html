@@ -131,8 +131,10 @@
         #listServicios, #listRefacciones, #listManoObra { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; gap: 6px; }
 
         .table-row { 
-            display: grid; grid-template-columns: 1fr 80px 20px; gap: 6px; align-items: start; 
-            padding: 6px 0; border-bottom: 1px dashed #cbd5e1; 
+            display: grid; grid-template-columns: 1fr 80px 20px; gap: 6px; 
+            align-items: center; /* 🔥 CAMBIO: de 'start' a 'center' para centrar el precio */
+            padding: 4px 0; /* 🔥 CAMBIO: bajamos de 6px a 4px para quitar espacio muerto */
+            border-bottom: 1px dashed #cbd5e1; 
         }
         .table-row input.desc-input { width: 100%; border: none; background: transparent; font-size: 9pt; font-family: 'Roboto', sans-serif !important; font-weight: 500 !important; height: 28px !important; outline: none; color: #0f172a !important; padding: 0 4px !important; }
         .table-row input.price-input { width: 100%; border: none; background: transparent; font-size: 9pt; font-weight: 800 !important; text-align: right; height: 28px !important; outline: none; color: #0f172a !important; padding-right: 4px !important; }
@@ -741,20 +743,24 @@ if (boxExtra) {
             reemplazos.push({ original: input, falso: span });
         });
 
-        // 🔥 EL SECRETO: Colapsamos la 3ra columna (basurero) para que el precio se recorra al extremo derecho
+        // 🔥 EL SECRETO: Colapsamos la 3ra columna (basurero) y centramos todo verticalmente
         document.querySelectorAll('.table-row').forEach(row => {
             row.style.gridTemplateColumns = '1fr 80px';
+            row.style.alignItems = 'center'; // Fuerza el centrado en el PDF
+            row.style.padding = '4px 0';     // Quita el espacio muerto en el PDF
         });
 
         return reemplazos;
     }
 
-    function deshacerFormateoCaptura(reemplazos) {
+function deshacerFormateoCaptura(reemplazos) {
         reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
         
-        // 🔥 RESTAURAMOS la 3ra columna para que puedas seguir editando en pantalla
+        // 🔥 RESTAURAMOS la 3ra columna y limpiamos estilos
         document.querySelectorAll('.table-row').forEach(row => {
             row.style.gridTemplateColumns = '1fr 80px 20px';
+            row.style.alignItems = ''; // Limpiamos la alineación forzada
+            row.style.padding = '';    // Limpiamos el padding forzado
         });
     }
 
