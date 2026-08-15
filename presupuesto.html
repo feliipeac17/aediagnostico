@@ -427,7 +427,7 @@
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <span style="color: #10b981; font-weight: 700; font-size: 10.5pt; white-space: nowrap;">Anticipo (-)</span>
                                     <input type="text" inputmode="decimal" id="in_anticipo" class="total-input" placeholder="$ 0.00" 
-                                           style="width: 80px; background: transparent; border: none; border-bottom: 1px dashed #ffffff; color: #ffffff; text-align: center; font-size: 10.5pt; font-weight: 700; outline: none; padding: 0;"
+                                           style="width: 80px; background: transparent; border: none; border-bottom: 1px dashed #10b981; color: #10b981; text-align: center; font-size: 11.5pt; font-weight: 700; outline: none; padding: 0;"
                                            onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
                                            onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();">
                                     <button class="btn-del-item btn-ctrl-col" onclick="ocultarAnticipo()" style="margin:0; padding:0; font-size:11pt; color:#ef4444;" title="Quitar Anticipo"><i class="fa-solid fa-xmark"></i></button>
@@ -436,7 +436,7 @@
                                 <!-- AHORA A LA DERECHA: TOTAL BRUTO -->
                                 <div style="font-size: 10.5pt; text-align: right; white-space: nowrap;">
                                     <span style="color: #94a3b8; font-weight: 700;">Total:</span> 
-                                    <span id="pdf-val-subtotal" style="font-weight: 700; color: #ffffff;">$ 0.00</span>
+                                    <span id="pdf-val-subtotal" style="font-weight: 700; font-size: 11.5pt; color: #ffffff;">$ 0.00</span>
                                 </div>
 
                             </div>
@@ -726,7 +726,7 @@ if (boxExtra) {
                     span.style.width = '100%'; 
                     if(input.classList.contains('price-input')) span.style.paddingRight = '6px';
                     if(input.classList.contains('total-input')) {
-                        span.style.color = '#ffffff'; // Color verde para el anticipo en PDF
+                        span.style.color = '#10b981'; // Color verde para el anticipo en PDF
                         span.style.paddingRight = '2px';
                     }
                 }
