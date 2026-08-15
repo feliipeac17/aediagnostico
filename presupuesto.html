@@ -717,20 +717,32 @@ if (boxExtra) {
                     if(e) arr.push(`Estado: <strong>${e}</strong>`); 
                     if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                     
+// 🔥 CAMBIO: Eliminamos el <br> y usamos divs con interlineado ajustado (line-height) para matar el espacio muerto
                     if(arr.length > 0) {
-                        span.innerHTML = `${txtPrincipal}<br><span style="color:#64748b; font-size:4pt; font-style:italic; font-weight:500; display:block; margin-top:2px; text-transform:none;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</span>`;
-                    } else { span.innerText = txtPrincipal; }
-                } else { span.innerText = txtPrincipal; }
-                span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                        span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div><div style="color:#64748b; font-size:5pt; font-style:italic; font-weight:500; margin-top:1px; text-transform:none; line-height: 1.1;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</div>`;
+                    } else { 
+                        span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div>`; 
+                    }
+                } else { 
+                    span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div>`; 
+                }
+                span.style.fontSize = window.getComputedStyle(input).fontSize; 
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.display = 'block';
             } else {
                 span.innerText = input.tagName.toLowerCase() === 'select' ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
                 span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.textTransform = 'uppercase'; span.style.display = 'block';
                 
-                if(input.classList.contains('price-input') || input.classList.contains('total-input')) {
+if(input.classList.contains('price-input') || input.classList.contains('total-input')) {
                     span.style.textAlign = 'right'; 
                     span.style.width = '100%'; 
+                    // 🔥 CAMBIO: Forzamos el centrado vertical absoluto del texto numérico
+                    span.style.display = 'flex';
+                    span.style.justifyContent = 'flex-end';
+                    span.style.alignItems = 'center';
+                    span.style.height = '100%';
+
                     if(input.classList.contains('price-input')) span.style.paddingRight = '6px';
                     if(input.classList.contains('total-input')) {
                         span.style.color = '#10b981'; // Color verde para el anticipo en PDF
@@ -747,7 +759,7 @@ if (boxExtra) {
         document.querySelectorAll('.table-row').forEach(row => {
             row.style.gridTemplateColumns = '1fr 80px';
             row.style.alignItems = 'center'; // Fuerza el centrado en el PDF
-            row.style.padding = '4px 0';     // Quita el espacio muerto en el PDF
+            row.style.padding = '3px 0';     // Quita el espacio muerto en el PDF
         });
 
         return reemplazos;
