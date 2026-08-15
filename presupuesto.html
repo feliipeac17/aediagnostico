@@ -682,6 +682,12 @@ function actualizarTotales() {
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
         
+        // 🔥 ELIMINAR EL ESPACIO FANTASMA: Ocultamos por completo los campos extra
+        // Esto evita que dejen un hueco en blanco gigante debajo de cada descripción
+        document.querySelectorAll('.extra-fields-container').forEach(box => {
+            box.style.display = 'none';
+        });
+
         inputs.forEach(input => {
             if(input.type === 'hidden' || input.type === 'file' || input.type === 'checkbox' || input.classList.contains('extra-input')) return;
 
@@ -698,7 +704,7 @@ function actualizarTotales() {
                 let txtPrincipal = input.value || '';
                 const boxExtra = input.parentElement.querySelector('.extra-fields-container');
                 
-if (boxExtra) {
+                if (boxExtra) {
                     const q = boxExtra.querySelector('.e-qty') ? boxExtra.querySelector('.e-qty').value.trim() : '1';
                     const u = boxExtra.querySelector('.e-unit') ? boxExtra.querySelector('.e-unit').value.trim() : '';
                     const m = boxExtra.querySelector('.e-marca').value.trim(); 
@@ -708,44 +714,45 @@ if (boxExtra) {
                     const g = boxExtra.querySelector('.e-garantia').value;
                     
                     let arr = [];
-                    // 🔥 Imprime la cantidad en rojo SI es mayor a 1
                     if(q && parseFloat(q) > 1 && u) arr.push(`<span style="color:#d32f2f; font-weight:800;">${q} PIEZAS</span> - ${u} c/u`);
-                    
                     if(m) arr.push(`Marca: <strong>${m}</strong>`); 
                     if(p) arr.push(`Parte: <strong>${p}</strong>`); 
                     if(s) arr.push(`Serie: <strong>${s}</strong>`);
                     if(e) arr.push(`Estado: <strong>${e}</strong>`); 
                     if(g) arr.push(`Gtía: <strong>${g}</strong>`);
                     
-// 🔥 CAMBIO: Eliminamos el <br> y usamos divs con interlineado ajustado (line-height) para matar el espacio muerto
                     if(arr.length > 0) {
-                        span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div><div style="color:#64748b; font-size:5pt; font-style:italic; font-weight:500; margin-top:1px; text-transform:none; line-height: 1.1;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</div>`;
+                        span.innerHTML = `<div style="line-height: 1.1; margin-bottom: 2px;">${txtPrincipal}</div><div style="color:#64748b; font-size:5.5pt; font-style:italic; font-weight:500; text-transform:none; line-height: 1.1;">${arr.join(' <span style="color:#cbd5e1; font-style:normal;">|</span> ')}</div>`;
                     } else { 
                         span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div>`; 
                     }
                 } else { 
                     span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div>`; 
                 }
-                span.style.fontSize = window.getComputedStyle(input).fontSize; 
-                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                
+                // 🔥 FIX LEYENDA: Forzamos la letra original gruesa para que no se adelgace
+                span.style.fontFamily = "'Roboto', sans-serif";
+                span.style.fontWeight = "600";
+                span.style.fontSize = "9pt";
                 span.style.display = 'block';
+
             } else {
                 span.innerText = input.tagName.toLowerCase() === 'select' ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
                 span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.textTransform = 'uppercase'; span.style.display = 'block';
                 
-if(input.classList.contains('price-input') || input.classList.contains('total-input')) {
+                if(input.classList.contains('price-input') || input.classList.contains('total-input')) {
                     span.style.textAlign = 'right'; 
                     span.style.width = '100%'; 
-                    // 🔥 CAMBIO: Forzamos el centrado vertical absoluto del texto numérico
-                    span.style.display = 'flex';
-                    span.style.justifyContent = 'flex-end';
-                    span.style.alignItems = 'center';
-                    span.style.height = '100%';
+                    
+                    // 🔥 FIX PRECIO: Forzamos el grosor y alineación
+                    span.style.fontFamily = "'Open Sans', sans-serif";
+                    span.style.fontWeight = "800";
+                    span.style.fontSize = "9.5pt";
 
                     if(input.classList.contains('price-input')) span.style.paddingRight = '6px';
                     if(input.classList.contains('total-input')) {
-                        span.style.color = '#10b981'; // Color verde para el anticipo en PDF
+                        span.style.color = '#10b981';
                         span.style.paddingRight = '2px';
                     }
                 }
@@ -755,24 +762,45 @@ if(input.classList.contains('price-input') || input.classList.contains('total-in
             reemplazos.push({ original: input, falso: span });
         });
 
-        // 🔥 EL SECRETO: Colapsamos la 3ra columna (basurero) y centramos todo verticalmente
+        // 🔥 EL SECRETO DEFINITIVO: Flexbox para centrar con exactitud matemática
         document.querySelectorAll('.table-row').forEach(row => {
-            row.style.gridTemplateColumns = '1fr 80px';
-            row.style.alignItems = 'center'; // Fuerza el centrado en el PDF
-            row.style.padding = '3px 0';     // Quita el espacio muerto en el PDF
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            row.style.justifyContent = 'space-between';
+            row.style.padding = '4px 0';
+            
+            if(row.children[0]) {
+                row.children[0].style.flex = '1';
+                row.children[0].style.minWidth = '0';
+                row.children[0].style.justifyContent = 'center'; 
+            }
+            if(row.children[1]) {
+                row.children[1].style.width = '80px';
+                row.children[1].style.flexShrink = '0';
+            }
+            if(row.children[2]) row.children[2].style.display = 'none'; 
         });
 
         return reemplazos;
     }
 
-function deshacerFormateoCaptura(reemplazos) {
+    function deshacerFormateoCaptura(reemplazos) {
         reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
         
-        // 🔥 RESTAURAMOS la 3ra columna y limpiamos estilos
+        // 🔥 RESTAURAMOS los recuadros de captura de datos
+        document.querySelectorAll('.extra-fields-container').forEach(box => {
+            box.style.display = 'flex';
+        });
+
+        // 🔥 RESTAURAMOS LA ESTRUCTURA A LA NORMALIDAD PARA LA PANTALLA
         document.querySelectorAll('.table-row').forEach(row => {
-            row.style.gridTemplateColumns = '1fr 80px 20px';
-            row.style.alignItems = ''; // Limpiamos la alineación forzada
-            row.style.padding = '';    // Limpiamos el padding forzado
+            row.style.display = '';
+            row.style.alignItems = ''; 
+            row.style.justifyContent = '';
+            row.style.padding = ''; 
+            if(row.children[0]) { row.children[0].style.flex = ''; row.children[0].style.minWidth = ''; row.children[0].style.justifyContent = ''; }
+            if(row.children[1]) { row.children[1].style.width = ''; row.children[1].style.flexShrink = ''; }
+            if(row.children[2]) row.children[2].style.display = '';
         });
     }
 
