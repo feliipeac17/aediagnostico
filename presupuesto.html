@@ -429,7 +429,7 @@
                                     <input type="text" inputmode="decimal" id="in_anticipo" class="total-input" placeholder="$ 0.00" 
                                            style="width: 80px; background: transparent; border: none; border-bottom: 1px dashed #10b981; color: #10b981; text-align: center; font-size: 10.5pt; font-weight: 700; outline: none; padding: 0;"
                                            onfocus="this.value = this.value.replace(/[^0-9.]/g, '')"
-                                           onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$' + num.toFixed(2) : ''; actualizarTotales();">
+                                           onblur="let num = parseFloat(this.value); this.value = !isNaN(num) ? '$ ' + num.toFixed(2) : ''; actualizarTotales();">
                                     <button class="btn-del-item btn-ctrl-col" onclick="ocultarAnticipo()" style="margin:0; padding:0; font-size:11pt; color:#ef4444;" title="Quitar Anticipo"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
 
@@ -622,7 +622,7 @@ function actualizarTotales() {
         if(document.getElementById('pdf-val-trefacciones')) document.getElementById('pdf-val-trefacciones').innerText = `$${tR.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         if(document.getElementById('pdf-val-tmanoobra')) document.getElementById('pdf-val-tmanoobra').innerText = `$${tM.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         
-        if(document.getElementById('pdf-val-subtotal')) document.getElementById('pdf-val-subtotal').innerText = `$${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if(document.getElementById('pdf-val-subtotal')) document.getElementById('pdf-val-subtotal').innerText = `$ ${subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
         
         // Cambiar palabra Total a Restante automáticamente
         const lblTotal = document.getElementById('lbl-total-restante');
