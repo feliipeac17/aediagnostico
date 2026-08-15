@@ -682,7 +682,18 @@ function actualizarTotales() {
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
         
-        // 🔥 ELIMINAR EL ESPACIO FANTASMA: Ocultamos la caja extra con !important
+        // 🔥 1. MATAR LOS ESPACIOS GIGANTES (El verdadero culpable)
+        // Evitamos que las listas se estiren para rellenar el espacio del botón oculto.
+        document.querySelectorAll('.table-container').forEach(c => {
+            c.dataset.origStyle = c.getAttribute('style') || '';
+            c.setAttribute('style', 'justify-content: flex-start !important;');
+        });
+        document.querySelectorAll('#listServicios, #listRefacciones, #listManoObra').forEach(l => {
+            l.dataset.origStyle = l.getAttribute('style') || '';
+            l.setAttribute('style', 'justify-content: flex-start !important; flex-grow: 0 !important; gap: 0px !important;');
+        });
+
+        // 🔥 2. ESCONDER LOS CAMPOS EXTRA PARA QUE NO DEJEN HUECO FANTASMA
         document.querySelectorAll('.extra-fields-container').forEach(box => {
             box.dataset.origStyle = box.getAttribute('style') || '';
             box.setAttribute('style', 'display: none !important;');
@@ -693,9 +704,6 @@ function actualizarTotales() {
 
             const span = document.createElement('div');
             span.style.color = '#0f172a';
-            
-            // 🔥 RECUPERAMOS TU TIPO DE LETRA ORIGINAL (Para que no se vea delgada)
-            span.style.fontFamily = window.getComputedStyle(input).fontFamily;
             
             if (input.tagName.toLowerCase() === 'textarea') {
                 span.innerText = input.value || '';
@@ -732,26 +740,34 @@ function actualizarTotales() {
                     span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div>`; 
                 }
                 
-                // Heredamos tu tamaño y grosor original:
-                span.style.fontSize = window.getComputedStyle(input).fontSize; 
-                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
+                // Forzar letra negrita para la descripción
+                span.style.fontFamily = "'Roboto', sans-serif";
+                span.style.fontWeight = "bold";
+                span.style.fontSize = "9pt";
                 span.style.display = 'block';
 
             } else {
                 span.innerText = input.tagName.toLowerCase() === 'select' ? (input.options.length > 0 ? input.options[input.selectedIndex].text : '') : (input.value || '');
-                span.style.fontSize = window.getComputedStyle(input).fontSize; span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.textTransform = 'uppercase'; span.style.display = 'block';
                 
                 if(input.classList.contains('price-input') || input.classList.contains('total-input')) {
                     span.style.textAlign = 'right'; 
                     span.style.width = '100%'; 
                     span.style.display = 'block';
+                    
+                    // Forzar precio en negrita absoluta
+                    span.style.fontFamily = "'Open Sans', sans-serif";
+                    span.style.fontWeight = "bold";
+                    span.style.fontSize = "9.5pt";
 
                     if(input.classList.contains('price-input')) span.style.paddingRight = '6px';
                     if(input.classList.contains('total-input')) {
                         span.style.color = '#10b981';
                         span.style.paddingRight = '2px';
                     }
+                } else {
+                    span.style.fontSize = window.getComputedStyle(input).fontSize; 
+                    span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 }
             }
             
@@ -761,8 +777,7 @@ function actualizarTotales() {
             reemplazos.push({ original: input, falso: span });
         });
 
-        // 🔥 EL TRUCO INFALIBLE: Convertimos el renglón en "Celdas de Tabla" para el PDF.
-        // Esto obliga a la librería a centrar todo verticalmente sin fallos ni espacios muertos.
+        // 🔥 3. CENTRADO MATEMÁTICO INQUEBRANTABLE (Tabla Clásica)
         document.querySelectorAll('.table-row').forEach(row => {
             row.dataset.origStyle = row.getAttribute('style') || '';
             row.setAttribute('style', 'display: table !important; width: 100% !important; padding: 4px 0 !important; border-bottom: 1px dashed #cbd5e1;');
@@ -792,10 +807,12 @@ function actualizarTotales() {
             }
         });
         
-        document.querySelectorAll('.extra-fields-container').forEach(box => {
-            if (box.dataset.origStyle !== undefined) box.setAttribute('style', box.dataset.origStyle);
+        // Restaurar todos los contenedores y cajas ocultas
+        document.querySelectorAll('.table-container, #listServicios, #listRefacciones, #listManoObra, .extra-fields-container').forEach(el => {
+            if (el.dataset.origStyle !== undefined) el.setAttribute('style', el.dataset.origStyle);
         });
 
+        // Restaurar la estructura normal de los renglones
         document.querySelectorAll('.table-row').forEach(row => {
             if (row.dataset.origStyle !== undefined) row.setAttribute('style', row.dataset.origStyle);
             if(row.children[0] && row.children[0].dataset.origStyle !== undefined) row.children[0].setAttribute('style', row.children[0].dataset.origStyle);
