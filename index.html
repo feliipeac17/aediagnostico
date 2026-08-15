@@ -1783,11 +1783,14 @@ async function guardarYProcesarReporte() {
             pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
             const pdfBlob = pdf.output('blob');
 
-            // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PNG DEL CLIENTE (Escala 1.5: Ligero, rápido y fluido al abrir)
+                        // 2️⃣ RENDERIZADO EXCLUSIVO PARA EL PREVIEW DEL CLIENTE (Súper Ligero)
             const canvasPng = await html2canvas(est.elemento, { 
-                scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
+                scale: 0.5, // 🔥 CAMBIO: Reducimos la escala a la mitad
+                useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0
             });
-            const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
+            
+            // 🔥 TRUCO PRO: Exportamos como JPEG al 60% de calidad.
+            const dataUrlPng = canvasPng.toDataURL('image/jpeg', 0.6);
             const pngResponse = await fetch(dataUrlPng);
             const pngBlob = await pngResponse.blob();
 
@@ -1799,12 +1802,13 @@ async function guardarYProcesarReporte() {
             await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
             payload.link_pdf = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now();
             
-            // SUBIDA 2: Guardar Captura PNG ligera en el Storage
+            // SUBIDA 2: Guardar Captura Ligera en el Storage (Como JPG)
             btnSubmit.innerHTML = "⏳ SUBIENDO PREVIEW...";
-            const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folioCalculado}.png`;
-            await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
+            const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folioCalculado}.jpg`; // 🔥 Ahora es .jpg
+            await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/jpeg' }); // 🔥 Subimos como JPEG
             payload.link_png = supabaseClient.storage.from('reportes').getPublicUrl(fileNamePng).data.publicUrl + '?t=' + Date.now();
 
+            
             let err = null; if (isEditing) err = (await supabaseClient.from('reportes_servicio').update(payload).eq('id', editId)).error;
             else { payload.folio = folioCalculado; err = (await supabaseClient.from('reportes_servicio').insert([payload])).error; }
             if (err) throw err;
@@ -1951,9 +1955,9 @@ async function actualizarEstadoRapido(folio, selectElement) {
                 pdf.addImage(canvasPdf.toDataURL('image/jpeg', 1.0), 'JPEG', (pdf.internal.pageSize.getWidth() - pW) / 2, 0, pW, pH, undefined, 'SLOW');
                 const pdfBlob = pdf.output('blob');
 
-                // Renderizado Escala 1 para el PNG del portal del cliente
-                const canvasPng = await html2canvas(est.elemento, { scale: 1, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0 });
-                const dataUrlPng = canvasPng.toDataURL('image/png', 0.85);
+                                // Renderizado súper ligero para el portal del cliente
+                const canvasPng = await html2canvas(est.elemento, { scale: 0.5, useCORS: true, logging: false, width: 840, windowWidth: 840, scrollX: 0, scrollY: 0, x: 0, y: 0 });
+                const dataUrlPng = canvasPng.toDataURL('image/jpeg', 0.6); // 🔥 Convertimos a JPEG
                 const pngResponse = await fetch(dataUrlPng);
                 const pngBlob = await pngResponse.blob();
 
@@ -1963,9 +1967,9 @@ async function actualizarEstadoRapido(folio, selectElement) {
                 const fileNamePdf = `REPORTES_PDF/REPORTE_${folio}.pdf`;
                 await supabaseClient.storage.from('reportes').upload(fileNamePdf, pdfBlob, { upsert: true, contentType: 'application/pdf' });
                 
-                const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folio}.png`;
-                await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/png' });
-
+                const fileNamePng = `REPORTES_PREVIEW/PREVIEW_${folio}.jpg`; // 🔥 Cambiamos a .jpg
+                await supabaseClient.storage.from('reportes').upload(fileNamePng, pngBlob, { upsert: true, contentType: 'image/jpeg' }); // 🔥 Subimos como JPEG
+                
 // Hacemos un update silencioso de los links para romper la caché del navegador (?t=)
                 const nuevosLinks = {
                     link_pdf: supabaseClient.storage.from('reportes').getPublicUrl(fileNamePdf).data.publicUrl + '?t=' + Date.now(),
