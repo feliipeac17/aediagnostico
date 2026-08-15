@@ -682,10 +682,10 @@ function actualizarTotales() {
         const inputs = document.querySelectorAll('input, textarea, select');
         const reemplazos = [];
         
-        // 🔥 ELIMINAR EL ESPACIO FANTASMA: Ocultamos por completo los campos extra
-        // Esto evita que dejen un hueco en blanco gigante debajo de cada descripción
+        // 🔥 ELIMINAR EL ESPACIO FANTASMA: Ocultamos la caja extra con !important
         document.querySelectorAll('.extra-fields-container').forEach(box => {
-            box.style.display = 'none';
+            box.dataset.origStyle = box.getAttribute('style') || '';
+            box.setAttribute('style', 'display: none !important;');
         });
 
         inputs.forEach(input => {
@@ -693,6 +693,8 @@ function actualizarTotales() {
 
             const span = document.createElement('div');
             span.style.color = '#0f172a';
+            
+            // 🔥 RECUPERAMOS TU TIPO DE LETRA ORIGINAL (Para que no se vea delgada)
             span.style.fontFamily = window.getComputedStyle(input).fontFamily;
             
             if (input.tagName.toLowerCase() === 'textarea') {
@@ -730,10 +732,9 @@ function actualizarTotales() {
                     span.innerHTML = `<div style="line-height: 1.1;">${txtPrincipal}</div>`; 
                 }
                 
-                // 🔥 FIX LEYENDA: Forzamos la letra original gruesa para que no se adelgace
-                span.style.fontFamily = "'Roboto', sans-serif";
-                span.style.fontWeight = "600";
-                span.style.fontSize = "9pt";
+                // Heredamos tu tamaño y grosor original:
+                span.style.fontSize = window.getComputedStyle(input).fontSize; 
+                span.style.fontWeight = window.getComputedStyle(input).fontWeight;
                 span.style.display = 'block';
 
             } else {
@@ -744,11 +745,7 @@ function actualizarTotales() {
                 if(input.classList.contains('price-input') || input.classList.contains('total-input')) {
                     span.style.textAlign = 'right'; 
                     span.style.width = '100%'; 
-                    
-                    // 🔥 FIX PRECIO: Forzamos el grosor y alineación
-                    span.style.fontFamily = "'Open Sans', sans-serif";
-                    span.style.fontWeight = "800";
-                    span.style.fontSize = "9.5pt";
+                    span.style.display = 'block';
 
                     if(input.classList.contains('price-input')) span.style.paddingRight = '6px';
                     if(input.classList.contains('total-input')) {
@@ -757,50 +754,53 @@ function actualizarTotales() {
                     }
                 }
             }
+            
             input.parentNode.insertBefore(span, input);
-            input.style.display = 'none';
+            input.dataset.origStyle = input.getAttribute('style') || '';
+            input.setAttribute('style', 'display: none !important;');
             reemplazos.push({ original: input, falso: span });
         });
 
-        // 🔥 EL SECRETO DEFINITIVO: Flexbox para centrar con exactitud matemática
+        // 🔥 EL TRUCO INFALIBLE: Convertimos el renglón en "Celdas de Tabla" para el PDF.
+        // Esto obliga a la librería a centrar todo verticalmente sin fallos ni espacios muertos.
         document.querySelectorAll('.table-row').forEach(row => {
-            row.style.display = 'flex';
-            row.style.alignItems = 'center';
-            row.style.justifyContent = 'space-between';
-            row.style.padding = '4px 0';
+            row.dataset.origStyle = row.getAttribute('style') || '';
+            row.setAttribute('style', 'display: table !important; width: 100% !important; padding: 4px 0 !important; border-bottom: 1px dashed #cbd5e1;');
             
             if(row.children[0]) {
-                row.children[0].style.flex = '1';
-                row.children[0].style.minWidth = '0';
-                row.children[0].style.justifyContent = 'center'; 
+                row.children[0].dataset.origStyle = row.children[0].getAttribute('style') || '';
+                row.children[0].setAttribute('style', 'display: table-cell !important; vertical-align: middle !important; width: auto !important;');
             }
             if(row.children[1]) {
-                row.children[1].style.width = '80px';
-                row.children[1].style.flexShrink = '0';
+                row.children[1].dataset.origStyle = row.children[1].getAttribute('style') || '';
+                row.children[1].setAttribute('style', 'display: table-cell !important; vertical-align: middle !important; width: 80px !important; text-align: right !important;');
             }
-            if(row.children[2]) row.children[2].style.display = 'none'; 
+            if(row.children[2]) {
+                row.children[2].dataset.origStyle = row.children[2].getAttribute('style') || '';
+                row.children[2].setAttribute('style', 'display: none !important;');
+            }
         });
 
         return reemplazos;
     }
 
     function deshacerFormateoCaptura(reemplazos) {
-        reemplazos.forEach(par => { par.falso.remove(); par.original.style.display = ''; });
+        reemplazos.forEach(par => { 
+            par.falso.remove(); 
+            if (par.original.dataset.origStyle !== undefined) {
+                par.original.setAttribute('style', par.original.dataset.origStyle);
+            }
+        });
         
-        // 🔥 RESTAURAMOS los recuadros de captura de datos
         document.querySelectorAll('.extra-fields-container').forEach(box => {
-            box.style.display = 'flex';
+            if (box.dataset.origStyle !== undefined) box.setAttribute('style', box.dataset.origStyle);
         });
 
-        // 🔥 RESTAURAMOS LA ESTRUCTURA A LA NORMALIDAD PARA LA PANTALLA
         document.querySelectorAll('.table-row').forEach(row => {
-            row.style.display = '';
-            row.style.alignItems = ''; 
-            row.style.justifyContent = '';
-            row.style.padding = ''; 
-            if(row.children[0]) { row.children[0].style.flex = ''; row.children[0].style.minWidth = ''; row.children[0].style.justifyContent = ''; }
-            if(row.children[1]) { row.children[1].style.width = ''; row.children[1].style.flexShrink = ''; }
-            if(row.children[2]) row.children[2].style.display = '';
+            if (row.dataset.origStyle !== undefined) row.setAttribute('style', row.dataset.origStyle);
+            if(row.children[0] && row.children[0].dataset.origStyle !== undefined) row.children[0].setAttribute('style', row.children[0].dataset.origStyle);
+            if(row.children[1] && row.children[1].dataset.origStyle !== undefined) row.children[1].setAttribute('style', row.children[1].dataset.origStyle);
+            if(row.children[2] && row.children[2].dataset.origStyle !== undefined) row.children[2].setAttribute('style', row.children[2].dataset.origStyle);
         });
     }
 
