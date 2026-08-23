@@ -1725,7 +1725,7 @@ async function guardarYProcesarReporte() {
     const dia = String(hoy.getDate()).padStart(2, '0');
     const mes = String(hoy.getMonth() + 1).padStart(2, '0');
     const anio = hoy.getFullYear();
-    payload.fecha_entrega = `${dia}/${mes}/${anio}`;
+    payload.fecha_entrega = `${anio}-${mes}-${dia}`;
 }
 
             const fueBorrada = (imgId) => {
@@ -1917,7 +1917,7 @@ async function actualizarEstadoRapido(folio, selectElement) {
                 const dia = String(hoy.getDate()).padStart(2, '0');
                 const mes = String(hoy.getMonth() + 1).padStart(2, '0');
                 const anio = hoy.getFullYear();
-                datosUpdate.fecha_entrega = `${dia}/${mes}/${anio}`;
+                datosUpdate.fecha_entrega = `${anio}-${mes}-${dia}`;
             }
 
             const { error } = await supabaseClient.from('reportes_servicio').update(datosUpdate).eq('folio', folio);
