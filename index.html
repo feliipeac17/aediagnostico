@@ -1656,6 +1656,12 @@ if (presFolio) {
         document.querySelectorAll('.btn-del-photo').forEach(btn => btn.style.display = 'none');
         
         seleccionarCombustible(50); document.getElementById('in_vehiculo_marca').value = ""; document.getElementById('in_vehiculo_unidad').value = "KM";
+                const selectorEst = document.getElementById('in_estado');
+        if(selectorEst) {
+            selectorEst.value = 'EN REVISION';
+            selectorEst.style.color = '#10b981'; // Color verde original
+        }
+
         if (document.getElementById('pdfUploader')) document.getElementById('pdfUploader').value = ""; 
         
         let folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000);
