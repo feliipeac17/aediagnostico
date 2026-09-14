@@ -918,6 +918,12 @@
                         </label>
                         <input type="text" id="edit_nota_evidencia_12" placeholder="..." style="width:100%; margin-top:8px; padding:6px; font-size:8.5pt; border:1px solid #cbd5e1; border-radius:4px; text-transform: uppercase;">
                     </div>
+                    <!-- CAJA PARA ENLACES DE VIDEO -->
+    <div style="grid-column: 1 / -1; margin-top: 10px; padding: 15px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
+        <label style="font-size: 10pt; font-weight: 700; color: #334155;"><i class="fa-brands fa-youtube" style="color: #ef4444;"></i> Enlaces de Video (Drive, YouTube, etc.)</label>
+        <p style="font-size: 8pt; color: #64748b; margin-bottom: 8px;">Pega un enlace por renglón. Aparecerán automáticamente junto a las fotos de evidencia en el portal del cliente.</p>
+        <textarea id="edit_enlaces_videos" placeholder="https://drive.google.com/..." style="width: 100%; min-height: 70px; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 9pt; resize: vertical; text-transform: none !important;"></textarea>
+    </div>
                 </div>
             </div>
             
@@ -1478,6 +1484,31 @@ function prepararCaptura() {
                         `;
                     }
                 }
+                // 🔥 PROCESAR VIDEOS DE EVIDENCIA
+                if (rep.enlaces_videos && rep.enlaces_videos.trim() !== '') {
+                    const enlaces = rep.enlaces_videos.split('\n'); // Separa por renglones
+                    let contadorVideo = 1;
+                    
+                    enlaces.forEach(link => {
+                        const url = link.trim();
+                        if (url !== '') {
+                            tieneEvidencias = true; // Forzamos a que se muestre el botón principal de evidencias
+                            
+                            // Creamos la tarjeta estilo video
+                            galeriaGrid.innerHTML += `
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; text-align: center; display: flex; flex-direction: column;">
+                                    <div onclick="window.open('${url}', '_blank')" style="width: 100%; height: 100px; border-radius: 6px; background: #0f172a; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); transition: transform 0.2s;">
+                                        <i class="fa-solid fa-circle-play" style="font-size: 35pt; color: #ef4444;"></i>
+                                    </div>
+                                    <div style="font-size: 7.5pt; font-weight: 800; color: #0f172a; text-transform: uppercase; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+                                        🎬 VIDEO ${contadorVideo}
+                                    </div>
+                                </div>
+                            `;
+                            contadorVideo++;
+                        }
+                    });
+                }
 
 // 🔥 En vez de mostrar la galería de golpe, mostramos EL BOTÓN si hay fotos
                 const btnEvidencia = document.getElementById('btnPortalEvidencia');
@@ -1723,7 +1754,8 @@ async function guardarYProcesarReporte() {
                 chk_tablero: document.getElementById('chk_tablero').checked,
                 observaciones_electrico: document.getElementById('in_obs_electrico').value.toUpperCase().trim(),
                 link_escaner: linkEscanerFinal,
-                estado: document.getElementById('in_estado') ? document.getElementById('in_estado').value : 'EN REVISION'
+                estado: document.getElementById('in_estado') ? document.getElementById('in_estado').value : 'EN REVISION',
+                enlaces_videos: document.getElementById('edit_enlaces_videos') ? document.getElementById('edit_enlaces_videos').value.trim() : ''
             };
 
             if (payload.estado === 'ENTREGADO') {
@@ -2164,6 +2196,10 @@ async function actualizarEstadoRapido(folio, selectElement) {
             }
             if(document.getElementById(`edit_file_evidencia_${i}`)) document.getElementById(`edit_file_evidencia_${i}`).value = "";
         }
+
+        if(document.getElementById('edit_enlaces_videos')) {
+            document.getElementById('edit_enlaces_videos').value = rep.enlaces_videos || '';
+        }
     
         document.getElementById('dashboardSection').style.display = 'none'; document.getElementById('formularioSection').style.display = 'block'; document.getElementById('historialSection').style.display = 'none';
         document.getElementById('btnTabDashboard').classList.remove('tab-active'); document.getElementById('btnTabHistorial').classList.remove('tab-active'); document.getElementById('btnTabNuevo').classList.add('tab-active');
@@ -2201,13 +2237,50 @@ async function actualizarEstadoRapido(folio, selectElement) {
             secRep.innerHTML = hR + `</div>`;
         }
 
-        const secEvi = document.getElementById('subVistaContenidoEvidencia');
+const secEvi = document.getElementById('subVistaContenidoEvidencia');
         if (secEvi) {
-            secEvi.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;width:100%;"></div>`; const grid = secEvi.firstElementChild; let tE = false;
-            for (let i = 1; i <= 12; i++) { let iu = rep[`evidencia_${i}`]; let nt = rep[`evidencia_nota_${i}`] || ""; if (iu) { tE = true; grid.innerHTML += `<div style="background:#fff;border:1px solid #e2e8f0;padding:10px;border-radius:12px;"><img src="${iu}" onclick="window.open('${iu}','_blank')" style="width:100%;height:160px;object-fit:cover;border-radius:8px;cursor:pointer;"><p style="margin-top:8px;font-size:9pt;font-weight:700;color:#334155;text-align:center;text-transform:uppercase;">"${nt}"</p></div>`; } }
-            if (!tE) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8;font-weight:700;"><i class="fa-solid fa-folder-open" style="font-size:30pt;margin-bottom:10px;"></i><br>No se ha cargado ninguna evidencia fotográfica.</div>`;
+            secEvi.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;width:100%;"></div>`; 
+            const grid = secEvi.firstElementChild; 
+            let tE = false;
+            
+            // 1. CARGAMOS LAS FOTOS
+            for (let i = 1; i <= 12; i++) { 
+                let iu = rep[`evidencia_${i}`]; 
+                let nt = rep[`evidencia_nota_${i}`] || ""; 
+                if (iu) { 
+                    tE = true; 
+                    grid.innerHTML += `<div style="background:#fff;border:1px solid #e2e8f0;padding:10px;border-radius:12px;"><img src="${iu}" onclick="window.open('${iu}','_blank')" style="width:100%;height:160px;object-fit:cover;border-radius:8px;cursor:pointer;"><p style="margin-top:8px;font-size:9pt;font-weight:700;color:#334155;text-align:center;text-transform:uppercase;">"${nt}"</p></div>`; 
+                } 
+            }
+
+            // 🔥 2. CARGAMOS LOS VIDEOS 🔥
+            if (rep.enlaces_videos && rep.enlaces_videos.trim() !== "") {
+                const enlaces = rep.enlaces_videos.split('\n');
+                let cVid = 1;
+                enlaces.forEach(link => {
+                    const url = link.trim();
+                    if(url) {
+                        tE = true; // Avisamos que sí hay evidencia para que no salga el mensaje vacío
+                        grid.innerHTML += `
+                            <div style="background:#fff;border:1px solid #e2e8f0;padding:10px;border-radius:12px;text-align:center;">
+                                <div onclick="window.open('${url}','_blank')" style="width:100%;height:160px;background:#0f172a;border-radius:8px;cursor:pointer;display:flex;justify-content:center;align-items:center;box-shadow: inset 0 0 30px rgba(0,0,0,0.8);">
+                                    <i class="fa-solid fa-circle-play" style="font-size:45pt;color:#ef4444;"></i>
+                                </div>
+                                <p style="margin-top:8px;font-size:9.5pt;font-weight:800;color:#334155;text-transform:uppercase;">🎬 VIDEO ${cVid}</p>
+                            </div>`;
+                        cVid++;
+                    }
+                });
+            }
+
+            // 3. MENSAJE SI TODO ESTÁ VACÍO
+            if (!tE) {
+                grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8;font-weight:700;"><i class="fa-solid fa-folder-open" style="font-size:30pt;margin-bottom:10px;"></i><br>No se ha cargado ninguna evidencia fotográfica ni en video.</div>`;
+            }
         }
-        document.getElementById('adminPanel').style.display = 'none'; document.getElementById('reportView').style.display = 'block'; window.scrollTo(0, 0);
+        document.getElementById('adminPanel').style.display = 'none'; 
+        document.getElementById('reportView').style.display = 'block'; 
+        window.scrollTo(0, 0);
     }
     
     function alternarSubVista(v) {
