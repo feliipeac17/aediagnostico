@@ -1126,13 +1126,16 @@
     
     const inputsFotos = { frente: 'input_frente', trasera: 'input_trasera', izq: 'input_izq', der: 'input_der', motor: 'input_motor', cluster: 'input_cluster' };
 
-    document.addEventListener('input', function (e) {
+        document.addEventListener('input', function (e) {
         if ((e.target.tagName === 'INPUT' && e.target.type === 'text') || e.target.tagName === 'TEXTAREA') {
-            if (e.target.id === 'in_link_escaner') return; 
+            // Se agregó edit_enlaces_videos a las excepciones
+            if (e.target.id === 'in_link_escaner' || e.target.id === 'edit_enlaces_videos') return; 
+            
             const start = e.target.selectionStart; const end = e.target.selectionEnd;
             e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(start, end);
         }
     });
+
 
     function autoExpandir(textarea) { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
 
