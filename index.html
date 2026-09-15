@@ -1487,13 +1487,21 @@ function prepararCaptura() {
                         `;
                     }
                 }
-                // 🔥 PROCESAR VIDEOS DE EVIDENCIA
+
+                                // 🔥 PROCESAR VIDEOS DE EVIDENCIA
                 if (rep.enlaces_videos && rep.enlaces_videos.trim() !== '') {
                     const enlaces = rep.enlaces_videos.split('\n'); // Separa por renglones
                     let contadorVideo = 1;
                     
-                    enlaces.forEach(link => {
-                        const url = link.trim();
+                    enlaces.forEach(linea => {
+                        if (linea.trim() === '') return; // Ignorar líneas vacías
+                        
+                        // Dividimos por la barra vertical
+                        const partes = linea.split('|');
+                        const url = partes[0].trim();
+                        // Si hay un título, lo usamos; si no, usamos el contador genérico
+                        const tituloPersonalizado = partes.length > 1 ? partes[1].trim().toUpperCase() : `VIDEO ${contadorVideo}`;
+
                         if (url !== '') {
                             tieneEvidencias = true; // Forzamos a que se muestre el botón principal de evidencias
                             
@@ -1504,7 +1512,7 @@ function prepararCaptura() {
                                         <i class="fa-solid fa-circle-play" style="font-size: 35pt; color: #ef4444;"></i>
                                     </div>
                                     <div style="font-size: 7.5pt; font-weight: 800; color: #0f172a; text-transform: uppercase; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center;">
-                                        🎬 VIDEO ${contadorVideo}
+                                        🎬 ${tituloPersonalizado}
                                     </div>
                                 </div>
                             `;
@@ -1512,6 +1520,7 @@ function prepararCaptura() {
                         }
                     });
                 }
+
 
 // 🔥 En vez de mostrar la galería de golpe, mostramos EL BOTÓN si hay fotos
                 const btnEvidencia = document.getElementById('btnPortalEvidencia');
@@ -2256,12 +2265,18 @@ const secEvi = document.getElementById('subVistaContenidoEvidencia');
                 } 
             }
 
-            // 🔥 2. CARGAMOS LOS VIDEOS 🔥
+                        // 🔥 2. CARGAMOS LOS VIDEOS 🔥
             if (rep.enlaces_videos && rep.enlaces_videos.trim() !== "") {
                 const enlaces = rep.enlaces_videos.split('\n');
                 let cVid = 1;
-                enlaces.forEach(link => {
-                    const url = link.trim();
+                enlaces.forEach(linea => {
+                    if (linea.trim() === '') return; // Ignorar líneas vacías
+                    
+                    // Dividimos por la barra vertical
+                    const partes = linea.split('|');
+                    const url = partes[0].trim();
+                    const tituloPersonalizado = partes.length > 1 ? partes[1].trim().toUpperCase() : `VIDEO ${cVid}`;
+
                     if(url) {
                         tE = true; // Avisamos que sí hay evidencia para que no salga el mensaje vacío
                         grid.innerHTML += `
@@ -2269,12 +2284,13 @@ const secEvi = document.getElementById('subVistaContenidoEvidencia');
                                 <div onclick="window.open('${url}','_blank')" style="width:100%;height:160px;background:#0f172a;border-radius:8px;cursor:pointer;display:flex;justify-content:center;align-items:center;box-shadow: inset 0 0 30px rgba(0,0,0,0.8);">
                                     <i class="fa-solid fa-circle-play" style="font-size:45pt;color:#ef4444;"></i>
                                 </div>
-                                <p style="margin-top:8px;font-size:9.5pt;font-weight:800;color:#334155;text-transform:uppercase;">🎬 VIDEO ${cVid}</p>
+                                <p style="margin-top:8px;font-size:9.5pt;font-weight:800;color:#334155;text-transform:uppercase;">🎬 ${tituloPersonalizado}</p>
                             </div>`;
                         cVid++;
                     }
                 });
             }
+
 
             // 3. MENSAJE SI TODO ESTÁ VACÍO
             if (!tE) {
