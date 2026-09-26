@@ -1961,12 +1961,12 @@ function inyectarTarjetasHistorial(arr) {
                     <div style="width: 85px; height: 85px; border-radius: 10px; background: #f8fafc; overflow: hidden; flex-shrink: 0; display: flex; justify-content: center; align-items: center; border: 1px solid #e2e8f0;">
                         ${imgPort}
                     </div>
-                    <div style="flex: 1; min-width: 0;">
+                                        <div style="flex: 1; min-width: 0;">
                         <strong style="color:#d32f2f; font-size: 11.5pt; font-weight: 800;">${rep.folio || 'N/A'}</strong>
-                        <div style="font-size: 9pt; color: #334155; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
-                        <div style="font-size: 8.5pt; color: #64748b;"> Placas: <span style="font-weight: 700; color:#0f172a;">${rep.vehiculo_placas || 'S/N'}</span></div>
-                        <div style="font-size: 9pt; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">👤 ${rep.cliente_nombre || 'S/N'}</div>
-                        
+                        <div style="font-size: 9pt; color: #334155; font-weight: 700; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.3; margin-bottom: 2px;">🚗 ${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                        <div style="font-size: 8.5pt; color: #64748b; margin-bottom: 2px;"> Placas: <span style="font-weight: 700; color:#0f172a;">${rep.vehiculo_placas || 'S/N'}</span></div>
+                        <div style="font-size: 9pt; font-weight: 700; color: #0f172a; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.3;">👤 ${rep.cliente_nombre || 'S/N'}</div>
+                                            
                         <div style="position: relative; display: inline-block; margin-top: 4px;">
                             <select onchange="actualizarEstadoRapido('${rep.folio}', this)" style="background-color: ${col}; color: white; font-size: 6.5pt; font-weight: 800; padding: 4px 18px 4px 8px; border-radius: 4px; text-transform: uppercase; border: none; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;">
                                 <option value="EN REVISION" style="color: black; background: white;" ${est === 'EN REVISION' ? 'selected' : ''}>EN REVISION</option>
