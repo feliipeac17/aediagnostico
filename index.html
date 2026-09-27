@@ -1085,8 +1085,10 @@
 <div id="modalEstadoVehiculos" onclick="if(event.target === this) this.style.display='none'" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 15px;">
     <div style="background:#ffffff; width:100%; max-width:500px; border-radius:16px; padding:0; box-sizing:border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
         <div id="modalEstadoHeader" style="background: #f59e0b; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
-            <h3 id="modalEstadoTitulo" style="margin:0; font-family:'Montserrat', sans-serif; font-size:12pt; font-weight:800; color:white; text-transform:uppercase;"><i class="fa-solid fa-list"></i> EN REVISIÓN</h3>
-            <button onclick="document.getElementById('modalEstadoVehiculos').style.display='none'" style="background: rgba(0,0,0,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="modalEstadoTitulo" style="margin:0; font-family:'Montserrat', sans-serif; font-size:12pt; font-weight:800; color:white; text-transform:uppercase;"><i class="fa-solid fa-list"></i> EN REVISION</h3>
+<button onclick="irAHistorialYBuscar('${rep.folio}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: background 0.2s; flex-shrink: 0;">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
         </div>
         <div id="listaVehiculosEstado" style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f4f6f9;">
             <!-- Aquí se inyectan los vehículos -->
@@ -1902,8 +1904,8 @@ function abrirModalEstado(estadoBuscado) {
         const header = document.getElementById('modalEstadoHeader');
         const titulo = document.getElementById('modalEstadoTitulo');
         
-        if (estadoBuscado === 'EN REVISION') { header.style.background = '#f59e0b'; titulo.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> EN REVISIÓN'; }
-        else if (estadoBuscado === 'EN REPARACION') { header.style.background = '#3b82f6'; titulo.innerHTML = '<i class="fa-solid fa-wrench"></i> EN REPARACIÓN'; }
+        if (estadoBuscado === 'EN REVISION') { header.style.background = '#f59e0b'; titulo.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> EN REVISION'; }
+        else if (estadoBuscado === 'EN REPARACION') { header.style.background = '#3b82f6'; titulo.innerHTML = '<i class="fa-solid fa-wrench"></i> EN REPARACION'; }
         else if (estadoBuscado === 'TERMINADO') { header.style.background = '#10b981'; titulo.innerHTML = '<i class="fa-solid fa-car-on"></i> TERMINADOS'; }
         else if (estadoBuscado === 'ENTREGADO') { header.style.background = '#0f172a'; titulo.innerHTML = '<i class="fa-solid fa-check-double"></i> ENTREGADOS'; }
 
@@ -1940,6 +1942,31 @@ function abrirModalEstado(estadoBuscado) {
 
         document.getElementById('modalEstadoVehiculos').style.display = 'flex';
     }
+
+    function irAHistorialYBuscar(folio) {
+        // 1. Cerramos el modal
+        document.getElementById('modalEstadoVehiculos').style.display = 'none';
+        
+        // 2. Cambiamos la vista a la pestaña Historial "manualmente" para que no se reinicie la caja
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('formularioSection').style.display = 'none';
+        document.getElementById('historialSection').style.display = 'block';
+        
+        // Ocultar botón de candado si existe
+        if (document.getElementById('btnFlotanteBloqueo')) document.getElementById('btnFlotanteBloqueo').style.display = 'none';
+        
+        // Actualizar visualmente los botones superiores
+        document.getElementById('btnTabDashboard').classList.remove('tab-active');
+        document.getElementById('btnTabNuevo').classList.remove('tab-active');
+        document.getElementById('btnTabHistorial').classList.add('tab-active');
+        document.getElementById('formPanelTitle').innerHTML = "Historial de <span>Reportes</span>";
+        
+        // 3. Escribimos el folio en la caja y activamos el filtro al instante
+        document.getElementById('buscadorHistorial').value = folio;
+        filtrarHistorial();
+    }
+
+    
     
     function crearCotizacionRapida() { const folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000); localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify({ folio: folioTxt })); window.location.href = window.location.origin + '/presupuesto.html'; }
 
