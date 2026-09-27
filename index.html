@@ -1084,7 +1084,7 @@
     <div id="modalEstadoVehiculos" onclick="if(event.target === this) this.style.display='none'" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 15px;">
         <div style="background:#ffffff; width:100%; max-width:500px; border-radius:16px; padding:0; box-sizing:border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
             <div id="modalEstadoHeader" style="background: #f59e0b; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
-                <h3 id="modalEstadoTitulo" style="margin:0; font-family:'Montserrat', sans-serif; font-size:12pt; font-weight:800; color:white; text-transform:uppercase;"><i class="fa-solid fa-list"></i> EN REVISIÓN</h3>
+                <h3 id="modalEstadoTitulo" style="margin:0; font-family:'Montserrat', sans-serif; font-size:12pt; font-weight:800; color:white; text-transform:uppercase;"><i class="fa-solid fa-list"></i> EN REVISION</h3>
                 <button onclick="document.getElementById('modalEstadoVehiculos').style.display='none'" style="background: rgba(0,0,0,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="listaVehiculosEstado" style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f4f6f9;">
@@ -1901,8 +1901,8 @@ function abrirModalEstado(estadoBuscado) {
         const header = document.getElementById('modalEstadoHeader');
         const titulo = document.getElementById('modalEstadoTitulo');
         
-        if (estadoBuscado === 'EN REVISION') { header.style.background = '#f59e0b'; titulo.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> EN REVISIÓN'; }
-        else if (estadoBuscado === 'EN REPARACION') { header.style.background = '#3b82f6'; titulo.innerHTML = '<i class="fa-solid fa-wrench"></i> EN REPARACIÓN'; }
+        if (estadoBuscado === 'EN REVISION') { header.style.background = '#f59e0b'; titulo.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> EN REVISION'; }
+        else if (estadoBuscado === 'EN REPARACION') { header.style.background = '#3b82f6'; titulo.innerHTML = '<i class="fa-solid fa-wrench"></i> EN REPARACION'; }
         else if (estadoBuscado === 'TERMINADO') { header.style.background = '#10b981'; titulo.innerHTML = '<i class="fa-solid fa-car-on"></i> TERMINADOS'; }
         else if (estadoBuscado === 'ENTREGADO') { header.style.background = '#0f172a'; titulo.innerHTML = '<i class="fa-solid fa-check-double"></i> ENTREGADOS'; }
 
@@ -1981,7 +1981,7 @@ async function cargarHistorialSupabase() {
         reportes.forEach(rep => { 
             const est = (rep.estado || 'EN REVISION').toUpperCase().trim(); 
             
-            // Las cotizaciones ya no suman a "En Revisión"
+            // Las cotizaciones ya no suman a "En Revision"
             if (est === 'COTIZACION') {
                 // No hacemos nada, simplemente no lo contamos en las tarjetas principales
             } else if (est === 'EN REVISION' || est === 'ET') {
