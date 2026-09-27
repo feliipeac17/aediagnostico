@@ -627,25 +627,25 @@
 <div id="dashboardSection" style="display: block;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                 
-                <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #f59e0b; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+                <div onclick="abrirModalEstado('EN REVISION')" style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #f59e0b; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #f59e0b; opacity: 0.1; transform: rotate(-15deg);"></i>
                     <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Revision</div>
                     <div id="dash-revision" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
                 </div>
 
-                <div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+                <div onclick="abrirModalEstado('EN REPARACION')" style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fa-solid fa-wrench" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #3b82f6; opacity: 0.1; transform: rotate(-15deg);"></i>
                     <div style="font-size: 8.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">En Reparacion</div>
                     <div id="dash-reparacion" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
                 </div>
 
-<div style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+                <div onclick="abrirModalEstado('TERMINADO')" style="background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fa-solid fa-car-on" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #10b981; opacity: 0.1; transform: rotate(-15deg);"></i>
                     <div style="font-size: 7.5pt; color: #64748b; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">Terminados</div>
                     <div id="dash-terminados" style="font-size: 28pt; font-weight: 800; color: #0f172a; margin-top: 5px; position: relative; z-index: 2;">0</div>
                 </div>
 
-                <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 20px; border-radius: 12px; border-left: 5px solid #ef4444; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15); position: relative; overflow: hidden;">
+                <div onclick="abrirModalEstado('ENTREGADO')" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 20px; border-radius: 12px; border-left: 5px solid #ef4444; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15); position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fa-solid fa-check-double" style="position: absolute; right: -10px; bottom: -15px; font-size: 50pt; color: #ffffff; opacity: 0.05; transform: rotate(-15deg);"></i>
                     <div style="font-size: 8.5pt; color: #94a3b8; font-weight: 800; text-transform: uppercase; position: relative; z-index: 2;">Entregados</div>
                     <div id="dash-entregados" style="font-size: 28pt; font-weight: 800; color: #ffffff; margin-top: 5px; position: relative; z-index: 2;">0</div>
@@ -1080,6 +1080,20 @@
         </div>
     </div>
 
+<!-- === LO QUE ACABAS DE PEGAR (NUEVO MODAL) === -->
+<!-- MODAL PARA VER VEHÍCULOS POR ESTADO -->
+<div id="modalEstadoVehiculos" onclick="if(event.target === this) this.style.display='none'" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 15px;">
+    <div style="background:#ffffff; width:100%; max-width:500px; border-radius:16px; padding:0; box-sizing:border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
+        <div id="modalEstadoHeader" style="background: #f59e0b; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
+            <h3 id="modalEstadoTitulo" style="margin:0; font-family:'Montserrat', sans-serif; font-size:12pt; font-weight:800; color:white; text-transform:uppercase;"><i class="fa-solid fa-list"></i> EN REVISIÓN</h3>
+            <button onclick="document.getElementById('modalEstadoVehiculos').style.display='none'" style="background: rgba(0,0,0,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="listaVehiculosEstado" style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f4f6f9;">
+            <!-- Aquí se inyectan los vehículos -->
+        </div>
+    </div>
+</div>
+    
     <div id="modalVehiculosCliente" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.75); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 15px;">
         <div style="background:#ffffff; width:100%; max-width:480px; border-radius:16px; padding:25px 20px; box-sizing:border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align:center;">
             <div style="display:inline-flex; align-items:center; justify-content:center; width:50px; height:50px; background:#e0f2fe; border-radius:50%; margin-bottom:15px;"><i class="fa-solid fa-user-check" style="font-size:20pt; color:#0284c7;"></i></div>
@@ -1877,6 +1891,56 @@ async function guardarYProcesarReporte() {
         } catch (err) { alert("❌ ERROR: " + err.message); } finally { btnSubmit.innerHTML = txtOrig; btnSubmit.disabled = false; if(btnTop) { btnTop.innerHTML = txtOrigTop; btnTop.disabled = false; } }
     }
 
+function abrirModalEstado(estadoBuscado) {
+        let filtrados = listaReportesMemoria.filter(rep => {
+            let est = (rep.estado || 'EN REVISION').toUpperCase().trim();
+            if (estadoBuscado === 'EN REVISION') return est === 'EN REVISION' || est === 'ET';
+            if (estadoBuscado === 'ENTREGADO') return est === 'ENTREGADO' || est === 'TE';
+            return est === estadoBuscado;
+        });
+
+        const header = document.getElementById('modalEstadoHeader');
+        const titulo = document.getElementById('modalEstadoTitulo');
+        
+        if (estadoBuscado === 'EN REVISION') { header.style.background = '#f59e0b'; titulo.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> EN REVISIÓN'; }
+        else if (estadoBuscado === 'EN REPARACION') { header.style.background = '#3b82f6'; titulo.innerHTML = '<i class="fa-solid fa-wrench"></i> EN REPARACIÓN'; }
+        else if (estadoBuscado === 'TERMINADO') { header.style.background = '#10b981'; titulo.innerHTML = '<i class="fa-solid fa-car-on"></i> TERMINADOS'; }
+        else if (estadoBuscado === 'ENTREGADO') { header.style.background = '#0f172a'; titulo.innerHTML = '<i class="fa-solid fa-check-double"></i> ENTREGADOS'; }
+
+        const contenedor = document.getElementById('listaVehiculosEstado');
+        contenedor.innerHTML = '';
+
+        if (filtrados.length === 0) {
+            contenedor.innerHTML = '<div style="text-align:center; padding: 20px; color: #94a3b8; font-weight: 700;">No hay vehículos en este estado.</div>';
+        } else {
+            filtrados.forEach(rep => {
+                let imgHtml = rep.foto_frente_url 
+                    ? `<img src="${rep.foto_frente_url}" style="width: 100%; height: 100%; object-fit: cover;">` 
+                    : `<i class="fa-solid fa-car" style="font-size: 18pt; color: #cbd5e1;"></i>`;
+
+                let tarjeta = document.createElement('div');
+                tarjeta.style.cssText = "background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02); gap: 12px;";
+                
+                tarjeta.innerHTML = `
+                    <div style="width: 60px; height: 60px; border-radius: 8px; background: #f8fafc; flex-shrink: 0; display: flex; justify-content: center; align-items: center; border: 1px solid #e2e8f0; overflow: hidden;">
+                        ${imgHtml}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 800; color: #d32f2f; font-size: 10.5pt; margin-bottom: 2px;">${rep.folio}</div>
+                        <div style="font-weight: 800; color: #0f172a; font-size: 8.5pt; white-space: normal; line-height: 1.2; word-wrap: break-word; margin-bottom: 3px;">${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                        <div style="font-size: 8pt; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">👤 ${rep.cliente_nombre || 'S/N'}</div>
+                    </div>
+                    <button onclick="document.getElementById('modalEstadoVehiculos').style.display='none'; document.getElementById('buscadorHistorial').value='${rep.folio}'; cambiarPestana('historial'); filtrarHistorial();" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: background 0.2s; flex-shrink: 0;">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                `;
+                contenedor.appendChild(tarjeta);
+            });
+        }
+
+        document.getElementById('modalEstadoVehiculos').style.display = 'flex';
+    }
+    
     function crearCotizacionRapida() { const folioTxt = "AE-" + Math.floor(1000 + Math.random() * 9000); localStorage.setItem('ae_transferencia_presupuesto', JSON.stringify({ folio: folioTxt })); window.location.href = window.location.origin + '/presupuesto.html'; }
 
 async function cargarHistorialSupabase() {
