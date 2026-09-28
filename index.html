@@ -2057,7 +2057,7 @@ function inyectarTarjetasHistorial(arr) {
                         <div style="font-size: 8.5pt; color: #64748b; margin-bottom: 2px;"> Placas: <span style="font-weight: 700; color:#0f172a;">${rep.vehiculo_placas || 'S/N'}</span></div>
                         <div style="font-size: 9pt; font-weight: 700; color: #0f172a; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.3;">👤 ${rep.cliente_nombre || 'S/N'}</div>
                         
-                        <div style="font-size: 8.5pt; color: #64748b; margin-top: 4px;"><i class="fa-regular fa-calendar-plus"></i> Ingreso: <span style="font-weight: 700; color:#0f172a;">${fechaIngreso}</span></div>
+                        <div style="font-size: 8.5pt; color: #0284c7; font-weight: 800; margin-top: 4px;"><i class="fa-solid fa-calendar-plus"></i> Ingresó el: ${fechaIngreso}</div>
 
                         <div style="position: relative; display: inline-block; margin-top: 4px;">
                             <select onchange="actualizarEstadoRapido('${rep.folio}', this)" style="background-color: ${col}; color: white; font-size: 6.5pt; font-weight: 800; padding: 4px 18px 4px 8px; border-radius: 4px; text-transform: uppercase; border: none; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;">
