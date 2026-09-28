@@ -2040,11 +2040,17 @@ function inyectarTarjetasHistorial(arr) {
                     `<a href="https://aediagnostico.com/?folio=${rep.folio}" target="_blank" style="display:flex; justify-content:center; align-items:center; width:100%; height:100%;" title="Abrir portal del cliente"><i class="fa-solid fa-car" style="font-size:28pt; color:#cbd5e1;"></i></a>`
                 );
 
-            // 🔥 EXTRAEMOS LA FECHA DE INGRESO (CORTAMOS LA HORA)
+                        // 🔥 EXTRAEMOS LA FECHA DE INGRESO (CORTAMOS LA HORA)
             let fechaIngreso = "S/F";
             if (rep.created_at) {
                 fechaIngreso = rep.created_at.split('T')[0];
             }
+            
+            // 🔥 TEXTO DINÁMICO DEPENDIENDO SI ES COTIZACIÓN O SERVICIO
+            let textoIngreso = est === 'COTIZACION' ? 'Creada el:' : 'Ingreso:';
+            let colorIngreso = est === 'COTIZACION' ? '#8b5cf6' : '#0284c7'; 
+            let iconoIngreso = est === 'COTIZACION' ? 'fa-file-pen' : 'fa-calendar-plus';
+
 
             tarjeta.innerHTML = `
                 <div style="display: flex; gap: 15px; align-items: center;">
@@ -2068,7 +2074,7 @@ function inyectarTarjetasHistorial(arr) {
                             </select>
                             <i class="fa-solid fa-chevron-down" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); color: white; font-size: 6pt; pointer-events: none;"></i>
                         </div>
-                        <div style="font-size: 8.5pt; color: #0284c7; font-weight: 800; margin-top: 4px;"><i class="fa-solid fa-calendar-plus"></i> Ingreso: ${fechaIngreso}</div>
+                        <div style="font-size: 8.5pt; color: ${colorIngreso}; font-weight: 800; margin-top: 4px;"><i class="fa-solid ${iconoIngreso}"></i> ${textoIngreso} ${fechaIngreso}</div>
 
                         ${(est === 'ENTREGADO' && rep.fecha_entrega) ? `<div style="font-size: 8.5pt; color: #16a34a; font-weight: 800; margin-top: 4px;"><i class="fa-regular fa-calendar-check"></i> Entregado: ${rep.fecha_entrega}</div>` : ''}
                     </div>
