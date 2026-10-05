@@ -1435,28 +1435,35 @@ function prepararCaptura() {
                     progressWidth = "33.33%"; activeColor = "#3b82f6"; detailMsg = "🔧 En Reparacion"; activeSteps = 2;
                 } else if (st === 'TERMINADO') {
                     progressWidth = "66.66%"; activeColor = "#10b981"; detailMsg = "🔑 Listo para Entrega"; activeSteps = 3;
-} else if (st === 'ENTREGADO') {
+                   } else if (st === 'ENTREGADO') {
     progressWidth = "100%"; 
     activeColor = "#0284c7"; 
     detailMsg = "✅ Vehiculo Entregado"; 
     activeSteps = 4;
 
-    // 🔥 NUEVO: Mostrar la fecha de entrega debajo del círculo 4
+    // 🔥 NUEVO: Mostrar la fecha de entrega con mes en letra debajo del círculo 4
     if (rep.fecha_entrega) {
         const stepTxt4 = document.getElementById('step-txt-4');
         if (stepTxt4) {
-            // La fecha viene como YYYY-MM-DD, la cambiamos a DD/MM/YYYY
             const partes = rep.fecha_entrega.split('-');
             if (partes.length === 3) {
-                stepTxt4.innerText = `${partes[2]}/${partes[1]}/${partes[0]}`;
-                stepTxt4.style.fontSize = '7.5pt'; // Corrige el 1pt del HTML original
+                // Arreglo con los meses cortos
+                const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+                
+                const dia = partes[2];
+                const mesLetra = meses[parseInt(partes[1], 10) - 1]; // Convierte "10" a índice 9 ("oct")
+                const anioCorto = partes[0].slice(-2); // Toma solo los últimos 2 dígitos del año ("2026" -> "26")
+                
+                stepTxt4.innerText = `${dia}/${mesLetra}/${anioCorto}`;
+                stepTxt4.style.fontSize = '7.5pt';
                 stepTxt4.style.fontWeight = '800';
                 stepTxt4.style.marginTop = '4px';
+                stepTxt4.style.textTransform = 'uppercase'; // Para que se vea como 05/FEB/26
                 stepTxt4.style.color = activeColor;
             }
         }
     }
-}
+} 
 
                 if (progressLine) { progressLine.style.width = progressWidth; progressLine.style.background = activeColor; }
                 if (detailTxt) { detailTxt.innerText = detailMsg; detailTxt.style.color = activeColor; }
