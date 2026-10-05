@@ -2088,11 +2088,19 @@ async function cargarHistorialSupabase() {
         if (document.getElementById('dash-cotizacion')) document.getElementById('dash-cotizacion').innerText = cCotizacion;
     }
 
-    function filtrarHistorial() {
+        function filtrarHistorial() {
         const query = document.getElementById('buscadorHistorial').value.toUpperCase().trim();
-        listaReportesFiltrada = !query ? [...listaReportesMemoria] : listaReportesMemoria.filter(rep => (rep.folio && rep.folio.includes(query)) || (rep.cliente_nombre && rep.cliente_nombre.includes(query)) || (rep.vehiculo_placas && rep.vehiculo_placas.includes(query)) || (rep.vehiculo_marca && rep.vehiculo_marca.includes(query)) || (rep.vehiculo_modelo && rep.vehiculo_modelo.includes(query)));
+        listaReportesFiltrada = !query ? [...listaReportesMemoria] : listaReportesMemoria.filter(rep => 
+            (rep.folio && rep.folio.includes(query)) || 
+            (rep.cliente_nombre && rep.cliente_nombre.includes(query)) || 
+            (rep.cliente_telefono && rep.cliente_telefono.includes(query)) || // 🔥 NUEVO: Búsqueda por teléfono
+            (rep.vehiculo_placas && rep.vehiculo_placas.includes(query)) || 
+            (rep.vehiculo_marca && rep.vehiculo_marca.includes(query)) || 
+            (rep.vehiculo_modelo && rep.vehiculo_modelo.includes(query))
+        );
         paginaActual = 1; renderizarPagina();
     }
+
 
     function renderizarPagina() {
         const totP = Math.ceil(listaReportesFiltrada.length / itemsPorPagina) || 1; if (paginaActual < 1) paginaActual = 1; if (paginaActual > totP) paginaActual = totP;
