@@ -408,6 +408,21 @@
             
             body.modo-app .pdf-title-row { display: none !important; }
         }
+        /* 🔥 ESTILOS BANNER HISTORIAL */
+        .banner-historial {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white; border-radius: 10px; padding: 12px 15px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: transform 0.2s;
+        }
+        .banner-historial:hover { transform: scale(1.02); }
+        .banner-historial:active { transform: scale(0.98); }
+        .pulso-icono { animation: pulsoAviso 2s infinite; }
+        @keyframes pulsoAviso {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
     </style>
 </head>
 <body class="modo-app">
@@ -426,6 +441,20 @@
         <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 15px 18px; min-height: 80px; display: flex; justify-content: space-between; align-items: center; margin-top: 0px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
             <img src="logo3.png" alt="AE Diagnóstico" style="max-height: 55px; width: auto;">
             <span id="portalFolioTxt" style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: #ffffff; background: #d32f2f; padding: 6px 12px; border-radius: 8px; font-size: 9.5pt; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(211,47,47,0.35);">FOLIO: --</span>
+        </div>
+
+    <!-- 🔥 BANNER HISTORIAL OCULTO POR DEFECTO -->
+        <div id="bannerHistorialCliente" class="banner-historial" style="display: none;" onclick="abrirModalHistorialCliente()">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="pulso-icono" style="background: white; color: #10b981; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 11pt;">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <div>
+                    <div style="font-size: 8.5pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">Cliente Frecuente</div>
+                    <div style="font-size: 11pt; font-weight: 800;"><span id="countHistorialBanner">0</span> Reportes Previos</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="font-size: 12pt; opacity: 0.8;"></i>
         </div>
 
 <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"> 
@@ -1117,6 +1146,36 @@
             <canvas id="dibujoCanvas" style="touch-action: none; max-width: 100%; max-height: 100%; object-fit: contain; cursor: crosshair;"></canvas>
         </div>
     </div>
+
+    <!-- ... (tu código anterior) ... -->
+    
+    <div id="modalEditorFotos" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:9999999; flex-direction:column;">
+        <div style="padding: 15px 20px; background: #1e293b; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 2;">
+            <span style="font-weight: 800; font-size: 11pt; text-transform: uppercase;"><i class="fa-solid fa-paintbrush" style="color: #ef4444;"></i> Marcar Daños</span>
+            <div style="display:flex; gap: 12px;">
+                <button onclick="limpiarDibujo()" style="background: #475569; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-eraser"></i></button>
+                <button onclick="cerrarEditorFoto(false)" style="background: transparent; color: #94a3b8; border: 1px solid #475569; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">Cancelar</button>
+                <button onclick="cerrarEditorFoto(true)" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer;">Listo <i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+        <div id="canvasContainer" style="flex:1; overflow:hidden; display:flex; justify-content:center; align-items:center; background: #000; position: relative;">
+            <canvas id="dibujoCanvas" style="touch-action: none; max-width: 100%; max-height: 100%; object-fit: contain; cursor: crosshair;"></canvas>
+        </div>
+    </div>
+    
+    <!-- 🔥 PEGAR AQUÍ EL PASO 3: MODAL HISTORIAL PORTAL CLIENTE 🔥 -->
+    <div id="modalHistorialPortal" onclick="if(event.target === this) cerrarModalHistorialCliente()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 15px;">
+        <div style="background:#ffffff; width:100%; max-width:500px; border-radius:16px; padding:0; box-sizing:border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
+            <div style="background: #10b981; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin:0; font-family:'Montserrat', sans-serif; font-size:12pt; font-weight:800; color:white; text-transform:uppercase;"><i class="fa-solid fa-folder-open"></i> Historial de Reportes</h3>
+                <button onclick="cerrarModalHistorialCliente()" style="background: rgba(0,0,0,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform 0.2s;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="listaHistorialClienteModal" style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f4f6f9;">
+                <!-- Aquí JavaScript inyectará las tarjetas de los reportes -->
+            </div>
+        </div>
+    </div>
+    <!-- 🔥 FIN DEL PASO 3 🔥 -->
     
 <script>
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
@@ -1355,6 +1414,11 @@ function prepararCaptura() {
                 document.getElementById('portalFolioTxt').innerText = `FOLIO: ${rep.folio}`;
                 document.getElementById('portalVehiculoTxt').innerText = `${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}`.trim() || 'VEHÍCULO';
                 document.getElementById('portalClienteTxt').innerText = `${rep.cliente_nombre || 'N/A'}`;
+                // 🔥 DISPARADOR DE HISTORIAL
+                const telefonoCliente = rep.cliente_telefono ? rep.cliente_telefono.replace(/\D/g, '') : null;
+                if (telefonoCliente && telefonoCliente.length >= 10) {
+                    cargarHistorialClientePortal(telefonoCliente, rep.folio);
+                }
 
                 const st = (rep.estado || 'EN REVISION').toUpperCase();
                 
@@ -2542,6 +2606,57 @@ const secEvi = document.getElementById('subVistaContenidoEvidencia');
                 if(flecha) flecha.style.transform = 'rotate(0deg)';
             }
         }
+    }
+    // 🔥 FUNCIONES DEL HISTORIAL DEL PORTAL
+    async function cargarHistorialClientePortal(telefono, folioActual) {
+        try {
+            const { data: historial, error } = await supabaseClient
+                .from('reportes_servicio')
+                .select('folio, vehiculo_marca, vehiculo_modelo, vehiculo_placas, foto_frente_url, created_at')
+                .ilike('cliente_telefono', `%${telefono}%`)
+                .neq('folio', folioActual)
+                .order('id', { ascending: false });
+
+            if (!error && historial && historial.length > 0) {
+                document.getElementById('bannerHistorialCliente').style.display = 'flex';
+                document.getElementById('countHistorialBanner').innerText = historial.length;
+                window.datosHistorialCliente = historial; // Guardar en memoria
+            }
+        } catch (err) { console.error("Error cargando historial", err); }
+    }
+
+    function abrirModalHistorialCliente() {
+        const contenedor = document.getElementById('listaHistorialClienteModal');
+        contenedor.innerHTML = '';
+        const historial = window.datosHistorialCliente || [];
+
+        historial.forEach(rep => {
+            const fecha = rep.created_at ? rep.created_at.split('T')[0] : 'S/F';
+            const imgHtml = rep.foto_frente_url
+                ? `<img src="${rep.foto_frente_url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">`
+                : `<i class="fa-solid fa-car" style="font-size: 18pt; color: #cbd5e1;"></i>`;
+
+            contenedor.innerHTML += `
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="width: 60px; height: 60px; border-radius: 8px; background: #e2e8f0; flex-shrink: 0; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+                        ${imgHtml}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 800; color: #d32f2f; font-size: 10.5pt; margin-bottom: 2px;">${rep.folio}</div>
+                        <div style="font-weight: 800; color: #0f172a; font-size: 8.5pt;">${rep.vehiculo_marca || ''} ${rep.vehiculo_modelo || ''}</div>
+                        <div style="font-size: 8pt; color: #64748b; margin-top: 2px;">📅 ${fecha} | 🏷 ${rep.vehiculo_placas || 'S/N'}</div>
+                    </div>
+                    <a href="?folio=${rep.folio}" target="_blank" style="background: #0284c7; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; justify-content: center; align-items: center; text-decoration: none; flex-shrink: 0; box-shadow: 0 2px 6px rgba(2,132,199,0.3); transition: transform 0.2s;">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            `;
+        });
+        document.getElementById('modalHistorialPortal').style.display = 'flex';
+    }
+
+    function cerrarModalHistorialCliente() {
+        document.getElementById('modalHistorialPortal').style.display = 'none';
     }
 </script>
 </body>
