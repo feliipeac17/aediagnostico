@@ -1436,8 +1436,28 @@ function prepararCaptura() {
                 } else if (st === 'TERMINADO') {
                     progressWidth = "66.66%"; activeColor = "#10b981"; detailMsg = "🔑 Listo para Entrega"; activeSteps = 3;
 } else if (st === 'ENTREGADO') {
-    progressWidth = "100%"; activeColor = "#0284c7"; detailMsg = "✅ Vehiculo Entregado"; activeSteps = 4;
+    progressWidth = "100%"; 
+    activeColor = "#0284c7"; 
+    detailMsg = "✅ Vehiculo Entregado"; 
+    activeSteps = 4;
+
+    // 🔥 NUEVO: Mostrar la fecha de entrega debajo del círculo 4
+    if (rep.fecha_entrega) {
+        const stepTxt4 = document.getElementById('step-txt-4');
+        if (stepTxt4) {
+            // La fecha viene como YYYY-MM-DD, la cambiamos a DD/MM/YYYY
+            const partes = rep.fecha_entrega.split('-');
+            if (partes.length === 3) {
+                stepTxt4.innerText = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                stepTxt4.style.fontSize = '7.5pt'; // Corrige el 1pt del HTML original
+                stepTxt4.style.fontWeight = '800';
+                stepTxt4.style.marginTop = '4px';
+                stepTxt4.style.color = activeColor;
+            }
+        }
+    }
 }
+
                 if (progressLine) { progressLine.style.width = progressWidth; progressLine.style.background = activeColor; }
                 if (detailTxt) { detailTxt.innerText = detailMsg; detailTxt.style.color = activeColor; }
 
