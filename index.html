@@ -1326,7 +1326,7 @@ function prepararCaptura() {
         const txtGas = document.getElementById('pdf_visual_gas_text'); const valGas = parseInt(document.getElementById('in_vehiculo_gas').value) || 0;
         pdfGas.style.display = 'block'; pdfGasFill.style.width = valGas + "%"; pdfGasFill.style.background = valGas <= 25 ? '#d32f2f' : (valGas >= 75 ? '#4caf50' : '#ff9800');
         
-        let stringGas = "1/2"; if(valGas === 0) stringGas = "E (VACÍO)"; else if(valGas <= 25) stringGas = "1/4"; else if(valGas <= 50) stringGas = "1/2"; else if(valGas <= 75) stringGas = "3/4"; else stringGas = "F (LLENO)";
+        let stringGas = "1/2"; if(valGas === 0) stringGas = "E (VACIO)"; else if(valGas <= 25) stringGas = "1/4"; else if(valGas <= 50) stringGas = "1/2"; else if(valGas <= 75) stringGas = "3/4"; else stringGas = "F (LLENO)";
         if(txtGas) { txtGas.innerText = stringGas; txtGas.style.display = 'inline-block'; }
 
         const selEstado = document.getElementById('in_estado'); const lblEstado = document.getElementById('pdf-lbl-estado');
@@ -2391,7 +2391,7 @@ async function actualizarEstadoRapido(folio, selectElement) {
 
         const fg = rep.vehiculo_gas_nivel || 0; const aS = document.getElementById('web_view_gas_arc'); const nG = document.getElementById('web_view_gas_num'); const tG = document.getElementById('web_view_gas_text');
         if (aS && nG && tG) {
-            let cG = "#10b981"; let lG = "LLENO"; if (fg <= 25) { cG = "#ef4444"; lG = fg === 0 ? "VACÍO" : "1/4 DE TANQUE"; } else if (fg <= 75) { cG = "#f59e0b"; lG = fg === 50 ? "MEDIO TANQUE" : "3/4 DE TANQUE"; }
+            let cG = "#10b981"; let lG = "LLENO"; if (fg <= 25) { cG = "#ef4444"; lG = fg === 0 ? "VACIO" : "1/4 DE TANQUE"; } else if (fg <= 75) { cG = "#f59e0b"; lG = fg === 50 ? "MEDIO TANQUE" : "3/4 DE TANQUE"; }
             setTimeout(() => { aS.style.strokeDashoffset = 251.2 - (fg / 100) * 251.2; aS.style.stroke = cG; nG.style.color = cG; }, 50); nG.innerText = fg + "%"; tG.innerText = lG;
         }
     
