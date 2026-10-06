@@ -2796,12 +2796,14 @@ function abrirModalScannerVIN() {
                     <div style="position:absolute; border: 2px dashed #38bdf8; width: 90%; height: 60px; border-radius: 6px; pointer-events: none;"></div>
                 </div>
 
+                <div id="vin-status" style="font-size: 9pt; font-weight: 700; color: #64748b; margin-bottom: 15px;">Selecciona el método de lectura:</div>
+
                 <div id="btn-group-scanner" style="display:flex; flex-direction:column; gap:10px; margin-bottom: 10px;">
-                    <button type="button" onclick="iniciarLectorBarras()" style="background:#0f172a; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;"><i class="fa-solid fa-barcode"></i> Codigo de Barras o QR</button>
-                    <button type="button" onclick="iniciarLectorOCR()" style="background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;"><i class="fa-solid fa-font"></i> Lectura</button>
+                    <button type="button" onclick="iniciarLectorBarras()" style="background:#0f172a; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;"><i class="fa-solid fa-barcode"></i> Código de Barras</button>
+                    <button type="button" onclick="iniciarLectorOCR()" style="background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;"><i class="fa-solid fa-font"></i> Texto (OCR)</button>
                 </div>
 
-                <button type="button" id="btn-capturar-ocr" onclick="capturarYLeerOCR()" style="display:none; background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase; margin-bottom: 10px;">📸 Capturar</button>
+                <button type="button" id="btn-capturar-ocr" onclick="capturarYLeerOCR()" style="display:none; background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase; margin-bottom: 10px;">📸 Extraer Texto</button>
                 
                 <button type="button" onclick="detenerEscaneoVIN()" style="background:#f1f5f9; color:#ef4444; border:none; width: 100%; padding:12px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;">Cancelar</button>
             </div>
@@ -2833,6 +2835,7 @@ function iniciarLectorOCR() {
     document.getElementById('btn-group-scanner').style.display = 'none';
     document.getElementById('ocr-camera-box').style.display = 'flex';
     document.getElementById('btn-capturar-ocr').style.display = 'block';
+    document.getElementById('vin-status').innerText = "Enfoca los 17 números y presiona extraer...";
 
     navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
         .catch(() => navigator.mediaDevices.getUserMedia({ video: true }))
@@ -2907,7 +2910,7 @@ function abrirModalScannerPlacas() {
 
                 <div id="placas-status" style="font-size: 9pt; font-weight: 700; color: #64748b; margin-bottom: 15px;">Enfoca la placa del vehículo...</div>
 
-                <button type="button" onclick="capturarYLeerPlacasOCR()" style="background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase; margin-bottom: 10px;">📸 Capturar</button>
+                <button type="button" onclick="capturarYLeerPlacasOCR()" style="background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase; margin-bottom: 10px;">📸 Extraer Placa</button>
                 
                 <button type="button" onclick="detenerEscaneoPlacas()" style="background:#f1f5f9; color:#ef4444; border:none; width: 100%; padding:12px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;">Cancelar</button>
             </div>
@@ -2916,6 +2919,7 @@ function abrirModalScannerPlacas() {
     }
 
     document.getElementById('placas-scanner-container').style.display = 'flex';
+    document.getElementById('placas-status').innerText = "Enfoca la placa y presiona extraer...";
 
     // Abrir cámara trasera
     navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
