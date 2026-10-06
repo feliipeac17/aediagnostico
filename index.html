@@ -756,7 +756,13 @@
                                 </div>
                                 <div class="pdf-data-item"><span>MODELO / AÑO</span><input type="text" id="in_vehiculo_modelo" class="card-input" placeholder="..."></div>
                                 <div class="pdf-data-item"><span>COLOR</span><input type="text" id="in_vehiculo_color" class="card-input" placeholder="..."></div>
-                                <div class="pdf-data-item"><span>PLACAS</span><input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..."></div>
+                                <div class="pdf-data-item">
+    <span>PLACAS</span>
+    <div style="display: flex; gap: 6px; align-items: center; width: 100%;">
+        <input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..." style="flex: 1;">
+        <button type="button" onclick="abrirModalScannerPlacas()" class="pdf-ctrl" style="background: #0f172a; color: white; border: none; border-radius: 6px; width: 36px; height: 28px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;" title="Escanear Placas"><i class="fa-solid fa-camera"></i></button>
+    </div>
+</div>
 
 <div class="pdf-data-item" style="grid-column: span 2;">
     <span>NUMERO DE SERIE (VIN)</span>
@@ -2879,7 +2885,105 @@ function detenerEscaneoVIN() {
     if (window.ocrStream) { window.ocrStream.getTracks().forEach(t => t.stop()); window.ocrStream = null; }
     document.getElementById('vin-scanner-container').style.display = 'none';
 }
-         
+
+   // ==========================================
+// 5. ESCANER OCR PARA PLACAS
+// ==========================================
+let ocrStreamPlacas = null;
+
+function abrirModalScannerPlacas() {
+    let scannerContainer = document.getElementById('placas-scanner-container');
+    if (!scannerContainer) {
+        scannerContainer = document.createElement('div');
+        scannerContainer.id = 'placas-scanner-container';
+        scannerContainer.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.96); z-index:9999999; display:flex; flex-direction:column; justify-content:center; align-items:center; backdrop-filter: blur(5px); padding: 15px; box-sizing: border-box;';
+        scannerContainer.innerHTML = `
+            <div style="width: 100%; max-width: 380px; padding: 25px 20px; background: white; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                <h3 style="margin-top:0; color:#0f172a; text-transform:uppercase; font-size:12pt; font-weight: 800;"><i class="fa-solid fa-camera-retro" style="color:#0284c7;"></i> Escanear Placas</h3>
+                
+                <div style="position:relative; width:100%; height:200px; background:#000; border-radius:10px; overflow:hidden; margin-bottom:15px; display:flex; justify-content:center; align-items:center;">
+                    <video id="ocr-video-placas" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+                    <canvas id="ocr-canvas-placas" style="display:none;"></canvas>
+                    <!-- Cuadro de enfoque más ancho, ideal para formato de placas -->
+                    <div style="position:absolute; border: 2px dashed #38bdf8; width: 80%; height: 80px; border-radius: 6px; pointer-events: none;"></div>
+                </div>
+
+                <div id="placas-status" style="font-size: 9pt; font-weight: 700; color: #64748b; margin-bottom: 15px;">Enfoca la placa del vehículo...</div>
+
+                <button type="button" onclick="capturarYLeerPlacasOCR()" style="background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase; margin-bottom: 10px;">📸 Extraer Placa</button>
+                
+                <button type="button" onclick="detenerEscaneoPlacas()" style="background:#f1f5f9; color:#ef4444; border:none; width: 100%; padding:12px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;">Cancelar</button>
+            </div>
+        `;
+        document.body.appendChild(scannerContainer);
+    }
+
+    document.getElementById('placas-scanner-container').style.display = 'flex';
+    document.getElementById('placas-status').innerText = "Enfoca la placa y presiona extraer...";
+
+    // Abrir cámara trasera
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
+        .catch(() => navigator.mediaDevices.getUserMedia({ video: true }))
+        .then(stream => {
+            document.getElementById('ocr-video-placas').srcObject = stream;
+            ocrStreamPlacas = stream;
+        })
+        .catch(err => { alert("⚠️️ Error de cámara: " + err.message); detenerEscaneoPlacas(); });
+}
+
+async function capturarYLeerPlacasOCR() {
+    const video = document.getElementById('ocr-video-placas');
+    const canvas = document.getElementById('ocr-canvas-placas');
+    const status = document.getElementById('placas-status');
+
+    if (!video.srcObject) return;
+    status.innerText = "⏳ Extrayendo texto...";
+
+    canvas.width = video.videoWidth; 
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    try {
+        const worker = await Tesseract.createWorker('eng');
+        const ret = await worker.recognize(canvas.toDataURL('image/jpeg'));
+        await worker.terminate();
+
+        let textoLeido = ret.data.text.toUpperCase();
+        
+        // 🔥 NUEVO FILTRO: Deja letras, números, guiones (-) y espacios
+        let limpio = textoLeido.replace(/[^A-Z0-9\- ]/g, '').trim();
+        
+        // Limpiamos errores comunes del OCR (como dobles espacios o dobles guiones)
+        limpio = limpio.replace(/\s+/g, ' ').replace(/-+/g, '-');
+        
+        // Contamos cuántas letras/números reales tiene para validar que sí es una placa
+        let soloAlfanumerico = limpio.replace(/[^A-Z0-9]/g, '');
+        
+        if (soloAlfanumerico.length >= 5) {
+            // Aumentamos el límite a 10 caracteres para soportar formatos como "ABC-123-A"
+            let placaFinal = limpio.length > 10 ? limpio.substring(0, 10) : limpio;
+            
+            // Quitamos guiones o espacios que hayan quedado en las orillas por accidente
+            placaFinal = placaFinal.replace(/^[-\s]+|[-\s]+$/g, '');
+            
+            document.getElementById('in_vehiculo_placas').value = placaFinal;
+            status.innerText = `✅ ¡Placa Detectada: ${placaFinal}!`;
+            setTimeout(() => { detenerEscaneoPlacas(); }, 800);
+        } else {
+            status.innerText = "❌ No se distinguió bien. Intenta de nuevo más cerca.";
+        }
+    } catch (err) { 
+        status.innerText = "❌ Error al leer. Intenta de nuevo."; 
+    }
+}
+
+function detenerEscaneoPlacas() {
+    if (ocrStreamPlacas) { 
+        ocrStreamPlacas.getTracks().forEach(t => t.stop()); 
+        ocrStreamPlacas = null; 
+    }
+    document.getElementById('placas-scanner-container').style.display = 'none';
+}         
 
 </script>
 </body>
