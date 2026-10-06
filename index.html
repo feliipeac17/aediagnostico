@@ -760,12 +760,16 @@
 
 <div class="pdf-data-item" style="grid-column: span 2;">
     <span>NUMERO DE SERIE (VIN)</span>
-    <div style="display: flex; gap: 8px; width: 100%; align-items: center; border-bottom: 1px dashed #cbd5e1;">
-        <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17" style="flex: 1; border-bottom: none; height: auto !important; padding-bottom: 2px !important;">
-        <button type="button" onclick="iniciarEscaneoVIN()" style="background: #0f172a; color: white; border: none; border-radius: 6px; width: 32px; height: 26px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;" title="Escanear Código de Barras"><i class="fa-solid fa-barcode"></i></button>
-        <button type="button" id="btnDecodificarVIN" onclick="decodificarVIN()" style="background: #0284c7; color: white; border: none; border-radius: 6px; width: 32px; height: 26px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;" title="Buscar Vehículo por VIN"><i class="fa-solid fa-magnifying-glass"></i></button>
+    <div style="display: flex; gap: 6px; align-items: center; width: 100%;">
+        <!-- El input recupera su diseño original -->
+        <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17" style="flex: 1;">
+        
+        <!-- Agregamos la clase pdf-ctrl para que se oculten en el PDF -->
+        <button type="button" onclick="abrirModalScannerVIN()" class="pdf-ctrl" style="background: #0f172a; color: white; border: none; border-radius: 6px; width: 36px; height: 28px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;" title="Escanear VIN"><i class="fa-solid fa-camera"></i></button>
+        <button type="button" id="btnDecodificarVIN" onclick="decodificarVIN()" class="pdf-ctrl" style="background: #0284c7; color: white; border: none; border-radius: 6px; width: 36px; height: 28px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;" title="Buscar Vehículo"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 </div>
+
                                 
 <div class="pdf-data-item" style="grid-column: span 2;">
                                     <span>ODOMETRO</span>
@@ -2763,120 +2767,119 @@ const secEvi = document.getElementById('subVistaContenidoEvidencia');
         }
     }
 
-        // ==========================================
-    // 4. ESCANER OCR DE TEXTO (LEER CALCOMANÍA O TABLERO)
-    // ==========================================
-    function iniciarEscaneoVIN() {
-        let scannerContainer = document.getElementById('vin-scanner-container');
-        if (!scannerContainer) {
-            scannerContainer = document.createElement('div');
-            scannerContainer.id = 'vin-scanner-container';
-            scannerContainer.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.96); z-index:9999999; display:flex; flex-direction:column; justify-content:center; align-items:center; backdrop-filter: blur(5px); padding: 15px; box-sizing: border-box;';
-            scannerContainer.innerHTML = `
-                <div style="width: 100%; max-width: 380px; padding: 25px 20px; background: white; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-                    <h3 style="margin-top:0; color:#0f172a; text-transform:uppercase; font-size:12pt; font-weight: 800;"><i class="fa-solid fa-camera-retro" style="color:#0284c7;"></i> Escanear Texto (OCR)</h3>
-                    <p style="font-size:9pt; color:#64748b; font-weight:600; margin-bottom:15px;">Enfoca claramente los 17 números del VIN impresos en la puerta o parabrisas.</p>
-                    
-                    <!-- Elementos de la cámara -->
-                    <div style="position:relative; width:100%; height:200px; background:#000; border-radius:10px; overflow:hidden; margin-bottom:15px; display:flex; justify-content:center; align-items:center;">
-                        <video id="ocr-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
-                        <canvas id="ocr-canvas" style="display:none;"></canvas>
-                        <!-- Guía visual tipo cuadro de enfoque -->
-                        <div style="position:absolute; border: 2px dashed #38bdf8; width: 90%; height: 60px; border-radius: 6px; pointer-events: none;"></div>
-                    </div>
+// ==========================================
+// 4. ESCANER UNIFICADO (BARRAS + OCR)
+// ==========================================
+let vinScanner = null;
 
-                    <div id="ocr-status" style="font-size: 8.5pt; font-weight: 700; color: #0284c7; margin-bottom: 12px; min-height: 18px;">Cámara lista...</div>
-
-                    <button type="button" onclick="capturarYLeerVIN()" style="background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(16,185,129,0.3);">📸 Capturar y Extraer VIN</button>
-                    <button type="button" onclick="detenerEscaneoVIN()" style="background:#f1f5f9; color:#64748b; border:none; width: 100%; padding:12px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;">Cancelar</button>
+function abrirModalScannerVIN() {
+    let scannerContainer = document.getElementById('vin-scanner-container');
+    if (!scannerContainer) {
+        scannerContainer = document.createElement('div');
+        scannerContainer.id = 'vin-scanner-container';
+        scannerContainer.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.96); z-index:9999999; display:flex; flex-direction:column; justify-content:center; align-items:center; backdrop-filter: blur(5px); padding: 15px; box-sizing: border-box;';
+        scannerContainer.innerHTML = `
+            <div style="width: 100%; max-width: 380px; padding: 25px 20px; background: white; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                <h3 style="margin-top:0; color:#0f172a; text-transform:uppercase; font-size:12pt; font-weight: 800;"><i class="fa-solid fa-camera-retro" style="color:#0284c7;"></i> Escanear VIN</h3>
+                
+                <div id="vin-reader" style="width:100%; min-height: 200px; margin-bottom:15px; border-radius:8px; overflow:hidden; display:none; background:#000;"></div>
+                
+                <div id="ocr-camera-box" style="position:relative; width:100%; height:200px; background:#000; border-radius:10px; overflow:hidden; margin-bottom:15px; display:none; justify-content:center; align-items:center;">
+                    <video id="ocr-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+                    <canvas id="ocr-canvas" style="display:none;"></canvas>
+                    <div style="position:absolute; border: 2px dashed #38bdf8; width: 90%; height: 60px; border-radius: 6px; pointer-events: none;"></div>
                 </div>
-            `;
-            document.body.appendChild(scannerContainer);
-        }
 
-        document.getElementById('vin-scanner-container').style.display = 'flex';
-        document.getElementById('ocr-status').innerText = "Apuntando a la calcomanía...";
+                <div id="vin-status" style="font-size: 9pt; font-weight: 700; color: #64748b; margin-bottom: 15px;">Selecciona el método de lectura:</div>
 
-        // Encender la cámara trasera del celular
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
-            .catch(() => navigator.mediaDevices.getUserMedia({ video: true })) // Plan B si la cámara trasera falla
-            .then(stream => {
-                const video = document.getElementById('ocr-video');
-                video.srcObject = stream;
-                window.ocrStream = stream;
-            })
-            .catch(err => {
-                alert("⚠️ No se pudo acceder a la cámara: " + err.message);
-                detenerEscaneoVIN();
-            });
+                <div id="btn-group-scanner" style="display:flex; flex-direction:column; gap:10px; margin-bottom: 10px;">
+                    <button type="button" onclick="iniciarLectorBarras()" style="background:#0f172a; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;"><i class="fa-solid fa-barcode"></i> Código de Barras</button>
+                    <button type="button" onclick="iniciarLectorOCR()" style="background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;"><i class="fa-solid fa-font"></i> Texto (OCR)</button>
+                </div>
+
+                <button type="button" id="btn-capturar-ocr" onclick="capturarYLeerOCR()" style="display:none; background:#10b981; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase; margin-bottom: 10px;">📸 Extraer Texto</button>
+                
+                <button type="button" onclick="detenerEscaneoVIN()" style="background:#f1f5f9; color:#ef4444; border:none; width: 100%; padding:12px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;">Cancelar</button>
+            </div>
+        `;
+        document.body.appendChild(scannerContainer);
     }
 
-    async function capturarYLeerVIN() {
-        const video = document.getElementById('ocr-video');
-        const canvas = document.getElementById('ocr-canvas');
-        const status = document.getElementById('ocr-status');
+    document.getElementById('vin-scanner-container').style.display = 'flex';
+    document.getElementById('btn-group-scanner').style.display = 'flex';
+    document.getElementById('vin-reader').style.display = 'none';
+    document.getElementById('ocr-camera-box').style.display = 'none';
+    document.getElementById('btn-capturar-ocr').style.display = 'none';
+    document.getElementById('vin-status').innerText = "Selecciona el método de lectura:";
+}
 
-        if (!video.srcObject) return;
+function iniciarLectorBarras() {
+    document.getElementById('btn-group-scanner').style.display = 'none';
+    document.getElementById('vin-reader').style.display = 'block';
+    document.getElementById('vin-status').innerText = "Enfoca el código de barras...";
 
-        status.innerText = "⏳ Leyendo caracteres (OCR)...";
+    vinScanner = new Html5QrcodeScanner("vin-reader", { 
+        fps: 10, qrbox: { width: 300, height: 100 }, formatsToSupport: [ Html5QrcodeSupportedFormats.CODE_39, Html5QrcodeSupportedFormats.CODE_128 ] 
+    }, false);
+    
+    vinScanner.render((textoDecodificado) => { procesarVINLeido(textoDecodificado); }, () => {});
+}
 
-        // Tomar una foto del frame actual del video
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+function iniciarLectorOCR() {
+    document.getElementById('btn-group-scanner').style.display = 'none';
+    document.getElementById('ocr-camera-box').style.display = 'flex';
+    document.getElementById('btn-capturar-ocr').style.display = 'block';
+    document.getElementById('vin-status').innerText = "Enfoca los 17 números y presiona extraer...";
 
-        // Convertir la imagen del canvas a formato legible por Tesseract
-        const imageUrl = canvas.toDataURL('image/jpeg');
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
+        .catch(() => navigator.mediaDevices.getUserMedia({ video: true }))
+        .then(stream => {
+            document.getElementById('ocr-video').srcObject = stream;
+            window.ocrStream = stream;
+        })
+        .catch(err => { alert("⚠️ Error de cámara: " + err.message); detenerEscaneoVIN(); });
+}
 
-        try {
-            // Ejecutar el motor de reconocimiento de texto de Google en español e inglés
-            const worker = await Tesseract.createWorker('eng');
-            const ret = await worker.recognize(imageUrl);
-            await worker.terminate();
+async function capturarYLeerOCR() {
+    const video = document.getElementById('ocr-video');
+    const canvas = document.getElementById('ocr-canvas');
+    const status = document.getElementById('vin-status');
 
-            let textoLeido = ret.data.text.toUpperCase();
-            
-            // Expresión regular para buscar una secuencia de 17 caracteres alfanuméricos válidos de VIN (sin I, O, Q)
-            let matches = textoLeido.match(/[A-HJ-NPR-Z0-9]{17}/g);
+    if (!video.srcObject) return;
+    status.innerText = "⏳ Extrayendo texto...";
 
-            if (matches && matches.length > 0) {
-                let vinEncontrado = matches[0];
-                document.getElementById('in_vehiculo_vin').value = vinEncontrado;
-                status.innerText = "✅ ¡VIN Detectado con éxito!";
-                setTimeout(() => {
-                    detenerEscaneoVIN();
-                    decodificarVIN(); // Dispara la búsqueda automática de marca y modelo
-                }, 800);
-            } else {
-                // Si no encontró exactamente 17 juntos, intentamos limpiar símbolos raros
-                let limpio = textoLeido.replace(/[^A-Z0-9]/g, '');
-                if (limpio.length >= 17) {
-                    let posibleVin = limpio.substring(0, 17);
-                    document.getElementById('in_vehiculo_vin').value = posibleVin;
-                    status.innerText = "✅ VIN Extraído!";
-                    setTimeout(() => {
-                        detenerEscaneoVIN();
-                        decodificarVIN();
-                    }, 800);
-                } else {
-                    status.innerText = "❌ No se leyó bien. Intenta de nuevo más cerca.";
-                }
-            }
-        } catch (err) {
-            console.error(err);
-            status.innerText = "❌ Error al procesar imagen.";
-        }
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    try {
+        const worker = await Tesseract.createWorker('eng');
+        const ret = await worker.recognize(canvas.toDataURL('image/jpeg'));
+        await worker.terminate();
+
+        procesarVINLeido(ret.data.text.toUpperCase());
+    } catch (err) { status.innerText = "❌ Error al leer. Intenta de nuevo."; }
+}
+
+function procesarVINLeido(texto) {
+    let limpio = texto.replace(/[^A-Z0-9]/g, '');
+    let matches = limpio.match(/[A-HJ-NPR-Z0-9]{17}/g);
+    let vinFinal = matches ? matches[0] : (limpio.length >= 17 ? limpio.substring(0, 17) : null);
+
+    if (vinFinal) {
+        document.getElementById('in_vehiculo_vin').value = vinFinal;
+        document.getElementById('vin-status').innerText = "✅ ¡VIN Detectado!";
+        setTimeout(() => { detenerEscaneoVIN(); decodificarVIN(); }, 800);
+    } else {
+        document.getElementById('vin-status').innerText = "❌ No se encontraron 17 caracteres válidos.";
     }
+}
 
-    function detenerEscaneoVIN() {
-        if (window.ocrStream) {
-            window.ocrStream.getTracks().forEach(track => track.stop());
-            window.ocrStream = null;
-        }
-        const contenedor = document.getElementById('vin-scanner-container');
-        if (contenedor) contenedor.style.display = 'none';
-    }
+function detenerEscaneoVIN() {
+    if (vinScanner) { vinScanner.clear(); vinScanner = null; }
+    if (window.ocrStream) { window.ocrStream.getTracks().forEach(t => t.stop()); window.ocrStream = null; }
+    document.getElementById('vin-scanner-container').style.display = 'none';
+}
+         
 
 </script>
 </body>
