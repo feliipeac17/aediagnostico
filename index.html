@@ -756,7 +756,16 @@
                                 <div class="pdf-data-item"><span>MODELO / AÑO</span><input type="text" id="in_vehiculo_modelo" class="card-input" placeholder="..."></div>
                                 <div class="pdf-data-item"><span>COLOR</span><input type="text" id="in_vehiculo_color" class="card-input" placeholder="..."></div>
                                 <div class="pdf-data-item"><span>PLACAS</span><input type="text" id="in_vehiculo_placas" class="card-input" placeholder="..."></div>
-                                <div class="pdf-data-item" style="grid-column: span 2;"><span>NUMERO DE SERIE (VIN)</span><input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17"></div>
+
+<div class="pdf-data-item" style="grid-column: span 2;">
+    <span>NUMERO DE SERIE (VIN)</span>
+    <div style="display: flex; gap: 8px; width: 100%; align-items: center; border-bottom: 1px dashed #cbd5e1;">
+        <input type="text" id="in_vehiculo_vin" class="card-input" placeholder="..." maxlength="17" style="flex: 1; border-bottom: none; height: auto !important; padding-bottom: 2px !important;">
+        <button type="button" onclick="iniciarEscaneoVIN()" style="background: #0f172a; color: white; border: none; border-radius: 6px; width: 32px; height: 26px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;" title="Escanear Código de Barras"><i class="fa-solid fa-barcode"></i></button>
+        <button type="button" id="btnDecodificarVIN" onclick="decodificarVIN()" style="background: #0284c7; color: white; border: none; border-radius: 6px; width: 32px; height: 26px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;" title="Buscar Vehículo por VIN"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+</div>
+                                
 <div class="pdf-data-item" style="grid-column: span 2;">
                                     <span>ODOMETRO</span>
                                     <div id="odometro-container-grupo" style="display: flex; gap: 4px; align-items: baseline; width: auto;">
@@ -2699,6 +2708,111 @@ const secEvi = document.getElementById('subVistaContenidoEvidencia');
     function cerrarModalHistorialCliente() {
         document.getElementById('modalHistorialPortal').style.display = 'none';
     }
+    
+        // ==========================================
+    // 3. DECODIFICADOR DE VIN (API NHTSA)
+    // ==========================================
+    async function decodificarVIN() {
+        const vinInput = document.getElementById('in_vehiculo_vin');
+        let vin = vinInput.value.toUpperCase().trim();
+        
+        if (vin.length !== 17) {
+            alert("⚠️ El VIN debe tener exactamente 17 caracteres.");
+            return;
+        }
+
+        const btn = document.getElementById('btnDecodificarVIN');
+        const iconoOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        try {
+            // Conexión gratuita a la API de tráfico de USA
+            const respuesta = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vin}?format=json`);
+            const datos = await respuesta.json();
+            
+            let marca = "", modelo = "", anio = "";
+            datos.Results.forEach(item => {
+                if (item.Variable === "Make") marca = item.Value;
+                if (item.Variable === "Model") modelo = item.Value;
+                if (item.Variable === "Model Year") anio = item.Value;
+            });
+
+            if (marca && marca !== "null") {
+                // Selecciona la marca en el desplegable (si no existe, la crea)
+                const selectMarca = document.getElementById('in_vehiculo_marca');
+                let optionExists = Array.from(selectMarca.options).some(opt => opt.value === marca.toUpperCase());
+                if (!optionExists) {
+                    selectMarca.add(new Option(marca.toUpperCase(), marca.toUpperCase()));
+                }
+                selectMarca.value = marca.toUpperCase();
+                
+                // Llena el modelo y año
+                document.getElementById('in_vehiculo_modelo').value = `${modelo} ${anio}`.toUpperCase().trim();
+                alert(`✅ VIN Decodificado: ${marca} ${modelo} ${anio}`);
+            } else {
+                alert("⚠️ VIN inválido o no se encontró información.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("❌ Error al conectar con el servidor de VIN.");
+        } finally {
+            btn.innerHTML = iconoOriginal;
+            btn.disabled = false;
+        }
+    }
+
+    // ==========================================
+    // 4. ESCANER DE CÓDIGOS DE BARRAS (PUERTA/TABLERO)
+    // ==========================================
+    let vinScanner = null;
+    function iniciarEscaneoVIN() {
+        let scannerContainer = document.getElementById('vin-scanner-container');
+        if (!scannerContainer) {
+            scannerContainer = document.createElement('div');
+            scannerContainer.id = 'vin-scanner-container';
+            scannerContainer.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.95); z-index:9999999; display:flex; flex-direction:column; justify-content:center; align-items:center; backdrop-filter: blur(5px);';
+            scannerContainer.innerHTML = `
+                <div style="width: 100%; max-width: 380px; padding: 25px 20px; background: white; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                    <h3 style="margin-top:0; color:#0f172a; text-transform:uppercase; font-size:12pt; font-weight: 800;"><i class="fa-solid fa-barcode" style="color:#0284c7;"></i> Escanear VIN</h3>
+                    <p style="font-size:9.5pt; color:#64748b; font-weight:600; margin-bottom:15px;">Apunta al código de barras del vehículo (puerta o tablero).</p>
+                    <div id="vin-reader" style="width:100%; margin-bottom:15px; border-radius:8px; overflow:hidden;"></div>
+                    <button onclick="detenerEscaneoVIN()" style="background:#ef4444; color:white; border:none; width: 100%; padding:14px; border-radius:8px; font-weight:800; cursor:pointer; text-transform: uppercase;">Cancelar</button>
+                </div>
+            `;
+            document.body.appendChild(scannerContainer);
+        }
+        
+        document.getElementById('vin-scanner-container').style.display = 'flex';
+        
+        // Configuramos la librería para que busque códigos de barras horizontales (Code 39/128)
+        vinScanner = new Html5QrcodeScanner("vin-reader", { 
+            fps: 10, 
+            qrbox: { width: 300, height: 100 }, 
+            formatsToSupport: [ Html5QrcodeSupportedFormats.CODE_39, Html5QrcodeSupportedFormats.CODE_128 ] 
+        }, false);
+        
+        vinScanner.render((textoDecodificado) => {
+            // Limpia el texto escaneado por si trae prefijos extraños que usan las armadoras (ej. una "I" al inicio)
+            let vinLimpio = textoDecodificado.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+            if(vinLimpio.length > 17) vinLimpio = vinLimpio.substring(vinLimpio.length - 17);
+            
+            document.getElementById('in_vehiculo_vin').value = vinLimpio;
+            detenerEscaneoVIN();
+            
+            // Si el escaneo es exitoso, dispara automáticamente la búsqueda en internet
+            if(vinLimpio.length === 17) {
+                decodificarVIN();
+            }
+        }, () => { /* Ignorar errores de lectura de cuadros */ });
+    }
+
+    function detenerEscaneoVIN() {
+        if (vinScanner) { vinScanner.clear(); vinScanner = null; }
+        const contenedor = document.getElementById('vin-scanner-container');
+        if(contenedor) contenedor.style.display = 'none';
+    }
+
 </script>
 </body>
 </html>
